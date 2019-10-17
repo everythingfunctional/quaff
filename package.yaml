@@ -1,0 +1,30 @@
+name:                vegetable-juicer
+version:             0.1.0.0
+author:              "Brad Richardson"
+maintainer:          "brichardson@structint.com"
+copyright:           "2019 Brad Richardson"
+
+
+dependencies:
+- base >= 4.7 && < 5
+- containers
+- directory
+- filepath
+- MissingH
+- process
+- shake
+- split
+
+library:
+  source-dirs: vegetables/tools
+
+executables:
+  shaker-exe:
+    main:                Shakefile.hs
+    source-dirs:         .
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - vegetable-juicer

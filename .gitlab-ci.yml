@@ -1,0 +1,9 @@
+image: registry.gitlab.com/everythingfunctional/fortranshaker
+
+variables:
+    GIT_SUBMODULE_STRATEGY: normal
+
+test:
+  script:
+    - ./Shakefile.hs
+    - valgrind --leak-check=full --error-exitcode=1 tests_build/vegetable_driver
