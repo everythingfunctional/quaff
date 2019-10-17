@@ -238,7 +238,7 @@ contains
                 expected, &
                 actual, &
                 tolerance, &
-                var_str(sucess_message), &
+                var_str(success_message), &
                 var_str(failure_message))
     end function assertEqualsWithinAbsoluteWithMessagesCC
 
@@ -264,7 +264,7 @@ contains
                 expected, &
                 actual, &
                 tolerance, &
-                var_str(sucess_message), &
+                var_str(success_message), &
                 failure_message)
     end function assertEqualsWithinAbsoluteWithMessagesCS
 
@@ -290,7 +290,7 @@ contains
                 expected, &
                 actual, &
                 tolerance, &
-                sucess_message, &
+                success_message, &
                 var_str(failure_message))
     end function assertEqualsWithinAbsoluteWithMessagesSC
 
@@ -307,7 +307,7 @@ contains
                 Result_t, &
                 fail, &
                 makeWithinFailureMessage, &
-                makeWithinSuccesMessage, &
+                makeWithinSuccessMessage, &
                 succeed, &
                 withUserMessage
 
@@ -320,7 +320,7 @@ contains
 
         if (expected%equal(actual, within = tolerance)) then
             result__ =  succeed(withUserMessage( &
-                    makeWithinSuccesMessage( &
+                    makeWithinSuccessMessage( &
                             expected%toString(), &
                             actual%toString(), &
                             tolerance%toString()), &
@@ -467,14 +467,14 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING operator(//)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
         use Length_m, only: Length_t
         use strff, only: toString
         use Vegetables_m, only: &
                 Result_t, &
                 fail, &
                 makeWithinFailureMessage, &
-                makeWithinSuccesMessage, &
+                makeWithinSuccessMessage, &
                 succeed, &
                 withUserMessage
 
@@ -487,7 +487,7 @@ contains
 
         if (expected%equal(actual, within = tolerance)) then
             result__ =  succeed(withUserMessage( &
-                    makeWithinSuccesMessage( &
+                    makeWithinSuccessMessage( &
                             expected%toString(), &
                             actual%toString(), &
                             toString(tolerance * 100.0d0) // "%"), &
