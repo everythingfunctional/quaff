@@ -67,7 +67,7 @@ module Length_m
             multiplier = 1.0d0, &
             symbol = "m")
 
-    type(LengthUnit_t), parameter, public :: DEFAULT_OUTPUT_UNITS = METERS
+    type(LengthUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
 
     type(LengthUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, METERS]
