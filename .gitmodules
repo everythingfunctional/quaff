@@ -4,3 +4,6 @@
 [submodule "iso_varying_string"]
 	path = iso_varying_string
 	url = https://gitlab.com/everythingfunctional/iso_varying_string.git
+[submodule "strff"]
+	path = strff
+	url = https://gitlab.com/everythingfunctional/strff.git
