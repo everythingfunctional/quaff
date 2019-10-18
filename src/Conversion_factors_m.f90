@@ -10,4 +10,9 @@ module Conversion_factors_m
 
     ! Mass
     double precision, parameter :: GRAMS_PER_KILOGRAM = BASE_PER_KILO
+
+    ! Temperature
+    double precision, parameter :: CELSIUS_KELVIN_DIFFERENCE = 273.15d0
+    double precision, parameter :: FAHRENHEIT_RANKINE_DIFFERENCE = 459.67d0
+    double precision, parameter :: RANKINE_PER_KELVIN = 9.0d0 / 5.0d0
 end module Conversion_factors_m

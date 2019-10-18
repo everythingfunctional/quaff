@@ -5,6 +5,7 @@ module Check_round_trip_in_m
     interface checkRoundTripIn
         module procedure checkRoundTripInLength
         module procedure checkRoundTripInMass
+        module procedure checkRoundTripInTemperature
     end interface checkRoundTripIn
 
     double precision, parameter :: ROUND_TRIP_TEST_VALUES(*) = &
@@ -49,4 +50,23 @@ contains
                     units%toString())
         end do
     end function checkRoundTripInMass
+
+    function checkRoundTripInTemperature(units) result(result_)
+        use Temperature_m, only: Temperature_t, TemperatureUnit_t, operator(.unit.)
+        use Vegetables_m, only: Result_t, assertEquals
+
+        type(TemperatureUnit_t), intent(in) :: units
+        type(Result_t) :: result_
+
+        integer :: i
+        type(Temperature_t) :: intermediate
+
+        do i = 1, size(ROUND_TRIP_TEST_VALUES)
+            intermediate = ROUND_TRIP_TEST_VALUES(i).unit.units
+            result_ = result_.and.assertEquals( &
+                    ROUND_TRIP_TEST_VALUES(i), &
+                    intermediate.in.units, &
+                    units%toString())
+        end do
+    end function checkRoundTripInTemperature
 end module Check_round_trip_in_m

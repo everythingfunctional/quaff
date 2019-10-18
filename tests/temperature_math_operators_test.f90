@@ -1,4 +1,4 @@
-module mass_mathematical_operators_test
+module temperature_math_operators_test
     implicit none
     private
 
@@ -16,18 +16,18 @@ contains
         type(TestItem_t) :: individual_tests(3)
 
         individual_tests(1) = It( &
-                "Adding zero returns the original mass", &
+                "Adding zero returns the original temperature", &
                 DOUBLE_PRECISION_GENERATOR, &
                 checkAddZero)
         individual_tests(2) = It( &
-                "Subtracting zero returns the original mass", &
+                "Subtracting zero returns the original temperature", &
                 DOUBLE_PRECISION_GENERATOR, &
                 checkSubtractZero)
         individual_tests(3) = It( &
-                "Adding and subtracting the same mass returns the original mass", &
+                "Adding and subtracting the same temperature returns the original temperature", &
                 DOUBLE_PRECISION_PAIR_GENERATOR, &
                 checkAddSubtract)
-        tests = Describe("Mass_t (+/-) operators", individual_tests)
+        tests = Describe("Temperature_t (+/-) operators", individual_tests)
     end function test_addition_subtraction_operators
 
     function test_multiplication_division_operator() result(tests)
@@ -43,69 +43,69 @@ contains
         type(TestItem_t) :: individual_tests(6)
 
         individual_tests(1) = It( &
-                "A mass multiplied by 1 equals itself", &
+                "A temperature multiplied by 1 equals itself", &
                 DOUBLE_PRECISION_GENERATOR, &
                 checkMultiplyByOne)
         individual_tests(2) = It( &
-                "A mass multiplied by 0 is 0", &
+                "A temperature multiplied by 0 is 0", &
                 DOUBLE_PRECISION_GENERATOR, &
                 checkMultiplyByZero)
         individual_tests(3) = It( &
-                "A mass divided by 1 equals itself", &
+                "A temperature divided by 1 equals itself", &
                 DOUBLE_PRECISION_GENERATOR, &
                 checkDivideByOne)
         individual_tests(4) = It( &
-                "A mass divided by itself equals 1", &
+                "A temperature divided by itself equals 1", &
                 NON_ZERO_DOUBLE_PRECISION_GENERATOR, &
                 checkDivideBySelf)
         individual_tests(5) = It( &
-                "Multiplying and dividing by the same number returns the original mass", &
+                "Multiplying and dividing by the same number returns the original temperature", &
                 NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                 checkMultiplyDivide)
         individual_tests(6) = It( &
-                "Dividing and multiplying by the same number returns the original mass", &
+                "Dividing and multiplying by the same number returns the original temperature", &
                 NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                 checkDivideMultiply)
-        tests = Describe("Mass_t (* & / ) operators", individual_tests)
+        tests = Describe("Temperature_t (* & / ) operators", individual_tests)
     end function test_multiplication_division_operator
 
     function checkAddZero(input) result(result_)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
-        type(Mass_t) :: zero
+        type(Temperature_t) :: temperature
+        type(Temperature_t) :: zero
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            mass = input%value_.unit.KILOGRAMS
-            zero = 0.0d0.unit.KILOGRAMS
-            result_ = assertEquals(mass, mass + zero)
+            temperature = input%value_.unit.KELVIN
+            zero = 0.0d0.unit.KELVIN
+            result_ = assertEquals(temperature, temperature + zero)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
         end select
     end function checkAddZero
 
     function checkSubtractZero(input) result(result_)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
-        type(Mass_t) :: zero
+        type(Temperature_t) :: temperature
+        type(Temperature_t) :: zero
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            mass = input%value_.unit.KILOGRAMS
-            zero = 0.0d0.unit.KILOGRAMS
-            result_ = assertEquals(mass, mass - zero)
+            temperature = input%value_.unit.KELVIN
+            zero = 0.0d0.unit.KELVIN
+            result_ = assertEquals(temperature, temperature - zero)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
         end select
@@ -114,103 +114,103 @@ contains
     function checkAddSubtract(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
         use iso_varying_string, only: operator(//)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEqualsWithinRelative
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEqualsWithinRelative
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass1
-        type(Mass_t) :: mass2
+        type(Temperature_t) :: temperature1
+        type(Temperature_t) :: temperature2
 
         select type(input)
         type is (DoublePrecisionPairInput_t)
-            mass1 = input%first.unit.KILOGRAMS
-            mass2 = input%second.unit.KILOGRAMS
+            temperature1 = input%first.unit.KELVIN
+            temperature2 = input%second.unit.KELVIN
             result_ = assertEqualsWithinRelative( &
-                    mass1, &
-                    (mass1 + mass2) - mass2, &
+                    temperature1, &
+                    (temperature1 + temperature2) - temperature2, &
                     1.0d-12, &
-                    "mass1 = " // mass1%toString() // ", mass2 = " // mass2%toString())
+                    "temperature1 = " // temperature1%toString() // ", temperature2 = " // temperature2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
         end select
     end function checkAddSubtract
 
     function checkMultiplyByOne(input) result(result_)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
+        type(Temperature_t) :: temperature
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            mass = input%value_.unit.KILOGRAMS
-            result_ = assertEquals(mass, mass * 1.0d0)
+            temperature = input%value_.unit.KELVIN
+            result_ = assertEquals(temperature, temperature * 1.0d0)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
         end select
     end function checkMultiplyByOne
 
     function checkMultiplyByZero(input) result(result_)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
-        type(Mass_t) :: zero
+        type(Temperature_t) :: temperature
+        type(Temperature_t) :: zero
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            mass = input%value_.unit.KILOGRAMS
-            zero = 0.0d0.unit.KILOGRAMS
-            result_ = assertEquals(zero, mass * 0.0d0)
+            temperature = input%value_.unit.KELVIN
+            zero = 0.0d0.unit.KELVIN
+            result_ = assertEquals(zero, temperature * 0.0d0)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
         end select
     end function checkMultiplyByZero
 
     function checkDivideByOne(input) result(result_)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
+        type(Temperature_t) :: temperature
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            mass = input%value_.unit.KILOGRAMS
-            result_ = assertEquals(mass, mass / 1.0d0)
+            temperature = input%value_.unit.KELVIN
+            result_ = assertEquals(temperature, temperature / 1.0d0)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
         end select
     end function checkDivideByOne
 
     function checkDivideBySelf(input) result(result_)
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertEquals, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
+        type(Temperature_t) :: temperature
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            mass = input%value_.unit.KILOGRAMS
-            result_ = assertEquals(1.0d0, mass / mass)
+            temperature = input%value_.unit.KELVIN
+            result_ = assertEquals(1.0d0, temperature / temperature)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
         end select
@@ -218,19 +218,19 @@ contains
 
     function checkMultiplyDivide(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
+        type(Temperature_t) :: temperature
 
         select type (input)
         type is (DoublePrecisionPairInput_t)
-            mass = input%first.unit.KILOGRAMS
-            result_ = assertEquals(mass, mass * input%second / input%second)
+            temperature = input%first.unit.KELVIN
+            result_ = assertEquals(temperature, temperature * input%second / input%second)
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
         end select
@@ -238,21 +238,21 @@ contains
 
     function checkDivideMultiply(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Mass_asserts_m, only: assertEquals
+        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
-        type(Mass_t) :: mass
+        type(Temperature_t) :: temperature
 
         select type (input)
         type is (DoublePrecisionPairInput_t)
-            mass = input%first.unit.KILOGRAMS
-            result_ = assertEquals(mass, mass / input%second * input%second)
+            temperature = input%first.unit.KELVIN
+            result_ = assertEquals(temperature, temperature / input%second * input%second)
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
         end select
     end function checkDivideMultiply
-end module mass_mathematical_operators_test
+end module temperature_math_operators_test
