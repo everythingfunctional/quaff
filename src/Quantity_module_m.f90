@@ -67,7 +67,7 @@ module Quantity_module_m
         module procedure fromStringWithUnitsS
     end interface quantitySnakeFromString
 
-    type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL1 = &
+    type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL = &
             QuantityCamelUnit_t( &
                     multiplier = 1.0d0, &
                     symbol = "symbol")
@@ -76,10 +76,10 @@ module Quantity_module_m
                     multiplier = 1.0d0, &
                     symbol = "symbol")
 
-    type(QuantityCamelUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS_CAPITAL1
+    type(QuantityCamelUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS_CAPITAL
 
     type(QuantityCamelUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [UNITS_CAPITAL1, UNITS_CAPITAL2]
+            [UNITS_CAPITAL, UNITS_CAPITAL2]
 
     public :: operator(.unit.), quantitySnakeFromString
 contains

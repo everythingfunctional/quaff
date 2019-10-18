@@ -94,9 +94,12 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        length = lengthFromString(var_str(string), PROVIDED_UNITS, errors_)
+        length = lengthFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
         call errors%appendErrors( &
-                errors_, Module_("Length_m"), Procedure_("fromStringBasicC"))
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("fromStringBasicC"))
     end function fromStringBasicC
 
     function fromStringBasicS(string, errors) result(length)
@@ -111,9 +114,12 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        length = lengthFromString(string, PROVIDED_UNITS, errors_)
+        length = lengthFromString( &
+                string, PROVIDED_UNITS, errors_)
         call errors%appendErrors( &
-                errors_, Module_("Length_m"), Procedure_("fromStringBasicS"))
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("fromStringBasicS"))
     end function fromStringBasicS
 
     function fromStringWithUnitsC(string, units, errors) result(length)
@@ -129,9 +135,12 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        length = lengthFromString(var_str(string), units, errors_)
+        length = lengthFromString( &
+                var_str(string), units, errors_)
         call errors%appendErrors( &
-                errors_, Module_("Length_m"), Procedure_("fromStringWithUnitsC"))
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("fromStringWithUnitsC"))
     end function fromStringWithUnitsC
 
     function fromStringWithUnitsS(string, units, errors) result(length)
@@ -218,55 +227,68 @@ contains
         length = self%meters * units%multiplier
     end function toUnits
 
-    function doubleTimesLength(multiplier, length) result(new_length)
+    function doubleTimesLength( &
+            multiplier, length) result(new_length)
         double precision, intent(in) :: multiplier
         class(Length_t), intent(in) :: length
         type(Length_t) :: new_length
 
-        new_length%meters = multiplier * length%meters
+        new_length%meters = &
+                multiplier * length%meters
     end function doubleTimesLength
 
-    function integerTimesLength(multiplier, length) result(new_length)
+    function integerTimesLength( &
+            multiplier, length) result(new_length)
         integer, intent(in) :: multiplier
         class(Length_t), intent(in) :: length
         type(Length_t) :: new_length
 
-        new_length%meters = dble(multiplier) * length%meters
+        new_length%meters = &
+                dble(multiplier) * length%meters
     end function integerTimesLength
 
-    function lengthTimesDouble(length, multiplier) result(new_length)
+    function lengthTimesDouble( &
+            length, multiplier) result(new_length)
         class(Length_t), intent(in) :: length
         double precision, intent(in) :: multiplier
         type(Length_t) :: new_length
 
-        new_length%meters = length%meters * multiplier
+        new_length%meters = &
+                length%meters * multiplier
     end function lengthTimesDouble
 
-    function lengthTimesInteger(length, multiplier) result(new_length)
+    function lengthTimesInteger( &
+            length, multiplier) result(new_length)
         class(Length_t), intent(in) :: length
         integer, intent(in) :: multiplier
         type(Length_t) :: new_length
 
-        new_length%meters = length%meters * dble(multiplier)
+        new_length%meters = &
+                length%meters * dble(multiplier)
     end function lengthTimesInteger
 
-    function lengthDividedByDouble(length, divisor) result(new_length)
+    function lengthDividedByDouble( &
+            length, divisor) result(new_length)
         class(Length_t), intent(in) :: length
         double precision, intent(in) :: divisor
         type(Length_t) :: new_length
 
-        new_length%meters = length%meters / divisor
+        new_length%meters = &
+                length%meters / divisor
     end function lengthDividedByDouble
 
-    function lengthDividedByInteger(length, divisor) result(new_length)
+    function lengthDividedByInteger( &
+            length, divisor) result(new_length)
         class(Length_t), intent(in) :: length
         integer, intent(in) :: divisor
         type(Length_t) :: new_length
 
-        new_length%meters = length%meters / dble(divisor)
+        new_length%meters = &
+                length%meters / dble(divisor)
     end function lengthDividedByInteger
 
-    function lengthDividedByLength(numerator, denomenator) result(ratio)
+    function lengthDividedByLength( &
+            numerator, denomenator) result(ratio)
         class(Length_t), intent(in) :: numerator
         class(Length_t), intent(in) :: denomenator
         double precision :: ratio
@@ -274,20 +296,24 @@ contains
         ratio = numerator%meters / denomenator%meters
     end function lengthDividedByLength
 
-    function lengthPlusLength(length1, length2) result(new_length)
+    function lengthPlusLength( &
+            length1, length2) result(new_length)
         class(Length_t), intent(in) :: length1
         class(Length_t), intent(in) :: length2
         type(Length_t) :: new_length
 
-        new_length%meters = length1%meters + length2%meters
+        new_length%meters = &
+                length1%meters + length2%meters
     end function lengthPlusLength
 
-    function lengthMinusLength(length1, length2) result(new_length)
+    function lengthMinusLength( &
+            length1, length2) result(new_length)
         class(Length_t), intent(in) :: length1
         class(Length_t), intent(in) :: length2
         type(Length_t) :: new_length
 
-        new_length%meters = length1%meters - length2%meters
+        new_length%meters = &
+                length1%meters - length2%meters
     end function lengthMinusLength
 
     function greaterThan(lhs, rhs)

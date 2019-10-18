@@ -91,7 +91,10 @@ contains
     function checkToAndFromString(units) result(result_)
         use Error_list_m, only: ErrorList_t, size
         use Length_m, only: &
-                Length_t, LengthUnit_t, operator(.unit.), lengthFromString
+                Length_t, &
+                LengthUnit_t, &
+                operator(.unit.), &
+                lengthFromString
         use Length_asserts_m, only: assertEquals
         use Units_examples_m, only: UnitsInput_t
         use Vegetables_m, only: Input_t, Result_t, assertEquals, fail
@@ -141,7 +144,8 @@ contains
 
     function checkBadUnit() result(result_)
         use Error_list_m, only: ErrorList_t
-        use Length_m, only: Length_t, lengthFromString, METERS
+        use Length_m, only: &
+                Length_t, lengthFromString, METERS
         use Miscellaneous_m, only: UNKNOWN_UNIT
         use Vegetables_m, only: Result_t, assertThat
 

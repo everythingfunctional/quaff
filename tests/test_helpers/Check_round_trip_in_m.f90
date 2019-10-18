@@ -35,7 +35,8 @@ contains
     end function checkRoundTripInQuantityCamel
 
     function checkRoundTripInLength(units) result(result_)
-        use Length_m, only: Length_t, LengthUnit_t, operator(.unit.)
+        use Length_m, only: &
+                Length_t, LengthUnit_t, operator(.unit.)
         use Vegetables_m, only: Result_t, assertEquals
 
         type(LengthUnit_t), intent(in) :: units

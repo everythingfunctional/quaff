@@ -35,7 +35,8 @@ contains
 
     function checkConversionFactorsAreInverseForLength( &
             from, to) result(result_)
-        use Length_m, only: Length_t, LengthUnit_t, operator(.unit.)
+        use Length_m, only: &
+                Length_t, LengthUnit_t, operator(.unit.)
         use iso_varying_string, only: operator(//)
         use Vegetables_m, only: Result_t, assertEqualsWithinRelative
 
