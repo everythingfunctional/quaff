@@ -7,3 +7,6 @@
 [submodule "strff"]
 	path = strff
 	url = https://gitlab.com/everythingfunctional/strff.git
+[submodule "erloff"]
+	path = erloff
+	url = https://gitlab.com/everythingfunctional/erloff.git

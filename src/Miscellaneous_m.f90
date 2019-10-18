@@ -1,4 +1,6 @@
 module Miscellaneous_m
+    use Message_m, only: MessageType_t
+
     implicit none
     private
 
@@ -7,6 +9,11 @@ module Miscellaneous_m
     end interface operator(.safeEq.)
 
     double precision, parameter :: MACHINE_EPSILON = epsilon(1.0d0)
+
+    type(MessageType_t), parameter, public :: PARSE_ERROR = &
+            MessageType_t("Parse Error")
+    type(MessageType_t), parameter, public :: UNKNOWN_UNIT = &
+            MessageType_t("Unknown Unit")
 
     public :: &
             effectivelyZero, &

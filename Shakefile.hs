@@ -153,7 +153,12 @@ compilerFlags = ["-g", "-Wall", "-Wextra", "-Werror", "-pedantic"]
 linkFlags = compilerFlags ++ ["-lgfortran"]
 
 -- directories
-sourceDirs = ["src", "iso_varying_string" </> "src", "strff" </> "src"]
+sourceDirs =
+    [ "src"
+    , "erloff" </> "src"
+    , "iso_varying_string" </> "src"
+    , "strff" </> "src"
+    ]
 shakeDir = "_shake"
 buildDir = "build"
 testDir = "tests"
