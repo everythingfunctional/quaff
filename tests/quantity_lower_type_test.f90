@@ -145,7 +145,7 @@ contains
     function checkBadUnit() result(result_)
         use Error_list_m, only: ErrorList_t
         use Quantity_module_m, only: &
-                QuantityCamel_t, quantitySnakeFromString, UNITS1_CAPITAL
+                QuantityCamel_t, quantitySnakeFromString, UNITS_CAPITAL1
         use Miscellaneous_m, only: UNKNOWN_UNIT
         use Vegetables_m, only: Result_t, assertThat
 
@@ -154,7 +154,7 @@ contains
         type(ErrorList_t) :: errors
         type(QuantityCamel_t) :: length
 
-        length = quantitySnakeFromString("1.0 bad", [UNITS1_CAPITAL], errors)
+        length = quantitySnakeFromString("1.0 bad", [UNITS_CAPITAL1], errors)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
