@@ -70,8 +70,9 @@ contains
     end function test_multiplication_division_operator
 
     function checkAddZero(input) result(result_)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -82,8 +83,8 @@ contains
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            quantity_lower = input%value_.unit.UNITS
-            zero = 0.0d0.unit.UNITS
+            quantity_lower = input%value_.unit.UNITS1_CAPITAL
+            zero = 0.0d0.unit.UNITS1_CAPITAL
             result_ = assertEquals(quantity_lower, quantity_lower + zero)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
@@ -91,8 +92,9 @@ contains
     end function checkAddZero
 
     function checkSubtractZero(input) result(result_)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -103,8 +105,8 @@ contains
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            quantity_lower = input%value_.unit.UNITS
-            zero = 0.0d0.unit.UNITS
+            quantity_lower = input%value_.unit.UNITS1_CAPITAL
+            zero = 0.0d0.unit.UNITS1_CAPITAL
             result_ = assertEquals(quantity_lower, quantity_lower - zero)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
@@ -114,8 +116,9 @@ contains
     function checkAddSubtract(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEqualsWithinRelative
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEqualsWithinRelative
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -126,8 +129,8 @@ contains
 
         select type(input)
         type is (DoublePrecisionPairInput_t)
-            quantity_lower1 = input%first.unit.UNITS
-            quantity_lower2 = input%second.unit.UNITS
+            quantity_lower1 = input%first.unit.UNITS1_CAPITAL
+            quantity_lower2 = input%second.unit.UNITS1_CAPITAL
             result_ = assertEqualsWithinRelative( &
                     quantity_lower1, &
                     (quantity_lower1 + quantity_lower2) - quantity_lower2, &
@@ -139,8 +142,9 @@ contains
     end function checkAddSubtract
 
     function checkMultiplyByOne(input) result(result_)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -150,7 +154,7 @@ contains
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            quantity_lower = input%value_.unit.UNITS
+            quantity_lower = input%value_.unit.UNITS1_CAPITAL
             result_ = assertEquals(quantity_lower, quantity_lower * 1.0d0)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
@@ -158,8 +162,9 @@ contains
     end function checkMultiplyByOne
 
     function checkMultiplyByZero(input) result(result_)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -170,8 +175,8 @@ contains
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            quantity_lower = input%value_.unit.UNITS
-            zero = 0.0d0.unit.UNITS
+            quantity_lower = input%value_.unit.UNITS1_CAPITAL
+            zero = 0.0d0.unit.UNITS1_CAPITAL
             result_ = assertEquals(zero, quantity_lower * 0.0d0)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
@@ -179,8 +184,9 @@ contains
     end function checkMultiplyByZero
 
     function checkDivideByOne(input) result(result_)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -190,7 +196,7 @@ contains
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            quantity_lower = input%value_.unit.UNITS
+            quantity_lower = input%value_.unit.UNITS1_CAPITAL
             result_ = assertEquals(quantity_lower, quantity_lower / 1.0d0)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
@@ -198,7 +204,8 @@ contains
     end function checkDivideByOne
 
     function checkDivideBySelf(input) result(result_)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertEquals, fail
 
@@ -209,7 +216,7 @@ contains
 
         select type(input)
         type is (DoublePrecisionInput_t)
-            quantity_lower = input%value_.unit.UNITS
+            quantity_lower = input%value_.unit.UNITS1_CAPITAL
             result_ = assertEquals(1.0d0, quantity_lower / quantity_lower)
         class default
             result_ = fail("Expected a DoublePrecisionInput_t")
@@ -218,8 +225,9 @@ contains
 
     function checkMultiplyDivide(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -229,7 +237,7 @@ contains
 
         select type (input)
         type is (DoublePrecisionPairInput_t)
-            quantity_lower = input%first.unit.UNITS
+            quantity_lower = input%first.unit.UNITS1_CAPITAL
             result_ = assertEquals(quantity_lower, quantity_lower * input%second / input%second)
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
@@ -238,8 +246,9 @@ contains
 
     function checkDivideMultiply(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
-        use QuantityCamel_asserts_m, only: assertEquals
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
+        use Quantity_module_asserts_m, only: assertEquals
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: input
@@ -249,7 +258,7 @@ contains
 
         select type (input)
         type is (DoublePrecisionPairInput_t)
-            quantity_lower = input%first.unit.UNITS
+            quantity_lower = input%first.unit.UNITS1_CAPITAL
             result_ = assertEquals(quantity_lower, quantity_lower / input%second * input%second)
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")

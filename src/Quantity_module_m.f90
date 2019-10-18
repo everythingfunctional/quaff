@@ -1,4 +1,4 @@
-module QuantityCamel_m
+module Quantity_module_m
     use Units_m, only: Unit_t
 
     implicit none
@@ -60,17 +60,158 @@ module QuantityCamel_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL = QuantityCamelUnit_t( &
-            multiplier = 1.0d0, &
-            symbol = "symbol")
+    interface quantitySnakeFromString
+        module procedure fromStringBasicC
+        module procedure fromStringBasicS
+        module procedure fromStringWithUnitsC
+        module procedure fromStringWithUnitsS
+    end interface quantitySnakeFromString
 
-    type(QuantityCamelUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS_CAPITAL
+    type(QuantityCamelUnit_t), parameter, public :: UNITS1_CAPITAL = &
+            QuantityCamelUnit_t( &
+                    multiplier = 1.0d0, &
+                    symbol = "symbol")
+    type(QuantityCamelUnit_t), parameter, public :: UNITS2_CAPITAL = &
+            QuantityCamelUnit_t( &
+                    multiplier = 1.0d0, &
+                    symbol = "symbol")
+
+    type(QuantityCamelUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS1_CAPITAL
 
     type(QuantityCamelUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [UNITS_CAPITAL]
+            [UNITS1_CAPITAL, UNITS2_CAPITAL]
 
-    public :: operator(.unit.)
+    public :: operator(.unit.), quantitySnakeFromString
 contains
+    function fromStringBasicC(string, errors) result(quantity_lower)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamel_t) :: quantity_lower
+
+        type(ErrorList_t) :: errors_
+
+        quantity_lower = quantitySnakeFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("fromStringBasicC"))
+    end function fromStringBasicC
+
+    function fromStringBasicS(string, errors) result(quantity_lower)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamel_t) :: quantity_lower
+
+        type(ErrorList_t) :: errors_
+
+        quantity_lower = quantitySnakeFromString( &
+                string, PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("fromStringBasicS"))
+    end function fromStringBasicS
+
+    function fromStringWithUnitsC(string, units, errors) result(quantity_lower)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(QuantityCamelUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamel_t) :: quantity_lower
+
+        type(ErrorList_t) :: errors_
+
+        quantity_lower = quantitySnakeFromString( &
+                var_str(string), units, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("fromStringWithUnitsC"))
+    end function fromStringWithUnitsC
+
+    function fromStringWithUnitsS(string, units, errors) result(quantity_lower)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: &
+                VARYING_STRING, &
+                assignment(=), &
+                operator(//), &
+                operator(==), &
+                len, &
+                split
+        use Message_m, only: Fatal
+        use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+        use strff, only: join
+
+        type(VARYING_STRING), intent(in) :: string
+        type(QuantityCamelUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamel_t) :: quantity_lower
+
+        integer :: i
+        double precision :: number
+        character(len=100) :: number_chars
+        type(VARYING_STRING) :: number_string
+        integer :: status
+        type(VARYING_STRING) :: symbol
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        symbol = string
+        call split(symbol, number_string, " ")
+        if (len(symbol) == 0) then
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Quantity_module_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    'No unit symbol found in string "' // string // '"'))
+            quantity_lower%units_lower = 0.0d0
+            return
+        end if
+        number_chars = number_string
+        read(number_chars, *, iostat=status) number
+        if (status /= 0) then
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Quantity_module_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    'Error parsing number from string "' // number_string // '"'))
+            quantity_lower%units_lower = 0.0d0
+        end if
+        do i = 1, size(units)
+            if (symbol == units(i)%symbol) then
+                quantity_lower = number.unit.units(i)
+                exit
+            end if
+        end do
+        if (i > size(units)) then
+            do i = 1, size(units)
+                unit_strings(i) = units(i)%toString()
+            end do
+            call errors%appendError(Fatal( &
+                    UNKNOWN_UNIT, &
+                    Module_("Quantity_module_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    '"' // symbol // '", known units: [' // join(unit_strings, ', ') // ']' ))
+            quantity_lower%units_lower = 0.0d0
+        end if
+    end function fromStringWithUnitsS
+
     function fromUnits(value_, units) result(quantity_lower)
         double precision, intent(in) :: value_
         type(QuantityCamelUnit_t), intent(in) :: units
@@ -87,55 +228,68 @@ contains
         quantity_lower = self%units_lower * units%multiplier
     end function toUnits
 
-    function doubleTimesQuantityCamel(multiplier, quantity_lower) result(new_quantity_lower)
+    function doubleTimesQuantityCamel( &
+            multiplier, quantity_lower) result(new_quantity_lower)
         double precision, intent(in) :: multiplier
         class(QuantityCamel_t), intent(in) :: quantity_lower
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = multiplier * quantity_lower%units_lower
+        new_quantity_lower%units_lower = &
+                multiplier * quantity_lower%units_lower
     end function doubleTimesQuantityCamel
 
-    function integerTimesQuantityCamel(multiplier, quantity_lower) result(new_quantity_lower)
+    function integerTimesQuantityCamel( &
+            multiplier, quantity_lower) result(new_quantity_lower)
         integer, intent(in) :: multiplier
         class(QuantityCamel_t), intent(in) :: quantity_lower
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = dble(multiplier) * quantity_lower%units_lower
+        new_quantity_lower%units_lower = &
+                dble(multiplier) * quantity_lower%units_lower
     end function integerTimesQuantityCamel
 
-    function quantitySnakeTimesDouble(quantity_lower, multiplier) result(new_quantity_lower)
+    function quantitySnakeTimesDouble( &
+            quantity_lower, multiplier) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         double precision, intent(in) :: multiplier
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = quantity_lower%units_lower * multiplier
+        new_quantity_lower%units_lower = &
+                quantity_lower%units_lower * multiplier
     end function quantitySnakeTimesDouble
 
-    function quantitySnakeTimesInteger(quantity_lower, multiplier) result(new_quantity_lower)
+    function quantitySnakeTimesInteger( &
+            quantity_lower, multiplier) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         integer, intent(in) :: multiplier
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = quantity_lower%units_lower * dble(multiplier)
+        new_quantity_lower%units_lower = &
+                quantity_lower%units_lower * dble(multiplier)
     end function quantitySnakeTimesInteger
 
-    function quantitySnakeDividedByDouble(quantity_lower, divisor) result(new_quantity_lower)
+    function quantitySnakeDividedByDouble( &
+            quantity_lower, divisor) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         double precision, intent(in) :: divisor
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = quantity_lower%units_lower / divisor
+        new_quantity_lower%units_lower = &
+                quantity_lower%units_lower / divisor
     end function quantitySnakeDividedByDouble
 
-    function quantitySnakeDividedByInteger(quantity_lower, divisor) result(new_quantity_lower)
+    function quantitySnakeDividedByInteger( &
+            quantity_lower, divisor) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         integer, intent(in) :: divisor
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = quantity_lower%units_lower / dble(divisor)
+        new_quantity_lower%units_lower = &
+                quantity_lower%units_lower / dble(divisor)
     end function quantitySnakeDividedByInteger
 
-    function quantitySnakeDividedByQuantityCamel(numerator, denomenator) result(ratio)
+    function quantitySnakeDividedByQuantityCamel( &
+            numerator, denomenator) result(ratio)
         class(QuantityCamel_t), intent(in) :: numerator
         class(QuantityCamel_t), intent(in) :: denomenator
         double precision :: ratio
@@ -143,20 +297,24 @@ contains
         ratio = numerator%units_lower / denomenator%units_lower
     end function quantitySnakeDividedByQuantityCamel
 
-    function quantitySnakePlusQuantityCamel(quantity_lower1, quantity_lower2) result(new_quantity_lower)
+    function quantitySnakePlusQuantityCamel( &
+            quantity_lower1, quantity_lower2) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower1
         class(QuantityCamel_t), intent(in) :: quantity_lower2
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = quantity_lower1%units_lower + quantity_lower2%units_lower
+        new_quantity_lower%units_lower = &
+                quantity_lower1%units_lower + quantity_lower2%units_lower
     end function quantitySnakePlusQuantityCamel
 
-    function quantitySnakeMinusQuantityCamel(quantity_lower1, quantity_lower2) result(new_quantity_lower)
+    function quantitySnakeMinusQuantityCamel( &
+            quantity_lower1, quantity_lower2) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower1
         class(QuantityCamel_t), intent(in) :: quantity_lower2
         type(QuantityCamel_t) :: new_quantity_lower
 
-        new_quantity_lower%units_lower = quantity_lower1%units_lower - quantity_lower2%units_lower
+        new_quantity_lower%units_lower = &
+                quantity_lower1%units_lower - quantity_lower2%units_lower
     end function quantitySnakeMinusQuantityCamel
 
     function greaterThan(lhs, rhs)
@@ -261,4 +419,4 @@ contains
 
         string = trim(self%symbol)
     end function unitToString
-end module QuantityCamel_m
+end module Quantity_module_m

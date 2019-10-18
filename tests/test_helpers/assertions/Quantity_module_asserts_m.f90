@@ -1,4 +1,4 @@
-module QuantityCamel_asserts_m
+module Quantity_module_asserts_m
     implicit none
     private
 
@@ -36,7 +36,7 @@ module QuantityCamel_asserts_m
 contains
     function assertEqualsBasic(expected, actual) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -49,7 +49,7 @@ contains
     function assertEqualsWithMessageC( &
             expected, actual, message) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -64,7 +64,7 @@ contains
     function assertEqualsWithMessageS( &
             expected, actual, message) result(result__)
         use iso_varying_string, only: VARYING_STRING
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -79,7 +79,7 @@ contains
     function assertEqualsWithMessagesCC( &
             expected, actual, success_message, failure_message) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -98,7 +98,7 @@ contains
     function assertEqualsWithMessagesCS( &
             expected, actual, success_message, failure_message) result(result__)
         use iso_varying_string, only: VARYING_STRING, var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -117,7 +117,7 @@ contains
     function assertEqualsWithMessagesSC( &
             expected, actual, success_message, failure_message) result(result__)
         use iso_varying_string, only: VARYING_STRING, var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -140,7 +140,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: &
                 Result_t, &
                 fail, &
@@ -172,7 +172,7 @@ contains
     function assertEqualsWithinAbsoluteBasic( &
             expected, actual, tolerance) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -187,7 +187,7 @@ contains
     function assertEqualsWithinAbsoluteWithMessageC( &
             expected, actual, tolerance, message) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -203,7 +203,7 @@ contains
     function assertEqualsWithinAbsoluteWithMessageS( &
             expected, actual, tolerance, message) result(result__)
         use iso_varying_string, only: VARYING_STRING
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -224,7 +224,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -250,7 +250,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING, var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -276,7 +276,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING, var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -302,7 +302,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: &
                 Result_t, &
                 fail, &
@@ -338,7 +338,7 @@ contains
     function assertEqualsWithinRelativeBasic( &
             expected, actual, tolerance) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -353,7 +353,7 @@ contains
     function assertEqualsWithinRelativeWithMessageC( &
             expected, actual, tolerance, message) result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -369,7 +369,7 @@ contains
     function assertEqualsWithinRelativeWithMessageS( &
             expected, actual, tolerance, message) result(result__)
         use iso_varying_string, only: VARYING_STRING
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -390,7 +390,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -416,7 +416,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING, var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -442,7 +442,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING, var_str
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use Vegetables_m, only: Result_t
 
         class(QuantityCamel_t), intent(in) :: expected
@@ -468,7 +468,7 @@ contains
             failure_message) &
             result(result__)
         use iso_varying_string, only: VARYING_STRING, operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t
+        use Quantity_module_m, only: QuantityCamel_t
         use strff, only: toString
         use Vegetables_m, only: &
                 Result_t, &
@@ -501,4 +501,4 @@ contains
                     failure_message))
         end if
     end function assertEqualsWithinRelativeWithMessagesSS
-end module QuantityCamel_asserts_m
+end module Quantity_module_asserts_m

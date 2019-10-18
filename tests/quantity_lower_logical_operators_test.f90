@@ -170,7 +170,8 @@ contains
 
     function checkEqualWithSameNumber(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -181,7 +182,7 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            the_quantity_lower = number%value_.unit.UNITS
+            the_quantity_lower = number%value_.unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     the_quantity_lower == the_quantity_lower, &
                     the_quantity_lower%toString() // " == " // the_quantity_lower%toString())
@@ -192,7 +193,8 @@ contains
 
     function checkEqualWithDifferentNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -204,8 +206,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 == quantity_lower2, &
                     quantity_lower1%toString() // " == " // quantity_lower2%toString())
@@ -216,7 +218,8 @@ contains
 
     function checkNotEqualWithSameNumber(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -227,7 +230,7 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            the_quantity_lower = number%value_.unit.UNITS
+            the_quantity_lower = number%value_.unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     the_quantity_lower /= the_quantity_lower, &
                     the_quantity_lower%toString() // " /= " // the_quantity_lower%toString())
@@ -238,7 +241,8 @@ contains
 
     function checkNotEqualWithDifferentNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -250,8 +254,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 /= quantity_lower2, &
                     quantity_lower1%toString() // " /= " // quantity_lower2%toString())
@@ -262,7 +266,8 @@ contains
 
     function checkEqualWithinWithSameNumber(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -274,8 +279,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            the_quantity_lower = number%value_.unit.UNITS
-            tolerance = TINY(1.0d0).unit.UNITS
+            the_quantity_lower = number%value_.unit.UNITS1_CAPITAL
+            tolerance = TINY(1.0d0).unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     the_quantity_lower%equal(the_quantity_lower, within = tolerance), &
                     "(" // the_quantity_lower%toString() // ")%equal(" &
@@ -288,7 +293,8 @@ contains
 
     function checkEqualWithinWithCloseNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -301,9 +307,9 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (number%value_ + 0.05d0).unit.UNITS
-            tolerance = 0.1d0.unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (number%value_ + 0.05d0).unit.UNITS1_CAPITAL
+            tolerance = 0.1d0.unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1%equal(quantity_lower2, within = tolerance), &
                     "(" // quantity_lower1%toString() // ")%equal(" &
@@ -316,7 +322,8 @@ contains
 
     function checkEqualWithinWithDifferentNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -329,9 +336,9 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (number%value_ + 0.2d0).unit.UNITS
-            tolerance = 0.1d0.unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (number%value_ + 0.2d0).unit.UNITS1_CAPITAL
+            tolerance = 0.1d0.unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1%equal(quantity_lower2, within = tolerance), &
                     "(" // quantity_lower1%toString() // ")%equal(" &
@@ -344,7 +351,8 @@ contains
 
     function checkGreaterThanOrEqualWithGreaterNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -356,8 +364,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit. UNITS
-            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS
+            quantity_lower1 = number%value_.unit. UNITS1_CAPITAL
+            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 >= quantity_lower2, &
                     quantity_lower1%toString() // " >= " // quantity_lower2%toString())
@@ -368,7 +376,8 @@ contains
 
     function checkGreaterThanOrEqualWithSameNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -380,8 +389,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = number%value_.unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = number%value_.unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 >= quantity_lower2, &
                     quantity_lower1%toString() // " >= " // quantity_lower2%toString())
@@ -392,7 +401,8 @@ contains
 
     function checkGreaterThanOrEqualWithLesserNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -404,8 +414,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 >= quantity_lower2, &
                     quantity_lower1%toString() // " >= " // quantity_lower2%toString())
@@ -416,7 +426,8 @@ contains
 
     function checklessThanOrEqualWithLesserNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -428,8 +439,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 <= quantity_lower2, &
                     quantity_lower1%toString() // " <= " // quantity_lower2%toString())
@@ -440,7 +451,8 @@ contains
 
     function checkLessThanOrEqualWithSameNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -452,8 +464,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = number%value_.unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = number%value_.unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 <= quantity_lower2, &
                     quantity_lower1%toString() // " <= " // quantity_lower2%toString())
@@ -464,7 +476,8 @@ contains
 
     function checkLessThanOrEqualWithGreaterNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -476,8 +489,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 <= quantity_lower2, &
                     quantity_lower1%toString() // " <= " // quantity_lower2%toString())
@@ -488,7 +501,8 @@ contains
 
     function checkGreaterThanWithGreaterNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -500,8 +514,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 > quantity_lower2, &
                     quantity_lower1%toString() // " > " // quantity_lower2%toString())
@@ -512,7 +526,8 @@ contains
 
     function checkGreaterThanWithSameNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -524,8 +539,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = number%value_.unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = number%value_.unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 > quantity_lower2, &
                     quantity_lower1%toString() // " > " // quantity_lower2%toString())
@@ -536,7 +551,8 @@ contains
 
     function checkGreaterThanWithLesserNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -548,8 +564,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 > quantity_lower2, &
                     quantity_lower1%toString() // " > " // quantity_lower2%toString())
@@ -560,7 +576,8 @@ contains
 
     function checkLessThanWithLesserNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
 
@@ -572,8 +589,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (1.0d0 + number%value_).unit.UNITS1_CAPITAL
             result_ = assertThat( &
                     quantity_lower1 < quantity_lower2, &
                     quantity_lower1%toString() // " < " // quantity_lower2%toString())
@@ -584,7 +601,8 @@ contains
 
     function checkLessThanWithSameNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -596,8 +614,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = number%value_.unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = number%value_.unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 < quantity_lower2, &
                     quantity_lower1%toString() // " < " // quantity_lower2%toString())
@@ -608,7 +626,8 @@ contains
 
     function checkLessThanWithGreaterNumbers(number) result(result_)
         use iso_varying_string, only: operator(//)
-        use QuantityCamel_m, only: QuantityCamel_t, operator(.unit.), UNITS
+        use Quantity_module_m, only: &
+                QuantityCamel_t, operator(.unit.), UNITS1_CAPITAL
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
@@ -620,8 +639,8 @@ contains
 
         select type (number)
         type is (DoublePrecisionInput_t)
-            quantity_lower1 = number%value_.unit.UNITS
-            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS
+            quantity_lower1 = number%value_.unit.UNITS1_CAPITAL
+            quantity_lower2 = (number%value_ - 1.0d0).unit.UNITS1_CAPITAL
             result_ = assertNot( &
                     quantity_lower1 < quantity_lower2, &
                     quantity_lower1%toString() // " < " // quantity_lower2%toString())
