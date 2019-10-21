@@ -70,7 +70,8 @@ contains
     end function test_multiplication_division_operator
 
     function checkAddZero(input) result(result_)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
@@ -91,7 +92,8 @@ contains
     end function checkAddZero
 
     function checkSubtractZero(input) result(result_)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
@@ -114,7 +116,8 @@ contains
     function checkAddSubtract(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
         use iso_varying_string, only: operator(//)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEqualsWithinRelative
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
@@ -139,7 +142,8 @@ contains
     end function checkAddSubtract
 
     function checkMultiplyByOne(input) result(result_)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
@@ -158,7 +162,8 @@ contains
     end function checkMultiplyByOne
 
     function checkMultiplyByZero(input) result(result_)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
@@ -179,7 +184,8 @@ contains
     end function checkMultiplyByZero
 
     function checkDivideByOne(input) result(result_)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
 
@@ -198,7 +204,8 @@ contains
     end function checkDivideByOne
 
     function checkDivideBySelf(input) result(result_)
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, Input_t, Result_t, assertEquals, fail
 
@@ -218,7 +225,8 @@ contains
 
     function checkMultiplyDivide(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: Input_t, Result_t, fail
 
@@ -238,7 +246,8 @@ contains
 
     function checkDivideMultiply(input) result(result_)
         use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use Temperature_m, only: Temperature_t, operator(.unit.), KELVIN
+        use Temperature_m, only: &
+                Temperature_t, operator(.unit.), KELVIN
         use Temperature_asserts_m, only: assertEquals
         use Vegetables_m, only: Input_t, Result_t, fail
 

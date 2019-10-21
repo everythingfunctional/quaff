@@ -65,6 +65,13 @@ module Temperature_m
         module procedure fromUnits
     end interface operator(.unit.)
 
+    interface temperatureFromString
+        module procedure fromStringBasicC
+        module procedure fromStringBasicS
+        module procedure fromStringWithUnitsC
+        module procedure fromStringWithUnitsS
+    end interface temperatureFromString
+
     type(TemperatureUnit_t), parameter, public :: CELSIUS = TemperatureUnit_t( &
             multiplier = 1.0d0, &
             difference = CELSIUS_KELVIN_DIFFERENCE, &
@@ -87,8 +94,137 @@ module Temperature_m
     type(TemperatureUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
 
-    public :: operator(.unit.)
+    public :: operator(.unit.), temperatureFromString
 contains
+    function fromStringBasicC(string, errors) result(temperature)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Temperature_t) :: temperature
+
+        type(ErrorList_t) :: errors_
+
+        temperature = temperatureFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Temperature_m"), &
+                Procedure_("fromStringBasicC"))
+    end function fromStringBasicC
+
+    function fromStringBasicS(string, errors) result(temperature)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Temperature_t) :: temperature
+
+        type(ErrorList_t) :: errors_
+
+        temperature = temperatureFromString( &
+                string, PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Temperature_m"), &
+                Procedure_("fromStringBasicS"))
+    end function fromStringBasicS
+
+    function fromStringWithUnitsC(string, units, errors) result(temperature)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(TemperatureUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(Temperature_t) :: temperature
+
+        type(ErrorList_t) :: errors_
+
+        temperature = temperatureFromString( &
+                var_str(string), units, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Temperature_m"), &
+                Procedure_("fromStringWithUnitsC"))
+    end function fromStringWithUnitsC
+
+    function fromStringWithUnitsS(string, units, errors) result(temperature)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: &
+                VARYING_STRING, &
+                assignment(=), &
+                operator(//), &
+                operator(==), &
+                len, &
+                split
+        use Message_m, only: Fatal
+        use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+        use strff, only: join
+
+        type(VARYING_STRING), intent(in) :: string
+        type(TemperatureUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(Temperature_t) :: temperature
+
+        integer :: i
+        double precision :: number
+        character(len=100) :: number_chars
+        type(VARYING_STRING) :: number_string
+        integer :: status
+        type(VARYING_STRING) :: symbol
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        symbol = string
+        call split(symbol, number_string, " ")
+        if (len(symbol) == 0) then
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Temperature_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    'No unit symbol found in string "' // string // '"'))
+            temperature%kelvin = 0.0d0
+            return
+        end if
+        number_chars = number_string
+        read(number_chars, *, iostat=status) number
+        if (status /= 0) then
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Temperature_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    'Error parsing number from string "' // number_string // '"'))
+            temperature%kelvin = 0.0d0
+        end if
+        do i = 1, size(units)
+            if (symbol == units(i)%symbol) then
+                temperature = number.unit.units(i)
+                exit
+            end if
+        end do
+        if (i > size(units)) then
+            do i = 1, size(units)
+                unit_strings(i) = units(i)%toString()
+            end do
+            call errors%appendError(Fatal( &
+                    UNKNOWN_UNIT, &
+                    Module_("Temperature_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    '"' // symbol // '", known units: [' // join(unit_strings, ', ') // ']' ))
+            temperature%kelvin = 0.0d0
+        end if
+    end function fromStringWithUnitsS
+
     function fromUnits(value_, units) result(temperature)
         double precision, intent(in) :: value_
         type(TemperatureUnit_t), intent(in) :: units
@@ -105,55 +241,68 @@ contains
         temperature = self%kelvin * units%multiplier - units%difference
     end function toUnits
 
-    function doubleTimesTemperature(multiplier, temperature) result(new_temperature)
+    function doubleTimesTemperature( &
+            multiplier, temperature) result(new_temperature)
         double precision, intent(in) :: multiplier
         class(Temperature_t), intent(in) :: temperature
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = multiplier * temperature%kelvin
+        new_temperature%kelvin = &
+                multiplier * temperature%kelvin
     end function doubleTimesTemperature
 
-    function integerTimesTemperature(multiplier, temperature) result(new_temperature)
+    function integerTimesTemperature( &
+            multiplier, temperature) result(new_temperature)
         integer, intent(in) :: multiplier
         class(Temperature_t), intent(in) :: temperature
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = dble(multiplier) * temperature%kelvin
+        new_temperature%kelvin = &
+                dble(multiplier) * temperature%kelvin
     end function integerTimesTemperature
 
-    function temperatureTimesDouble(temperature, multiplier) result(new_temperature)
+    function temperatureTimesDouble( &
+            temperature, multiplier) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         double precision, intent(in) :: multiplier
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = temperature%kelvin * multiplier
+        new_temperature%kelvin = &
+                temperature%kelvin * multiplier
     end function temperatureTimesDouble
 
-    function temperatureTimesInteger(temperature, multiplier) result(new_temperature)
+    function temperatureTimesInteger( &
+            temperature, multiplier) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         integer, intent(in) :: multiplier
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = temperature%kelvin * dble(multiplier)
+        new_temperature%kelvin = &
+                temperature%kelvin * dble(multiplier)
     end function temperatureTimesInteger
 
-    function temperatureDividedByDouble(temperature, divisor) result(new_temperature)
+    function temperatureDividedByDouble( &
+            temperature, divisor) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         double precision, intent(in) :: divisor
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = temperature%kelvin / divisor
+        new_temperature%kelvin = &
+                temperature%kelvin / divisor
     end function temperatureDividedByDouble
 
-    function temperatureDividedByInteger(temperature, divisor) result(new_temperature)
+    function temperatureDividedByInteger( &
+            temperature, divisor) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         integer, intent(in) :: divisor
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = temperature%kelvin / dble(divisor)
+        new_temperature%kelvin = &
+                temperature%kelvin / dble(divisor)
     end function temperatureDividedByInteger
 
-    function temperatureDividedByTemperature(numerator, denomenator) result(ratio)
+    function temperatureDividedByTemperature( &
+            numerator, denomenator) result(ratio)
         class(Temperature_t), intent(in) :: numerator
         class(Temperature_t), intent(in) :: denomenator
         double precision :: ratio
@@ -161,20 +310,24 @@ contains
         ratio = numerator%kelvin / denomenator%kelvin
     end function temperatureDividedByTemperature
 
-    function temperaturePlusTemperature(temperature1, temperature2) result(new_temperature)
+    function temperaturePlusTemperature( &
+            temperature1, temperature2) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature1
         class(Temperature_t), intent(in) :: temperature2
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = temperature1%kelvin + temperature2%kelvin
+        new_temperature%kelvin = &
+                temperature1%kelvin + temperature2%kelvin
     end function temperaturePlusTemperature
 
-    function temperatureMinusTemperature(temperature1, temperature2) result(new_temperature)
+    function temperatureMinusTemperature( &
+            temperature1, temperature2) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature1
         class(Temperature_t), intent(in) :: temperature2
         type(Temperature_t) :: new_temperature
 
-        new_temperature%kelvin = temperature1%kelvin - temperature2%kelvin
+        new_temperature%kelvin = &
+                temperature1%kelvin - temperature2%kelvin
     end function temperatureMinusTemperature
 
     function greaterThan(lhs, rhs)

@@ -75,7 +75,8 @@ contains
     end function checkRoundTripInMass
 
     function checkRoundTripInTemperature(units) result(result_)
-        use Temperature_m, only: Temperature_t, TemperatureUnit_t, operator(.unit.)
+        use Temperature_m, only: &
+                Temperature_t, TemperatureUnit_t, operator(.unit.)
         use Vegetables_m, only: Result_t, assertEquals
 
         type(TemperatureUnit_t), intent(in) :: units
