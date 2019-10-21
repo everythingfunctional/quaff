@@ -58,7 +58,8 @@ contains
 
     function checkConversionFactorsAreInverseForMass( &
             from, to) result(result_)
-        use Mass_m, only: Mass_t, MassUnit_t, operator(.unit.)
+        use Mass_m, only: &
+                Mass_t, MassUnit_t, operator(.unit.)
         use iso_varying_string, only: operator(//)
         use Vegetables_m, only: Result_t, assertEqualsWithinRelative
 

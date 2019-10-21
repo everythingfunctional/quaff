@@ -55,7 +55,8 @@ contains
     end function checkRoundTripInLength
 
     function checkRoundTripInMass(units) result(result_)
-        use Mass_m, only: Mass_t, MassUnit_t, operator(.unit.)
+        use Mass_m, only: &
+                Mass_t, MassUnit_t, operator(.unit.)
         use Vegetables_m, only: Result_t, assertEquals
 
         type(MassUnit_t), intent(in) :: units

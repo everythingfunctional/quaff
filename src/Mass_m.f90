@@ -61,6 +61,13 @@ module Mass_m
         module procedure fromUnits
     end interface operator(.unit.)
 
+    interface massFromString
+        module procedure fromStringBasicC
+        module procedure fromStringBasicS
+        module procedure fromStringWithUnitsC
+        module procedure fromStringWithUnitsS
+    end interface massFromString
+
     type(MassUnit_t), parameter, public :: GRAMS = MassUnit_t( &
             multiplier = GRAMS_PER_KILOGRAM, &
             symbol = "g")
@@ -73,8 +80,137 @@ module Mass_m
     type(MassUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS]
 
-    public :: operator(.unit.)
+    public :: operator(.unit.), massFromString
 contains
+    function fromStringBasicC(string, errors) result(mass)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Mass_t) :: mass
+
+        type(ErrorList_t) :: errors_
+
+        mass = massFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Mass_m"), &
+                Procedure_("fromStringBasicC"))
+    end function fromStringBasicC
+
+    function fromStringBasicS(string, errors) result(mass)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Mass_t) :: mass
+
+        type(ErrorList_t) :: errors_
+
+        mass = massFromString( &
+                string, PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Mass_m"), &
+                Procedure_("fromStringBasicS"))
+    end function fromStringBasicS
+
+    function fromStringWithUnitsC(string, units, errors) result(mass)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(MassUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(Mass_t) :: mass
+
+        type(ErrorList_t) :: errors_
+
+        mass = massFromString( &
+                var_str(string), units, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Mass_m"), &
+                Procedure_("fromStringWithUnitsC"))
+    end function fromStringWithUnitsC
+
+    function fromStringWithUnitsS(string, units, errors) result(mass)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: &
+                VARYING_STRING, &
+                assignment(=), &
+                operator(//), &
+                operator(==), &
+                len, &
+                split
+        use Message_m, only: Fatal
+        use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+        use strff, only: join
+
+        type(VARYING_STRING), intent(in) :: string
+        type(MassUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(Mass_t) :: mass
+
+        integer :: i
+        double precision :: number
+        character(len=100) :: number_chars
+        type(VARYING_STRING) :: number_string
+        integer :: status
+        type(VARYING_STRING) :: symbol
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        symbol = string
+        call split(symbol, number_string, " ")
+        if (len(symbol) == 0) then
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Mass_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    'No unit symbol found in string "' // string // '"'))
+            mass%kilograms = 0.0d0
+            return
+        end if
+        number_chars = number_string
+        read(number_chars, *, iostat=status) number
+        if (status /= 0) then
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Mass_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    'Error parsing number from string "' // number_string // '"'))
+            mass%kilograms = 0.0d0
+        end if
+        do i = 1, size(units)
+            if (symbol == units(i)%symbol) then
+                mass = number.unit.units(i)
+                exit
+            end if
+        end do
+        if (i > size(units)) then
+            do i = 1, size(units)
+                unit_strings(i) = units(i)%toString()
+            end do
+            call errors%appendError(Fatal( &
+                    UNKNOWN_UNIT, &
+                    Module_("Mass_m"), &
+                    Procedure_("fromStringWithUnitsS"), &
+                    '"' // symbol // '", known units: [' // join(unit_strings, ', ') // ']' ))
+            mass%kilograms = 0.0d0
+        end if
+    end function fromStringWithUnitsS
+
     function fromUnits(value_, units) result(mass)
         double precision, intent(in) :: value_
         type(MassUnit_t), intent(in) :: units
@@ -91,55 +227,68 @@ contains
         mass = self%kilograms * units%multiplier
     end function toUnits
 
-    function doubleTimesMass(multiplier, mass) result(new_mass)
+    function doubleTimesMass( &
+            multiplier, mass) result(new_mass)
         double precision, intent(in) :: multiplier
         class(Mass_t), intent(in) :: mass
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = multiplier * mass%kilograms
+        new_mass%kilograms = &
+                multiplier * mass%kilograms
     end function doubleTimesMass
 
-    function integerTimesMass(multiplier, mass) result(new_mass)
+    function integerTimesMass( &
+            multiplier, mass) result(new_mass)
         integer, intent(in) :: multiplier
         class(Mass_t), intent(in) :: mass
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = dble(multiplier) * mass%kilograms
+        new_mass%kilograms = &
+                dble(multiplier) * mass%kilograms
     end function integerTimesMass
 
-    function massTimesDouble(mass, multiplier) result(new_mass)
+    function massTimesDouble( &
+            mass, multiplier) result(new_mass)
         class(Mass_t), intent(in) :: mass
         double precision, intent(in) :: multiplier
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = mass%kilograms * multiplier
+        new_mass%kilograms = &
+                mass%kilograms * multiplier
     end function massTimesDouble
 
-    function massTimesInteger(mass, multiplier) result(new_mass)
+    function massTimesInteger( &
+            mass, multiplier) result(new_mass)
         class(Mass_t), intent(in) :: mass
         integer, intent(in) :: multiplier
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = mass%kilograms * dble(multiplier)
+        new_mass%kilograms = &
+                mass%kilograms * dble(multiplier)
     end function massTimesInteger
 
-    function massDividedByDouble(mass, divisor) result(new_mass)
+    function massDividedByDouble( &
+            mass, divisor) result(new_mass)
         class(Mass_t), intent(in) :: mass
         double precision, intent(in) :: divisor
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = mass%kilograms / divisor
+        new_mass%kilograms = &
+                mass%kilograms / divisor
     end function massDividedByDouble
 
-    function massDividedByInteger(mass, divisor) result(new_mass)
+    function massDividedByInteger( &
+            mass, divisor) result(new_mass)
         class(Mass_t), intent(in) :: mass
         integer, intent(in) :: divisor
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = mass%kilograms / dble(divisor)
+        new_mass%kilograms = &
+                mass%kilograms / dble(divisor)
     end function massDividedByInteger
 
-    function massDividedByMass(numerator, denomenator) result(ratio)
+    function massDividedByMass( &
+            numerator, denomenator) result(ratio)
         class(Mass_t), intent(in) :: numerator
         class(Mass_t), intent(in) :: denomenator
         double precision :: ratio
@@ -147,20 +296,24 @@ contains
         ratio = numerator%kilograms / denomenator%kilograms
     end function massDividedByMass
 
-    function massPlusMass(mass1, mass2) result(new_mass)
+    function massPlusMass( &
+            mass1, mass2) result(new_mass)
         class(Mass_t), intent(in) :: mass1
         class(Mass_t), intent(in) :: mass2
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = mass1%kilograms + mass2%kilograms
+        new_mass%kilograms = &
+                mass1%kilograms + mass2%kilograms
     end function massPlusMass
 
-    function massMinusMass(mass1, mass2) result(new_mass)
+    function massMinusMass( &
+            mass1, mass2) result(new_mass)
         class(Mass_t), intent(in) :: mass1
         class(Mass_t), intent(in) :: mass2
         type(Mass_t) :: new_mass
 
-        new_mass%kilograms = mass1%kilograms - mass2%kilograms
+        new_mass%kilograms = &
+                mass1%kilograms - mass2%kilograms
     end function massMinusMass
 
     function greaterThan(lhs, rhs)
