@@ -8,6 +8,7 @@ module Check_conversion_factor_m
         module procedure checkConversionFactorsAreInverseForAngle
         module procedure checkConversionFactorsAreInverseForLength
         module procedure checkConversionFactorsAreInverseForMass
+        module procedure checkConversionFactorsAreInverseForTime
     end interface checkConversionFactorsAreInverse
 
     public :: checkConversionFactorsAreInverse
@@ -126,4 +127,27 @@ contains
                 1.0d-12, &
                 from%toString() // " to " // to%toString())
     end function checkConversionFactorsAreInverseForMass
+
+    function checkConversionFactorsAreInverseForTime( &
+            from, to) result(result_)
+        use Time_m, only: &
+                Time_t, TimeUnit_t, operator(.unit.)
+        use iso_varying_string, only: operator(//)
+        use Vegetables_m, only: Result_t, assertEqualsWithinRelative
+
+        type(TimeUnit_t), intent(in) :: to
+        type(TimeUnit_t), intent(in) :: from
+        type(Result_t) :: result_
+
+        double precision :: factor1
+        double precision :: factor2
+
+        factor1 = (1.0d0.unit.from).in.to
+        factor2 = (1.0d0.unit.to).in.from
+        result_ = assertEqualsWithinRelative( &
+                factor1, &
+                1.0d0 / factor2, &
+                1.0d-12, &
+                from%toString() // " to " // to%toString())
+    end function checkConversionFactorsAreInverseForTime
 end module Check_conversion_factor_m

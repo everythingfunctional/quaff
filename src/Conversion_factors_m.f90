@@ -22,4 +22,10 @@ module Conversion_factors_m
     ! Angle
     double precision, parameter :: PI = 3.14159265359d0
     double precision, parameter :: DEGREES_PER_RADIAN = 180.0d0 / PI
+
+    ! Time
+    double precision, parameter :: SECONDS_PER_MINUTE = 60.0d0
+    double precision, parameter :: MINUTES_PER_HOUR = 60.0d0
+    double precision, parameter :: SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR
+    double precision, parameter :: HOURS_PER_SECOND = 1.0d0 / SECONDS_PER_HOUR
 end module Conversion_factors_m
