@@ -76,19 +76,19 @@ module Angle_m
         module procedure unitFromStringWithUnitsS
     end interface angleUnitFromString
 
-    type(AngleUnit_t), parameter, public :: RADIANS = &
-            AngleUnit_t( &
-                    multiplier = 1.0d0, &
-                    symbol = "rad")
     type(AngleUnit_t), parameter, public :: DEGREES = &
             AngleUnit_t( &
                     multiplier = DEGREES_PER_RADIAN, &
                     symbol = "deg")
+    type(AngleUnit_t), parameter, public :: RADIANS = &
+            AngleUnit_t( &
+                    multiplier = 1.0d0, &
+                    symbol = "rad")
 
     type(AngleUnit_t), public :: DEFAULT_OUTPUT_UNITS = RADIANS
 
     type(AngleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [RADIANS, DEGREES]
+            [DEGREES, RADIANS]
 
     public :: &
             operator(.unit.), &
