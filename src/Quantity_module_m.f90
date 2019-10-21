@@ -67,21 +67,31 @@ module Quantity_module_m
         module procedure fromStringWithUnitsS
     end interface quantitySnakeFromString
 
+    interface quantitySnakeUnitFromString
+        module procedure unitFromStringBasicC
+        module procedure unitFromStringBasicS
+        module procedure unitFromStringWithUnitsC
+        module procedure unitFromStringWithUnitsS
+    end interface quantitySnakeUnitFromString
+
     type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL = &
             QuantityCamelUnit_t( &
                     multiplier = 1.0d0, &
-                    symbol = "symbol")
+                    symbol = "unit_sym")
     type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL2 = &
             QuantityCamelUnit_t( &
                     multiplier = 1.0d0, &
-                    symbol = "symbol")
+                    symbol = "unit_sym")
 
     type(QuantityCamelUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS_CAPITAL
 
     type(QuantityCamelUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [UNITS_CAPITAL, UNITS_CAPITAL2]
 
-    public :: operator(.unit.), quantitySnakeFromString
+    public :: &
+            operator(.unit.), &
+            quantitySnakeFromString, &
+            quantitySnakeUnitFromString
 contains
     function fromStringBasicC(string, errors) result(quantity_lower)
         use Error_list_m, only: ErrorList_t
@@ -154,7 +164,7 @@ contains
                 len, &
                 split
         use Message_m, only: Fatal
-        use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+        use Miscellaneous_m, only: PARSE_ERROR
         use Module_m, only: Module_
         use Procedure_m, only: Procedure_
         use strff, only: join
@@ -164,14 +174,15 @@ contains
         type(ErrorList_t), intent(out) :: errors
         type(QuantityCamel_t) :: quantity_lower
 
-        integer :: i
         double precision :: number
         character(len=100) :: number_chars
         type(VARYING_STRING) :: number_string
         integer :: status
         type(VARYING_STRING) :: symbol
-        type(VARYING_STRING) :: unit_strings(size(units))
+        type(QuantityCamelUnit_t) :: unit
+        type(ErrorList_t) :: unit_errors
 
+        quantity_lower%units_lower = 0.0d0
         symbol = string
         call split(symbol, number_string, " ")
         if (len(symbol) == 0) then
@@ -180,7 +191,6 @@ contains
                     Module_("Quantity_module_m"), &
                     Procedure_("fromStringWithUnitsS"), &
                     'No unit symbol found in string "' // string // '"'))
-            quantity_lower%units_lower = 0.0d0
             return
         end if
         number_chars = number_string
@@ -191,25 +201,13 @@ contains
                     Module_("Quantity_module_m"), &
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
-            quantity_lower%units_lower = 0.0d0
         end if
-        do i = 1, size(units)
-            if (symbol == units(i)%symbol) then
-                quantity_lower = number.unit.units(i)
-                exit
-            end if
-        end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Quantity_module_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    '"' // symbol // '", known units: [' // join(unit_strings, ', ') // ']' ))
-            quantity_lower%units_lower = 0.0d0
-        end if
+        unit = quantitySnakeUnitFromString(symbol, units, unit_errors)
+        quantity_lower = number.unit.unit
+        call errors%appendErrors( &
+                unit_errors, &
+                Module_("Quantity_module_m"), &
+                Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
     function fromUnits(value_, units) result(quantity_lower)
@@ -410,6 +408,101 @@ contains
 
         string = toString(self.in.units) // " " // units%toString()
     end function toStringIn
+
+    function unitFromStringBasicC(string, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = quantitySnakeUnitFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("unitFromStringBasicC"))
+    end function unitFromStringBasicC
+
+    function unitFromStringBasicS(string, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = quantitySnakeUnitFromString( &
+                string, PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("unitFromStringBasicS"))
+    end function unitFromStringBasicS
+
+    function unitFromStringWithUnitsC(string, units, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(QuantityCamelUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = quantitySnakeUnitFromString(var_str(string), units, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("unitFromStringWithUnitsC"))
+    end function unitFromStringWithUnitsC
+
+    function unitFromStringWithUnitsS(string, units, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING, operator(==), operator(//)
+        use Message_m, only: Fatal
+        use Miscellaneous_m, only: UNKNOWN_UNIT
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+        use strff, only: join
+
+        type(VARYING_STRING), intent(in) :: string
+        type(QuantityCamelUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelUnit_t) :: unit
+
+        integer :: i
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        do i = 1, size(units)
+            if (string == units(i)%symbol) then
+                unit = units(i)
+                exit
+            end if
+        end do
+        if (i > size(units)) then
+            do i = 1, size(units)
+                unit_strings(i) = units(i)%toString()
+            end do
+            call errors%appendError(Fatal( &
+                    UNKNOWN_UNIT, &
+                    Module_("Quantity_module_m"), &
+                    Procedure_("unitFromStringWithUnitsS"), &
+                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
+        end if
+    end function unitFromStringWithUnitsS
 
     function unitToString(self) result(string)
         use iso_varying_string, only: VARYING_STRING, assignment(=)

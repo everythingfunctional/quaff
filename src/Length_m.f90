@@ -68,6 +68,13 @@ module Length_m
         module procedure fromStringWithUnitsS
     end interface lengthFromString
 
+    interface lengthUnitFromString
+        module procedure unitFromStringBasicC
+        module procedure unitFromStringBasicS
+        module procedure unitFromStringWithUnitsC
+        module procedure unitFromStringWithUnitsS
+    end interface lengthUnitFromString
+
     type(LengthUnit_t), parameter, public :: CENTIMETERS = LengthUnit_t( &
             multiplier = CENTIMETERS_PER_METER, &
             symbol = "cm")
@@ -80,7 +87,10 @@ module Length_m
     type(LengthUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, METERS]
 
-    public :: operator(.unit.), lengthFromString
+    public :: &
+            operator(.unit.), &
+            lengthFromString, &
+            lengthUnitFromString
 contains
     function fromStringBasicC(string, errors) result(length)
         use Error_list_m, only: ErrorList_t
@@ -153,7 +163,7 @@ contains
                 len, &
                 split
         use Message_m, only: Fatal
-        use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+        use Miscellaneous_m, only: PARSE_ERROR
         use Module_m, only: Module_
         use Procedure_m, only: Procedure_
         use strff, only: join
@@ -163,14 +173,15 @@ contains
         type(ErrorList_t), intent(out) :: errors
         type(Length_t) :: length
 
-        integer :: i
         double precision :: number
         character(len=100) :: number_chars
         type(VARYING_STRING) :: number_string
         integer :: status
         type(VARYING_STRING) :: symbol
-        type(VARYING_STRING) :: unit_strings(size(units))
+        type(LengthUnit_t) :: unit
+        type(ErrorList_t) :: unit_errors
 
+        length%meters = 0.0d0
         symbol = string
         call split(symbol, number_string, " ")
         if (len(symbol) == 0) then
@@ -179,7 +190,6 @@ contains
                     Module_("Length_m"), &
                     Procedure_("fromStringWithUnitsS"), &
                     'No unit symbol found in string "' // string // '"'))
-            length%meters = 0.0d0
             return
         end if
         number_chars = number_string
@@ -190,25 +200,13 @@ contains
                     Module_("Length_m"), &
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
-            length%meters = 0.0d0
         end if
-        do i = 1, size(units)
-            if (symbol == units(i)%symbol) then
-                length = number.unit.units(i)
-                exit
-            end if
-        end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Length_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    '"' // symbol // '", known units: [' // join(unit_strings, ', ') // ']' ))
-            length%meters = 0.0d0
-        end if
+        unit = lengthUnitFromString(symbol, units, unit_errors)
+        length = number.unit.unit
+        call errors%appendErrors( &
+                unit_errors, &
+                Module_("Length_m"), &
+                Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
     function fromUnits(value_, units) result(length)
@@ -409,6 +407,101 @@ contains
 
         string = toString(self.in.units) // " " // units%toString()
     end function toStringIn
+
+    function unitFromStringBasicC(string, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(LengthUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = lengthUnitFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("unitFromStringBasicC"))
+    end function unitFromStringBasicC
+
+    function unitFromStringBasicS(string, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(LengthUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = lengthUnitFromString( &
+                string, PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("unitFromStringBasicS"))
+    end function unitFromStringBasicS
+
+    function unitFromStringWithUnitsC(string, units, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(LengthUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(LengthUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = lengthUnitFromString(var_str(string), units, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("unitFromStringWithUnitsC"))
+    end function unitFromStringWithUnitsC
+
+    function unitFromStringWithUnitsS(string, units, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING, operator(==), operator(//)
+        use Message_m, only: Fatal
+        use Miscellaneous_m, only: UNKNOWN_UNIT
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+        use strff, only: join
+
+        type(VARYING_STRING), intent(in) :: string
+        type(LengthUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(LengthUnit_t) :: unit
+
+        integer :: i
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        do i = 1, size(units)
+            if (string == units(i)%symbol) then
+                unit = units(i)
+                exit
+            end if
+        end do
+        if (i > size(units)) then
+            do i = 1, size(units)
+                unit_strings(i) = units(i)%toString()
+            end do
+            call errors%appendError(Fatal( &
+                    UNKNOWN_UNIT, &
+                    Module_("Length_m"), &
+                    Procedure_("unitFromStringWithUnitsS"), &
+                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
+        end if
+    end function unitFromStringWithUnitsS
 
     function unitToString(self) result(string)
         use iso_varying_string, only: VARYING_STRING, assignment(=)

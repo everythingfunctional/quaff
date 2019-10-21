@@ -68,6 +68,13 @@ module Mass_m
         module procedure fromStringWithUnitsS
     end interface massFromString
 
+    interface massUnitFromString
+        module procedure unitFromStringBasicC
+        module procedure unitFromStringBasicS
+        module procedure unitFromStringWithUnitsC
+        module procedure unitFromStringWithUnitsS
+    end interface massUnitFromString
+
     type(MassUnit_t), parameter, public :: GRAMS = MassUnit_t( &
             multiplier = GRAMS_PER_KILOGRAM, &
             symbol = "g")
@@ -80,7 +87,10 @@ module Mass_m
     type(MassUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS]
 
-    public :: operator(.unit.), massFromString
+    public :: &
+            operator(.unit.), &
+            massFromString, &
+            massUnitFromString
 contains
     function fromStringBasicC(string, errors) result(mass)
         use Error_list_m, only: ErrorList_t
@@ -153,7 +163,7 @@ contains
                 len, &
                 split
         use Message_m, only: Fatal
-        use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+        use Miscellaneous_m, only: PARSE_ERROR
         use Module_m, only: Module_
         use Procedure_m, only: Procedure_
         use strff, only: join
@@ -163,14 +173,15 @@ contains
         type(ErrorList_t), intent(out) :: errors
         type(Mass_t) :: mass
 
-        integer :: i
         double precision :: number
         character(len=100) :: number_chars
         type(VARYING_STRING) :: number_string
         integer :: status
         type(VARYING_STRING) :: symbol
-        type(VARYING_STRING) :: unit_strings(size(units))
+        type(MassUnit_t) :: unit
+        type(ErrorList_t) :: unit_errors
 
+        mass%kilograms = 0.0d0
         symbol = string
         call split(symbol, number_string, " ")
         if (len(symbol) == 0) then
@@ -179,7 +190,6 @@ contains
                     Module_("Mass_m"), &
                     Procedure_("fromStringWithUnitsS"), &
                     'No unit symbol found in string "' // string // '"'))
-            mass%kilograms = 0.0d0
             return
         end if
         number_chars = number_string
@@ -190,25 +200,13 @@ contains
                     Module_("Mass_m"), &
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
-            mass%kilograms = 0.0d0
         end if
-        do i = 1, size(units)
-            if (symbol == units(i)%symbol) then
-                mass = number.unit.units(i)
-                exit
-            end if
-        end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Mass_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    '"' // symbol // '", known units: [' // join(unit_strings, ', ') // ']' ))
-            mass%kilograms = 0.0d0
-        end if
+        unit = massUnitFromString(symbol, units, unit_errors)
+        mass = number.unit.unit
+        call errors%appendErrors( &
+                unit_errors, &
+                Module_("Mass_m"), &
+                Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
     function fromUnits(value_, units) result(mass)
@@ -409,6 +407,101 @@ contains
 
         string = toString(self.in.units) // " " // units%toString()
     end function toStringIn
+
+    function unitFromStringBasicC(string, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(MassUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = massUnitFromString( &
+                var_str(string), PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Mass_m"), &
+                Procedure_("unitFromStringBasicC"))
+    end function unitFromStringBasicC
+
+    function unitFromStringBasicS(string, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(MassUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = massUnitFromString( &
+                string, PROVIDED_UNITS, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Mass_m"), &
+                Procedure_("unitFromStringBasicS"))
+    end function unitFromStringBasicS
+
+    function unitFromStringWithUnitsC(string, units, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: var_str
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+
+        character(len=*), intent(in) :: string
+        type(MassUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(MassUnit_t) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        unit = massUnitFromString(var_str(string), units, errors_)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Mass_m"), &
+                Procedure_("unitFromStringWithUnitsC"))
+    end function unitFromStringWithUnitsC
+
+    function unitFromStringWithUnitsS(string, units, errors) result(unit)
+        use Error_list_m, only: ErrorList_t
+        use iso_varying_string, only: VARYING_STRING, operator(==), operator(//)
+        use Message_m, only: Fatal
+        use Miscellaneous_m, only: UNKNOWN_UNIT
+        use Module_m, only: Module_
+        use Procedure_m, only: Procedure_
+        use strff, only: join
+
+        type(VARYING_STRING), intent(in) :: string
+        type(MassUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(MassUnit_t) :: unit
+
+        integer :: i
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        do i = 1, size(units)
+            if (string == units(i)%symbol) then
+                unit = units(i)
+                exit
+            end if
+        end do
+        if (i > size(units)) then
+            do i = 1, size(units)
+                unit_strings(i) = units(i)%toString()
+            end do
+            call errors%appendError(Fatal( &
+                    UNKNOWN_UNIT, &
+                    Module_("Mass_m"), &
+                    Procedure_("unitFromStringWithUnitsS"), &
+                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
+        end if
+    end function unitFromStringWithUnitsS
 
     function unitToString(self) result(string)
         use iso_varying_string, only: VARYING_STRING, assignment(=)

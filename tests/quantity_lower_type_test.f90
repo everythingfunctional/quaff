@@ -169,7 +169,7 @@ contains
         type(ErrorList_t) :: errors
         type(QuantityCamel_t) :: length
 
-        length = quantitySnakeFromString("bad m", errors)
+        length = quantitySnakeFromString("bad unit_sym", errors)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 end module quantity_lower_type_test
