@@ -4,6 +4,7 @@ module Check_round_trip_in_m
 
     interface checkRoundTripIn
         module procedure checkRoundTripInQuantityCamel
+        module procedure checkRoundTripInAmount
         module procedure checkRoundTripInLength
         module procedure checkRoundTripInMass
         module procedure checkRoundTripInTemperature
@@ -33,6 +34,26 @@ contains
                     units%toString())
         end do
     end function checkRoundTripInQuantityCamel
+
+    function checkRoundTripInAmount(units) result(result_)
+        use Amount_m, only: &
+                Amount_t, AmountUnit_t, operator(.unit.)
+        use Vegetables_m, only: Result_t, assertEquals
+
+        type(AmountUnit_t), intent(in) :: units
+        type(Result_t) :: result_
+
+        integer :: i
+        type(Amount_t) :: intermediate
+
+        do i = 1, size(ROUND_TRIP_TEST_VALUES)
+            intermediate = ROUND_TRIP_TEST_VALUES(i).unit.units
+            result_ = result_.and.assertEquals( &
+                    ROUND_TRIP_TEST_VALUES(i), &
+                    intermediate.in.units, &
+                    units%toString())
+        end do
+    end function checkRoundTripInAmount
 
     function checkRoundTripInLength(units) result(result_)
         use Length_m, only: &

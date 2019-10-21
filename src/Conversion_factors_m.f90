@@ -15,4 +15,7 @@ module Conversion_factors_m
     double precision, parameter :: CELSIUS_KELVIN_DIFFERENCE = 273.15d0
     double precision, parameter :: FAHRENHEIT_RANKINE_DIFFERENCE = 459.67d0
     double precision, parameter :: RANKINE_PER_KELVIN = 9.0d0 / 5.0d0
+
+    ! Amount
+    double precision, parameter :: AVOGADROS_NUMBER = 6.022140857d23
 end module Conversion_factors_m
