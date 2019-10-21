@@ -18,4 +18,8 @@ module Conversion_factors_m
 
     ! Amount
     double precision, parameter :: AVOGADROS_NUMBER = 6.022140857d23
+
+    ! Angle
+    double precision, parameter :: PI = 3.14159265359d0
+    double precision, parameter :: DEGREES_PER_RADIAN = 180.0d0 / PI
 end module Conversion_factors_m
