@@ -1,6 +1,5 @@
 module Mass_m
     use Conversion_factors_m, only: GRAMS_PER_KILOGRAM
-    use Units_m, only: Unit_t
 
     implicit none
     private
@@ -52,7 +51,9 @@ module Mass_m
         procedure, public :: toStringIn
     end type Mass_t
 
-    type, public, extends(Unit_t) :: MassUnit_t
+    type, public :: MassUnit_t
+        double precision :: multiplier
+        character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
     end type MassUnit_t

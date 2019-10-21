@@ -1,6 +1,5 @@
 module Amount_m
     use Conversion_factors_m, only: AVOGADROS_NUMBER
-    use Units_m, only: Unit_t
 
     implicit none
     private
@@ -52,7 +51,9 @@ module Amount_m
         procedure, public :: toStringIn
     end type Amount_t
 
-    type, public, extends(Unit_t) :: AmountUnit_t
+    type, public :: AmountUnit_t
+        double precision :: multiplier
+        character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
     end type AmountUnit_t

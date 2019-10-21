@@ -1,12 +1,28 @@
 module amount_type_test
+    use Amount_m, only: AmountUnit_t
+    use Vegetables_m, only: Example_t, Input_t
+
     implicit none
     private
+
+    type, public, extends(Input_t) :: UnitsInput_t
+        class(AmountUnit_t), allocatable :: unit
+    end type UnitsInput_t
+
+    type, public, extends(Input_t) :: UnitsPairInput_t
+        class(AmountUnit_t), allocatable :: first
+        class(AmountUnit_t), allocatable :: second
+    end type UnitsPairInput_t
+
+    type, public :: UnitsExamples_t
+        type(Example_t), allocatable :: units(:)
+        type(Example_t), allocatable :: pairs(:)
+    end type UnitsExamples_t
 
     public :: test_amount
 contains
     function test_amount() result(tests)
         use Amount_m, only: PROVIDED_UNITS
-        use Units_examples_m, only: UnitsExamples_t, makeUnitsExamples
         use Vegetables_m, only: TestItem_t, describe, it
 
         type(TestItem_t) :: tests
@@ -41,8 +57,6 @@ contains
 
     function checkRoundTrip(units) result(result_)
         use Check_round_trip_in_m, only: checkRoundTripIn
-        use Amount_m, only: AmountUnit_t
-        use Units_examples_m, only: UnitsInput_t
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: units
@@ -50,12 +64,7 @@ contains
 
         select type (units)
         type is (UnitsInput_t)
-            select type (the_unit => units%unit)
-            type is (AmountUnit_t)
-                result_ = checkRoundTripIn(the_unit)
-            class default
-                result_ = fail("Expected to get an AmountUnit_t")
-            end select
+            result_ = checkRoundTripIn(units%unit)
         class default
             result_ = fail("Expected to get an UnitsInput_t")
         end select
@@ -63,8 +72,6 @@ contains
 
     function checkConversionFactorsInverse(pair) result(result_)
         use Check_conversion_factor_m, only: checkConversionFactorsAreInverse
-        use Amount_m, only: AmountUnit_t
-        use Units_examples_m, only: UnitsPairInput_t
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: pair
@@ -72,17 +79,7 @@ contains
 
         select type (pair)
         type is (UnitsPairInput_t)
-            select type (first => pair%first)
-            type is (AmountUnit_t)
-                select type (second => pair%second)
-                type is (AmountUnit_t)
-                    result_ = checkConversionFactorsAreInverse(first, second)
-                class default
-                    result_ = fail("Expected second in pair to be AmountUnit_t")
-                end select
-            class default
-                result_ = fail("Expected first in pair to be AmountUnit_t")
-            end select
+            result_ = checkConversionFactorsAreInverse(pair%first, pair%second)
         class default
             result_ = fail("Expected to get a UnitsPairInput_t")
         end select
@@ -92,11 +89,9 @@ contains
         use Error_list_m, only: ErrorList_t, size
         use Amount_m, only: &
                 Amount_t, &
-                AmountUnit_t, &
                 operator(.unit.), &
                 amountFromString
         use Amount_asserts_m, only: assertEquals
-        use Units_examples_m, only: UnitsInput_t
         use Vegetables_m, only: Input_t, Result_t, assertEquals, fail
 
         class(Input_t), intent(in) :: units
@@ -108,20 +103,15 @@ contains
 
         select type (units)
         type is (UnitsInput_t)
-            select type (the_unit => units%unit)
-            type is (AmountUnit_t)
-                original_amount = 3.0d0.unit.the_unit
-                new_amount = amountFromString( &
-                        original_amount%toStringIn(the_unit), errors)
-                result_ = &
-                        assertEquals( &
-                                original_amount, &
-                                new_amount, &
-                                the_unit%toString()) &
-                        .and.assertEquals(0, size(errors))
-            class default
-                result_ = fail("Expected to get an AmountUnit_t")
-            end select
+            original_amount = 3.0d0.unit.units%unit
+            new_amount = amountFromString( &
+                    original_amount%toStringIn(units%unit), errors)
+            result_ = &
+                    assertEquals( &
+                            original_amount, &
+                            new_amount, &
+                            units%unit%toString()) &
+                    .and.assertEquals(0, size(errors), "Errors")
         class default
             result_ = fail("Expected to get an UnitsInput_t")
         end select
@@ -172,4 +162,53 @@ contains
         length = amountFromString("bad mol", errors)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
+
+    function makeUnitsExamples(units) result(examples)
+        use Amount_m, only: AmountUnit_t
+        use Vegetables_m, only: Example
+
+        type(AmountUnit_t), intent(in) :: units(:)
+        type(UnitsExamples_t) :: examples
+
+        integer :: i
+        integer :: j
+        integer :: num_pairs
+        integer :: num_units
+        type(UnitsPairInput_t) :: pair
+        integer :: pair_index
+        type(UnitsInput_t) :: input
+
+        num_units = size(units)
+        allocate(examples%units(num_units))
+        do i = 1, num_units
+            allocate(input%unit, source = units(i))
+            examples%units(i) = Example(input)
+            deallocate(input%unit)
+        end do
+
+        num_pairs = combinations(num_units)
+        allocate(examples%pairs(num_pairs))
+        pair_index = 1
+        do i = 1, num_units - 1
+            allocate(pair%first, source = units(i))
+            do j = i + 1, num_units
+                allocate(pair%second, source = units(j))
+                examples%pairs(pair_index) = Example(pair)
+                pair_index = pair_index + 1
+                deallocate(pair%second)
+            end do
+            deallocate(pair%first)
+        end do
+    contains
+        recursive function combinations(num_items) result(num_combinations)
+            integer, intent(in) :: num_items
+            integer :: num_combinations
+
+            if (num_items <= 1) then
+                num_combinations = 0
+            else
+                num_combinations = num_items - 1 + combinations(num_items - 1)
+            end if
+        end function combinations
+    end function makeUnitsExamples
 end module amount_type_test

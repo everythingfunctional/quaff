@@ -3,7 +3,6 @@ module Temperature_m
             CELSIUS_KELVIN_DIFFERENCE, &
             FAHRENHEIT_RANKINE_DIFFERENCE, &
             RANKINE_PER_KELVIN
-    use Units_m, only: Unit_t
 
     implicit none
     private
@@ -55,8 +54,10 @@ module Temperature_m
         procedure, public :: toStringIn
     end type Temperature_t
 
-    type, public, extends(Unit_t) :: TemperatureUnit_t
+    type, public :: TemperatureUnit_t
+        double precision :: multiplier
         double precision :: difference
+        character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
     end type TemperatureUnit_t

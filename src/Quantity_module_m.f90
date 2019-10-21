@@ -1,6 +1,4 @@
 module Quantity_module_m
-    use Units_m, only: Unit_t
-
     implicit none
     private
 
@@ -51,7 +49,9 @@ module Quantity_module_m
         procedure, public :: toStringIn
     end type QuantityCamel_t
 
-    type, public, extends(Unit_t) :: QuantityCamelUnit_t
+    type, public :: QuantityCamelUnit_t
+        double precision :: multiplier
+        character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
     end type QuantityCamelUnit_t

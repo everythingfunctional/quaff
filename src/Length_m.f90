@@ -1,6 +1,5 @@
 module Length_m
     use Conversion_factors_m, only: CENTIMETERS_PER_METER
-    use Units_m, only: Unit_t
 
     implicit none
     private
@@ -52,7 +51,9 @@ module Length_m
         procedure, public :: toStringIn
     end type Length_t
 
-    type, public, extends(Unit_t) :: LengthUnit_t
+    type, public :: LengthUnit_t
+        double precision :: multiplier
+        character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
     end type LengthUnit_t

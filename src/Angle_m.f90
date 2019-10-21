@@ -1,6 +1,5 @@
 module Angle_m
     use Conversion_factors_m, only: DEGREES_PER_RADIAN
-    use Units_m, only: Unit_t
 
     implicit none
     private
@@ -52,7 +51,9 @@ module Angle_m
         procedure, public :: toStringIn
     end type Angle_t
 
-    type, public, extends(Unit_t) :: AngleUnit_t
+    type, public :: AngleUnit_t
+        double precision :: multiplier
+        character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
     end type AngleUnit_t
