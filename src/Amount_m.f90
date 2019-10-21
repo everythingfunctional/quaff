@@ -52,7 +52,7 @@ module Amount_m
     end type Amount_t
 
     type, public :: AmountUnit_t
-        double precision :: multiplier
+        double precision :: conversion_factor
         character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
@@ -78,11 +78,11 @@ module Amount_m
 
     type(AmountUnit_t), parameter, public :: MOLS = &
             AmountUnit_t( &
-                    multiplier = 1.0d0, &
+                    conversion_factor = 1.0d0, &
                     symbol = "mol")
     type(AmountUnit_t), parameter, public :: NUMBER = &
             AmountUnit_t( &
-                    multiplier = AVOGADROS_NUMBER, &
+                    conversion_factor = AVOGADROS_NUMBER, &
                     symbol = "number")
 
     type(AmountUnit_t), public :: DEFAULT_OUTPUT_UNITS = MOLS
@@ -217,7 +217,7 @@ contains
         type(AmountUnit_t), intent(in) :: units
         type(Amount_t) :: amount
 
-        amount%mols = value_ / units%multiplier
+        amount%mols = value_ / units%conversion_factor
     end function fromUnits
 
     function toUnits(self, units) result(amount)
@@ -225,7 +225,7 @@ contains
         class(AmountUnit_t), intent(in) :: units
         double precision :: amount
 
-        amount = self%mols * units%multiplier
+        amount = self%mols * units%conversion_factor
     end function toUnits
 
     function doubleTimesAmount( &

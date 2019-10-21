@@ -52,7 +52,7 @@ module Mass_m
     end type Mass_t
 
     type, public :: MassUnit_t
-        double precision :: multiplier
+        double precision :: conversion_factor
         character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
@@ -77,10 +77,10 @@ module Mass_m
     end interface massUnitFromString
 
     type(MassUnit_t), parameter, public :: GRAMS = MassUnit_t( &
-            multiplier = GRAMS_PER_KILOGRAM, &
+            conversion_factor = GRAMS_PER_KILOGRAM, &
             symbol = "g")
     type(MassUnit_t), parameter, public :: KILOGRAMS = MassUnit_t( &
-            multiplier = 1.0d0, &
+            conversion_factor = 1.0d0, &
             symbol = "kg")
 
     type(MassUnit_t), public :: DEFAULT_OUTPUT_UNITS = KILOGRAMS
@@ -215,7 +215,7 @@ contains
         type(MassUnit_t), intent(in) :: units
         type(Mass_t) :: mass
 
-        mass%kilograms = value_ / units%multiplier
+        mass%kilograms = value_ / units%conversion_factor
     end function fromUnits
 
     function toUnits(self, units) result(mass)
@@ -223,7 +223,7 @@ contains
         class(MassUnit_t), intent(in) :: units
         double precision :: mass
 
-        mass = self%kilograms * units%multiplier
+        mass = self%kilograms * units%conversion_factor
     end function toUnits
 
     function doubleTimesMass( &

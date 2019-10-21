@@ -52,7 +52,7 @@ module Length_m
     end type Length_t
 
     type, public :: LengthUnit_t
-        double precision :: multiplier
+        double precision :: conversion_factor
         character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
@@ -77,10 +77,10 @@ module Length_m
     end interface lengthUnitFromString
 
     type(LengthUnit_t), parameter, public :: CENTIMETERS = LengthUnit_t( &
-            multiplier = CENTIMETERS_PER_METER, &
+            conversion_factor = CENTIMETERS_PER_METER, &
             symbol = "cm")
     type(LengthUnit_t), parameter, public :: METERS = LengthUnit_t( &
-            multiplier = 1.0d0, &
+            conversion_factor = 1.0d0, &
             symbol = "m")
 
     type(LengthUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
@@ -215,7 +215,7 @@ contains
         type(LengthUnit_t), intent(in) :: units
         type(Length_t) :: length
 
-        length%meters = value_ / units%multiplier
+        length%meters = value_ / units%conversion_factor
     end function fromUnits
 
     function toUnits(self, units) result(length)
@@ -223,7 +223,7 @@ contains
         class(LengthUnit_t), intent(in) :: units
         double precision :: length
 
-        length = self%meters * units%multiplier
+        length = self%meters * units%conversion_factor
     end function toUnits
 
     function doubleTimesLength( &

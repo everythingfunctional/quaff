@@ -50,7 +50,7 @@ module Quantity_module_m
     end type QuantityCamel_t
 
     type, public :: QuantityCamelUnit_t
-        double precision :: multiplier
+        double precision :: conversion_factor
         character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
@@ -76,11 +76,11 @@ module Quantity_module_m
 
     type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL = &
             QuantityCamelUnit_t( &
-                    multiplier = 1.0d0, &
+                    conversion_factor = 1.0d0, &
                     symbol = "unit_sym")
     type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL2 = &
             QuantityCamelUnit_t( &
-                    multiplier = 1.0d0, &
+                    conversion_factor = 1.0d0, &
                     symbol = "unit_sym")
 
     type(QuantityCamelUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS_CAPITAL
@@ -215,7 +215,7 @@ contains
         type(QuantityCamelUnit_t), intent(in) :: units
         type(QuantityCamel_t) :: quantity_lower
 
-        quantity_lower%units_lower = value_ / units%multiplier
+        quantity_lower%units_lower = value_ / units%conversion_factor
     end function fromUnits
 
     function toUnits(self, units) result(quantity_lower)
@@ -223,7 +223,7 @@ contains
         class(QuantityCamelUnit_t), intent(in) :: units
         double precision :: quantity_lower
 
-        quantity_lower = self%units_lower * units%multiplier
+        quantity_lower = self%units_lower * units%conversion_factor
     end function toUnits
 
     function doubleTimesQuantityCamel( &

@@ -55,7 +55,7 @@ module Temperature_m
     end type Temperature_t
 
     type, public :: TemperatureUnit_t
-        double precision :: multiplier
+        double precision :: conversion_factor
         double precision :: difference
         character(len=10) :: symbol
     contains
@@ -81,19 +81,19 @@ module Temperature_m
     end interface temperatureUnitFromString
 
     type(TemperatureUnit_t), parameter, public :: CELSIUS = TemperatureUnit_t( &
-            multiplier = 1.0d0, &
+            conversion_factor = 1.0d0, &
             difference = CELSIUS_KELVIN_DIFFERENCE, &
             symbol = "C")
     type(TemperatureUnit_t), parameter, public :: FAHRENHEIT = TemperatureUnit_t( &
-            multiplier = RANKINE_PER_KELVIN, &
+            conversion_factor = RANKINE_PER_KELVIN, &
             difference = FAHRENHEIT_RANKINE_DIFFERENCE, &
             symbol = "F")
     type(TemperatureUnit_t), parameter, public :: KELVIN = TemperatureUnit_t( &
-            multiplier = 1.0d0, &
+            conversion_factor = 1.0d0, &
             difference = 0.0d0, &
             symbol = "K")
     type(TemperatureUnit_t), parameter, public :: RANKINE = TemperatureUnit_t( &
-            multiplier = RANKINE_PER_KELVIN, &
+            conversion_factor = RANKINE_PER_KELVIN, &
             difference = 0.0d0, &
             symbol = "R")
 
@@ -229,7 +229,7 @@ contains
         type(TemperatureUnit_t), intent(in) :: units
         type(Temperature_t) :: temperature
 
-        temperature%kelvin = (value_ + units%difference) / units%multiplier
+        temperature%kelvin = (value_ + units%difference) / units%conversion_factor
     end function fromUnits
 
     function toUnits(self, units) result(temperature)
@@ -237,7 +237,7 @@ contains
         class(TemperatureUnit_t), intent(in) :: units
         double precision :: temperature
 
-        temperature = self%kelvin * units%multiplier - units%difference
+        temperature = self%kelvin * units%conversion_factor - units%difference
     end function toUnits
 
     function doubleTimesTemperature( &

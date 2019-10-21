@@ -52,7 +52,7 @@ module Angle_m
     end type Angle_t
 
     type, public :: AngleUnit_t
-        double precision :: multiplier
+        double precision :: conversion_factor
         character(len=10) :: symbol
     contains
         procedure :: toString => unitToString
@@ -78,11 +78,11 @@ module Angle_m
 
     type(AngleUnit_t), parameter, public :: DEGREES = &
             AngleUnit_t( &
-                    multiplier = DEGREES_PER_RADIAN, &
+                    conversion_factor = DEGREES_PER_RADIAN, &
                     symbol = "deg")
     type(AngleUnit_t), parameter, public :: RADIANS = &
             AngleUnit_t( &
-                    multiplier = 1.0d0, &
+                    conversion_factor = 1.0d0, &
                     symbol = "rad")
 
     type(AngleUnit_t), public :: DEFAULT_OUTPUT_UNITS = RADIANS
@@ -217,7 +217,7 @@ contains
         type(AngleUnit_t), intent(in) :: units
         type(Angle_t) :: angle
 
-        angle%radians = value_ / units%multiplier
+        angle%radians = value_ / units%conversion_factor
     end function fromUnits
 
     function toUnits(self, units) result(angle)
@@ -225,7 +225,7 @@ contains
         class(AngleUnit_t), intent(in) :: units
         double precision :: angle
 
-        angle = self%radians * units%multiplier
+        angle = self%radians * units%conversion_factor
     end function toUnits
 
     function doubleTimesAngle( &
