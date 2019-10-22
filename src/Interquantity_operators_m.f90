@@ -12,7 +12,7 @@ module Interquantity_operators_m
 
     public :: operator(*), operator(/)
 contains
-    function areaDividedByLength(numerator, denomenator) result(length)
+    elemental function areaDividedByLength(numerator, denomenator) result(length)
         use Area_m, only: Area_t, SQUARE_METERS
         use Length_m, only: Length_t, operator(.unit.), METERS
 
@@ -23,7 +23,7 @@ contains
         length = ((numerator.in.SQUARE_METERS) / (denomenator.in.METERS)).unit.METERS
     end function areaDividedByLength
 
-    function lengthTimesLength(lhs, rhs) result(area)
+    elemental function lengthTimesLength(lhs, rhs) result(area)
         use Area_m, only: Area_t, operator(.unit.), SQUARE_METERS
         use Length_m, only: Length_t, METERS
 

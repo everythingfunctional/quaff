@@ -210,7 +210,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(length)
+    elemental function fromUnits(value_, units) result(length)
         double precision, intent(in) :: value_
         type(LengthUnit_t), intent(in) :: units
         type(Length_t) :: length
@@ -218,7 +218,7 @@ contains
         length%meters = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(length)
+    elemental function toUnits(self, units) result(length)
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         double precision :: length
@@ -226,7 +226,7 @@ contains
         length = self%meters * units%conversion_factor
     end function toUnits
 
-    function doubleTimesLength( &
+    elemental function doubleTimesLength( &
             multiplier, length) result(new_length)
         double precision, intent(in) :: multiplier
         class(Length_t), intent(in) :: length
@@ -236,7 +236,7 @@ contains
                 multiplier * length%meters
     end function doubleTimesLength
 
-    function integerTimesLength( &
+    elemental function integerTimesLength( &
             multiplier, length) result(new_length)
         integer, intent(in) :: multiplier
         class(Length_t), intent(in) :: length
@@ -246,7 +246,7 @@ contains
                 dble(multiplier) * length%meters
     end function integerTimesLength
 
-    function lengthTimesDouble( &
+    elemental function lengthTimesDouble( &
             length, multiplier) result(new_length)
         class(Length_t), intent(in) :: length
         double precision, intent(in) :: multiplier
@@ -256,7 +256,7 @@ contains
                 length%meters * multiplier
     end function lengthTimesDouble
 
-    function lengthTimesInteger( &
+    elemental function lengthTimesInteger( &
             length, multiplier) result(new_length)
         class(Length_t), intent(in) :: length
         integer, intent(in) :: multiplier
@@ -266,7 +266,7 @@ contains
                 length%meters * dble(multiplier)
     end function lengthTimesInteger
 
-    function lengthDividedByDouble( &
+    elemental function lengthDividedByDouble( &
             length, divisor) result(new_length)
         class(Length_t), intent(in) :: length
         double precision, intent(in) :: divisor
@@ -276,7 +276,7 @@ contains
                 length%meters / divisor
     end function lengthDividedByDouble
 
-    function lengthDividedByInteger( &
+    elemental function lengthDividedByInteger( &
             length, divisor) result(new_length)
         class(Length_t), intent(in) :: length
         integer, intent(in) :: divisor
@@ -286,7 +286,7 @@ contains
                 length%meters / dble(divisor)
     end function lengthDividedByInteger
 
-    function lengthDividedByLength( &
+    elemental function lengthDividedByLength( &
             numerator, denomenator) result(ratio)
         class(Length_t), intent(in) :: numerator
         class(Length_t), intent(in) :: denomenator
@@ -295,7 +295,7 @@ contains
         ratio = numerator%meters / denomenator%meters
     end function lengthDividedByLength
 
-    function lengthPlusLength( &
+    elemental function lengthPlusLength( &
             length1, length2) result(new_length)
         class(Length_t), intent(in) :: length1
         class(Length_t), intent(in) :: length2
@@ -305,7 +305,7 @@ contains
                 length1%meters + length2%meters
     end function lengthPlusLength
 
-    function lengthMinusLength( &
+    elemental function lengthMinusLength( &
             length1, length2) result(new_length)
         class(Length_t), intent(in) :: length1
         class(Length_t), intent(in) :: length2
@@ -315,7 +315,7 @@ contains
                 length1%meters - length2%meters
     end function lengthMinusLength
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         logical :: greaterThan
@@ -323,7 +323,7 @@ contains
         greaterThan = lhs%meters > rhs%meters
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         logical :: lessThan
@@ -331,7 +331,7 @@ contains
         lessThan = lhs%meters < rhs%meters
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -339,7 +339,7 @@ contains
         greaterThanOrEqual = lhs%meters >= rhs%meters
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -347,7 +347,7 @@ contains
         lessThanOrEqual = lhs%meters <= rhs%meters
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Length_t), intent(in) :: lhs
@@ -381,7 +381,7 @@ contains
                 lhs%meters, rhs%meters, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         logical :: notEqual

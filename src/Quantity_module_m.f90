@@ -210,7 +210,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(quantity_lower)
+    elemental function fromUnits(value_, units) result(quantity_lower)
         double precision, intent(in) :: value_
         type(QuantityCamelUnit_t), intent(in) :: units
         type(QuantityCamel_t) :: quantity_lower
@@ -218,7 +218,7 @@ contains
         quantity_lower%units_lower = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(quantity_lower)
+    elemental function toUnits(self, units) result(quantity_lower)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
         double precision :: quantity_lower
@@ -226,7 +226,7 @@ contains
         quantity_lower = self%units_lower * units%conversion_factor
     end function toUnits
 
-    function doubleTimesQuantityCamel( &
+    elemental function doubleTimesQuantityCamel( &
             multiplier, quantity_lower) result(new_quantity_lower)
         double precision, intent(in) :: multiplier
         class(QuantityCamel_t), intent(in) :: quantity_lower
@@ -236,7 +236,7 @@ contains
                 multiplier * quantity_lower%units_lower
     end function doubleTimesQuantityCamel
 
-    function integerTimesQuantityCamel( &
+    elemental function integerTimesQuantityCamel( &
             multiplier, quantity_lower) result(new_quantity_lower)
         integer, intent(in) :: multiplier
         class(QuantityCamel_t), intent(in) :: quantity_lower
@@ -246,7 +246,7 @@ contains
                 dble(multiplier) * quantity_lower%units_lower
     end function integerTimesQuantityCamel
 
-    function quantitySnakeTimesDouble( &
+    elemental function quantitySnakeTimesDouble( &
             quantity_lower, multiplier) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         double precision, intent(in) :: multiplier
@@ -256,7 +256,7 @@ contains
                 quantity_lower%units_lower * multiplier
     end function quantitySnakeTimesDouble
 
-    function quantitySnakeTimesInteger( &
+    elemental function quantitySnakeTimesInteger( &
             quantity_lower, multiplier) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         integer, intent(in) :: multiplier
@@ -266,7 +266,7 @@ contains
                 quantity_lower%units_lower * dble(multiplier)
     end function quantitySnakeTimesInteger
 
-    function quantitySnakeDividedByDouble( &
+    elemental function quantitySnakeDividedByDouble( &
             quantity_lower, divisor) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         double precision, intent(in) :: divisor
@@ -276,7 +276,7 @@ contains
                 quantity_lower%units_lower / divisor
     end function quantitySnakeDividedByDouble
 
-    function quantitySnakeDividedByInteger( &
+    elemental function quantitySnakeDividedByInteger( &
             quantity_lower, divisor) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower
         integer, intent(in) :: divisor
@@ -286,7 +286,7 @@ contains
                 quantity_lower%units_lower / dble(divisor)
     end function quantitySnakeDividedByInteger
 
-    function quantitySnakeDividedByQuantityCamel( &
+    elemental function quantitySnakeDividedByQuantityCamel( &
             numerator, denomenator) result(ratio)
         class(QuantityCamel_t), intent(in) :: numerator
         class(QuantityCamel_t), intent(in) :: denomenator
@@ -295,7 +295,7 @@ contains
         ratio = numerator%units_lower / denomenator%units_lower
     end function quantitySnakeDividedByQuantityCamel
 
-    function quantitySnakePlusQuantityCamel( &
+    elemental function quantitySnakePlusQuantityCamel( &
             quantity_lower1, quantity_lower2) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower1
         class(QuantityCamel_t), intent(in) :: quantity_lower2
@@ -305,7 +305,7 @@ contains
                 quantity_lower1%units_lower + quantity_lower2%units_lower
     end function quantitySnakePlusQuantityCamel
 
-    function quantitySnakeMinusQuantityCamel( &
+    elemental function quantitySnakeMinusQuantityCamel( &
             quantity_lower1, quantity_lower2) result(new_quantity_lower)
         class(QuantityCamel_t), intent(in) :: quantity_lower1
         class(QuantityCamel_t), intent(in) :: quantity_lower2
@@ -315,7 +315,7 @@ contains
                 quantity_lower1%units_lower - quantity_lower2%units_lower
     end function quantitySnakeMinusQuantityCamel
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         logical :: greaterThan
@@ -323,7 +323,7 @@ contains
         greaterThan = lhs%units_lower > rhs%units_lower
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         logical :: lessThan
@@ -331,7 +331,7 @@ contains
         lessThan = lhs%units_lower < rhs%units_lower
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -339,7 +339,7 @@ contains
         greaterThanOrEqual = lhs%units_lower >= rhs%units_lower
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -347,7 +347,7 @@ contains
         lessThanOrEqual = lhs%units_lower <= rhs%units_lower
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(QuantityCamel_t), intent(in) :: lhs
@@ -381,7 +381,7 @@ contains
                 lhs%units_lower, rhs%units_lower, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         logical :: notEqual

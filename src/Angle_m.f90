@@ -212,7 +212,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(angle)
+    elemental function fromUnits(value_, units) result(angle)
         double precision, intent(in) :: value_
         type(AngleUnit_t), intent(in) :: units
         type(Angle_t) :: angle
@@ -220,7 +220,7 @@ contains
         angle%radians = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(angle)
+    elemental function toUnits(self, units) result(angle)
         class(Angle_t), intent(in) :: self
         class(AngleUnit_t), intent(in) :: units
         double precision :: angle
@@ -228,7 +228,7 @@ contains
         angle = self%radians * units%conversion_factor
     end function toUnits
 
-    function doubleTimesAngle( &
+    elemental function doubleTimesAngle( &
             multiplier, angle) result(new_angle)
         double precision, intent(in) :: multiplier
         class(Angle_t), intent(in) :: angle
@@ -238,7 +238,7 @@ contains
                 multiplier * angle%radians
     end function doubleTimesAngle
 
-    function integerTimesAngle( &
+    elemental function integerTimesAngle( &
             multiplier, angle) result(new_angle)
         integer, intent(in) :: multiplier
         class(Angle_t), intent(in) :: angle
@@ -248,7 +248,7 @@ contains
                 dble(multiplier) * angle%radians
     end function integerTimesAngle
 
-    function angleTimesDouble( &
+    elemental function angleTimesDouble( &
             angle, multiplier) result(new_angle)
         class(Angle_t), intent(in) :: angle
         double precision, intent(in) :: multiplier
@@ -258,7 +258,7 @@ contains
                 angle%radians * multiplier
     end function angleTimesDouble
 
-    function angleTimesInteger( &
+    elemental function angleTimesInteger( &
             angle, multiplier) result(new_angle)
         class(Angle_t), intent(in) :: angle
         integer, intent(in) :: multiplier
@@ -268,7 +268,7 @@ contains
                 angle%radians * dble(multiplier)
     end function angleTimesInteger
 
-    function angleDividedByDouble( &
+    elemental function angleDividedByDouble( &
             angle, divisor) result(new_angle)
         class(Angle_t), intent(in) :: angle
         double precision, intent(in) :: divisor
@@ -278,7 +278,7 @@ contains
                 angle%radians / divisor
     end function angleDividedByDouble
 
-    function angleDividedByInteger( &
+    elemental function angleDividedByInteger( &
             angle, divisor) result(new_angle)
         class(Angle_t), intent(in) :: angle
         integer, intent(in) :: divisor
@@ -288,7 +288,7 @@ contains
                 angle%radians / dble(divisor)
     end function angleDividedByInteger
 
-    function angleDividedByAngle( &
+    elemental function angleDividedByAngle( &
             numerator, denomenator) result(ratio)
         class(Angle_t), intent(in) :: numerator
         class(Angle_t), intent(in) :: denomenator
@@ -297,7 +297,7 @@ contains
         ratio = numerator%radians / denomenator%radians
     end function angleDividedByAngle
 
-    function anglePlusAngle( &
+    elemental function anglePlusAngle( &
             angle1, angle2) result(new_angle)
         class(Angle_t), intent(in) :: angle1
         class(Angle_t), intent(in) :: angle2
@@ -307,7 +307,7 @@ contains
                 angle1%radians + angle2%radians
     end function anglePlusAngle
 
-    function angleMinusAngle( &
+    elemental function angleMinusAngle( &
             angle1, angle2) result(new_angle)
         class(Angle_t), intent(in) :: angle1
         class(Angle_t), intent(in) :: angle2
@@ -317,7 +317,7 @@ contains
                 angle1%radians - angle2%radians
     end function angleMinusAngle
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Angle_t), intent(in) :: lhs
         class(Angle_t), intent(in) :: rhs
         logical :: greaterThan
@@ -325,7 +325,7 @@ contains
         greaterThan = lhs%radians > rhs%radians
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Angle_t), intent(in) :: lhs
         class(Angle_t), intent(in) :: rhs
         logical :: lessThan
@@ -333,7 +333,7 @@ contains
         lessThan = lhs%radians < rhs%radians
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Angle_t), intent(in) :: lhs
         class(Angle_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -341,7 +341,7 @@ contains
         greaterThanOrEqual = lhs%radians >= rhs%radians
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Angle_t), intent(in) :: lhs
         class(Angle_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -349,7 +349,7 @@ contains
         lessThanOrEqual = lhs%radians <= rhs%radians
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Angle_t), intent(in) :: lhs
@@ -383,7 +383,7 @@ contains
                 lhs%radians, rhs%radians, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Angle_t), intent(in) :: lhs
         class(Angle_t), intent(in) :: rhs
         logical :: notEqual

@@ -210,7 +210,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(mass)
+    elemental function fromUnits(value_, units) result(mass)
         double precision, intent(in) :: value_
         type(MassUnit_t), intent(in) :: units
         type(Mass_t) :: mass
@@ -218,7 +218,7 @@ contains
         mass%kilograms = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(mass)
+    elemental function toUnits(self, units) result(mass)
         class(Mass_t), intent(in) :: self
         class(MassUnit_t), intent(in) :: units
         double precision :: mass
@@ -226,7 +226,7 @@ contains
         mass = self%kilograms * units%conversion_factor
     end function toUnits
 
-    function doubleTimesMass( &
+    elemental function doubleTimesMass( &
             multiplier, mass) result(new_mass)
         double precision, intent(in) :: multiplier
         class(Mass_t), intent(in) :: mass
@@ -236,7 +236,7 @@ contains
                 multiplier * mass%kilograms
     end function doubleTimesMass
 
-    function integerTimesMass( &
+    elemental function integerTimesMass( &
             multiplier, mass) result(new_mass)
         integer, intent(in) :: multiplier
         class(Mass_t), intent(in) :: mass
@@ -246,7 +246,7 @@ contains
                 dble(multiplier) * mass%kilograms
     end function integerTimesMass
 
-    function massTimesDouble( &
+    elemental function massTimesDouble( &
             mass, multiplier) result(new_mass)
         class(Mass_t), intent(in) :: mass
         double precision, intent(in) :: multiplier
@@ -256,7 +256,7 @@ contains
                 mass%kilograms * multiplier
     end function massTimesDouble
 
-    function massTimesInteger( &
+    elemental function massTimesInteger( &
             mass, multiplier) result(new_mass)
         class(Mass_t), intent(in) :: mass
         integer, intent(in) :: multiplier
@@ -266,7 +266,7 @@ contains
                 mass%kilograms * dble(multiplier)
     end function massTimesInteger
 
-    function massDividedByDouble( &
+    elemental function massDividedByDouble( &
             mass, divisor) result(new_mass)
         class(Mass_t), intent(in) :: mass
         double precision, intent(in) :: divisor
@@ -276,7 +276,7 @@ contains
                 mass%kilograms / divisor
     end function massDividedByDouble
 
-    function massDividedByInteger( &
+    elemental function massDividedByInteger( &
             mass, divisor) result(new_mass)
         class(Mass_t), intent(in) :: mass
         integer, intent(in) :: divisor
@@ -286,7 +286,7 @@ contains
                 mass%kilograms / dble(divisor)
     end function massDividedByInteger
 
-    function massDividedByMass( &
+    elemental function massDividedByMass( &
             numerator, denomenator) result(ratio)
         class(Mass_t), intent(in) :: numerator
         class(Mass_t), intent(in) :: denomenator
@@ -295,7 +295,7 @@ contains
         ratio = numerator%kilograms / denomenator%kilograms
     end function massDividedByMass
 
-    function massPlusMass( &
+    elemental function massPlusMass( &
             mass1, mass2) result(new_mass)
         class(Mass_t), intent(in) :: mass1
         class(Mass_t), intent(in) :: mass2
@@ -305,7 +305,7 @@ contains
                 mass1%kilograms + mass2%kilograms
     end function massPlusMass
 
-    function massMinusMass( &
+    elemental function massMinusMass( &
             mass1, mass2) result(new_mass)
         class(Mass_t), intent(in) :: mass1
         class(Mass_t), intent(in) :: mass2
@@ -315,7 +315,7 @@ contains
                 mass1%kilograms - mass2%kilograms
     end function massMinusMass
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Mass_t), intent(in) :: lhs
         class(Mass_t), intent(in) :: rhs
         logical :: greaterThan
@@ -323,7 +323,7 @@ contains
         greaterThan = lhs%kilograms > rhs%kilograms
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Mass_t), intent(in) :: lhs
         class(Mass_t), intent(in) :: rhs
         logical :: lessThan
@@ -331,7 +331,7 @@ contains
         lessThan = lhs%kilograms < rhs%kilograms
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Mass_t), intent(in) :: lhs
         class(Mass_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -339,7 +339,7 @@ contains
         greaterThanOrEqual = lhs%kilograms >= rhs%kilograms
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Mass_t), intent(in) :: lhs
         class(Mass_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -347,7 +347,7 @@ contains
         lessThanOrEqual = lhs%kilograms <= rhs%kilograms
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Mass_t), intent(in) :: lhs
@@ -381,7 +381,7 @@ contains
                 lhs%kilograms, rhs%kilograms, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Mass_t), intent(in) :: lhs
         class(Mass_t), intent(in) :: rhs
         logical :: notEqual

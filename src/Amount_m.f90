@@ -212,7 +212,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(amount)
+    elemental function fromUnits(value_, units) result(amount)
         double precision, intent(in) :: value_
         type(AmountUnit_t), intent(in) :: units
         type(Amount_t) :: amount
@@ -220,7 +220,7 @@ contains
         amount%mols = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(amount)
+    elemental function toUnits(self, units) result(amount)
         class(Amount_t), intent(in) :: self
         class(AmountUnit_t), intent(in) :: units
         double precision :: amount
@@ -228,7 +228,7 @@ contains
         amount = self%mols * units%conversion_factor
     end function toUnits
 
-    function doubleTimesAmount( &
+    elemental function doubleTimesAmount( &
             multiplier, amount) result(new_amount)
         double precision, intent(in) :: multiplier
         class(Amount_t), intent(in) :: amount
@@ -238,7 +238,7 @@ contains
                 multiplier * amount%mols
     end function doubleTimesAmount
 
-    function integerTimesAmount( &
+    elemental function integerTimesAmount( &
             multiplier, amount) result(new_amount)
         integer, intent(in) :: multiplier
         class(Amount_t), intent(in) :: amount
@@ -248,7 +248,7 @@ contains
                 dble(multiplier) * amount%mols
     end function integerTimesAmount
 
-    function amountTimesDouble( &
+    elemental function amountTimesDouble( &
             amount, multiplier) result(new_amount)
         class(Amount_t), intent(in) :: amount
         double precision, intent(in) :: multiplier
@@ -258,7 +258,7 @@ contains
                 amount%mols * multiplier
     end function amountTimesDouble
 
-    function amountTimesInteger( &
+    elemental function amountTimesInteger( &
             amount, multiplier) result(new_amount)
         class(Amount_t), intent(in) :: amount
         integer, intent(in) :: multiplier
@@ -268,7 +268,7 @@ contains
                 amount%mols * dble(multiplier)
     end function amountTimesInteger
 
-    function amountDividedByDouble( &
+    elemental function amountDividedByDouble( &
             amount, divisor) result(new_amount)
         class(Amount_t), intent(in) :: amount
         double precision, intent(in) :: divisor
@@ -278,7 +278,7 @@ contains
                 amount%mols / divisor
     end function amountDividedByDouble
 
-    function amountDividedByInteger( &
+    elemental function amountDividedByInteger( &
             amount, divisor) result(new_amount)
         class(Amount_t), intent(in) :: amount
         integer, intent(in) :: divisor
@@ -288,7 +288,7 @@ contains
                 amount%mols / dble(divisor)
     end function amountDividedByInteger
 
-    function amountDividedByAmount( &
+    elemental function amountDividedByAmount( &
             numerator, denomenator) result(ratio)
         class(Amount_t), intent(in) :: numerator
         class(Amount_t), intent(in) :: denomenator
@@ -297,7 +297,7 @@ contains
         ratio = numerator%mols / denomenator%mols
     end function amountDividedByAmount
 
-    function amountPlusAmount( &
+    elemental function amountPlusAmount( &
             amount1, amount2) result(new_amount)
         class(Amount_t), intent(in) :: amount1
         class(Amount_t), intent(in) :: amount2
@@ -307,7 +307,7 @@ contains
                 amount1%mols + amount2%mols
     end function amountPlusAmount
 
-    function amountMinusAmount( &
+    elemental function amountMinusAmount( &
             amount1, amount2) result(new_amount)
         class(Amount_t), intent(in) :: amount1
         class(Amount_t), intent(in) :: amount2
@@ -317,7 +317,7 @@ contains
                 amount1%mols - amount2%mols
     end function amountMinusAmount
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Amount_t), intent(in) :: lhs
         class(Amount_t), intent(in) :: rhs
         logical :: greaterThan
@@ -325,7 +325,7 @@ contains
         greaterThan = lhs%mols > rhs%mols
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Amount_t), intent(in) :: lhs
         class(Amount_t), intent(in) :: rhs
         logical :: lessThan
@@ -333,7 +333,7 @@ contains
         lessThan = lhs%mols < rhs%mols
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Amount_t), intent(in) :: lhs
         class(Amount_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -341,7 +341,7 @@ contains
         greaterThanOrEqual = lhs%mols >= rhs%mols
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Amount_t), intent(in) :: lhs
         class(Amount_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -349,7 +349,7 @@ contains
         lessThanOrEqual = lhs%mols <= rhs%mols
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Amount_t), intent(in) :: lhs
@@ -383,7 +383,7 @@ contains
                 lhs%mols, rhs%mols, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Amount_t), intent(in) :: lhs
         class(Amount_t), intent(in) :: rhs
         logical :: notEqual

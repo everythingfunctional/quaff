@@ -224,7 +224,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(temperature)
+    elemental function fromUnits(value_, units) result(temperature)
         double precision, intent(in) :: value_
         type(TemperatureUnit_t), intent(in) :: units
         type(Temperature_t) :: temperature
@@ -232,7 +232,7 @@ contains
         temperature%kelvin = (value_ + units%difference) / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(temperature)
+    elemental function toUnits(self, units) result(temperature)
         class(Temperature_t), intent(in) :: self
         class(TemperatureUnit_t), intent(in) :: units
         double precision :: temperature
@@ -240,7 +240,7 @@ contains
         temperature = self%kelvin * units%conversion_factor - units%difference
     end function toUnits
 
-    function doubleTimesTemperature( &
+    elemental function doubleTimesTemperature( &
             multiplier, temperature) result(new_temperature)
         double precision, intent(in) :: multiplier
         class(Temperature_t), intent(in) :: temperature
@@ -250,7 +250,7 @@ contains
                 multiplier * temperature%kelvin
     end function doubleTimesTemperature
 
-    function integerTimesTemperature( &
+    elemental function integerTimesTemperature( &
             multiplier, temperature) result(new_temperature)
         integer, intent(in) :: multiplier
         class(Temperature_t), intent(in) :: temperature
@@ -260,7 +260,7 @@ contains
                 dble(multiplier) * temperature%kelvin
     end function integerTimesTemperature
 
-    function temperatureTimesDouble( &
+    elemental function temperatureTimesDouble( &
             temperature, multiplier) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         double precision, intent(in) :: multiplier
@@ -270,7 +270,7 @@ contains
                 temperature%kelvin * multiplier
     end function temperatureTimesDouble
 
-    function temperatureTimesInteger( &
+    elemental function temperatureTimesInteger( &
             temperature, multiplier) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         integer, intent(in) :: multiplier
@@ -280,7 +280,7 @@ contains
                 temperature%kelvin * dble(multiplier)
     end function temperatureTimesInteger
 
-    function temperatureDividedByDouble( &
+    elemental function temperatureDividedByDouble( &
             temperature, divisor) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         double precision, intent(in) :: divisor
@@ -290,7 +290,7 @@ contains
                 temperature%kelvin / divisor
     end function temperatureDividedByDouble
 
-    function temperatureDividedByInteger( &
+    elemental function temperatureDividedByInteger( &
             temperature, divisor) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature
         integer, intent(in) :: divisor
@@ -300,7 +300,7 @@ contains
                 temperature%kelvin / dble(divisor)
     end function temperatureDividedByInteger
 
-    function temperatureDividedByTemperature( &
+    elemental function temperatureDividedByTemperature( &
             numerator, denomenator) result(ratio)
         class(Temperature_t), intent(in) :: numerator
         class(Temperature_t), intent(in) :: denomenator
@@ -309,7 +309,7 @@ contains
         ratio = numerator%kelvin / denomenator%kelvin
     end function temperatureDividedByTemperature
 
-    function temperaturePlusTemperature( &
+    elemental function temperaturePlusTemperature( &
             temperature1, temperature2) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature1
         class(Temperature_t), intent(in) :: temperature2
@@ -319,7 +319,7 @@ contains
                 temperature1%kelvin + temperature2%kelvin
     end function temperaturePlusTemperature
 
-    function temperatureMinusTemperature( &
+    elemental function temperatureMinusTemperature( &
             temperature1, temperature2) result(new_temperature)
         class(Temperature_t), intent(in) :: temperature1
         class(Temperature_t), intent(in) :: temperature2
@@ -329,7 +329,7 @@ contains
                 temperature1%kelvin - temperature2%kelvin
     end function temperatureMinusTemperature
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Temperature_t), intent(in) :: lhs
         class(Temperature_t), intent(in) :: rhs
         logical :: greaterThan
@@ -337,7 +337,7 @@ contains
         greaterThan = lhs%kelvin > rhs%kelvin
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Temperature_t), intent(in) :: lhs
         class(Temperature_t), intent(in) :: rhs
         logical :: lessThan
@@ -345,7 +345,7 @@ contains
         lessThan = lhs%kelvin < rhs%kelvin
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Temperature_t), intent(in) :: lhs
         class(Temperature_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -353,7 +353,7 @@ contains
         greaterThanOrEqual = lhs%kelvin >= rhs%kelvin
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Temperature_t), intent(in) :: lhs
         class(Temperature_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -361,7 +361,7 @@ contains
         lessThanOrEqual = lhs%kelvin <= rhs%kelvin
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Temperature_t), intent(in) :: lhs
@@ -395,7 +395,7 @@ contains
                 lhs%kelvin, rhs%kelvin, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Temperature_t), intent(in) :: lhs
         class(Temperature_t), intent(in) :: rhs
         logical :: notEqual

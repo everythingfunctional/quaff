@@ -212,7 +212,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(area)
+    elemental function fromUnits(value_, units) result(area)
         double precision, intent(in) :: value_
         type(AreaUnit_t), intent(in) :: units
         type(Area_t) :: area
@@ -220,7 +220,7 @@ contains
         area%square_meters = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(area)
+    elemental function toUnits(self, units) result(area)
         class(Area_t), intent(in) :: self
         class(AreaUnit_t), intent(in) :: units
         double precision :: area
@@ -228,7 +228,7 @@ contains
         area = self%square_meters * units%conversion_factor
     end function toUnits
 
-    function doubleTimesArea( &
+    elemental function doubleTimesArea( &
             multiplier, area) result(new_area)
         double precision, intent(in) :: multiplier
         class(Area_t), intent(in) :: area
@@ -238,7 +238,7 @@ contains
                 multiplier * area%square_meters
     end function doubleTimesArea
 
-    function integerTimesArea( &
+    elemental function integerTimesArea( &
             multiplier, area) result(new_area)
         integer, intent(in) :: multiplier
         class(Area_t), intent(in) :: area
@@ -248,7 +248,7 @@ contains
                 dble(multiplier) * area%square_meters
     end function integerTimesArea
 
-    function areaTimesDouble( &
+    elemental function areaTimesDouble( &
             area, multiplier) result(new_area)
         class(Area_t), intent(in) :: area
         double precision, intent(in) :: multiplier
@@ -258,7 +258,7 @@ contains
                 area%square_meters * multiplier
     end function areaTimesDouble
 
-    function areaTimesInteger( &
+    elemental function areaTimesInteger( &
             area, multiplier) result(new_area)
         class(Area_t), intent(in) :: area
         integer, intent(in) :: multiplier
@@ -268,7 +268,7 @@ contains
                 area%square_meters * dble(multiplier)
     end function areaTimesInteger
 
-    function areaDividedByDouble( &
+    elemental function areaDividedByDouble( &
             area, divisor) result(new_area)
         class(Area_t), intent(in) :: area
         double precision, intent(in) :: divisor
@@ -278,7 +278,7 @@ contains
                 area%square_meters / divisor
     end function areaDividedByDouble
 
-    function areaDividedByInteger( &
+    elemental function areaDividedByInteger( &
             area, divisor) result(new_area)
         class(Area_t), intent(in) :: area
         integer, intent(in) :: divisor
@@ -288,7 +288,7 @@ contains
                 area%square_meters / dble(divisor)
     end function areaDividedByInteger
 
-    function areaDividedByArea( &
+    elemental function areaDividedByArea( &
             numerator, denomenator) result(ratio)
         class(Area_t), intent(in) :: numerator
         class(Area_t), intent(in) :: denomenator
@@ -297,7 +297,7 @@ contains
         ratio = numerator%square_meters / denomenator%square_meters
     end function areaDividedByArea
 
-    function areaPlusArea( &
+    elemental function areaPlusArea( &
             area1, area2) result(new_area)
         class(Area_t), intent(in) :: area1
         class(Area_t), intent(in) :: area2
@@ -307,7 +307,7 @@ contains
                 area1%square_meters + area2%square_meters
     end function areaPlusArea
 
-    function areaMinusArea( &
+    elemental function areaMinusArea( &
             area1, area2) result(new_area)
         class(Area_t), intent(in) :: area1
         class(Area_t), intent(in) :: area2
@@ -317,7 +317,7 @@ contains
                 area1%square_meters - area2%square_meters
     end function areaMinusArea
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Area_t), intent(in) :: lhs
         class(Area_t), intent(in) :: rhs
         logical :: greaterThan
@@ -325,7 +325,7 @@ contains
         greaterThan = lhs%square_meters > rhs%square_meters
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Area_t), intent(in) :: lhs
         class(Area_t), intent(in) :: rhs
         logical :: lessThan
@@ -333,7 +333,7 @@ contains
         lessThan = lhs%square_meters < rhs%square_meters
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Area_t), intent(in) :: lhs
         class(Area_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -341,7 +341,7 @@ contains
         greaterThanOrEqual = lhs%square_meters >= rhs%square_meters
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Area_t), intent(in) :: lhs
         class(Area_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -349,7 +349,7 @@ contains
         lessThanOrEqual = lhs%square_meters <= rhs%square_meters
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Area_t), intent(in) :: lhs
@@ -383,7 +383,7 @@ contains
                 lhs%square_meters, rhs%square_meters, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Area_t), intent(in) :: lhs
         class(Area_t), intent(in) :: rhs
         logical :: notEqual

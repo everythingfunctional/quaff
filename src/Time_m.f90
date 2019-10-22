@@ -212,7 +212,7 @@ contains
                 Procedure_("fromStringWithUnitsS"))
     end function fromStringWithUnitsS
 
-    function fromUnits(value_, units) result(time)
+    elemental function fromUnits(value_, units) result(time)
         double precision, intent(in) :: value_
         type(TimeUnit_t), intent(in) :: units
         type(Time_t) :: time
@@ -220,7 +220,7 @@ contains
         time%seconds = value_ / units%conversion_factor
     end function fromUnits
 
-    function toUnits(self, units) result(time)
+    elemental function toUnits(self, units) result(time)
         class(Time_t), intent(in) :: self
         class(TimeUnit_t), intent(in) :: units
         double precision :: time
@@ -228,7 +228,7 @@ contains
         time = self%seconds * units%conversion_factor
     end function toUnits
 
-    function doubleTimesTime( &
+    elemental function doubleTimesTime( &
             multiplier, time) result(new_time)
         double precision, intent(in) :: multiplier
         class(Time_t), intent(in) :: time
@@ -238,7 +238,7 @@ contains
                 multiplier * time%seconds
     end function doubleTimesTime
 
-    function integerTimesTime( &
+    elemental function integerTimesTime( &
             multiplier, time) result(new_time)
         integer, intent(in) :: multiplier
         class(Time_t), intent(in) :: time
@@ -248,7 +248,7 @@ contains
                 dble(multiplier) * time%seconds
     end function integerTimesTime
 
-    function timeTimesDouble( &
+    elemental function timeTimesDouble( &
             time, multiplier) result(new_time)
         class(Time_t), intent(in) :: time
         double precision, intent(in) :: multiplier
@@ -258,7 +258,7 @@ contains
                 time%seconds * multiplier
     end function timeTimesDouble
 
-    function timeTimesInteger( &
+    elemental function timeTimesInteger( &
             time, multiplier) result(new_time)
         class(Time_t), intent(in) :: time
         integer, intent(in) :: multiplier
@@ -268,7 +268,7 @@ contains
                 time%seconds * dble(multiplier)
     end function timeTimesInteger
 
-    function timeDividedByDouble( &
+    elemental function timeDividedByDouble( &
             time, divisor) result(new_time)
         class(Time_t), intent(in) :: time
         double precision, intent(in) :: divisor
@@ -278,7 +278,7 @@ contains
                 time%seconds / divisor
     end function timeDividedByDouble
 
-    function timeDividedByInteger( &
+    elemental function timeDividedByInteger( &
             time, divisor) result(new_time)
         class(Time_t), intent(in) :: time
         integer, intent(in) :: divisor
@@ -288,7 +288,7 @@ contains
                 time%seconds / dble(divisor)
     end function timeDividedByInteger
 
-    function timeDividedByTime( &
+    elemental function timeDividedByTime( &
             numerator, denomenator) result(ratio)
         class(Time_t), intent(in) :: numerator
         class(Time_t), intent(in) :: denomenator
@@ -297,7 +297,7 @@ contains
         ratio = numerator%seconds / denomenator%seconds
     end function timeDividedByTime
 
-    function timePlusTime( &
+    elemental function timePlusTime( &
             time1, time2) result(new_time)
         class(Time_t), intent(in) :: time1
         class(Time_t), intent(in) :: time2
@@ -307,7 +307,7 @@ contains
                 time1%seconds + time2%seconds
     end function timePlusTime
 
-    function timeMinusTime( &
+    elemental function timeMinusTime( &
             time1, time2) result(new_time)
         class(Time_t), intent(in) :: time1
         class(Time_t), intent(in) :: time2
@@ -317,7 +317,7 @@ contains
                 time1%seconds - time2%seconds
     end function timeMinusTime
 
-    function greaterThan(lhs, rhs)
+    elemental function greaterThan(lhs, rhs)
         class(Time_t), intent(in) :: lhs
         class(Time_t), intent(in) :: rhs
         logical :: greaterThan
@@ -325,7 +325,7 @@ contains
         greaterThan = lhs%seconds > rhs%seconds
     end function greaterThan
 
-    function lessThan(lhs,rhs)
+    elemental function lessThan(lhs,rhs)
         class(Time_t), intent(in) :: lhs
         class(Time_t), intent(in) :: rhs
         logical :: lessThan
@@ -333,7 +333,7 @@ contains
         lessThan = lhs%seconds < rhs%seconds
     end function lessThan
 
-    function greaterThanOrEqual(lhs, rhs)
+    elemental function greaterThanOrEqual(lhs, rhs)
         class(Time_t), intent(in) :: lhs
         class(Time_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
@@ -341,7 +341,7 @@ contains
         greaterThanOrEqual = lhs%seconds >= rhs%seconds
     end function greaterThanOrEqual
 
-    function lessThanOrEqual(lhs, rhs)
+    elemental function lessThanOrEqual(lhs, rhs)
         class(Time_t), intent(in) :: lhs
         class(Time_t), intent(in) :: rhs
         logical :: lessThanOrEqual
@@ -349,7 +349,7 @@ contains
         lessThanOrEqual = lhs%seconds <= rhs%seconds
     end function lessThanOrEqual
 
-    function equal_(lhs,rhs)
+    elemental function equal_(lhs,rhs)
         use Miscellaneous_m, only: operator(.safeEq.)
 
         class(Time_t), intent(in) :: lhs
@@ -383,7 +383,7 @@ contains
                 lhs%seconds, rhs%seconds, within)
     end function equalWithinRelative
 
-    function notEqual(lhs, rhs)
+    elemental function notEqual(lhs, rhs)
         class(Time_t), intent(in) :: lhs
         class(Time_t), intent(in) :: rhs
         logical :: notEqual
