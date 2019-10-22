@@ -205,7 +205,7 @@ contains
         type(TestItem_t) :: the_test
         type(TestResultItem_t) :: the_result
 
-        the_test = It(char(units%toString()), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
+        the_test = It(units%toString(), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
@@ -272,7 +272,7 @@ contains
         type(TestItem_t) :: the_test
         type(TestResultItem_t) :: the_result
 
-        the_test = It(char(units%toString()), DOUBLE_PRECISION_GENERATOR, doCheck)
+        the_test = It(units%toString(), DOUBLE_PRECISION_GENERATOR, doCheck)
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
@@ -284,7 +284,7 @@ contains
                     amountFromString
             use Amount_asserts_m, only: assertEquals
             use Vegetables_m, only: &
-                    DoublePrecisionInput_t, Input_t, Result_t, assertEquals, fail
+                    DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
 
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
@@ -302,7 +302,7 @@ contains
                         assertEquals( &
                                 original_amount, &
                                 new_amount) &
-                        .and.assertEquals(0, size(errors), "Errors")
+                        .and.assertNot(errors%hasAny(), errors%toString())
             class default
                 result__ = fail("Expected to get a DoublePrecisionInput_t")
             end select
