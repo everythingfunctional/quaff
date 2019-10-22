@@ -56,7 +56,6 @@ contains
     end function test_length
 
     function checkRoundTrip(units) result(result_)
-        use Check_round_trip_in_m, only: checkRoundTripIn
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: units
@@ -71,7 +70,6 @@ contains
     end function checkRoundTrip
 
     function checkConversionFactorsInverse(pair) result(result_)
-        use Check_conversion_factor_m, only: checkConversionFactorsAreInverse
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: pair
@@ -86,32 +84,14 @@ contains
     end function checkConversionFactorsInverse
 
     function checkToAndFromString(units) result(result_)
-        use Error_list_m, only: ErrorList_t, size
-        use Length_m, only: &
-                Length_t, &
-                operator(.unit.), &
-                lengthFromString
-        use Length_asserts_m, only: assertEquals
-        use Vegetables_m, only: Input_t, Result_t, assertEquals, fail
+        use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: units
         type(Result_t) :: result_
 
-        type(ErrorList_t) :: errors
-        type(Length_t) :: original_length
-        type(Length_t) :: new_length
-
         select type (units)
         type is (UnitsInput_t)
-            original_length = 3.0d0.unit.units%unit
-            new_length = lengthFromString( &
-                    original_length%toStringIn(units%unit), errors)
-            result_ = &
-                    assertEquals( &
-                            original_length, &
-                            new_length, &
-                            units%unit%toString()) &
-                    .and.assertEquals(0, size(errors), "Errors")
+            result_ = checkStringTrip(units%unit)
         class default
             result_ = fail("Expected to get an UnitsInput_t")
         end select
@@ -211,4 +191,121 @@ contains
             end if
         end function combinations
     end function makeUnitsExamples
+
+    function checkRoundTripIn(units) result(result_)
+        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+        use iso_varying_string, only: char
+        use Length_m, only: LengthUnit_t
+        use Vegetables_m, only: &
+                Result_t, TestItem_t, TestResultItem_t, assertThat, It
+
+        type(LengthUnit_t), intent(in) :: units
+        type(Result_t) :: result_
+
+        type(TestItem_t) :: the_test
+        type(TestResultItem_t) :: the_result
+
+        the_test = It(char(units%toString()), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
+        the_result = the_test%run()
+        result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
+    contains
+        function checkRoundTrip_(input) result(result__)
+            use Length_m, only: Length_t, operator(.unit.)
+            use Vegetables_m, only: &
+                    DoublePrecisionInput_t, &
+                    Input_t, &
+                    Result_t, &
+                    assertEqualsWithinRelative, &
+                    fail
+
+            class(Input_t), intent(in) :: input
+            type(Result_t) :: result__
+
+            type(Length_t) :: intermediate
+
+            select type (input)
+            type is (DoublePrecisionInput_t)
+                intermediate = input%value_.unit.units
+                result__ = assertEqualsWithinRelative( &
+                        input%value_, &
+                        intermediate.in.units, &
+                        1.0d-12)
+            class default
+                result__ = fail("Expected to get a DoublePrecisionInput_t")
+            end select
+        end function checkRoundTrip_
+    end function checkRoundTripIn
+
+    function checkConversionFactorsAreInverse( &
+            from, to) result(result_)
+        use Length_m, only: &
+                Length_t, LengthUnit_t, operator(.unit.)
+        use iso_varying_string, only: operator(//)
+        use Vegetables_m, only: Result_t, assertEqualsWithinRelative
+
+        type(LengthUnit_t), intent(in) :: to
+        type(LengthUnit_t), intent(in) :: from
+        type(Result_t) :: result_
+
+        double precision :: factor1
+        double precision :: factor2
+
+        factor1 = (1.0d0.unit.from).in.to
+        factor2 = (1.0d0.unit.to).in.from
+        result_ = assertEqualsWithinRelative( &
+                factor1, &
+                1.0d0 / factor2, &
+                1.0d-12, &
+                from%toString() // " to " // to%toString())
+    end function checkConversionFactorsAreInverse
+
+    function checkStringTrip(units) result(result_)
+        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+        use iso_varying_string, only: char
+        use Length_m, only: LengthUnit_t
+        use Vegetables_m, only: &
+                Result_t, TestItem_t, TestResultItem_t, assertThat, It
+
+        type(LengthUnit_t), intent(in) :: units
+        type(Result_t) :: result_
+
+        type(TestItem_t) :: the_test
+        type(TestResultItem_t) :: the_result
+
+        the_test = It(char(units%toString()), DOUBLE_PRECISION_GENERATOR, doCheck)
+        the_result = the_test%run()
+        result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
+    contains
+        function doCheck(input) result(result__)
+            use Error_list_m, only: ErrorList_t, size
+            use Length_m, only: &
+                    Length_t, &
+                    operator(.unit.), &
+                    lengthFromString
+            use Length_asserts_m, only: assertEquals
+            use Vegetables_m, only: &
+                    DoublePrecisionInput_t, Input_t, Result_t, assertEquals, fail
+
+            class(Input_t), intent(in) :: input
+            type(Result_t) :: result__
+
+            type(ErrorList_t) :: errors
+            type(Length_t) :: original_length
+            type(Length_t) :: new_length
+
+            select type (input)
+            type is (DoublePrecisionInput_t)
+                original_length = input%value_.unit.units
+                new_length = lengthFromString( &
+                        original_length%toStringIn(units), errors)
+                result__ = &
+                        assertEquals( &
+                                original_length, &
+                                new_length) &
+                        .and.assertEquals(0, size(errors), "Errors")
+            class default
+                result__ = fail("Expected to get a DoublePrecisionInput_t")
+            end select
+        end function doCheck
+    end function checkStringTrip
 end module length_type_test
