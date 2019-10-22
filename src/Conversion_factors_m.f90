@@ -28,4 +28,7 @@ module Conversion_factors_m
     double precision, parameter :: MINUTES_PER_HOUR = 60.0d0
     double precision, parameter :: SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR
     double precision, parameter :: HOURS_PER_SECOND = 1.0d0 / SECONDS_PER_HOUR
+
+    ! Area
+    double precision, parameter :: SQUARE_CENTIMETERS_PER_SQUARE_METER = CENTIMETERS_PER_METER**2
 end module Conversion_factors_m
