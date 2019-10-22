@@ -34,4 +34,7 @@ module Conversion_factors_m
 
     ! Volume
     double precision, parameter :: CUBIC_CENTIMETERS_PER_CUBIC_METER = CENTIMETERS_PER_METER**3
+
+    ! Density
+    double precision, parameter :: GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER = GRAMS_PER_KILOGRAM
 end module Conversion_factors_m
