@@ -31,4 +31,7 @@ module Conversion_factors_m
 
     ! Area
     double precision, parameter :: SQUARE_CENTIMETERS_PER_SQUARE_METER = CENTIMETERS_PER_METER**2
+
+    ! Volume
+    double precision, parameter :: CUBIC_CENTIMETERS_PER_CUBIC_METER = CENTIMETERS_PER_METER**3
 end module Conversion_factors_m
