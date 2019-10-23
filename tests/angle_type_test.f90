@@ -98,7 +98,7 @@ contains
     end function checkToAndFromString
 
     function checkBadString() result(result_)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t
         use Angle_m, only: Angle_t, angleFromString
         use Miscellaneous_m, only: PARSE_ERROR
         use Vegetables_m, only: Result_t, assertThat
@@ -113,7 +113,7 @@ contains
     end function checkBadString
 
     function checkBadUnit() result(result_)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t
         use Angle_m, only: &
                 Angle_t, angleFromString, RADIANS
         use Miscellaneous_m, only: UNKNOWN_UNIT
@@ -129,7 +129,7 @@ contains
     end function checkBadUnit
 
     function checkBadNumber() result(result_)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t
         use Angle_m, only: Angle_t, angleFromString
         use Miscellaneous_m, only: PARSE_ERROR
         use Vegetables_m, only: Result_t, assertThat
@@ -277,7 +277,7 @@ contains
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
         function doCheck(input) result(result__)
-            use Error_list_m, only: ErrorList_t, size
+            use erloff, only: ErrorList_t, size
             use Angle_m, only: &
                     Angle_t, &
                     operator(.unit.), &

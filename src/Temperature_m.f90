@@ -142,10 +142,8 @@ module Temperature_m
             temperatureUnitFromString
 contains
     function fromStringBasicC(string, errors) result(temperature)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Module_, Procedure_
         use iso_varying_string, only: var_str
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
 
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
@@ -162,10 +160,8 @@ contains
     end function fromStringBasicC
 
     function fromStringBasicS(string, errors) result(temperature)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Module_, Procedure_
         use iso_varying_string, only: VARYING_STRING
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
 
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
@@ -182,10 +178,8 @@ contains
     end function fromStringBasicS
 
     function fromStringWithUnitsC(string, units, errors) result(temperature)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Module_, Procedure_
         use iso_varying_string, only: var_str
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
 
         character(len=*), intent(in) :: string
         type(TemperatureUnit_t), intent(in) :: units(:)
@@ -203,7 +197,7 @@ contains
     end function fromStringWithUnitsC
 
     function fromStringWithUnitsS(string, units, errors) result(temperature)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
         use iso_varying_string, only: &
                 VARYING_STRING, &
                 assignment(=), &
@@ -211,10 +205,7 @@ contains
                 operator(==), &
                 len, &
                 split
-        use Message_m, only: Fatal
         use Miscellaneous_m, only: PARSE_ERROR
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
         use strff, only: join
 
         type(VARYING_STRING), intent(in) :: string
@@ -578,10 +569,8 @@ contains
     end function toLatexStringInWithPrecision
 
     function unitFromStringBasicC(string, errors) result(unit)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Module_, Procedure_
         use iso_varying_string, only: var_str
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
 
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
@@ -598,10 +587,8 @@ contains
     end function unitFromStringBasicC
 
     function unitFromStringBasicS(string, errors) result(unit)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Module_, Procedure_
         use iso_varying_string, only: VARYING_STRING
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
 
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
@@ -618,10 +605,8 @@ contains
     end function unitFromStringBasicS
 
     function unitFromStringWithUnitsC(string, units, errors) result(unit)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Module_, Procedure_
         use iso_varying_string, only: var_str
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
 
         character(len=*), intent(in) :: string
         type(TemperatureUnit_t), intent(in) :: units(:)
@@ -638,12 +623,9 @@ contains
     end function unitFromStringWithUnitsC
 
     function unitFromStringWithUnitsS(string, units, errors) result(unit)
-        use Error_list_m, only: ErrorList_t
+        use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
         use iso_varying_string, only: VARYING_STRING, operator(==), operator(//)
-        use Message_m, only: Fatal
         use Miscellaneous_m, only: UNKNOWN_UNIT
-        use Module_m, only: Module_
-        use Procedure_m, only: Procedure_
         use strff, only: join
 
         type(VARYING_STRING), intent(in) :: string
