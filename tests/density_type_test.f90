@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Density_t) :: length
 
-        length = densityFromString("bad kg/(m^3)", errors)
+        length = densityFromString("bad kg/m^3", errors)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 

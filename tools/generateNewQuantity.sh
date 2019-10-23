@@ -7,10 +7,12 @@ quantity_lower="${4}"
 units_lower="${5}"
 UNITS_CAPITAL="${6}"
 unit_sym="${7}"
+gnu_sym="${8}"
+ltx_sym="${9}"
 
-if [[ $# -ne 7 ]]; then
+if [[ $# -ne 9 ]]; then
     echo "Usage:"
-    echo "    ${0} Quantity_module quantitySnake QuantityCamel quantity_lower units_lower UNITS_CAPITAL unit_symbol"
+    echo "    ${0} Quantity_module quantitySnake QuantityCamel quantity_lower units_lower UNITS_CAPITAL unit_symbol gnuplot_symbol latex_symbol"
     exit
 fi
 
@@ -27,6 +29,8 @@ sed "s|Quantity_module|${Quantity_module}|g" "src/Quantity_module_m.f90" \
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
+    | sed "s|gnu_sym|${gnu_sym}|g" \
+    | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_module_name}"
 
 sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_type_test.f90" \
@@ -36,6 +40,8 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_type_test.f90
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
+    | sed "s|gnu_sym|${gnu_sym}|g" \
+    | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_type_test_name}"
 
 sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_math_operators_test.f90" \
@@ -45,6 +51,8 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_math_operator
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
+    | sed "s|gnu_sym|${gnu_sym}|g" \
+    | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_math_test_name}"
 
 sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_logical_operators_test.f90" \
@@ -54,6 +62,8 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_logical_opera
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
+    | sed "s|gnu_sym|${gnu_sym}|g" \
+    | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_logical_test_name}"
 
 sed "s|Quantity_module|${Quantity_module}|g" "tests/test_helpers/assertions/Quantity_module_asserts_m.f90" \
@@ -63,4 +73,6 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/test_helpers/assertions/Quan
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
+    | sed "s|gnu_sym|${gnu_sym}|g" \
+    | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_asserts_name}"

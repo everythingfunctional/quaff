@@ -47,15 +47,41 @@ module Volume_m
                 equal_, equalWithinAbsolute, equalWithinRelative
         procedure :: notEqual
         generic, public :: operator(/=) => notEqual
-        procedure, public :: toString
-        procedure, public :: toStringIn
+        procedure :: toStringFullPrecision
+        procedure :: toStringWithPrecision
+        generic, public :: toString => &
+                toStringFullPrecision, toStringWithPrecision
+        procedure :: toStringInFullPrecision
+        procedure :: toStringInWithPrecision
+        generic, public :: toStringIn => &
+                toStringInFullPrecision, toStringInWithPrecision
+        procedure :: toGnuplotStringFullPrecision
+        procedure :: toGnuplotStringWithPrecision
+        generic, public :: toGnuplotString => &
+                toGnuplotStringFullPrecision, toGnuplotStringWithPrecision
+        procedure :: toGnuplotStringInFullPrecision
+        procedure :: toGnuplotStringInWithPrecision
+        generic, public :: toGnuplotStringIn => &
+                toGnuplotStringInFullPrecision, toGnuplotStringInWithPrecision
+        procedure :: toLatexStringFullPrecision
+        procedure :: toLatexStringWithPrecision
+        generic, public :: toLatexString => &
+                toLatexStringFullPrecision, toLatexStringWithPrecision
+        procedure :: toLatexStringInFullPrecision
+        procedure :: toLatexStringInWithPrecision
+        generic, public :: toLatexStringIn => &
+                toLatexStringInFullPrecision, toLatexStringInWithPrecision
     end type Volume_t
 
     type, public :: VolumeUnit_t
         double precision :: conversion_factor
         character(len=10) :: symbol
+        character(len=50) :: gnuplot_symbol
+        character(len=100) :: latex_symbol
     contains
         procedure :: toString => unitToString
+        procedure :: toGnuplotString => unitToGnuplotString
+        procedure :: toLatexString => unitToLatexString
     end type VolumeUnit_t
 
     interface operator(.unit.)
@@ -79,11 +105,15 @@ module Volume_m
     type(VolumeUnit_t), parameter, public :: CUBIC_CENTIMETERS = &
             VolumeUnit_t( &
                     conversion_factor = CUBIC_CENTIMETERS_PER_CUBIC_METER, &
-                    symbol = "cm^3")
+                    symbol = "cm^3", &
+                    gnuplot_symbol = "cm^3", &
+                    latex_symbol = "\cubic\meter")
     type(VolumeUnit_t), parameter, public :: CUBIC_METERS = &
             VolumeUnit_t( &
                     conversion_factor = 1.0d0, &
-                    symbol = "m^3")
+                    symbol = "m^3", &
+                    gnuplot_symbol = "m^3", &
+                    latex_symbol = "\cubic\meter")
 
     type(VolumeUnit_t), public :: DEFAULT_OUTPUT_UNITS = CUBIC_METERS
 
@@ -391,16 +421,26 @@ contains
         notEqual = .not. lhs == rhs
     end function notEqual
 
-    function toString(self) result(string)
+    function toStringFullPrecision(self) result(string)
         use iso_varying_string, only: VARYING_STRING
 
         class(Volume_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toString
+    end function toStringFullPrecision
 
-    function toStringIn(self, units) result(string)
+    function toStringWithPrecision(self, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Volume_t), intent(in) :: self
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = self%toStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
+    end function toStringWithPrecision
+
+    function toStringInFullPrecision(self, units) result(string)
         use iso_varying_string, only: VARYING_STRING, operator(//)
         use strff, only: toString
 
@@ -409,7 +449,117 @@ contains
         type(VARYING_STRING) :: string
 
         string = toString(self.in.units) // " " // units%toString()
-    end function toStringIn
+    end function toStringInFullPrecision
+
+    function toStringInWithPrecision( &
+            self, units, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use strff, only: toString
+
+        class(Volume_t), intent(in) :: self
+        class(VolumeUnit_t), intent(in) :: units
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = &
+                toString(self.in.units, significant_digits) &
+                // " " // units%toString()
+    end function toStringInWithPrecision
+
+    function toGnuplotStringFullPrecision(self) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Volume_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
+    end function toGnuplotStringFullPrecision
+
+    function toGnuplotStringWithPrecision( &
+            self, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Volume_t), intent(in) :: self
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = self%toGnuplotStringIn( &
+                DEFAULT_OUTPUT_UNITS, significant_digits)
+    end function toGnuplotStringWithPrecision
+
+    function toGnuplotStringInFullPrecision(self, units) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use strff, only: toString
+
+        class(Volume_t), intent(in) :: self
+        class(VolumeUnit_t), intent(in) :: units
+        type(VARYING_STRING) :: string
+
+        string = toString(self.in.units) // " " // units%toGnuplotString()
+    end function toGnuplotStringInFullPrecision
+
+    function toGnuplotStringInWithPrecision( &
+            self, units, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use strff, only: toString
+
+        class(Volume_t), intent(in) :: self
+        class(VolumeUnit_t), intent(in) :: units
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = &
+                toString(self.in.units, significant_digits) &
+                // " " // units%toGnuplotString()
+    end function toGnuplotStringInWithPrecision
+
+    function toLatexStringFullPrecision(self) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Volume_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
+    end function toLatexStringFullPrecision
+
+    function toLatexStringWithPrecision(self, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Volume_t), intent(in) :: self
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
+    end function toLatexStringWithPrecision
+
+    function toLatexStringInFullPrecision(self, units) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use Miscellaneous_m, only: wrapInLatexQuantity
+        use strff, only: toString
+
+        class(Volume_t), intent(in) :: self
+        class(VolumeUnit_t), intent(in) :: units
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity( &
+                toString(self.in.units), units%toLatexString())
+    end function toLatexStringInFullPrecision
+
+    function toLatexStringInWithPrecision( &
+            self, units, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use Miscellaneous_m, only: wrapInLatexQuantity
+        use strff, only: toString
+
+        class(Volume_t), intent(in) :: self
+        class(VolumeUnit_t), intent(in) :: units
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity( &
+                toString(self.in.units, significant_digits), &
+                units%toLatexString())
+    end function toLatexStringInWithPrecision
 
     function unitFromStringBasicC(string, errors) result(unit)
         use Error_list_m, only: ErrorList_t
@@ -514,4 +664,22 @@ contains
 
         string = trim(self%symbol)
     end function unitToString
+
+    function unitToGnuplotString(self) result(string)
+        use iso_varying_string, only: VARYING_STRING, assignment(=)
+
+        class(VolumeUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%gnuplot_symbol)
+    end function unitToGnuplotString
+
+    function unitToLatexString(self) result(string)
+        use iso_varying_string, only: VARYING_STRING, assignment(=)
+
+        class(VolumeUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%latex_symbol)
+    end function unitToLatexString
 end module Volume_m

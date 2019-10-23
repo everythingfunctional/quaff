@@ -8,6 +8,18 @@ module Miscellaneous_m
         module procedure safeEq
     end interface operator(.safeEq.)
 
+    interface wrapInLatexQuantity
+        module procedure wrapInLatexQuantityCC
+        module procedure wrapInLatexQuantityCS
+        module procedure wrapInLatexQuantitySC
+        module procedure wrapInLatexQuantitySS
+    end interface wrapInLatexQuantity
+
+    interface wrapInLatexUnit
+        module procedure wrapInLatexUnitC
+        module procedure wrapInLatexUnitS
+    end interface wrapInLatexUnit
+
     double precision, parameter :: MACHINE_EPSILON = epsilon(1.0d0)
 
     type(MessageType_t), parameter, public :: PARSE_ERROR = &
@@ -19,7 +31,9 @@ module Miscellaneous_m
             effectivelyZero, &
             equalWithinAbsolute, &
             equalWithinRelative, &
-            operator(.safeEq.)
+            operator(.safeEq.), &
+            wrapInLatexQuantity, &
+            wrapInLatexUnit
 contains
     elemental function effectivelyZero(a)
         double precision, intent(in) :: a
@@ -55,4 +69,62 @@ contains
 
         safeEq = equalWithinRelative(a, b, MACHINE_EPSILON)
     end function safeEq
+
+    function wrapInLatexQuantityCC(number, units) result(latex_command)
+        use iso_varying_string, only: VARYING_STRING, var_str
+
+        character(len=*), intent(in) :: number
+        character(len=*), intent(in) :: units
+        type(VARYING_STRING) :: latex_command
+
+        latex_command = wrapInLatexQuantity(var_str(number), var_str(units))
+    end function wrapInLatexQuantityCC
+
+    function wrapInLatexQuantityCS(number, units) result(latex_command)
+        use iso_varying_string, only: VARYING_STRING, var_str
+
+        character(len=*), intent(in) :: number
+        type(VARYING_STRING), intent(in) :: units
+        type(VARYING_STRING) :: latex_command
+
+        latex_command = wrapInLatexQuantity(var_str(number), units)
+    end function wrapInLatexQuantityCS
+
+    function wrapInLatexQuantitySC(number, units) result(latex_command)
+        use iso_varying_string, only: VARYING_STRING, var_str
+
+        type(VARYING_STRING), intent(in) :: number
+        character(len=*), intent(in) :: units
+        type(VARYING_STRING) :: latex_command
+
+        latex_command = wrapInLatexQuantity(number, var_str(units))
+    end function wrapInLatexQuantitySC
+
+    function wrapInLatexQuantitySS(number, units) result(latex_command)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+
+        type(VARYING_STRING), intent(in) :: number
+        type(VARYING_STRING), intent(in) :: units
+        type(VARYING_STRING) :: latex_command
+
+        latex_command = "\SI{" // number // "}{" // units // "}"
+    end function wrapInLatexQuantitySS
+
+    function wrapInLatexUnitC(units) result(latex_command)
+        use iso_varying_string, only: VARYING_STRING, var_str
+
+        character(len=*), intent(in) :: units
+        type(VARYING_STRING) :: latex_command
+
+        latex_command = wrapInLatexUnit(var_str(units))
+    end function wrapInLatexUnitC
+
+    function wrapInLatexUnitS(units) result(latex_command)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+
+        type(VARYING_STRING), intent(in) :: units
+        type(VARYING_STRING) :: latex_command
+
+        latex_command = "\si{" // units // "}"
+    end function wrapInLatexUnitS
 end module Miscellaneous_m

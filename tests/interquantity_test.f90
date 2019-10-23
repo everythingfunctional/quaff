@@ -26,13 +26,13 @@ contains
         individual_tests(6) = It( &
                 "6 m^3 / 3 m = 2 m^2", checkVolumeDividedByLength)
         individual_tests(7) = It( &
-                "6 kg / 3 m^3 = 2 kg/(m^3)", checkMassDividedByVolume)
+                "6 kg / 3 m^3 = 2 kg/m^3", checkMassDividedByVolume)
         individual_tests(8) = It( &
-                "2 kg/(m^3) * 3 m^3 = 6 kg", checkDensityTimesVolume)
+                "2 kg/m^3 * 3 m^3 = 6 kg", checkDensityTimesVolume)
         individual_tests(9) = It( &
-                "2 m^3 * 3 kg/(m^3) = 6 kg", checkVolumeTimesDensity)
+                "2 m^3 * 3 kg/m^3 = 6 kg", checkVolumeTimesDensity)
         individual_tests(10) = It( &
-                "6 kg / 3 kg/(m^3) = 2 m^3", checkMassDividedByDensity)
+                "6 kg / 3 kg/m^3 = 2 m^3", checkMassDividedByDensity)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 

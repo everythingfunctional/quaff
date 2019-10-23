@@ -47,15 +47,41 @@ module Time_m
                 equal_, equalWithinAbsolute, equalWithinRelative
         procedure :: notEqual
         generic, public :: operator(/=) => notEqual
-        procedure, public :: toString
-        procedure, public :: toStringIn
+        procedure :: toStringFullPrecision
+        procedure :: toStringWithPrecision
+        generic, public :: toString => &
+                toStringFullPrecision, toStringWithPrecision
+        procedure :: toStringInFullPrecision
+        procedure :: toStringInWithPrecision
+        generic, public :: toStringIn => &
+                toStringInFullPrecision, toStringInWithPrecision
+        procedure :: toGnuplotStringFullPrecision
+        procedure :: toGnuplotStringWithPrecision
+        generic, public :: toGnuplotString => &
+                toGnuplotStringFullPrecision, toGnuplotStringWithPrecision
+        procedure :: toGnuplotStringInFullPrecision
+        procedure :: toGnuplotStringInWithPrecision
+        generic, public :: toGnuplotStringIn => &
+                toGnuplotStringInFullPrecision, toGnuplotStringInWithPrecision
+        procedure :: toLatexStringFullPrecision
+        procedure :: toLatexStringWithPrecision
+        generic, public :: toLatexString => &
+                toLatexStringFullPrecision, toLatexStringWithPrecision
+        procedure :: toLatexStringInFullPrecision
+        procedure :: toLatexStringInWithPrecision
+        generic, public :: toLatexStringIn => &
+                toLatexStringInFullPrecision, toLatexStringInWithPrecision
     end type Time_t
 
     type, public :: TimeUnit_t
         double precision :: conversion_factor
         character(len=10) :: symbol
+        character(len=50) :: gnuplot_symbol
+        character(len=100) :: latex_symbol
     contains
         procedure :: toString => unitToString
+        procedure :: toGnuplotString => unitToGnuplotString
+        procedure :: toLatexString => unitToLatexString
     end type TimeUnit_t
 
     interface operator(.unit.)
@@ -76,14 +102,18 @@ module Time_m
         module procedure unitFromStringWithUnitsS
     end interface timeUnitFromString
 
-    type(TimeUnit_t), parameter, public :: SECONDS = &
-            TimeUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "s")
     type(TimeUnit_t), parameter, public :: HOURS = &
             TimeUnit_t( &
                     conversion_factor = HOURS_PER_SECOND, &
-                    symbol = "hr")
+                    symbol = "hr", &
+                    gnuplot_symbol = "hr", &
+                    latex_symbol = "\hour")
+    type(TimeUnit_t), parameter, public :: SECONDS = &
+            TimeUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    symbol = "s", &
+                    gnuplot_symbol = "s", &
+                    latex_symbol = "\second")
 
     type(TimeUnit_t), public :: DEFAULT_OUTPUT_UNITS = SECONDS
 
@@ -391,16 +421,26 @@ contains
         notEqual = .not. lhs == rhs
     end function notEqual
 
-    function toString(self) result(string)
+    function toStringFullPrecision(self) result(string)
         use iso_varying_string, only: VARYING_STRING
 
         class(Time_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toString
+    end function toStringFullPrecision
 
-    function toStringIn(self, units) result(string)
+    function toStringWithPrecision(self, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Time_t), intent(in) :: self
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = self%toStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
+    end function toStringWithPrecision
+
+    function toStringInFullPrecision(self, units) result(string)
         use iso_varying_string, only: VARYING_STRING, operator(//)
         use strff, only: toString
 
@@ -409,7 +449,117 @@ contains
         type(VARYING_STRING) :: string
 
         string = toString(self.in.units) // " " // units%toString()
-    end function toStringIn
+    end function toStringInFullPrecision
+
+    function toStringInWithPrecision( &
+            self, units, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use strff, only: toString
+
+        class(Time_t), intent(in) :: self
+        class(TimeUnit_t), intent(in) :: units
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = &
+                toString(self.in.units, significant_digits) &
+                // " " // units%toString()
+    end function toStringInWithPrecision
+
+    function toGnuplotStringFullPrecision(self) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Time_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
+    end function toGnuplotStringFullPrecision
+
+    function toGnuplotStringWithPrecision( &
+            self, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Time_t), intent(in) :: self
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = self%toGnuplotStringIn( &
+                DEFAULT_OUTPUT_UNITS, significant_digits)
+    end function toGnuplotStringWithPrecision
+
+    function toGnuplotStringInFullPrecision(self, units) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use strff, only: toString
+
+        class(Time_t), intent(in) :: self
+        class(TimeUnit_t), intent(in) :: units
+        type(VARYING_STRING) :: string
+
+        string = toString(self.in.units) // " " // units%toGnuplotString()
+    end function toGnuplotStringInFullPrecision
+
+    function toGnuplotStringInWithPrecision( &
+            self, units, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use strff, only: toString
+
+        class(Time_t), intent(in) :: self
+        class(TimeUnit_t), intent(in) :: units
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = &
+                toString(self.in.units, significant_digits) &
+                // " " // units%toGnuplotString()
+    end function toGnuplotStringInWithPrecision
+
+    function toLatexStringFullPrecision(self) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Time_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
+    end function toLatexStringFullPrecision
+
+    function toLatexStringWithPrecision(self, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING
+
+        class(Time_t), intent(in) :: self
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
+    end function toLatexStringWithPrecision
+
+    function toLatexStringInFullPrecision(self, units) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use Miscellaneous_m, only: wrapInLatexQuantity
+        use strff, only: toString
+
+        class(Time_t), intent(in) :: self
+        class(TimeUnit_t), intent(in) :: units
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity( &
+                toString(self.in.units), units%toLatexString())
+    end function toLatexStringInFullPrecision
+
+    function toLatexStringInWithPrecision( &
+            self, units, significant_digits) result(string)
+        use iso_varying_string, only: VARYING_STRING, operator(//)
+        use Miscellaneous_m, only: wrapInLatexQuantity
+        use strff, only: toString
+
+        class(Time_t), intent(in) :: self
+        class(TimeUnit_t), intent(in) :: units
+        integer, intent(in) :: significant_digits
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity( &
+                toString(self.in.units, significant_digits), &
+                units%toLatexString())
+    end function toLatexStringInWithPrecision
 
     function unitFromStringBasicC(string, errors) result(unit)
         use Error_list_m, only: ErrorList_t
@@ -514,4 +664,22 @@ contains
 
         string = trim(self%symbol)
     end function unitToString
+
+    function unitToGnuplotString(self) result(string)
+        use iso_varying_string, only: VARYING_STRING, assignment(=)
+
+        class(TimeUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%gnuplot_symbol)
+    end function unitToGnuplotString
+
+    function unitToLatexString(self) result(string)
+        use iso_varying_string, only: VARYING_STRING, assignment(=)
+
+        class(TimeUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%latex_symbol)
+    end function unitToLatexString
 end module Time_m
