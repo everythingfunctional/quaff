@@ -263,7 +263,7 @@ contains
         type(TemperatureUnit_t), intent(in) :: units
         type(Temperature_t) :: temperature
 
-        temperature%kelvin = value_ / units%conversion_factor
+        temperature%kelvin = (value_ + units%difference) / units%conversion_factor
     end function fromUnits
 
     elemental function toUnits(self, units) result(temperature)
@@ -271,7 +271,7 @@ contains
         class(TemperatureUnit_t), intent(in) :: units
         double precision :: temperature
 
-        temperature = self%kelvin * units%conversion_factor
+        temperature = self%kelvin * units%conversion_factor - units%difference
     end function toUnits
 
     elemental function doubleTimesTemperature( &
