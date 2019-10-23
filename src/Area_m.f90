@@ -5,7 +5,6 @@ module Area_m
     private
 
     type, public :: Area_t
-        private
         double precision :: square_meters
     contains
         private

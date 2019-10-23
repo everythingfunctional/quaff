@@ -6,7 +6,6 @@ module Density_m
     private
 
     type, public :: Density_t
-        private
         double precision :: kilograms_per_cubic_meter
     contains
         private

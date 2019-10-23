@@ -3,7 +3,6 @@ module Quantity_module_m
     private
 
     type, public :: QuantityCamel_t
-        private
         double precision :: units_lower
     contains
         private

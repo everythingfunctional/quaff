@@ -5,7 +5,6 @@ module Length_m
     private
 
     type, public :: Length_t
-        private
         double precision :: meters
     contains
         private

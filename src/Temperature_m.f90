@@ -8,7 +8,6 @@ module Temperature_m
     private
 
     type, public :: Temperature_t
-        private
         double precision :: kelvin
     contains
         private

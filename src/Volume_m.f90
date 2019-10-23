@@ -5,7 +5,6 @@ module Volume_m
     private
 
     type, public :: Volume_t
-        private
         double precision :: cubic_meters
     contains
         private

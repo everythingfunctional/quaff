@@ -5,7 +5,6 @@ module Angle_m
     private
 
     type, public :: Angle_t
-        private
         double precision :: radians
     contains
         private

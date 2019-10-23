@@ -5,7 +5,6 @@ module Mass_m
     private
 
     type, public :: Mass_t
-        private
         double precision :: kilograms
     contains
         private

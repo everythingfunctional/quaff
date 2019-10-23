@@ -5,7 +5,6 @@ module Amount_m
     private
 
     type, public :: Amount_t
-        private
         double precision :: mols
     contains
         private

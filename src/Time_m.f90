@@ -5,7 +5,6 @@ module Time_m
     private
 
     type, public :: Time_t
-        private
         double precision :: seconds
     contains
         private
