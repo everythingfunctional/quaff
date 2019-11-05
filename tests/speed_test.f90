@@ -5,6 +5,7 @@ module speed_test
     public :: test_speed
 contains
     function test_speed() result(tests)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: TestItem_t, Describe, It
 
         type(TestItem_t) :: tests
@@ -19,6 +20,7 @@ contains
 
     function checkInterquantitySpeed() result(result_)
         use Density_m, only: Density_t
+        use iso_varying_string ! Make the compiler happy
         use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
         use Vegetables_m, only: Result_t, assertFasterThan
         use Volume_m, only: Volume_t, operator(.unit.), CUBIC_METERS

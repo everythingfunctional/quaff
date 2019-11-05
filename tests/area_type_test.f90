@@ -1,4 +1,5 @@
 module area_type_test
+    use iso_varying_string ! Make the compiler happy
     use Area_m, only: AreaUnit_t
     use Vegetables_m, only: Example_t, Input_t
 
@@ -22,6 +23,7 @@ module area_type_test
     public :: test_area
 contains
     function test_area() result(tests)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: PROVIDED_UNITS
         use Vegetables_m, only: TestItem_t, describe, it
 
@@ -56,6 +58,7 @@ contains
     end function test_area
 
     function checkRoundTrip(units) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: units
@@ -70,6 +73,7 @@ contains
     end function checkRoundTrip
 
     function checkConversionFactorsInverse(pair) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: pair
@@ -84,6 +88,7 @@ contains
     end function checkConversionFactorsInverse
 
     function checkToAndFromString(units) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: Input_t, Result_t, fail
 
         class(Input_t), intent(in) :: units
@@ -130,8 +135,8 @@ contains
 
     function checkBadNumber() result(result_)
         use erloff, only: ErrorList_t
-        use Area_m, only: Area_t, areaFromString
         use Miscellaneous_m, only: PARSE_ERROR
+        use Area_m, only: Area_t, areaFromString
         use Vegetables_m, only: Result_t, assertThat
 
         type(Result_t) :: result_
@@ -144,6 +149,7 @@ contains
     end function checkBadNumber
 
     function makeUnitsExamples(units) result(examples)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: AreaUnit_t
         use Vegetables_m, only: Example
 
@@ -210,6 +216,7 @@ contains
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
         function checkRoundTrip_(input) result(result__)
+            use iso_varying_string ! Make the compiler happy
             use Area_m, only: Area_t, operator(.unit.)
             use Vegetables_m, only: &
                     DoublePrecisionInput_t, &

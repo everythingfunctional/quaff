@@ -1,4 +1,5 @@
 module DoublePrecisionPairGenerator_m
+    use iso_varying_string ! Make the compiler happy
     use Vegetables_m, only: Generator_t, Input_t
 
     implicit none
@@ -20,6 +21,7 @@ module DoublePrecisionPairGenerator_m
             DoublePrecisionPairGenerator_t()
 contains
     function generate(self) result(random_double)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, &
                 Generated_t, &
@@ -40,6 +42,7 @@ contains
     end function generate
 
     function shrink(input) result(shrunk)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: &
                 DoublePrecisionInput_t, &
                 Input_t, &

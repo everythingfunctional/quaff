@@ -7,6 +7,7 @@ module interquantity_test
     public :: test_interquantity_operators
 contains
     function test_interquantity_operators() result(tests)
+        use iso_varying_string ! Make the compiler happy
         use Vegetables_m, only: TestItem_t, Describe, It
 
         type(TestItem_t) :: tests
@@ -39,6 +40,7 @@ contains
     function checkLengthTimesLength() result(result_)
         use Area_m, only: operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
+        use iso_varying_string ! Make the compiler happy
         use Length_m, only: operator(.unit.), METERS
         use Vegetables_m, only: Result_t
 
@@ -51,6 +53,7 @@ contains
 
     function checkAreaDividedByLength() result(result_)
         use Area_m, only: operator(.unit.), SQUARE_METERS
+        use iso_varying_string ! Make the compiler happy
         use Length_m, only: operator(.unit.), METERS
         use Length_asserts_m, only: assertEquals
         use Vegetables_m, only: Result_t
@@ -64,6 +67,7 @@ contains
 
     function checkAreaTimesLength() result(result_)
         use Area_m, only: operator(.unit.), SQUARE_METERS
+        use iso_varying_string ! Make the compiler happy
         use Length_m, only: operator(.unit.), METERS
         use Vegetables_m, only: Result_t
         use Volume_m, only: operator(.unit.), CUBIC_METERS
@@ -78,6 +82,7 @@ contains
 
     function checkLengthTimesArea() result(result_)
         use Area_m, only: operator(.unit.), SQUARE_METERS
+        use iso_varying_string ! Make the compiler happy
         use Length_m, only: operator(.unit.), METERS
         use Vegetables_m, only: Result_t
         use Volume_m, only: operator(.unit.), CUBIC_METERS
@@ -92,6 +97,7 @@ contains
 
     function checkVolumeDividedByArea() result(result_)
         use Area_m, only: operator(.unit.), SQUARE_METERS
+        use iso_varying_string ! Make the compiler happy
         use Length_m, only: operator(.unit.), METERS
         use Length_asserts_m, only: assertEquals
         use Vegetables_m, only: Result_t
@@ -107,6 +113,7 @@ contains
     function checkVolumeDividedByLength() result(result_)
         use Area_m, only: operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
+        use iso_varying_string ! Make the compiler happy
         use Length_m, only: operator(.unit.), METERS
         use Vegetables_m, only: Result_t
         use Volume_m, only: operator(.unit.), CUBIC_METERS
@@ -121,6 +128,7 @@ contains
     function checkMassDividedByVolume() result(result_)
         use Density_m, only: operator(.unit.), KILOGRAMS_PER_CUBIC_METER
         use Density_asserts_m, only: assertEquals
+        use iso_varying_string ! Make the compiler happy
         use Mass_m, only: operator(.unit.), KILOGRAMS
         use Vegetables_m, only: Result_t
         use Volume_m, only: operator(.unit.), CUBIC_METERS
@@ -134,6 +142,7 @@ contains
 
     function checkDensityTimesVolume() result(result_)
         use Density_m, only: operator(.unit.), KILOGRAMS_PER_CUBIC_METER
+        use iso_varying_string ! Make the compiler happy
         use Mass_m, only: operator(.unit.), KILOGRAMS
         use Mass_asserts_m, only: assertEquals
         use Vegetables_m, only: Result_t
@@ -148,6 +157,7 @@ contains
 
     function checkVolumeTimesDensity() result(result_)
         use Density_m, only: operator(.unit.), KILOGRAMS_PER_CUBIC_METER
+        use iso_varying_string ! Make the compiler happy
         use Mass_m, only: operator(.unit.), KILOGRAMS
         use Mass_asserts_m, only: assertEquals
         use Vegetables_m, only: Result_t
@@ -162,6 +172,7 @@ contains
 
     function checkMassDividedByDensity() result(result_)
         use Density_m, only: operator(.unit.), KILOGRAMS_PER_CUBIC_METER
+        use iso_varying_string ! Make the compiler happy
         use Mass_m, only: operator(.unit.), KILOGRAMS
         use Vegetables_m, only: Result_t
         use Volume_m, only: operator(.unit.), CUBIC_METERS

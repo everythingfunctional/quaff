@@ -70,6 +70,7 @@ contains
     end function test_multiplication_division_operator
 
     function checkAddZero(input) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: &
                 Area_t, operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
@@ -92,6 +93,7 @@ contains
     end function checkAddZero
 
     function checkSubtractZero(input) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: &
                 Area_t, operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
@@ -142,6 +144,7 @@ contains
     end function checkAddSubtract
 
     function checkMultiplyByOne(input) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: &
                 Area_t, operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
@@ -162,6 +165,7 @@ contains
     end function checkMultiplyByOne
 
     function checkMultiplyByZero(input) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: &
                 Area_t, operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
@@ -184,6 +188,7 @@ contains
     end function checkMultiplyByZero
 
     function checkDivideByOne(input) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: &
                 Area_t, operator(.unit.), SQUARE_METERS
         use Area_asserts_m, only: assertEquals
@@ -204,6 +209,7 @@ contains
     end function checkDivideByOne
 
     function checkDivideBySelf(input) result(result_)
+        use iso_varying_string ! Make the compiler happy
         use Area_m, only: &
                 Area_t, operator(.unit.), SQUARE_METERS
         use Vegetables_m, only: &
