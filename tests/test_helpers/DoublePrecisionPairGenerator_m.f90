@@ -42,7 +42,7 @@ contains
         random_double = Generated(the_input)
     end function generate
 
-    function shrink(input) result(shrunk)
+    pure function shrink(input) result(shrunk)
         class(Input_t), intent(in) :: input
         type(ShrinkResult_t) :: shrunk
 

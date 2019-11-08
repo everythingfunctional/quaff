@@ -373,7 +373,7 @@ contains
         equal_ = lhs%units_lower .safeEq. rhs%units_lower
     end function equal_
 
-    function equalWithinAbsolute(lhs, rhs, within)
+    elemental function equalWithinAbsolute(lhs, rhs, within)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         class(QuantityCamel_t), intent(in) :: within
@@ -383,7 +383,7 @@ contains
                 lhs%units_lower, rhs%units_lower, within%units_lower)
     end function equalWithinAbsolute
 
-    function equalWithinRelative(lhs, rhs, within)
+    elemental function equalWithinRelative(lhs, rhs, within)
         class(QuantityCamel_t), intent(in) :: lhs
         class(QuantityCamel_t), intent(in) :: rhs
         double precision, intent(in) :: within
@@ -401,14 +401,14 @@ contains
         notEqual = .not. lhs == rhs
     end function notEqual
 
-    function toStringFullPrecision(self) result(string)
+    elemental function toStringFullPrecision(self) result(string)
         class(QuantityCamel_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS)
     end function toStringFullPrecision
 
-    function toStringWithPrecision(self, significant_digits) result(string)
+    elemental function toStringWithPrecision(self, significant_digits) result(string)
         class(QuantityCamel_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -416,7 +416,7 @@ contains
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
     end function toStringWithPrecision
 
-    function toStringInFullPrecision(self, units) result(string)
+    elemental function toStringInFullPrecision(self, units) result(string)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -424,7 +424,7 @@ contains
         string = toString(self.in.units) // " " // units%toString()
     end function toStringInFullPrecision
 
-    function toStringInWithPrecision( &
+    elemental function toStringInWithPrecision( &
             self, units, significant_digits) result(string)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
@@ -436,14 +436,14 @@ contains
                 // " " // units%toString()
     end function toStringInWithPrecision
 
-    function toGnuplotStringFullPrecision(self) result(string)
+    elemental function toGnuplotStringFullPrecision(self) result(string)
         class(QuantityCamel_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
     end function toGnuplotStringFullPrecision
 
-    function toGnuplotStringWithPrecision( &
+    elemental function toGnuplotStringWithPrecision( &
             self, significant_digits) result(string)
         class(QuantityCamel_t), intent(in) :: self
         integer, intent(in) :: significant_digits
@@ -453,7 +453,7 @@ contains
                 DEFAULT_OUTPUT_UNITS, significant_digits)
     end function toGnuplotStringWithPrecision
 
-    function toGnuplotStringInFullPrecision(self, units) result(string)
+    elemental function toGnuplotStringInFullPrecision(self, units) result(string)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -461,7 +461,7 @@ contains
         string = toString(self.in.units) // " " // units%toGnuplotString()
     end function toGnuplotStringInFullPrecision
 
-    function toGnuplotStringInWithPrecision( &
+    elemental function toGnuplotStringInWithPrecision( &
             self, units, significant_digits) result(string)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
@@ -473,14 +473,14 @@ contains
                 // " " // units%toGnuplotString()
     end function toGnuplotStringInWithPrecision
 
-    function toLatexStringFullPrecision(self) result(string)
+    elemental function toLatexStringFullPrecision(self) result(string)
         class(QuantityCamel_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
     end function toLatexStringFullPrecision
 
-    function toLatexStringWithPrecision(self, significant_digits) result(string)
+    elemental function toLatexStringWithPrecision(self, significant_digits) result(string)
         class(QuantityCamel_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -488,7 +488,7 @@ contains
         string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
     end function toLatexStringWithPrecision
 
-    function toLatexStringInFullPrecision(self, units) result(string)
+    elemental function toLatexStringInFullPrecision(self, units) result(string)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -497,7 +497,7 @@ contains
                 toString(self.in.units), units%toLatexString())
     end function toLatexStringInFullPrecision
 
-    function toLatexStringInWithPrecision( &
+    elemental function toLatexStringInWithPrecision( &
             self, units, significant_digits) result(string)
         class(QuantityCamel_t), intent(in) :: self
         class(QuantityCamelUnit_t), intent(in) :: units
@@ -581,21 +581,21 @@ contains
         end if
     end function unitFromStringWithUnitsS
 
-    function unitToString(self) result(string)
+    elemental function unitToString(self) result(string)
         class(QuantityCamelUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = trim(self%symbol)
     end function unitToString
 
-    function unitToGnuplotString(self) result(string)
+    elemental function unitToGnuplotString(self) result(string)
         class(QuantityCamelUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = trim(self%gnuplot_symbol)
     end function unitToGnuplotString
 
-    function unitToLatexString(self) result(string)
+    elemental function unitToLatexString(self) result(string)
         class(QuantityCamelUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 

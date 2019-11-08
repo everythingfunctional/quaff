@@ -80,7 +80,7 @@ contains
         tests = Describe("QuantityCamel_t (* & / ) operators", individual_tests)
     end function test_multiplication_division_operator
 
-    function checkAddZero(input) result(result_)
+    pure function checkAddZero(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -97,7 +97,7 @@ contains
         end select
     end function checkAddZero
 
-    function checkSubtractZero(input) result(result_)
+    pure function checkSubtractZero(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -114,7 +114,7 @@ contains
         end select
     end function checkSubtractZero
 
-    function checkAddSubtract(input) result(result_)
+    pure function checkAddSubtract(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -135,7 +135,7 @@ contains
         end select
     end function checkAddSubtract
 
-    function checkMultiplyByOne(input) result(result_)
+    pure function checkMultiplyByOne(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -150,7 +150,7 @@ contains
         end select
     end function checkMultiplyByOne
 
-    function checkMultiplyByZero(input) result(result_)
+    pure function checkMultiplyByZero(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -167,7 +167,7 @@ contains
         end select
     end function checkMultiplyByZero
 
-    function checkDivideByOne(input) result(result_)
+    pure function checkDivideByOne(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -182,7 +182,7 @@ contains
         end select
     end function checkDivideByOne
 
-    function checkDivideBySelf(input) result(result_)
+    pure function checkDivideBySelf(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -197,7 +197,7 @@ contains
         end select
     end function checkDivideBySelf
 
-    function checkMultiplyDivide(input) result(result_)
+    pure function checkMultiplyDivide(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -212,7 +212,7 @@ contains
         end select
     end function checkMultiplyDivide
 
-    function checkDivideMultiply(input) result(result_)
+    pure function checkDivideMultiply(input) result(result_)
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 

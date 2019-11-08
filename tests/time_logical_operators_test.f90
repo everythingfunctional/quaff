@@ -162,7 +162,7 @@ contains
                 individual_tests)
     end function test_less_than_operator
 
-    function checkEqualWithSameNumber(number) result(result_)
+    pure function checkEqualWithSameNumber(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -179,7 +179,7 @@ contains
         end select
     end function checkEqualWithSameNumber
 
-    function checkEqualWithDifferentNumbers(number) result(result_)
+    pure function checkEqualWithDifferentNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -198,7 +198,7 @@ contains
         end select
     end function checkEqualWithDifferentNumbers
 
-    function checkNotEqualWithSameNumber(number) result(result_)
+    pure function checkNotEqualWithSameNumber(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -215,7 +215,7 @@ contains
         end select
     end function checkNotEqualWithSameNumber
 
-    function checkNotEqualWithDifferentNumbers(number) result(result_)
+    pure function checkNotEqualWithDifferentNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -234,7 +234,7 @@ contains
         end select
     end function checkNotEqualWithDifferentNumbers
 
-    function checkEqualWithinWithSameNumber(number) result(result_)
+    pure function checkEqualWithinWithSameNumber(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -255,7 +255,7 @@ contains
         end select
     end function checkEqualWithinWithSameNumber
 
-    function checkEqualWithinWithCloseNumbers(number) result(result_)
+    pure function checkEqualWithinWithCloseNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -278,7 +278,7 @@ contains
         end select
     end function checkEqualWithinWithCloseNumbers
 
-    function checkEqualWithinWithDifferentNumbers(number) result(result_)
+    pure function checkEqualWithinWithDifferentNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -301,7 +301,7 @@ contains
         end select
     end function checkEqualWithinWithDifferentNumbers
 
-    function checkGreaterThanOrEqualWithGreaterNumbers(number) result(result_)
+    pure function checkGreaterThanOrEqualWithGreaterNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -320,7 +320,7 @@ contains
         end select
     end function checkGreaterThanOrEqualWithGreaterNumbers
 
-    function checkGreaterThanOrEqualWithSameNumbers(number) result(result_)
+    pure function checkGreaterThanOrEqualWithSameNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -339,7 +339,7 @@ contains
         end select
     end function checkGreaterThanOrEqualWithSameNumbers
 
-    function checkGreaterThanOrEqualWithLesserNumbers(number) result(result_)
+    pure function checkGreaterThanOrEqualWithLesserNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -358,7 +358,7 @@ contains
         end select
     end function checkGreaterThanOrEqualWithLesserNumbers
 
-    function checklessThanOrEqualWithLesserNumbers(number) result(result_)
+    pure function checklessThanOrEqualWithLesserNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -377,7 +377,7 @@ contains
         end select
     end function checklessThanOrEqualWithLesserNumbers
 
-    function checkLessThanOrEqualWithSameNumbers(number) result(result_)
+    pure function checkLessThanOrEqualWithSameNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -396,7 +396,7 @@ contains
         end select
     end function checkLessThanOrEqualWithSameNumbers
 
-    function checkLessThanOrEqualWithGreaterNumbers(number) result(result_)
+    pure function checkLessThanOrEqualWithGreaterNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -415,7 +415,7 @@ contains
         end select
     end function checkLessThanOrEqualWithGreaterNumbers
 
-    function checkGreaterThanWithGreaterNumbers(number) result(result_)
+    pure function checkGreaterThanWithGreaterNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -434,7 +434,7 @@ contains
         end select
     end function checkGreaterThanWithGreaterNumbers
 
-    function checkGreaterThanWithSameNumbers(number) result(result_)
+    pure function checkGreaterThanWithSameNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -453,7 +453,7 @@ contains
         end select
     end function checkGreaterThanWithSameNumbers
 
-    function checkGreaterThanWithLesserNumbers(number) result(result_)
+    pure function checkGreaterThanWithLesserNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -472,7 +472,7 @@ contains
         end select
     end function checkGreaterThanWithLesserNumbers
 
-    function checkLessThanWithLesserNumbers(number) result(result_)
+    pure function checkLessThanWithLesserNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -491,7 +491,7 @@ contains
         end select
     end function checkLessThanWithLesserNumbers
 
-    function checkLessThanWithSameNumbers(number) result(result_)
+    pure function checkLessThanWithSameNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -510,7 +510,7 @@ contains
         end select
     end function checkLessThanWithSameNumbers
 
-    function checkLessThanWithGreaterNumbers(number) result(result_)
+    pure function checkLessThanWithGreaterNumbers(number) result(result_)
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 

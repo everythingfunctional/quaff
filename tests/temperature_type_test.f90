@@ -126,7 +126,7 @@ contains
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
-    function makeUnitsExamples(units) result(examples)
+    pure function makeUnitsExamples(units) result(examples)
         type(TemperatureUnit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
@@ -160,7 +160,7 @@ contains
             deallocate(pair%first)
         end do
     contains
-        recursive function combinations(num_items) result(num_combinations)
+        pure recursive function combinations(num_items) result(num_combinations)
             integer, intent(in) :: num_items
             integer :: num_combinations
 
@@ -183,7 +183,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function checkRoundTrip_(input) result(result__)
+        pure function checkRoundTrip_(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 

@@ -45,7 +45,7 @@ contains
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
-    function checkLengthTimesLength() result(result_)
+    pure function checkLengthTimesLength() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -53,7 +53,7 @@ contains
                 (2.0d0.unit.METERS) * (3.0d0.unit.METERS))
     end function checkLengthTimesLength
 
-    function checkAreaDividedByLength() result(result_)
+    pure function checkAreaDividedByLength() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -61,7 +61,7 @@ contains
                 (6.0d0.unit.SQUARE_METERS) / (3.0d0.unit.METERS))
     end function checkAreaDividedByLength
 
-    function checkAreaTimesLength() result(result_)
+    pure function checkAreaTimesLength() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -69,7 +69,7 @@ contains
                 (2.0d0.unit.SQUARE_METERS) * (3.0d0.unit.METERS))
     end function checkAreaTimesLength
 
-    function checkLengthTimesArea() result(result_)
+    pure function checkLengthTimesArea() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -77,7 +77,7 @@ contains
                 (2.0d0.unit.METERS) * (3.0d0.unit.SQUARE_METERS))
     end function checkLengthTimesArea
 
-    function checkVolumeDividedByArea() result(result_)
+    pure function checkVolumeDividedByArea() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -85,7 +85,7 @@ contains
                 (6.0d0.unit.CUBIC_METERS) / (3.0d0.unit.SQUARE_METERS))
     end function checkVolumeDividedByArea
 
-    function checkVolumeDividedByLength() result(result_)
+    pure function checkVolumeDividedByLength() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -93,7 +93,7 @@ contains
                 (6.0d0.unit.CUBIC_METERS) / (3.0d0.unit.METERS))
     end function checkVolumeDividedByLength
 
-    function checkMassDividedByVolume() result(result_)
+    pure function checkMassDividedByVolume() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -101,7 +101,7 @@ contains
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.CUBIC_METERS))
     end function checkMassDividedByVolume
 
-    function checkDensityTimesVolume() result(result_)
+    pure function checkDensityTimesVolume() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -109,7 +109,7 @@ contains
                 (2.0d0.unit.KILOGRAMS_PER_CUBIC_METER) * (3.0d0.unit.CUBIC_METERS))
     end function checkDensityTimesVolume
 
-    function checkVolumeTimesDensity() result(result_)
+    pure function checkVolumeTimesDensity() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &
@@ -117,7 +117,7 @@ contains
                 (2.0d0.unit.CUBIC_METERS) * (3.0d0.unit.KILOGRAMS_PER_CUBIC_METER))
     end function checkVolumeTimesDensity
 
-    function checkMassDividedByDensity() result(result_)
+    pure function checkMassDividedByDensity() result(result_)
         type(Result_t) :: result_
 
         result_ = assertEquals( &

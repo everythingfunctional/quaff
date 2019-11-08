@@ -47,7 +47,7 @@ module Length_asserts_m
 
     public :: assertEquals, assertEqualsWithinAbsolute, assertEqualsWithinRelative
 contains
-    function assertEqualsBasic(expected, actual) result(result__)
+    pure function assertEqualsBasic(expected, actual) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         type(Result_t) :: result__
@@ -55,7 +55,7 @@ contains
         result__ = assertEquals(expected, actual, var_str(""), var_str(""))
     end function assertEqualsBasic
 
-    function assertEqualsWithMessageC( &
+    pure function assertEqualsWithMessageC( &
             expected, actual, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -66,7 +66,7 @@ contains
                 expected, actual, var_str(message), var_str(message))
     end function assertEqualsWithMessageC
 
-    function assertEqualsWithMessageS( &
+    pure function assertEqualsWithMessageS( &
             expected, actual, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -77,7 +77,7 @@ contains
                 expected, actual, message, message)
     end function assertEqualsWithMessageS
 
-    function assertEqualsWithMessagesCC( &
+    pure function assertEqualsWithMessagesCC( &
             expected, actual, success_message, failure_message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -92,7 +92,7 @@ contains
                 var_str(failure_message))
     end function assertEqualsWithMessagesCC
 
-    function assertEqualsWithMessagesCS( &
+    pure function assertEqualsWithMessagesCS( &
             expected, actual, success_message, failure_message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -107,7 +107,7 @@ contains
                 failure_message)
     end function assertEqualsWithMessagesCS
 
-    function assertEqualsWithMessagesSC( &
+    pure function assertEqualsWithMessagesSC( &
             expected, actual, success_message, failure_message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -122,7 +122,7 @@ contains
                 var_str(failure_message))
     end function assertEqualsWithMessagesSC
 
-    function assertEqualsWithMessagesSS( &
+    pure function assertEqualsWithMessagesSS( &
             expected, &
             actual, &
             success_message, &
@@ -148,7 +148,7 @@ contains
         end if
     end function assertEqualsWithMessagesSS
 
-    function assertEqualsWithinAbsoluteBasic( &
+    pure function assertEqualsWithinAbsoluteBasic( &
             expected, actual, tolerance) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -159,7 +159,7 @@ contains
                 expected, actual, tolerance, var_str(""), var_str(""))
     end function assertEqualsWithinAbsoluteBasic
 
-    function assertEqualsWithinAbsoluteWithMessageC( &
+    pure function assertEqualsWithinAbsoluteWithMessageC( &
             expected, actual, tolerance, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -171,7 +171,7 @@ contains
                 expected, actual, tolerance, var_str(message), var_str(message))
     end function assertEqualsWithinAbsoluteWithMessageC
 
-    function assertEqualsWithinAbsoluteWithMessageS( &
+    pure function assertEqualsWithinAbsoluteWithMessageS( &
             expected, actual, tolerance, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -183,7 +183,7 @@ contains
                 expected, actual, tolerance, message, message)
     end function assertEqualsWithinAbsoluteWithMessageS
 
-    function assertEqualsWithinAbsoluteWithMessagesCC( &
+    pure function assertEqualsWithinAbsoluteWithMessagesCC( &
             expected, &
             actual, &
             tolerance, &
@@ -205,7 +205,7 @@ contains
                 var_str(failure_message))
     end function assertEqualsWithinAbsoluteWithMessagesCC
 
-    function assertEqualsWithinAbsoluteWithMessagesCS( &
+    pure function assertEqualsWithinAbsoluteWithMessagesCS( &
             expected, &
             actual, &
             tolerance, &
@@ -227,7 +227,7 @@ contains
                 failure_message)
     end function assertEqualsWithinAbsoluteWithMessagesCS
 
-    function assertEqualsWithinAbsoluteWithMessagesSC( &
+    pure function assertEqualsWithinAbsoluteWithMessagesSC( &
             expected, &
             actual, &
             tolerance, &
@@ -249,7 +249,7 @@ contains
                 var_str(failure_message))
     end function assertEqualsWithinAbsoluteWithMessagesSC
 
-    function assertEqualsWithinAbsoluteWithMessagesSS( &
+    pure function assertEqualsWithinAbsoluteWithMessagesSS( &
             expected, &
             actual, &
             tolerance, &
@@ -280,7 +280,7 @@ contains
         end if
     end function assertEqualsWithinAbsoluteWithMessagesSS
 
-    function assertEqualsWithinRelativeBasic( &
+    pure function assertEqualsWithinRelativeBasic( &
             expected, actual, tolerance) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -291,7 +291,7 @@ contains
                 expected, actual, tolerance, var_str(""), var_str(""))
     end function assertEqualsWithinRelativeBasic
 
-    function assertEqualsWithinRelativeWithMessageC( &
+    pure function assertEqualsWithinRelativeWithMessageC( &
             expected, actual, tolerance, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -303,7 +303,7 @@ contains
                 expected, actual, tolerance, var_str(message), var_str(message))
     end function assertEqualsWithinRelativeWithMessageC
 
-    function assertEqualsWithinRelativeWithMessageS( &
+    pure function assertEqualsWithinRelativeWithMessageS( &
             expected, actual, tolerance, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
@@ -315,7 +315,7 @@ contains
                 expected, actual, tolerance, message, message)
     end function assertEqualsWithinRelativeWithMessageS
 
-    function assertEqualsWithinRelativeWithMessagesCC( &
+    pure function assertEqualsWithinRelativeWithMessagesCC( &
             expected, &
             actual, &
             tolerance, &
@@ -337,7 +337,7 @@ contains
                 var_str(failure_message))
     end function assertEqualsWithinRelativeWithMessagesCC
 
-    function assertEqualsWithinRelativeWithMessagesCS( &
+    pure function assertEqualsWithinRelativeWithMessagesCS( &
             expected, &
             actual, &
             tolerance, &
@@ -359,7 +359,7 @@ contains
                 failure_message)
     end function assertEqualsWithinRelativeWithMessagesCS
 
-    function assertEqualsWithinRelativeWithMessagesSC( &
+    pure function assertEqualsWithinRelativeWithMessagesSC( &
             expected, &
             actual, &
             tolerance, &
@@ -381,7 +381,7 @@ contains
                 var_str(failure_message))
     end function assertEqualsWithinRelativeWithMessagesSC
 
-    function assertEqualsWithinRelativeWithMessagesSS( &
+    pure function assertEqualsWithinRelativeWithMessagesSS( &
             expected, &
             actual, &
             tolerance, &
