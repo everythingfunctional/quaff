@@ -1,4 +1,5 @@
 module Miscellaneous_m
+    use iso_varying_string, only: VARYING_STRING, operator(//), var_str
     use Message_m, only: MessageType_t
 
     implicit none
@@ -71,8 +72,6 @@ contains
     end function safeEq
 
     function wrapInLatexQuantityCC(number, units) result(latex_command)
-        use iso_varying_string, only: VARYING_STRING, var_str
-
         character(len=*), intent(in) :: number
         character(len=*), intent(in) :: units
         type(VARYING_STRING) :: latex_command
@@ -81,8 +80,6 @@ contains
     end function wrapInLatexQuantityCC
 
     function wrapInLatexQuantityCS(number, units) result(latex_command)
-        use iso_varying_string, only: VARYING_STRING, var_str
-
         character(len=*), intent(in) :: number
         type(VARYING_STRING), intent(in) :: units
         type(VARYING_STRING) :: latex_command
@@ -91,8 +88,6 @@ contains
     end function wrapInLatexQuantityCS
 
     function wrapInLatexQuantitySC(number, units) result(latex_command)
-        use iso_varying_string, only: VARYING_STRING, var_str
-
         type(VARYING_STRING), intent(in) :: number
         character(len=*), intent(in) :: units
         type(VARYING_STRING) :: latex_command
@@ -101,8 +96,6 @@ contains
     end function wrapInLatexQuantitySC
 
     function wrapInLatexQuantitySS(number, units) result(latex_command)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-
         type(VARYING_STRING), intent(in) :: number
         type(VARYING_STRING), intent(in) :: units
         type(VARYING_STRING) :: latex_command
@@ -111,8 +104,6 @@ contains
     end function wrapInLatexQuantitySS
 
     function wrapInLatexUnitC(units) result(latex_command)
-        use iso_varying_string, only: VARYING_STRING, var_str
-
         character(len=*), intent(in) :: units
         type(VARYING_STRING) :: latex_command
 
@@ -120,8 +111,6 @@ contains
     end function wrapInLatexUnitC
 
     function wrapInLatexUnitS(units) result(latex_command)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-
         type(VARYING_STRING), intent(in) :: units
         type(VARYING_STRING) :: latex_command
 

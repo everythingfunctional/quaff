@@ -1,7 +1,30 @@
 module angle_type_test
-    use iso_varying_string ! Make the compiler happy
-    use Angle_m, only: AngleUnit_t
-    use Vegetables_m, only: Example_t, Input_t
+    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+    use erloff, only: ErrorList_t
+    use iso_varying_string, only: operator(//)
+    use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+    use Angle_m, only: &
+            Angle_t, &
+            AngleUnit_t, &
+            operator(.unit.), &
+            angleFromString, &
+            PROVIDED_UNITS, &
+            RADIANS
+    use Angle_asserts_m, only: assertEquals
+    use Vegetables_m, only: &
+            DoublePrecisionInput_t, &
+            Example_t, &
+            Input_t, &
+            Result_t, &
+            TestItem_t, &
+            TestResultItem_t, &
+            assertEqualsWithinRelative, &
+            assertNot, &
+            assertThat, &
+            Describe, &
+            Example, &
+            fail, &
+            It
 
     implicit none
     private
@@ -23,10 +46,6 @@ module angle_type_test
     public :: test_angle
 contains
     function test_angle() result(tests)
-        use iso_varying_string ! Make the compiler happy
-        use Angle_m, only: PROVIDED_UNITS
-        use Vegetables_m, only: TestItem_t, describe, it
-
         type(TestItem_t) :: tests
 
         type(UnitsExamples_t) :: examples
@@ -58,9 +77,6 @@ contains
     end function test_angle
 
     function checkRoundTrip(units) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -73,9 +89,6 @@ contains
     end function checkRoundTrip
 
     function checkConversionFactorsInverse(pair) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: pair
         type(Result_t) :: result_
 
@@ -88,9 +101,6 @@ contains
     end function checkConversionFactorsInverse
 
     function checkToAndFromString(units) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -103,11 +113,6 @@ contains
     end function checkToAndFromString
 
     function checkBadString() result(result_)
-        use erloff, only: ErrorList_t
-        use Angle_m, only: Angle_t, angleFromString
-        use Miscellaneous_m, only: PARSE_ERROR
-        use Vegetables_m, only: Result_t, assertThat
-
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
@@ -118,12 +123,6 @@ contains
     end function checkBadString
 
     function checkBadUnit() result(result_)
-        use erloff, only: ErrorList_t
-        use Angle_m, only: &
-                Angle_t, angleFromString, RADIANS
-        use Miscellaneous_m, only: UNKNOWN_UNIT
-        use Vegetables_m, only: Result_t, assertThat
-
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
@@ -134,11 +133,6 @@ contains
     end function checkBadUnit
 
     function checkBadNumber() result(result_)
-        use erloff, only: ErrorList_t
-        use Miscellaneous_m, only: PARSE_ERROR
-        use Angle_m, only: Angle_t, angleFromString
-        use Vegetables_m, only: Result_t, assertThat
-
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
@@ -149,10 +143,6 @@ contains
     end function checkBadNumber
 
     function makeUnitsExamples(units) result(examples)
-        use iso_varying_string ! Make the compiler happy
-        use Angle_m, only: AngleUnit_t
-        use Vegetables_m, only: Example
-
         type(AngleUnit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
@@ -199,12 +189,6 @@ contains
     end function makeUnitsExamples
 
     function checkRoundTripIn(units) result(result_)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use iso_varying_string, only: char
-        use Angle_m, only: AngleUnit_t
-        use Vegetables_m, only: &
-                Result_t, TestItem_t, TestResultItem_t, assertThat, It
-
         type(AngleUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -216,15 +200,6 @@ contains
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
         function checkRoundTrip_(input) result(result__)
-            use iso_varying_string ! Make the compiler happy
-            use Angle_m, only: Angle_t, operator(.unit.)
-            use Vegetables_m, only: &
-                    DoublePrecisionInput_t, &
-                    Input_t, &
-                    Result_t, &
-                    assertEqualsWithinRelative, &
-                    fail
-
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -245,11 +220,6 @@ contains
 
     function checkConversionFactorsAreInverse( &
             from, to) result(result_)
-        use Angle_m, only: &
-                Angle_t, AngleUnit_t, operator(.unit.)
-        use iso_varying_string, only: operator(//)
-        use Vegetables_m, only: Result_t, assertEqualsWithinRelative
-
         type(AngleUnit_t), intent(in) :: to
         type(AngleUnit_t), intent(in) :: from
         type(Result_t) :: result_
@@ -267,12 +237,6 @@ contains
     end function checkConversionFactorsAreInverse
 
     function checkStringTrip(units) result(result_)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use iso_varying_string, only: char
-        use Angle_m, only: AngleUnit_t
-        use Vegetables_m, only: &
-                Result_t, TestItem_t, TestResultItem_t, assertThat, It
-
         type(AngleUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -284,15 +248,6 @@ contains
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
         function doCheck(input) result(result__)
-            use erloff, only: ErrorList_t, size
-            use Angle_m, only: &
-                    Angle_t, &
-                    operator(.unit.), &
-                    angleFromString
-            use Angle_asserts_m, only: assertEquals
-            use Vegetables_m, only: &
-                    DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 

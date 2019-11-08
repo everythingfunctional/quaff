@@ -1,13 +1,16 @@
 module speed_test
+    use Density_m, only: Density_t
+    use Interquantity_operators_m, only: operator(/)
+    use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
+    use Vegetables_m, only: Result_t, TestItem_t, assertFasterThan, Describe, It
+    use Volume_m, only: Volume_t, operator(.unit.), CUBIC_METERS
+
     implicit none
     private
 
     public :: test_speed
 contains
     function test_speed() result(tests)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(1)
@@ -19,12 +22,6 @@ contains
     end function test_speed
 
     function checkInterquantitySpeed() result(result_)
-        use Density_m, only: Density_t
-        use iso_varying_string ! Make the compiler happy
-        use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: Result_t, assertFasterThan
-        use Volume_m, only: Volume_t, operator(.unit.), CUBIC_METERS
-
         type(Result_t) :: result_
 
         type(Density_t) :: density
@@ -42,8 +39,6 @@ contains
         result_ = assertFasterThan(doRegularMath, doQuantityMath, 100)
     contains
         subroutine doQuantityMath
-            use Interquantity_operators_m, only: operator(/)
-
             integer :: i
 
             do i = 1, 100

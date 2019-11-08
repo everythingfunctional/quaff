@@ -1,4 +1,19 @@
 module mass_logical_operators_test
+    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+    use iso_varying_string, only: operator(//)
+    use Mass_m, only: &
+            Mass_t, operator(.unit.), KILOGRAMS
+    use Vegetables_m, only: &
+            DoublePrecisionInput_t, &
+            Input_t, &
+            Result_t, &
+            TestItem_t, &
+            assertNot, &
+            assertThat, &
+            Describe, &
+            fail, &
+            It
+
     implicit none
     private
 
@@ -12,9 +27,6 @@ module mass_logical_operators_test
             test_less_than_operator
 contains
     function test_equal_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(2)
@@ -31,9 +43,6 @@ contains
     end function test_equal_operator
 
     function test_not_equal_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(2)
@@ -50,9 +59,6 @@ contains
     end function test_not_equal_operator
 
     function test_equal_within() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(3)
@@ -73,9 +79,6 @@ contains
     end function test_equal_within
 
     function test_greater_than_or_equal_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) ::  tests
 
         type(TestItem_t) :: individual_tests(3)
@@ -97,9 +100,6 @@ contains
     end function test_greater_than_or_equal_operator
 
     function test_less_than_or_equal_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(3)
@@ -121,9 +121,6 @@ contains
     end function test_less_than_or_equal_operator
 
     function test_greater_than_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) ::  tests
 
         type(TestItem_t) :: individual_tests(3)
@@ -145,9 +142,6 @@ contains
     end function test_greater_than_operator
 
     function test_less_than_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) ::  tests
 
         type(TestItem_t) :: individual_tests(3)
@@ -169,12 +163,6 @@ contains
     end function test_less_than_operator
 
     function checkEqualWithSameNumber(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -192,12 +180,6 @@ contains
     end function checkEqualWithSameNumber
 
     function checkEqualWithDifferentNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -217,12 +199,6 @@ contains
     end function checkEqualWithDifferentNumbers
 
     function checkNotEqualWithSameNumber(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -240,12 +216,6 @@ contains
     end function checkNotEqualWithSameNumber
 
     function checkNotEqualWithDifferentNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -265,12 +235,6 @@ contains
     end function checkNotEqualWithDifferentNumbers
 
     function checkEqualWithinWithSameNumber(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -292,12 +256,6 @@ contains
     end function checkEqualWithinWithSameNumber
 
     function checkEqualWithinWithCloseNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -321,12 +279,6 @@ contains
     end function checkEqualWithinWithCloseNumbers
 
     function checkEqualWithinWithDifferentNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -350,12 +302,6 @@ contains
     end function checkEqualWithinWithDifferentNumbers
 
     function checkGreaterThanOrEqualWithGreaterNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -375,12 +321,6 @@ contains
     end function checkGreaterThanOrEqualWithGreaterNumbers
 
     function checkGreaterThanOrEqualWithSameNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -400,12 +340,6 @@ contains
     end function checkGreaterThanOrEqualWithSameNumbers
 
     function checkGreaterThanOrEqualWithLesserNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -425,12 +359,6 @@ contains
     end function checkGreaterThanOrEqualWithLesserNumbers
 
     function checklessThanOrEqualWithLesserNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -450,12 +378,6 @@ contains
     end function checklessThanOrEqualWithLesserNumbers
 
     function checkLessThanOrEqualWithSameNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -475,12 +397,6 @@ contains
     end function checkLessThanOrEqualWithSameNumbers
 
     function checkLessThanOrEqualWithGreaterNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -500,12 +416,6 @@ contains
     end function checkLessThanOrEqualWithGreaterNumbers
 
     function checkGreaterThanWithGreaterNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -525,12 +435,6 @@ contains
     end function checkGreaterThanWithGreaterNumbers
 
     function checkGreaterThanWithSameNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -550,12 +454,6 @@ contains
     end function checkGreaterThanWithSameNumbers
 
     function checkGreaterThanWithLesserNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -575,12 +473,6 @@ contains
     end function checkGreaterThanWithLesserNumbers
 
     function checkLessThanWithLesserNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertThat, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -600,12 +492,6 @@ contains
     end function checkLessThanWithLesserNumbers
 
     function checkLessThanWithSameNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 
@@ -625,12 +511,6 @@ contains
     end function checkLessThanWithSameNumbers
 
     function checkLessThanWithGreaterNumbers(number) result(result_)
-        use iso_varying_string, only: operator(//)
-        use Mass_m, only: &
-                Mass_t, operator(.unit.), KILOGRAMS
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
         class(Input_t), intent(in) :: number
         type(Result_t) :: result_
 

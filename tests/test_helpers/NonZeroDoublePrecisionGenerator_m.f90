@@ -1,6 +1,14 @@
 module NonZeroDoublePrecisionGenerator_m
-    use iso_varying_string ! Make the compiler happy
-    use Vegetables_m, only: Generator_t
+    use Vegetables_m, only: &
+            DoublePrecisionInput_t, &
+            Generated_t, &
+            Generator_t, &
+            Input_t, &
+            ShrinkResult_t, &
+            Generated, &
+            getRandomDoublePrecisionWithMagnitude, &
+            ShrunkValue, &
+            SimplestValue
 
     implicit none
     private
@@ -17,13 +25,6 @@ module NonZeroDoublePrecisionGenerator_m
                     NonZeroDoublePrecisionGenerator_t()
 contains
     function generate(self) result(random_double)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, &
-                Generated_t, &
-                Generated, &
-                getRandomDoublePrecisionWithMagnitude
-
         class(NonZeroDoublePrecisionGenerator_t), intent(in) :: self
         type(Generated_t) :: random_double
 
@@ -40,14 +41,6 @@ contains
     end function generate
 
     function shrink(input) result(shrunk)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, &
-                Input_t, &
-                ShrinkResult_t, &
-                ShrunkValue, &
-                SimplestValue
-
         class(Input_t), intent(in) :: input
         type(ShrinkResult_t) :: shrunk
 

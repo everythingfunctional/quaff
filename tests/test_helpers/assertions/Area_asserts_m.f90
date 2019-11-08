@@ -1,4 +1,17 @@
 module Area_asserts_m
+    use iso_varying_string, only: VARYING_STRING, operator(//), var_str
+    use Area_m, only: Area_t
+    use strff, only: toString
+    use Vegetables_m, only: &
+            Result_t, &
+            fail, &
+            makeEqualsFailureMessage, &
+            makeEqualsSuccessMessage, &
+            makeWithinFailureMessage, &
+            makeWithinSuccessMessage, &
+            succeed, &
+            withUserMessage
+
     implicit none
     private
 
@@ -35,10 +48,6 @@ module Area_asserts_m
     public :: assertEquals, assertEqualsWithinAbsolute, assertEqualsWithinRelative
 contains
     function assertEqualsBasic(expected, actual) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         type(Result_t) :: result__
@@ -48,10 +57,6 @@ contains
 
     function assertEqualsWithMessageC( &
             expected, actual, message) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         character(len=*), intent(in) :: message
@@ -63,10 +68,6 @@ contains
 
     function assertEqualsWithMessageS( &
             expected, actual, message) result(result__)
-        use iso_varying_string, only: VARYING_STRING
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         type(VARYING_STRING), intent(in) :: message
@@ -78,10 +79,6 @@ contains
 
     function assertEqualsWithMessagesCC( &
             expected, actual, success_message, failure_message) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
@@ -97,10 +94,6 @@ contains
 
     function assertEqualsWithMessagesCS( &
             expected, actual, success_message, failure_message) result(result__)
-        use iso_varying_string, only: VARYING_STRING, var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
@@ -116,10 +109,6 @@ contains
 
     function assertEqualsWithMessagesSC( &
             expected, actual, success_message, failure_message) result(result__)
-        use iso_varying_string, only: VARYING_STRING, var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         type(VARYING_STRING), intent(in) :: success_message
@@ -139,16 +128,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING
-        use Area_m, only: Area_t
-        use Vegetables_m, only: &
-                Result_t, &
-                fail, &
-                makeEqualsFailureMessage, &
-                makeEqualsSuccessMessage, &
-                succeed, &
-                withUserMessage
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         type(VARYING_STRING), intent(in) :: success_message
@@ -171,10 +150,6 @@ contains
 
     function assertEqualsWithinAbsoluteBasic( &
             expected, actual, tolerance) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -186,10 +161,6 @@ contains
 
     function assertEqualsWithinAbsoluteWithMessageC( &
             expected, actual, tolerance, message) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -202,10 +173,6 @@ contains
 
     function assertEqualsWithinAbsoluteWithMessageS( &
             expected, actual, tolerance, message) result(result__)
-        use iso_varying_string, only: VARYING_STRING
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -223,10 +190,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -249,10 +212,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING, var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -275,10 +234,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING, var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -301,16 +256,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING
-        use Area_m, only: Area_t
-        use Vegetables_m, only: &
-                Result_t, &
-                fail, &
-                makeWithinFailureMessage, &
-                makeWithinSuccessMessage, &
-                succeed, &
-                withUserMessage
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         class(Area_t), intent(in) :: tolerance
@@ -337,10 +282,6 @@ contains
 
     function assertEqualsWithinRelativeBasic( &
             expected, actual, tolerance) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
@@ -352,10 +293,6 @@ contains
 
     function assertEqualsWithinRelativeWithMessageC( &
             expected, actual, tolerance, message) result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
@@ -368,10 +305,6 @@ contains
 
     function assertEqualsWithinRelativeWithMessageS( &
             expected, actual, tolerance, message) result(result__)
-        use iso_varying_string, only: VARYING_STRING
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
@@ -389,10 +322,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
@@ -415,10 +344,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING, var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
@@ -441,10 +366,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING, var_str
-        use Area_m, only: Area_t
-        use Vegetables_m, only: Result_t
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
@@ -467,17 +388,6 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use Area_m, only: Area_t
-        use strff, only: toString
-        use Vegetables_m, only: &
-                Result_t, &
-                fail, &
-                makeWithinFailureMessage, &
-                makeWithinSuccessMessage, &
-                succeed, &
-                withUserMessage
-
         class(Area_t), intent(in) :: expected
         class(Area_t), intent(in) :: actual
         double precision, intent(in) :: tolerance

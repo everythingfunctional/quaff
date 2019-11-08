@@ -1,4 +1,26 @@
 module quantity_lower_math_operators_test
+    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+    use DoublePrecisionPairGenerator_m, only: &
+            DoublePrecisionPairInput_t, DOUBLE_PRECISION_PAIR_GENERATOR
+    use iso_varying_string, only: operator(//)
+    use NonZeroDoublePrecisionGenerator_m, only: &
+            NON_ZERO_DOUBLE_PRECISION_GENERATOR
+    use NonZeroDoublePrecisionPairGenerator_m, only: &
+            NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
+    use Quantity_module_m, only: &
+            QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
+    use Quantity_module_asserts_m, only: &
+            assertEquals, assertEqualsWithinRelative
+    use Vegetables_m, only: &
+            DoublePrecisionInput_t, &
+            Input_t, &
+            Result_t, &
+            TestItem_t, &
+            assertEquals, &
+            Describe, &
+            fail, &
+            It
+
     implicit none
     private
 
@@ -7,10 +29,6 @@ module quantity_lower_math_operators_test
             test_multiplication_division_operator
 contains
     function test_addition_subtraction_operators() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use DoublePrecisionPairGenerator_m, only: DOUBLE_PRECISION_PAIR_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(3)
@@ -31,13 +49,6 @@ contains
     end function test_addition_subtraction_operators
 
     function test_multiplication_division_operator() result(tests)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use NonZeroDoublePrecisionGenerator_m, only: &
-                NON_ZERO_DOUBLE_PRECISION_GENERATOR
-        use NonZeroDoublePrecisionPairGenerator_m, only: &
-                NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
-        use Vegetables_m, only: TestItem_t, Describe, It
-
         type(TestItem_t) :: tests
 
         type(TestItem_t) :: individual_tests(6)
@@ -70,12 +81,6 @@ contains
     end function test_multiplication_division_operator
 
     function checkAddZero(input) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -93,12 +98,6 @@ contains
     end function checkAddZero
 
     function checkSubtractZero(input) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -116,13 +115,6 @@ contains
     end function checkSubtractZero
 
     function checkAddSubtract(input) result(result_)
-        use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use iso_varying_string, only: operator(//)
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEqualsWithinRelative
-        use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -144,12 +136,6 @@ contains
     end function checkAddSubtract
 
     function checkMultiplyByOne(input) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -165,12 +151,6 @@ contains
     end function checkMultiplyByOne
 
     function checkMultiplyByZero(input) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -188,12 +168,6 @@ contains
     end function checkMultiplyByZero
 
     function checkDivideByOne(input) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: DoublePrecisionInput_t, Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -209,12 +183,6 @@ contains
     end function checkDivideByOne
 
     function checkDivideBySelf(input) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Vegetables_m, only: &
-                DoublePrecisionInput_t, Input_t, Result_t, assertEquals, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -230,12 +198,6 @@ contains
     end function checkDivideBySelf
 
     function checkMultiplyDivide(input) result(result_)
-        use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 
@@ -251,12 +213,6 @@ contains
     end function checkMultiplyDivide
 
     function checkDivideMultiply(input) result(result_)
-        use DoublePrecisionPairGenerator_m, only: DoublePrecisionPairInput_t
-        use Quantity_module_m, only: &
-                QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
-        use Quantity_module_asserts_m, only: assertEquals
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: input
         type(Result_t) :: result_
 

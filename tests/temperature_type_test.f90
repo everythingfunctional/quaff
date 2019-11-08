@@ -1,7 +1,30 @@
 module temperature_type_test
-    use iso_varying_string ! Make the compiler happy
-    use Temperature_m, only: TemperatureUnit_t
-    use Vegetables_m, only: Example_t, Input_t
+    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+    use erloff, only: ErrorList_t
+    use iso_varying_string, only: operator(//)
+    use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+    use Temperature_m, only: &
+            Temperature_t, &
+            TemperatureUnit_t, &
+            operator(.unit.), &
+            temperatureFromString, &
+            PROVIDED_UNITS, &
+            KELVIN
+    use Temperature_asserts_m, only: assertEquals
+    use Vegetables_m, only: &
+            DoublePrecisionInput_t, &
+            Example_t, &
+            Input_t, &
+            Result_t, &
+            TestItem_t, &
+            TestResultItem_t, &
+            assertEqualsWithinRelative, &
+            assertNot, &
+            assertThat, &
+            Describe, &
+            Example, &
+            fail, &
+            It
 
     implicit none
     private
@@ -23,10 +46,6 @@ module temperature_type_test
     public :: test_temperature
 contains
     function test_temperature() result(tests)
-        use iso_varying_string ! Make the compiler happy
-        use Temperature_m, only: PROVIDED_UNITS
-        use Vegetables_m, only: TestItem_t, describe, it
-
         type(TestItem_t) :: tests
 
         type(UnitsExamples_t) :: examples
@@ -54,9 +73,6 @@ contains
     end function test_temperature
 
     function checkRoundTrip(units) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -69,9 +85,6 @@ contains
     end function checkRoundTrip
 
     function checkToAndFromString(units) result(result_)
-        use iso_varying_string ! Make the compiler happy
-        use Vegetables_m, only: Input_t, Result_t, fail
-
         class(Input_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -84,11 +97,6 @@ contains
     end function checkToAndFromString
 
     function checkBadString() result(result_)
-        use erloff, only: ErrorList_t
-        use Temperature_m, only: Temperature_t, temperatureFromString
-        use Miscellaneous_m, only: PARSE_ERROR
-        use Vegetables_m, only: Result_t, assertThat
-
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
@@ -99,12 +107,6 @@ contains
     end function checkBadString
 
     function checkBadUnit() result(result_)
-        use erloff, only: ErrorList_t
-        use Temperature_m, only: &
-                Temperature_t, temperatureFromString, KELVIN
-        use Miscellaneous_m, only: UNKNOWN_UNIT
-        use Vegetables_m, only: Result_t, assertThat
-
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
@@ -115,11 +117,6 @@ contains
     end function checkBadUnit
 
     function checkBadNumber() result(result_)
-        use erloff, only: ErrorList_t
-        use Miscellaneous_m, only: PARSE_ERROR
-        use Temperature_m, only: Temperature_t, temperatureFromString
-        use Vegetables_m, only: Result_t, assertThat
-
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
@@ -130,10 +127,6 @@ contains
     end function checkBadNumber
 
     function makeUnitsExamples(units) result(examples)
-        use iso_varying_string ! Make the compiler happy
-        use Temperature_m, only: TemperatureUnit_t
-        use Vegetables_m, only: Example
-
         type(TemperatureUnit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
@@ -180,12 +173,6 @@ contains
     end function makeUnitsExamples
 
     function checkRoundTripIn(units) result(result_)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use iso_varying_string, only: char
-        use Temperature_m, only: TemperatureUnit_t
-        use Vegetables_m, only: &
-                Result_t, TestItem_t, TestResultItem_t, assertThat, It
-
         type(TemperatureUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -197,15 +184,6 @@ contains
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
         function checkRoundTrip_(input) result(result__)
-            use iso_varying_string ! Make the compiler happy
-            use Temperature_m, only: Temperature_t, operator(.unit.)
-            use Vegetables_m, only: &
-                    DoublePrecisionInput_t, &
-                    Input_t, &
-                    Result_t, &
-                    assertEqualsWithinRelative, &
-                    fail
-
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -225,12 +203,6 @@ contains
     end function checkRoundTripIn
 
     function checkStringTrip(units) result(result_)
-        use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-        use iso_varying_string, only: char
-        use Temperature_m, only: TemperatureUnit_t
-        use Vegetables_m, only: &
-                Result_t, TestItem_t, TestResultItem_t, assertThat, It
-
         type(TemperatureUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
@@ -242,15 +214,6 @@ contains
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
         function doCheck(input) result(result__)
-            use erloff, only: ErrorList_t, size
-            use Temperature_m, only: &
-                    Temperature_t, &
-                    operator(.unit.), &
-                    temperatureFromString
-            use Temperature_asserts_m, only: assertEquals
-            use Vegetables_m, only: &
-                    DoublePrecisionInput_t, Input_t, Result_t, assertNot, fail
-
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 

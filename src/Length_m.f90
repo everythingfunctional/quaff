@@ -1,5 +1,22 @@
 module Length_m
     use Conversion_factors_m, only: CENTIMETERS_PER_METER
+    use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
+    use iso_varying_string, only: &
+            VARYING_STRING, &
+            assignment(=), &
+            operator(==), &
+            operator(//), &
+            len, &
+            split, &
+            var_str
+    use Miscellaneous_m, only: &
+            operator(.safeEq.), &
+            equalWithinAbsolute_ => equalWithinAbsolute, &
+            equalWithinRelative_ => equalWithinRelative, &
+            wrapInLatexQuantity, &
+            PARSE_ERROR, &
+            UNKNOWN_UNIT
+    use strff, only: join, toString
 
     implicit none
     private
@@ -103,7 +120,7 @@ module Length_m
 
     type(LengthUnit_t), parameter, public :: CENTIMETERS = &
             LengthUnit_t( &
-                    conversion_factor = 1.0d0, &
+                    conversion_factor = CENTIMETERS_PER_METER, &
                     symbol = "cm", &
                     gnuplot_symbol = "cm", &
                     latex_symbol = "\centi\meter")
@@ -125,9 +142,6 @@ module Length_m
             lengthUnitFromString
 contains
     function fromStringBasicC(string, errors) result(length)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(Length_t) :: length
@@ -143,9 +157,6 @@ contains
     end function fromStringBasicC
 
     function fromStringBasicS(string, errors) result(length)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: VARYING_STRING
-
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(Length_t) :: length
@@ -161,9 +172,6 @@ contains
     end function fromStringBasicS
 
     function fromStringWithUnitsC(string, units, errors) result(length)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(LengthUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -180,17 +188,6 @@ contains
     end function fromStringWithUnitsC
 
     function fromStringWithUnitsS(string, units, errors) result(length)
-        use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
-        use iso_varying_string, only: &
-                VARYING_STRING, &
-                assignment(=), &
-                operator(//), &
-                operator(==), &
-                len, &
-                split
-        use Miscellaneous_m, only: PARSE_ERROR
-        use strff, only: join
-
         type(VARYING_STRING), intent(in) :: string
         type(LengthUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -370,8 +367,6 @@ contains
     end function lessThanOrEqual
 
     elemental function equal_(lhs,rhs)
-        use Miscellaneous_m, only: operator(.safeEq.)
-
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         logical :: equal_
@@ -380,8 +375,6 @@ contains
     end function equal_
 
     function equalWithinAbsolute(lhs, rhs, within)
-        use Miscellaneous_m, only: equalWithinAbsolute_ => equalWithinAbsolute
-
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         class(Length_t), intent(in) :: within
@@ -392,8 +385,6 @@ contains
     end function equalWithinAbsolute
 
     function equalWithinRelative(lhs, rhs, within)
-        use Miscellaneous_m, only: equalWithinRelative_ => equalWithinRelative
-
         class(Length_t), intent(in) :: lhs
         class(Length_t), intent(in) :: rhs
         double precision, intent(in) :: within
@@ -412,8 +403,6 @@ contains
     end function notEqual
 
     function toStringFullPrecision(self) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Length_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -421,8 +410,6 @@ contains
     end function toStringFullPrecision
 
     function toStringWithPrecision(self, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Length_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -431,9 +418,6 @@ contains
     end function toStringWithPrecision
 
     function toStringInFullPrecision(self, units) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -443,9 +427,6 @@ contains
 
     function toStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
@@ -457,8 +438,6 @@ contains
     end function toStringInWithPrecision
 
     function toGnuplotStringFullPrecision(self) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Length_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -467,8 +446,6 @@ contains
 
     function toGnuplotStringWithPrecision( &
             self, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Length_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -478,9 +455,6 @@ contains
     end function toGnuplotStringWithPrecision
 
     function toGnuplotStringInFullPrecision(self, units) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -490,9 +464,6 @@ contains
 
     function toGnuplotStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
@@ -504,8 +475,6 @@ contains
     end function toGnuplotStringInWithPrecision
 
     function toLatexStringFullPrecision(self) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Length_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -513,8 +482,6 @@ contains
     end function toLatexStringFullPrecision
 
     function toLatexStringWithPrecision(self, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Length_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -523,10 +490,6 @@ contains
     end function toLatexStringWithPrecision
 
     function toLatexStringInFullPrecision(self, units) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use Miscellaneous_m, only: wrapInLatexQuantity
-        use strff, only: toString
-
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -537,10 +500,6 @@ contains
 
     function toLatexStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use Miscellaneous_m, only: wrapInLatexQuantity
-        use strff, only: toString
-
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
@@ -552,9 +511,6 @@ contains
     end function toLatexStringInWithPrecision
 
     function unitFromStringBasicC(string, errors) result(unit)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(LengthUnit_t) :: unit
@@ -570,9 +526,6 @@ contains
     end function unitFromStringBasicC
 
     function unitFromStringBasicS(string, errors) result(unit)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: VARYING_STRING
-
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(LengthUnit_t) :: unit
@@ -588,9 +541,6 @@ contains
     end function unitFromStringBasicS
 
     function unitFromStringWithUnitsC(string, units, errors) result(unit)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(LengthUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -606,11 +556,6 @@ contains
     end function unitFromStringWithUnitsC
 
     function unitFromStringWithUnitsS(string, units, errors) result(unit)
-        use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
-        use iso_varying_string, only: VARYING_STRING, operator(==), operator(//)
-        use Miscellaneous_m, only: UNKNOWN_UNIT
-        use strff, only: join
-
         type(VARYING_STRING), intent(in) :: string
         type(LengthUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -638,8 +583,6 @@ contains
     end function unitFromStringWithUnitsS
 
     function unitToString(self) result(string)
-        use iso_varying_string, only: VARYING_STRING, assignment(=)
-
         class(LengthUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -647,8 +590,6 @@ contains
     end function unitToString
 
     function unitToGnuplotString(self) result(string)
-        use iso_varying_string, only: VARYING_STRING, assignment(=)
-
         class(LengthUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -656,8 +597,6 @@ contains
     end function unitToGnuplotString
 
     function unitToLatexString(self) result(string)
-        use iso_varying_string, only: VARYING_STRING, assignment(=)
-
         class(LengthUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 

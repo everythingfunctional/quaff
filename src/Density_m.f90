@@ -1,6 +1,23 @@
 module Density_m
     use Conversion_factors_m, only: &
             GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER
+    use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
+    use iso_varying_string, only: &
+            VARYING_STRING, &
+            assignment(=), &
+            operator(==), &
+            operator(//), &
+            len, &
+            split, &
+            var_str
+    use Miscellaneous_m, only: &
+            operator(.safeEq.), &
+            equalWithinAbsolute_ => equalWithinAbsolute, &
+            equalWithinRelative_ => equalWithinRelative, &
+            wrapInLatexQuantity, &
+            PARSE_ERROR, &
+            UNKNOWN_UNIT
+    use strff, only: join, toString
 
     implicit none
     private
@@ -104,7 +121,7 @@ module Density_m
 
     type(DensityUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER = &
             DensityUnit_t( &
-                    conversion_factor = 1.0d0, &
+                    conversion_factor = GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER, &
                     symbol = "g/m^3", &
                     gnuplot_symbol = "g/m^3", &
                     latex_symbol = "\gram\per\cubic\meter")
@@ -126,9 +143,6 @@ module Density_m
             densityUnitFromString
 contains
     function fromStringBasicC(string, errors) result(density)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(Density_t) :: density
@@ -144,9 +158,6 @@ contains
     end function fromStringBasicC
 
     function fromStringBasicS(string, errors) result(density)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: VARYING_STRING
-
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(Density_t) :: density
@@ -162,9 +173,6 @@ contains
     end function fromStringBasicS
 
     function fromStringWithUnitsC(string, units, errors) result(density)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(DensityUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -181,17 +189,6 @@ contains
     end function fromStringWithUnitsC
 
     function fromStringWithUnitsS(string, units, errors) result(density)
-        use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
-        use iso_varying_string, only: &
-                VARYING_STRING, &
-                assignment(=), &
-                operator(//), &
-                operator(==), &
-                len, &
-                split
-        use Miscellaneous_m, only: PARSE_ERROR
-        use strff, only: join
-
         type(VARYING_STRING), intent(in) :: string
         type(DensityUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -371,8 +368,6 @@ contains
     end function lessThanOrEqual
 
     elemental function equal_(lhs,rhs)
-        use Miscellaneous_m, only: operator(.safeEq.)
-
         class(Density_t), intent(in) :: lhs
         class(Density_t), intent(in) :: rhs
         logical :: equal_
@@ -381,8 +376,6 @@ contains
     end function equal_
 
     function equalWithinAbsolute(lhs, rhs, within)
-        use Miscellaneous_m, only: equalWithinAbsolute_ => equalWithinAbsolute
-
         class(Density_t), intent(in) :: lhs
         class(Density_t), intent(in) :: rhs
         class(Density_t), intent(in) :: within
@@ -393,8 +386,6 @@ contains
     end function equalWithinAbsolute
 
     function equalWithinRelative(lhs, rhs, within)
-        use Miscellaneous_m, only: equalWithinRelative_ => equalWithinRelative
-
         class(Density_t), intent(in) :: lhs
         class(Density_t), intent(in) :: rhs
         double precision, intent(in) :: within
@@ -413,8 +404,6 @@ contains
     end function notEqual
 
     function toStringFullPrecision(self) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Density_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -422,8 +411,6 @@ contains
     end function toStringFullPrecision
 
     function toStringWithPrecision(self, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Density_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -432,9 +419,6 @@ contains
     end function toStringWithPrecision
 
     function toStringInFullPrecision(self, units) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Density_t), intent(in) :: self
         class(DensityUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -444,9 +428,6 @@ contains
 
     function toStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Density_t), intent(in) :: self
         class(DensityUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
@@ -458,8 +439,6 @@ contains
     end function toStringInWithPrecision
 
     function toGnuplotStringFullPrecision(self) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Density_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -468,8 +447,6 @@ contains
 
     function toGnuplotStringWithPrecision( &
             self, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Density_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -479,9 +456,6 @@ contains
     end function toGnuplotStringWithPrecision
 
     function toGnuplotStringInFullPrecision(self, units) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Density_t), intent(in) :: self
         class(DensityUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -491,9 +465,6 @@ contains
 
     function toGnuplotStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use strff, only: toString
-
         class(Density_t), intent(in) :: self
         class(DensityUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
@@ -505,8 +476,6 @@ contains
     end function toGnuplotStringInWithPrecision
 
     function toLatexStringFullPrecision(self) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Density_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -514,8 +483,6 @@ contains
     end function toLatexStringFullPrecision
 
     function toLatexStringWithPrecision(self, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING
-
         class(Density_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
@@ -524,10 +491,6 @@ contains
     end function toLatexStringWithPrecision
 
     function toLatexStringInFullPrecision(self, units) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use Miscellaneous_m, only: wrapInLatexQuantity
-        use strff, only: toString
-
         class(Density_t), intent(in) :: self
         class(DensityUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
@@ -538,10 +501,6 @@ contains
 
     function toLatexStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        use iso_varying_string, only: VARYING_STRING, operator(//)
-        use Miscellaneous_m, only: wrapInLatexQuantity
-        use strff, only: toString
-
         class(Density_t), intent(in) :: self
         class(DensityUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
@@ -553,9 +512,6 @@ contains
     end function toLatexStringInWithPrecision
 
     function unitFromStringBasicC(string, errors) result(unit)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(DensityUnit_t) :: unit
@@ -571,9 +527,6 @@ contains
     end function unitFromStringBasicC
 
     function unitFromStringBasicS(string, errors) result(unit)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: VARYING_STRING
-
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
         type(DensityUnit_t) :: unit
@@ -589,9 +542,6 @@ contains
     end function unitFromStringBasicS
 
     function unitFromStringWithUnitsC(string, units, errors) result(unit)
-        use erloff, only: ErrorList_t, Module_, Procedure_
-        use iso_varying_string, only: var_str
-
         character(len=*), intent(in) :: string
         type(DensityUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -607,11 +557,6 @@ contains
     end function unitFromStringWithUnitsC
 
     function unitFromStringWithUnitsS(string, units, errors) result(unit)
-        use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
-        use iso_varying_string, only: VARYING_STRING, operator(==), operator(//)
-        use Miscellaneous_m, only: UNKNOWN_UNIT
-        use strff, only: join
-
         type(VARYING_STRING), intent(in) :: string
         type(DensityUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
@@ -639,8 +584,6 @@ contains
     end function unitFromStringWithUnitsS
 
     function unitToString(self) result(string)
-        use iso_varying_string, only: VARYING_STRING, assignment(=)
-
         class(DensityUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -648,8 +591,6 @@ contains
     end function unitToString
 
     function unitToGnuplotString(self) result(string)
-        use iso_varying_string, only: VARYING_STRING, assignment(=)
-
         class(DensityUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
@@ -657,8 +598,6 @@ contains
     end function unitToGnuplotString
 
     function unitToLatexString(self) result(string)
-        use iso_varying_string, only: VARYING_STRING, assignment(=)
-
         class(DensityUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
