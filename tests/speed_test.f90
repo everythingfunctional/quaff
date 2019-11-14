@@ -16,7 +16,7 @@ contains
         type(TestItem_t) :: individual_tests(1)
 
         individual_tests(1) = It( &
-                "take no more than 3 times as long as regular math", &
+                "take no more than 5 times as long as regular math", &
                 checkInterquantitySpeed)
         tests = Describe("Quantity operations", individual_tests)
     end function test_speed
@@ -49,7 +49,7 @@ contains
         subroutine doRegularMath
             integer :: i
 
-            do i = 1, 300
+            do i = 1, 500
                 density_ = mass_ / volume_
             end do
         end subroutine doRegularMath
