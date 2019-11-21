@@ -141,57 +141,57 @@ module Area_m
             areaFromString, &
             areaUnitFromString
 contains
-    function fromStringBasicC(string, errors) result(area)
+    pure subroutine fromStringBasicC(string, errors, area)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Area_t) :: area
+        type(Area_t), intent(out) :: area
 
         type(ErrorList_t) :: errors_
 
-        area = areaFromString( &
-                var_str(string), PROVIDED_UNITS, errors_)
+        call areaFromString( &
+                var_str(string), PROVIDED_UNITS, errors_, area)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &
                 Procedure_("fromStringBasicC"))
-    end function fromStringBasicC
+    end subroutine fromStringBasicC
 
-    function fromStringBasicS(string, errors) result(area)
+    pure subroutine fromStringBasicS(string, errors, area)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Area_t) :: area
+        type(Area_t), intent(out) :: area
 
         type(ErrorList_t) :: errors_
 
-        area = areaFromString( &
-                string, PROVIDED_UNITS, errors_)
+        call areaFromString( &
+                string, PROVIDED_UNITS, errors_, area)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &
                 Procedure_("fromStringBasicS"))
-    end function fromStringBasicS
+    end subroutine fromStringBasicS
 
-    function fromStringWithUnitsC(string, units, errors) result(area)
+    pure subroutine fromStringWithUnitsC(string, units, errors, area)
         character(len=*), intent(in) :: string
         type(AreaUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Area_t) :: area
+        type(Area_t), intent(out) :: area
 
         type(ErrorList_t) :: errors_
 
-        area = areaFromString( &
-                var_str(string), units, errors_)
+        call areaFromString( &
+                var_str(string), units, errors_, area)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &
                 Procedure_("fromStringWithUnitsC"))
-    end function fromStringWithUnitsC
+    end subroutine fromStringWithUnitsC
 
-    function fromStringWithUnitsS(string, units, errors) result(area)
+    pure subroutine fromStringWithUnitsS(string, units, errors, area)
         type(VARYING_STRING), intent(in) :: string
         type(AreaUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Area_t) :: area
+        type(Area_t), intent(out) :: area
 
         double precision :: number
         character(len=100) :: number_chars
@@ -221,13 +221,13 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        unit = areaUnitFromString(symbol, units, unit_errors)
+        call areaUnitFromString(symbol, units, unit_errors, unit)
         area = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
                 Module_("Area_m"), &
                 Procedure_("fromStringWithUnitsS"))
-    end function fromStringWithUnitsS
+    end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(area)
         double precision, intent(in) :: value_
@@ -510,56 +510,56 @@ contains
                 units%toLatexString())
     end function toLatexStringInWithPrecision
 
-    function unitFromStringBasicC(string, errors) result(unit)
+    pure subroutine unitFromStringBasicC(string, errors, unit)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(AreaUnit_t) :: unit
+        type(AreaUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = areaUnitFromString( &
-                var_str(string), PROVIDED_UNITS, errors_)
+        call areaUnitFromString( &
+                var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &
                 Procedure_("unitFromStringBasicC"))
-    end function unitFromStringBasicC
+    end subroutine unitFromStringBasicC
 
-    function unitFromStringBasicS(string, errors) result(unit)
+    pure subroutine unitFromStringBasicS(string, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(AreaUnit_t) :: unit
+        type(AreaUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = areaUnitFromString( &
-                string, PROVIDED_UNITS, errors_)
+        call areaUnitFromString( &
+                string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &
                 Procedure_("unitFromStringBasicS"))
-    end function unitFromStringBasicS
+    end subroutine unitFromStringBasicS
 
-    function unitFromStringWithUnitsC(string, units, errors) result(unit)
+    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
         character(len=*), intent(in) :: string
         type(AreaUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(AreaUnit_t) :: unit
+        type(AreaUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = areaUnitFromString(var_str(string), units, errors_)
+        call areaUnitFromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &
                 Procedure_("unitFromStringWithUnitsC"))
-    end function unitFromStringWithUnitsC
+    end subroutine unitFromStringWithUnitsC
 
-    function unitFromStringWithUnitsS(string, units, errors) result(unit)
+    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(AreaUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(AreaUnit_t) :: unit
+        type(AreaUnit_t), intent(out) :: unit
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
@@ -580,7 +580,7 @@ contains
                     Procedure_("unitFromStringWithUnitsS"), &
                     '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
         end if
-    end function unitFromStringWithUnitsS
+    end subroutine unitFromStringWithUnitsS
 
     elemental function unitToString(self) result(string)
         class(AreaUnit_t), intent(in) :: self

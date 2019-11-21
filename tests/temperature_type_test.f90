@@ -96,33 +96,34 @@ contains
         end select
     end function checkToAndFromString
 
-    function checkBadString() result(result_)
+    pure function checkBadString() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Temperature_t) :: length
+        type(Temperature_t) :: temperature
 
-        length = temperatureFromString("bad", errors)
+        call temperatureFromString("bad", errors, temperature)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
-    function checkBadUnit() result(result_)
+    pure function checkBadUnit() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Temperature_t) :: length
+        type(Temperature_t) :: temperature
 
-        length = temperatureFromString("1.0 bad", [KELVIN], errors)
+        call temperatureFromString( &
+                "1.0 bad", [KELVIN], errors, temperature)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
-    function checkBadNumber() result(result_)
+    pure function checkBadNumber() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Temperature_t) :: length
+        type(Temperature_t) :: temperature
 
-        length = temperatureFromString("bad K", errors)
+        call temperatureFromString("bad K", errors, temperature)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -213,7 +214,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function doCheck(input) result(result__)
+        pure function doCheck(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -224,8 +225,10 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_temperature = input%value_.unit.units
-                new_temperature = temperatureFromString( &
-                        original_temperature%toStringIn(units), errors)
+                call temperatureFromString( &
+                        original_temperature%toStringIn(units), &
+                        errors, &
+                        new_temperature)
                 result__ = &
                         assertEquals( &
                                 original_temperature, &

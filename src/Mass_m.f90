@@ -141,57 +141,57 @@ module Mass_m
             massFromString, &
             massUnitFromString
 contains
-    function fromStringBasicC(string, errors) result(mass)
+    pure subroutine fromStringBasicC(string, errors, mass)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Mass_t) :: mass
+        type(Mass_t), intent(out) :: mass
 
         type(ErrorList_t) :: errors_
 
-        mass = massFromString( &
-                var_str(string), PROVIDED_UNITS, errors_)
+        call massFromString( &
+                var_str(string), PROVIDED_UNITS, errors_, mass)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &
                 Procedure_("fromStringBasicC"))
-    end function fromStringBasicC
+    end subroutine fromStringBasicC
 
-    function fromStringBasicS(string, errors) result(mass)
+    pure subroutine fromStringBasicS(string, errors, mass)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Mass_t) :: mass
+        type(Mass_t), intent(out) :: mass
 
         type(ErrorList_t) :: errors_
 
-        mass = massFromString( &
-                string, PROVIDED_UNITS, errors_)
+        call massFromString( &
+                string, PROVIDED_UNITS, errors_, mass)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &
                 Procedure_("fromStringBasicS"))
-    end function fromStringBasicS
+    end subroutine fromStringBasicS
 
-    function fromStringWithUnitsC(string, units, errors) result(mass)
+    pure subroutine fromStringWithUnitsC(string, units, errors, mass)
         character(len=*), intent(in) :: string
         type(MassUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Mass_t) :: mass
+        type(Mass_t), intent(out) :: mass
 
         type(ErrorList_t) :: errors_
 
-        mass = massFromString( &
-                var_str(string), units, errors_)
+        call massFromString( &
+                var_str(string), units, errors_, mass)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &
                 Procedure_("fromStringWithUnitsC"))
-    end function fromStringWithUnitsC
+    end subroutine fromStringWithUnitsC
 
-    function fromStringWithUnitsS(string, units, errors) result(mass)
+    pure subroutine fromStringWithUnitsS(string, units, errors, mass)
         type(VARYING_STRING), intent(in) :: string
         type(MassUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Mass_t) :: mass
+        type(Mass_t), intent(out) :: mass
 
         double precision :: number
         character(len=100) :: number_chars
@@ -221,13 +221,13 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        unit = massUnitFromString(symbol, units, unit_errors)
+        call massUnitFromString(symbol, units, unit_errors, unit)
         mass = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
                 Module_("Mass_m"), &
                 Procedure_("fromStringWithUnitsS"))
-    end function fromStringWithUnitsS
+    end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(mass)
         double precision, intent(in) :: value_
@@ -510,56 +510,56 @@ contains
                 units%toLatexString())
     end function toLatexStringInWithPrecision
 
-    function unitFromStringBasicC(string, errors) result(unit)
+    pure subroutine unitFromStringBasicC(string, errors, unit)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(MassUnit_t) :: unit
+        type(MassUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = massUnitFromString( &
-                var_str(string), PROVIDED_UNITS, errors_)
+        call massUnitFromString( &
+                var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &
                 Procedure_("unitFromStringBasicC"))
-    end function unitFromStringBasicC
+    end subroutine unitFromStringBasicC
 
-    function unitFromStringBasicS(string, errors) result(unit)
+    pure subroutine unitFromStringBasicS(string, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(MassUnit_t) :: unit
+        type(MassUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = massUnitFromString( &
-                string, PROVIDED_UNITS, errors_)
+        call massUnitFromString( &
+                string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &
                 Procedure_("unitFromStringBasicS"))
-    end function unitFromStringBasicS
+    end subroutine unitFromStringBasicS
 
-    function unitFromStringWithUnitsC(string, units, errors) result(unit)
+    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
         character(len=*), intent(in) :: string
         type(MassUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(MassUnit_t) :: unit
+        type(MassUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = massUnitFromString(var_str(string), units, errors_)
+        call massUnitFromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &
                 Procedure_("unitFromStringWithUnitsC"))
-    end function unitFromStringWithUnitsC
+    end subroutine unitFromStringWithUnitsC
 
-    function unitFromStringWithUnitsS(string, units, errors) result(unit)
+    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(MassUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(MassUnit_t) :: unit
+        type(MassUnit_t), intent(out) :: unit
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
@@ -580,7 +580,7 @@ contains
                     Procedure_("unitFromStringWithUnitsS"), &
                     '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
         end if
-    end function unitFromStringWithUnitsS
+    end subroutine unitFromStringWithUnitsS
 
     elemental function unitToString(self) result(string)
         class(MassUnit_t), intent(in) :: self

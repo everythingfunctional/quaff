@@ -112,33 +112,34 @@ contains
         end select
     end function checkToAndFromString
 
-    function checkBadString() result(result_)
+    pure function checkBadString() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Angle_t) :: length
+        type(Angle_t) :: angle
 
-        length = angleFromString("bad", errors)
+        call angleFromString("bad", errors, angle)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
-    function checkBadUnit() result(result_)
+    pure function checkBadUnit() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Angle_t) :: length
+        type(Angle_t) :: angle
 
-        length = angleFromString("1.0 bad", [RADIANS], errors)
+        call angleFromString( &
+                "1.0 bad", [RADIANS], errors, angle)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
-    function checkBadNumber() result(result_)
+    pure function checkBadNumber() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Angle_t) :: length
+        type(Angle_t) :: angle
 
-        length = angleFromString("bad rad", errors)
+        call angleFromString("bad rad", errors, angle)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -247,7 +248,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function doCheck(input) result(result__)
+        pure function doCheck(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -258,8 +259,10 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_angle = input%value_.unit.units
-                new_angle = angleFromString( &
-                        original_angle%toStringIn(units), errors)
+                call angleFromString( &
+                        original_angle%toStringIn(units), &
+                        errors, &
+                        new_angle)
                 result__ = &
                         assertEquals( &
                                 original_angle, &

@@ -112,33 +112,34 @@ contains
         end select
     end function checkToAndFromString
 
-    function checkBadString() result(result_)
+    pure function checkBadString() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(QuantityCamel_t) :: length
+        type(QuantityCamel_t) :: quantity_lower
 
-        length = quantitySnakeFromString("bad", errors)
+        call quantitySnakeFromString("bad", errors, quantity_lower)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
-    function checkBadUnit() result(result_)
+    pure function checkBadUnit() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(QuantityCamel_t) :: length
+        type(QuantityCamel_t) :: quantity_lower
 
-        length = quantitySnakeFromString("1.0 bad", [UNITS_CAPITAL], errors)
+        call quantitySnakeFromString( &
+                "1.0 bad", [UNITS_CAPITAL], errors, quantity_lower)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
-    function checkBadNumber() result(result_)
+    pure function checkBadNumber() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(QuantityCamel_t) :: length
+        type(QuantityCamel_t) :: quantity_lower
 
-        length = quantitySnakeFromString("bad unit_sym", errors)
+        call quantitySnakeFromString("bad unit_sym", errors, quantity_lower)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -247,7 +248,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function doCheck(input) result(result__)
+        pure function doCheck(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -258,8 +259,10 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_quantity_lower = input%value_.unit.units
-                new_quantity_lower = quantitySnakeFromString( &
-                        original_quantity_lower%toStringIn(units), errors)
+                call quantitySnakeFromString( &
+                        original_quantity_lower%toStringIn(units), &
+                        errors, &
+                        new_quantity_lower)
                 result__ = &
                         assertEquals( &
                                 original_quantity_lower, &

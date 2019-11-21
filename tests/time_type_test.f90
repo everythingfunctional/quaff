@@ -112,33 +112,34 @@ contains
         end select
     end function checkToAndFromString
 
-    function checkBadString() result(result_)
+    pure function checkBadString() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Time_t) :: length
+        type(Time_t) :: time
 
-        length = timeFromString("bad", errors)
+        call timeFromString("bad", errors, time)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
-    function checkBadUnit() result(result_)
+    pure function checkBadUnit() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Time_t) :: length
+        type(Time_t) :: time
 
-        length = timeFromString("1.0 bad", [SECONDS], errors)
+        call timeFromString( &
+                "1.0 bad", [SECONDS], errors, time)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
-    function checkBadNumber() result(result_)
+    pure function checkBadNumber() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Time_t) :: length
+        type(Time_t) :: time
 
-        length = timeFromString("bad s", errors)
+        call timeFromString("bad s", errors, time)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -247,7 +248,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function doCheck(input) result(result__)
+        pure function doCheck(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -258,8 +259,10 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_time = input%value_.unit.units
-                new_time = timeFromString( &
-                        original_time%toStringIn(units), errors)
+                call timeFromString( &
+                        original_time%toStringIn(units), &
+                        errors, &
+                        new_time)
                 result__ = &
                         assertEquals( &
                                 original_time, &

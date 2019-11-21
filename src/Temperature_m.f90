@@ -157,57 +157,57 @@ module Temperature_m
             temperatureFromString, &
             temperatureUnitFromString
 contains
-    function fromStringBasicC(string, errors) result(temperature)
+    pure subroutine fromStringBasicC(string, errors, temperature)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Temperature_t) :: temperature
+        type(Temperature_t), intent(out) :: temperature
 
         type(ErrorList_t) :: errors_
 
-        temperature = temperatureFromString( &
-                var_str(string), PROVIDED_UNITS, errors_)
+        call temperatureFromString( &
+                var_str(string), PROVIDED_UNITS, errors_, temperature)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
                 Procedure_("fromStringBasicC"))
-    end function fromStringBasicC
+    end subroutine fromStringBasicC
 
-    function fromStringBasicS(string, errors) result(temperature)
+    pure subroutine fromStringBasicS(string, errors, temperature)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Temperature_t) :: temperature
+        type(Temperature_t), intent(out) :: temperature
 
         type(ErrorList_t) :: errors_
 
-        temperature = temperatureFromString( &
-                string, PROVIDED_UNITS, errors_)
+        call temperatureFromString( &
+                string, PROVIDED_UNITS, errors_, temperature)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
                 Procedure_("fromStringBasicS"))
-    end function fromStringBasicS
+    end subroutine fromStringBasicS
 
-    function fromStringWithUnitsC(string, units, errors) result(temperature)
+    pure subroutine fromStringWithUnitsC(string, units, errors, temperature)
         character(len=*), intent(in) :: string
         type(TemperatureUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Temperature_t) :: temperature
+        type(Temperature_t), intent(out) :: temperature
 
         type(ErrorList_t) :: errors_
 
-        temperature = temperatureFromString( &
-                var_str(string), units, errors_)
+        call temperatureFromString( &
+                var_str(string), units, errors_, temperature)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
                 Procedure_("fromStringWithUnitsC"))
-    end function fromStringWithUnitsC
+    end subroutine fromStringWithUnitsC
 
-    function fromStringWithUnitsS(string, units, errors) result(temperature)
+    pure subroutine fromStringWithUnitsS(string, units, errors, temperature)
         type(VARYING_STRING), intent(in) :: string
         type(TemperatureUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Temperature_t) :: temperature
+        type(Temperature_t), intent(out) :: temperature
 
         double precision :: number
         character(len=100) :: number_chars
@@ -237,13 +237,13 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        unit = temperatureUnitFromString(symbol, units, unit_errors)
+        call temperatureUnitFromString(symbol, units, unit_errors, unit)
         temperature = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
                 Module_("Temperature_m"), &
                 Procedure_("fromStringWithUnitsS"))
-    end function fromStringWithUnitsS
+    end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(temperature)
         double precision, intent(in) :: value_
@@ -526,56 +526,56 @@ contains
                 units%toLatexString())
     end function toLatexStringInWithPrecision
 
-    function unitFromStringBasicC(string, errors) result(unit)
+    pure subroutine unitFromStringBasicC(string, errors, unit)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t) :: unit
+        type(TemperatureUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = temperatureUnitFromString( &
-                var_str(string), PROVIDED_UNITS, errors_)
+        call temperatureUnitFromString( &
+                var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
                 Procedure_("unitFromStringBasicC"))
-    end function unitFromStringBasicC
+    end subroutine unitFromStringBasicC
 
-    function unitFromStringBasicS(string, errors) result(unit)
+    pure subroutine unitFromStringBasicS(string, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t) :: unit
+        type(TemperatureUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = temperatureUnitFromString( &
-                string, PROVIDED_UNITS, errors_)
+        call temperatureUnitFromString( &
+                string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
                 Procedure_("unitFromStringBasicS"))
-    end function unitFromStringBasicS
+    end subroutine unitFromStringBasicS
 
-    function unitFromStringWithUnitsC(string, units, errors) result(unit)
+    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
         character(len=*), intent(in) :: string
         type(TemperatureUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t) :: unit
+        type(TemperatureUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        unit = temperatureUnitFromString(var_str(string), units, errors_)
+        call temperatureUnitFromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
                 Procedure_("unitFromStringWithUnitsC"))
-    end function unitFromStringWithUnitsC
+    end subroutine unitFromStringWithUnitsC
 
-    function unitFromStringWithUnitsS(string, units, errors) result(unit)
+    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(TemperatureUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t) :: unit
+        type(TemperatureUnit_t), intent(out) :: unit
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
@@ -596,7 +596,7 @@ contains
                     Procedure_("unitFromStringWithUnitsS"), &
                     '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
         end if
-    end function unitFromStringWithUnitsS
+    end subroutine unitFromStringWithUnitsS
 
     elemental function unitToString(self) result(string)
         class(TemperatureUnit_t), intent(in) :: self

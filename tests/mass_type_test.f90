@@ -112,33 +112,34 @@ contains
         end select
     end function checkToAndFromString
 
-    function checkBadString() result(result_)
+    pure function checkBadString() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Mass_t) :: length
+        type(Mass_t) :: mass
 
-        length = massFromString("bad", errors)
+        call massFromString("bad", errors, mass)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
-    function checkBadUnit() result(result_)
+    pure function checkBadUnit() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Mass_t) :: length
+        type(Mass_t) :: mass
 
-        length = massFromString("1.0 bad", [KILOGRAMS], errors)
+        call massFromString( &
+                "1.0 bad", [KILOGRAMS], errors, mass)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
-    function checkBadNumber() result(result_)
+    pure function checkBadNumber() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Mass_t) :: length
+        type(Mass_t) :: mass
 
-        length = massFromString("bad kg", errors)
+        call massFromString("bad kg", errors, mass)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -247,7 +248,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function doCheck(input) result(result__)
+        pure function doCheck(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -258,8 +259,10 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_mass = input%value_.unit.units
-                new_mass = massFromString( &
-                        original_mass%toStringIn(units), errors)
+                call massFromString( &
+                        original_mass%toStringIn(units), &
+                        errors, &
+                        new_mass)
                 result__ = &
                         assertEquals( &
                                 original_mass, &

@@ -112,33 +112,34 @@ contains
         end select
     end function checkToAndFromString
 
-    function checkBadString() result(result_)
+    pure function checkBadString() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Density_t) :: length
+        type(Density_t) :: density
 
-        length = densityFromString("bad", errors)
+        call densityFromString("bad", errors, density)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
-    function checkBadUnit() result(result_)
+    pure function checkBadUnit() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Density_t) :: length
+        type(Density_t) :: density
 
-        length = densityFromString("1.0 bad", [KILOGRAMS_PER_CUBIC_METER], errors)
+        call densityFromString( &
+                "1.0 bad", [KILOGRAMS_PER_CUBIC_METER], errors, density)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
 
-    function checkBadNumber() result(result_)
+    pure function checkBadNumber() result(result_)
         type(Result_t) :: result_
 
         type(ErrorList_t) :: errors
-        type(Density_t) :: length
+        type(Density_t) :: density
 
-        length = densityFromString("bad kg/m^3", errors)
+        call densityFromString("bad kg/m^3", errors, density)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -247,7 +248,7 @@ contains
         the_result = the_test%run()
         result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
     contains
-        function doCheck(input) result(result__)
+        pure function doCheck(input) result(result__)
             class(Input_t), intent(in) :: input
             type(Result_t) :: result__
 
@@ -258,8 +259,10 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_density = input%value_.unit.units
-                new_density = densityFromString( &
-                        original_density%toStringIn(units), errors)
+                call densityFromString( &
+                        original_density%toStringIn(units), &
+                        errors, &
+                        new_density)
                 result__ = &
                         assertEquals( &
                                 original_density, &
