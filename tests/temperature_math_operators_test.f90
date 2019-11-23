@@ -128,7 +128,7 @@ contains
             result_ = assertEqualsWithinRelative( &
                     temperature1, &
                     (temperature1 + temperature2) - temperature2, &
-                    1.0d-12, &
+                    1.0d-8, &
                     "temperature1 = " // temperature1%toString() // ", temperature2 = " // temperature2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")

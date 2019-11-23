@@ -128,7 +128,7 @@ contains
             result_ = assertEqualsWithinRelative( &
                     area1, &
                     (area1 + area2) - area2, &
-                    1.0d-12, &
+                    1.0d-8, &
                     "area1 = " // area1%toString() // ", area2 = " // area2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")

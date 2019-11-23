@@ -128,7 +128,7 @@ contains
             result_ = assertEqualsWithinRelative( &
                     time1, &
                     (time1 + time2) - time2, &
-                    1.0d-12, &
+                    1.0d-8, &
                     "time1 = " // time1%toString() // ", time2 = " // time2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")

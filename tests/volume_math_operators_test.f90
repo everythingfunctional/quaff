@@ -128,7 +128,7 @@ contains
             result_ = assertEqualsWithinRelative( &
                     volume1, &
                     (volume1 + volume2) - volume2, &
-                    1.0d-12, &
+                    1.0d-8, &
                     "volume1 = " // volume1%toString() // ", volume2 = " // volume2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")

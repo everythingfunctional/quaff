@@ -128,7 +128,7 @@ contains
             result_ = assertEqualsWithinRelative( &
                     quantity_lower1, &
                     (quantity_lower1 + quantity_lower2) - quantity_lower2, &
-                    1.0d-12, &
+                    1.0d-8, &
                     "quantity_lower1 = " // quantity_lower1%toString() // ", quantity_lower2 = " // quantity_lower2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")

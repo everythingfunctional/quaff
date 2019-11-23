@@ -128,7 +128,7 @@ contains
             result_ = assertEqualsWithinRelative( &
                     density1, &
                     (density1 + density2) - density2, &
-                    1.0d-12, &
+                    1.0d-8, &
                     "density1 = " // density1%toString() // ", density2 = " // density2%toString())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
