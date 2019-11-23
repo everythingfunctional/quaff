@@ -7,7 +7,7 @@ module angle_type_test
             Angle_t, &
             AngleUnit_t, &
             operator(.unit.), &
-            angleFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             RADIANS
     use Angle_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Angle_t) :: angle
 
-        call angleFromString("bad", errors, angle)
+        call fromString("bad", errors, angle)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Angle_t) :: angle
 
-        call angleFromString( &
+        call fromString( &
                 "1.0 bad", [RADIANS], errors, angle)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Angle_t) :: angle
 
-        call angleFromString("bad rad", errors, angle)
+        call fromString("bad rad", errors, angle)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_angle = input%value_.unit.units
-                call angleFromString( &
+                call fromString( &
                         original_angle%toStringIn(units), &
                         errors, &
                         new_angle)

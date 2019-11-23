@@ -104,19 +104,16 @@ module Volume_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface volumeFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface volumeFromString
-
-    interface volumeUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface volumeUnitFromString
+    end interface fromString
 
     type(VolumeUnit_t), parameter, public :: CUBIC_CENTIMETERS = &
             VolumeUnit_t( &
@@ -136,10 +133,7 @@ module Volume_m
     type(VolumeUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CUBIC_CENTIMETERS, CUBIC_METERS]
 
-    public :: &
-            operator(.unit.), &
-            volumeFromString, &
-            volumeUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, volume)
         character(len=*), intent(in) :: string
@@ -148,7 +142,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call volumeFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, volume)
         call errors%appendErrors( &
                 errors_, &
@@ -163,7 +157,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call volumeFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, volume)
         call errors%appendErrors( &
                 errors_, &
@@ -179,7 +173,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call volumeFromString( &
+        call fromString( &
                 var_str(string), units, errors_, volume)
         call errors%appendErrors( &
                 errors_, &
@@ -221,7 +215,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call volumeUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         volume = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -517,7 +511,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call volumeUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -532,7 +526,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call volumeUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -548,7 +542,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call volumeUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Volume_m"), &

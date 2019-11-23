@@ -7,7 +7,7 @@ module quantity_lower_type_test
             QuantityCamel_t, &
             QuantityCamelUnit_t, &
             operator(.unit.), &
-            quantitySnakeFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             UNITS_CAPITAL
     use Quantity_module_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(QuantityCamel_t) :: quantity_lower
 
-        call quantitySnakeFromString("bad", errors, quantity_lower)
+        call fromString("bad", errors, quantity_lower)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(QuantityCamel_t) :: quantity_lower
 
-        call quantitySnakeFromString( &
+        call fromString( &
                 "1.0 bad", [UNITS_CAPITAL], errors, quantity_lower)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(QuantityCamel_t) :: quantity_lower
 
-        call quantitySnakeFromString("bad unit_sym", errors, quantity_lower)
+        call fromString("bad unit_sym", errors, quantity_lower)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_quantity_lower = input%value_.unit.units
-                call quantitySnakeFromString( &
+                call fromString( &
                         original_quantity_lower%toStringIn(units), &
                         errors, &
                         new_quantity_lower)

@@ -7,7 +7,7 @@ module mass_type_test
             Mass_t, &
             MassUnit_t, &
             operator(.unit.), &
-            massFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             KILOGRAMS
     use Mass_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Mass_t) :: mass
 
-        call massFromString("bad", errors, mass)
+        call fromString("bad", errors, mass)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Mass_t) :: mass
 
-        call massFromString( &
+        call fromString( &
                 "1.0 bad", [KILOGRAMS], errors, mass)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Mass_t) :: mass
 
-        call massFromString("bad kg", errors, mass)
+        call fromString("bad kg", errors, mass)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_mass = input%value_.unit.units
-                call massFromString( &
+                call fromString( &
                         original_mass%toStringIn(units), &
                         errors, &
                         new_mass)

@@ -7,7 +7,7 @@ module temperature_type_test
             Temperature_t, &
             TemperatureUnit_t, &
             operator(.unit.), &
-            temperatureFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             KELVIN
     use Temperature_asserts_m, only: assertEquals
@@ -102,7 +102,7 @@ contains
         type(ErrorList_t) :: errors
         type(Temperature_t) :: temperature
 
-        call temperatureFromString("bad", errors, temperature)
+        call fromString("bad", errors, temperature)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -112,7 +112,7 @@ contains
         type(ErrorList_t) :: errors
         type(Temperature_t) :: temperature
 
-        call temperatureFromString( &
+        call fromString( &
                 "1.0 bad", [KELVIN], errors, temperature)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -123,7 +123,7 @@ contains
         type(ErrorList_t) :: errors
         type(Temperature_t) :: temperature
 
-        call temperatureFromString("bad K", errors, temperature)
+        call fromString("bad K", errors, temperature)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -225,7 +225,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_temperature = input%value_.unit.units
-                call temperatureFromString( &
+                call fromString( &
                         original_temperature%toStringIn(units), &
                         errors, &
                         new_temperature)

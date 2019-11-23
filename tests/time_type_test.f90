@@ -7,7 +7,7 @@ module time_type_test
             Time_t, &
             TimeUnit_t, &
             operator(.unit.), &
-            timeFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             SECONDS
     use Time_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Time_t) :: time
 
-        call timeFromString("bad", errors, time)
+        call fromString("bad", errors, time)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Time_t) :: time
 
-        call timeFromString( &
+        call fromString( &
                 "1.0 bad", [SECONDS], errors, time)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Time_t) :: time
 
-        call timeFromString("bad s", errors, time)
+        call fromString("bad s", errors, time)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_time = input%value_.unit.units
-                call timeFromString( &
+                call fromString( &
                         original_time%toStringIn(units), &
                         errors, &
                         new_time)

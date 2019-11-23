@@ -7,7 +7,7 @@ module area_type_test
             Area_t, &
             AreaUnit_t, &
             operator(.unit.), &
-            areaFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             SQUARE_METERS
     use Area_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Area_t) :: area
 
-        call areaFromString("bad", errors, area)
+        call fromString("bad", errors, area)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Area_t) :: area
 
-        call areaFromString( &
+        call fromString( &
                 "1.0 bad", [SQUARE_METERS], errors, area)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Area_t) :: area
 
-        call areaFromString("bad m^2", errors, area)
+        call fromString("bad m^2", errors, area)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_area = input%value_.unit.units
-                call areaFromString( &
+                call fromString( &
                         original_area%toStringIn(units), &
                         errors, &
                         new_area)

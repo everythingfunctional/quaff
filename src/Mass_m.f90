@@ -104,19 +104,16 @@ module Mass_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface massFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface massFromString
-
-    interface massUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface massUnitFromString
+    end interface fromString
 
     type(MassUnit_t), parameter, public :: GRAMS = &
             MassUnit_t( &
@@ -136,10 +133,7 @@ module Mass_m
     type(MassUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS]
 
-    public :: &
-            operator(.unit.), &
-            massFromString, &
-            massUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, mass)
         character(len=*), intent(in) :: string
@@ -148,7 +142,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call massFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, mass)
         call errors%appendErrors( &
                 errors_, &
@@ -163,7 +157,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call massFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, mass)
         call errors%appendErrors( &
                 errors_, &
@@ -179,7 +173,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call massFromString( &
+        call fromString( &
                 var_str(string), units, errors_, mass)
         call errors%appendErrors( &
                 errors_, &
@@ -221,7 +215,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call massUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         mass = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -517,7 +511,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call massUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -532,7 +526,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call massUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -548,7 +542,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call massUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Mass_m"), &

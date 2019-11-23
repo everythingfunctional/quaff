@@ -7,7 +7,7 @@ module volume_type_test
             Volume_t, &
             VolumeUnit_t, &
             operator(.unit.), &
-            volumeFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             CUBIC_METERS
     use Volume_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Volume_t) :: volume
 
-        call volumeFromString("bad", errors, volume)
+        call fromString("bad", errors, volume)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Volume_t) :: volume
 
-        call volumeFromString( &
+        call fromString( &
                 "1.0 bad", [CUBIC_METERS], errors, volume)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Volume_t) :: volume
 
-        call volumeFromString("bad m^3", errors, volume)
+        call fromString("bad m^3", errors, volume)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_volume = input%value_.unit.units
-                call volumeFromString( &
+                call fromString( &
                         original_volume%toStringIn(units), &
                         errors, &
                         new_volume)

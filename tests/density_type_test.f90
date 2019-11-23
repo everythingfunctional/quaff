@@ -7,7 +7,7 @@ module density_type_test
             Density_t, &
             DensityUnit_t, &
             operator(.unit.), &
-            densityFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             KILOGRAMS_PER_CUBIC_METER
     use Density_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Density_t) :: density
 
-        call densityFromString("bad", errors, density)
+        call fromString("bad", errors, density)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Density_t) :: density
 
-        call densityFromString( &
+        call fromString( &
                 "1.0 bad", [KILOGRAMS_PER_CUBIC_METER], errors, density)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Density_t) :: density
 
-        call densityFromString("bad kg/m^3", errors, density)
+        call fromString("bad kg/m^3", errors, density)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_density = input%value_.unit.units
-                call densityFromString( &
+                call fromString( &
                         original_density%toStringIn(units), &
                         errors, &
                         new_density)

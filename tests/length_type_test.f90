@@ -7,7 +7,7 @@ module length_type_test
             Length_t, &
             LengthUnit_t, &
             operator(.unit.), &
-            lengthFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             METERS
     use Length_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Length_t) :: length
 
-        call lengthFromString("bad", errors, length)
+        call fromString("bad", errors, length)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Length_t) :: length
 
-        call lengthFromString( &
+        call fromString( &
                 "1.0 bad", [METERS], errors, length)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Length_t) :: length
 
-        call lengthFromString("bad m", errors, length)
+        call fromString("bad m", errors, length)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_length = input%value_.unit.units
-                call lengthFromString( &
+                call fromString( &
                         original_length%toStringIn(units), &
                         errors, &
                         new_length)

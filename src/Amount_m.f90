@@ -104,19 +104,16 @@ module Amount_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface amountFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface amountFromString
-
-    interface amountUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface amountUnitFromString
+    end interface fromString
 
     type(AmountUnit_t), parameter, public :: MOLS = &
             AmountUnit_t( &
@@ -136,10 +133,7 @@ module Amount_m
     type(AmountUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [MOLS, PARTICLES]
 
-    public :: &
-            operator(.unit.), &
-            amountFromString, &
-            amountUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, amount)
         character(len=*), intent(in) :: string
@@ -148,7 +142,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call amountFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, amount)
         call errors%appendErrors( &
                 errors_, &
@@ -163,7 +157,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call amountFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, amount)
         call errors%appendErrors( &
                 errors_, &
@@ -179,7 +173,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call amountFromString( &
+        call fromString( &
                 var_str(string), units, errors_, amount)
         call errors%appendErrors( &
                 errors_, &
@@ -221,7 +215,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call amountUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         amount = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -517,7 +511,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call amountUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -532,7 +526,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call amountUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -548,7 +542,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call amountUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Amount_m"), &

@@ -104,19 +104,16 @@ module Area_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface areaFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface areaFromString
-
-    interface areaUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface areaUnitFromString
+    end interface fromString
 
     type(AreaUnit_t), parameter, public :: SQUARE_CENTIMETERS = &
             AreaUnit_t( &
@@ -136,10 +133,7 @@ module Area_m
     type(AreaUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [SQUARE_CENTIMETERS, SQUARE_METERS]
 
-    public :: &
-            operator(.unit.), &
-            areaFromString, &
-            areaUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, area)
         character(len=*), intent(in) :: string
@@ -148,7 +142,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call areaFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, area)
         call errors%appendErrors( &
                 errors_, &
@@ -163,7 +157,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call areaFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, area)
         call errors%appendErrors( &
                 errors_, &
@@ -179,7 +173,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call areaFromString( &
+        call fromString( &
                 var_str(string), units, errors_, area)
         call errors%appendErrors( &
                 errors_, &
@@ -221,7 +215,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call areaUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         area = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -517,7 +511,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call areaUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -532,7 +526,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call areaUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -548,7 +542,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call areaUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Area_m"), &

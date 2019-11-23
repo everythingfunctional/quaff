@@ -108,19 +108,16 @@ module Temperature_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface temperatureFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface temperatureFromString
-
-    interface temperatureUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface temperatureUnitFromString
+    end interface fromString
 
     type(TemperatureUnit_t), parameter, public :: CELSIUS = TemperatureUnit_t( &
             conversion_factor = 1.0d0, &
@@ -152,10 +149,7 @@ module Temperature_m
     type(TemperatureUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
 
-    public :: &
-            operator(.unit.), &
-            temperatureFromString, &
-            temperatureUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, temperature)
         character(len=*), intent(in) :: string
@@ -164,7 +158,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call temperatureFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, temperature)
         call errors%appendErrors( &
                 errors_, &
@@ -179,7 +173,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call temperatureFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, temperature)
         call errors%appendErrors( &
                 errors_, &
@@ -195,7 +189,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call temperatureFromString( &
+        call fromString( &
                 var_str(string), units, errors_, temperature)
         call errors%appendErrors( &
                 errors_, &
@@ -237,7 +231,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call temperatureUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         temperature = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -533,7 +527,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call temperatureUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -548,7 +542,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call temperatureUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -564,7 +558,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call temperatureUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &

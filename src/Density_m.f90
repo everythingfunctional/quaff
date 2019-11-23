@@ -105,19 +105,16 @@ module Density_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface densityFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface densityFromString
-
-    interface densityUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface densityUnitFromString
+    end interface fromString
 
     type(DensityUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER = &
             DensityUnit_t( &
@@ -137,10 +134,7 @@ module Density_m
     type(DensityUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS_PER_CUBIC_METER, KILOGRAMS_PER_CUBIC_METER]
 
-    public :: &
-            operator(.unit.), &
-            densityFromString, &
-            densityUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, density)
         character(len=*), intent(in) :: string
@@ -149,7 +143,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call densityFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, density)
         call errors%appendErrors( &
                 errors_, &
@@ -164,7 +158,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call densityFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, density)
         call errors%appendErrors( &
                 errors_, &
@@ -180,7 +174,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call densityFromString( &
+        call fromString( &
                 var_str(string), units, errors_, density)
         call errors%appendErrors( &
                 errors_, &
@@ -222,7 +216,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call densityUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         density = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -518,7 +512,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call densityUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -533,7 +527,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call densityUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -549,7 +543,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call densityUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Density_m"), &

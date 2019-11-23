@@ -104,19 +104,16 @@ module Length_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface lengthFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface lengthFromString
-
-    interface lengthUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface lengthUnitFromString
+    end interface fromString
 
     type(LengthUnit_t), parameter, public :: CENTIMETERS = &
             LengthUnit_t( &
@@ -136,10 +133,7 @@ module Length_m
     type(LengthUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, METERS]
 
-    public :: &
-            operator(.unit.), &
-            lengthFromString, &
-            lengthUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, length)
         character(len=*), intent(in) :: string
@@ -148,7 +142,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call lengthFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, length)
         call errors%appendErrors( &
                 errors_, &
@@ -163,7 +157,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call lengthFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, length)
         call errors%appendErrors( &
                 errors_, &
@@ -179,7 +173,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call lengthFromString( &
+        call fromString( &
                 var_str(string), units, errors_, length)
         call errors%appendErrors( &
                 errors_, &
@@ -221,7 +215,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call lengthUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         length = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -517,7 +511,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call lengthUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -532,7 +526,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call lengthUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -548,7 +542,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call lengthUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Length_m"), &

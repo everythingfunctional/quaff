@@ -7,7 +7,7 @@ module amount_type_test
             Amount_t, &
             AmountUnit_t, &
             operator(.unit.), &
-            amountFromString, &
+            fromString, &
             PROVIDED_UNITS, &
             MOLS
     use Amount_asserts_m, only: assertEquals
@@ -118,7 +118,7 @@ contains
         type(ErrorList_t) :: errors
         type(Amount_t) :: amount
 
-        call amountFromString("bad", errors, amount)
+        call fromString("bad", errors, amount)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadString
 
@@ -128,7 +128,7 @@ contains
         type(ErrorList_t) :: errors
         type(Amount_t) :: amount
 
-        call amountFromString( &
+        call fromString( &
                 "1.0 bad", [MOLS], errors, amount)
         result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
     end function checkBadUnit
@@ -139,7 +139,7 @@ contains
         type(ErrorList_t) :: errors
         type(Amount_t) :: amount
 
-        call amountFromString("bad mol", errors, amount)
+        call fromString("bad mol", errors, amount)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
 
@@ -259,7 +259,7 @@ contains
             select type (input)
             type is (DoublePrecisionInput_t)
                 original_amount = input%value_.unit.units
-                call amountFromString( &
+                call fromString( &
                         original_amount%toStringIn(units), &
                         errors, &
                         new_amount)

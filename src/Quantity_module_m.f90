@@ -103,19 +103,16 @@ module Quantity_module_m
         module procedure fromUnits
     end interface operator(.unit.)
 
-    interface quantitySnakeFromString
+    interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-    end interface quantitySnakeFromString
-
-    interface quantitySnakeUnitFromString
         module procedure unitFromStringBasicC
         module procedure unitFromStringBasicS
         module procedure unitFromStringWithUnitsC
         module procedure unitFromStringWithUnitsS
-    end interface quantitySnakeUnitFromString
+    end interface fromString
 
     type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL = &
             QuantityCamelUnit_t( &
@@ -135,10 +132,7 @@ module Quantity_module_m
     type(QuantityCamelUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [UNITS_CAPITAL, UNITS_CAPITAL2]
 
-    public :: &
-            operator(.unit.), &
-            quantitySnakeFromString, &
-            quantitySnakeUnitFromString
+    public :: operator(.unit.), fromString
 contains
     pure subroutine fromStringBasicC(string, errors, quantity_lower)
         character(len=*), intent(in) :: string
@@ -147,7 +141,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call quantitySnakeFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, quantity_lower)
         call errors%appendErrors( &
                 errors_, &
@@ -162,7 +156,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call quantitySnakeFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, quantity_lower)
         call errors%appendErrors( &
                 errors_, &
@@ -178,7 +172,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call quantitySnakeFromString( &
+        call fromString( &
                 var_str(string), units, errors_, quantity_lower)
         call errors%appendErrors( &
                 errors_, &
@@ -220,7 +214,7 @@ contains
                     Procedure_("fromStringWithUnitsS"), &
                     'Error parsing number from string "' // number_string // '"'))
         end if
-        call quantitySnakeUnitFromString(symbol, units, unit_errors, unit)
+        call fromString(symbol, units, unit_errors, unit)
         quantity_lower = number.unit.unit
         call errors%appendErrors( &
                 unit_errors, &
@@ -516,7 +510,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call quantitySnakeUnitFromString( &
+        call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -531,7 +525,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call quantitySnakeUnitFromString( &
+        call fromString( &
                 string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
@@ -547,7 +541,7 @@ contains
 
         type(ErrorList_t) :: errors_
 
-        call quantitySnakeUnitFromString(var_str(string), units, errors_, unit)
+        call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Quantity_module_m"), &
