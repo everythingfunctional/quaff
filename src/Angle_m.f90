@@ -104,6 +104,18 @@ module Angle_m
         module procedure fromUnits
     end interface operator(.unit.)
 
+    interface sin
+        module procedure sin_
+    end interface sin
+
+    interface cos
+        module procedure cos_
+    end interface cos
+
+    interface tan
+        module procedure tan_
+    end interface tan
+
     interface fromString
         module procedure fromStringBasicC
         module procedure fromStringBasicS
@@ -133,7 +145,16 @@ module Angle_m
     type(AngleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [DEGREES, RADIANS]
 
-    public :: operator(.unit.), fromString
+    public :: &
+            operator(.unit.), &
+            fromString, &
+            sin, &
+            cos, &
+            tan, &
+            asin_, &
+            acos_, &
+            atan_, &
+            atan2_
 contains
     pure subroutine fromStringBasicC(string, errors, angle)
         character(len=*), intent(in) :: string
@@ -596,4 +617,54 @@ contains
 
         string = trim(self%latex_symbol)
     end function unitToLatexString
+
+    elemental function sin_(angle)
+        type(Angle_t), intent(in) :: angle
+        double precision :: sin_
+
+        sin_ = sin(angle%radians)
+    end function sin_
+
+    elemental function cos_(angle)
+        type(Angle_t), intent(in) :: angle
+        double precision :: cos_
+
+        cos_ = cos(angle%radians)
+    end function cos_
+
+    elemental function tan_(angle)
+        type(Angle_t), intent(in) :: angle
+        double precision :: tan_
+
+        tan_ = tan(angle%radians)
+    end function tan_
+
+    elemental function asin_(number) result(angle)
+        double precision, intent(in) :: number
+        type(Angle_t) :: angle
+
+        angle%radians = asin(number)
+    end function asin_
+
+    elemental function acos_(number) result(angle)
+        double precision, intent(in) :: number
+        type(Angle_t) :: angle
+
+        angle%radians = acos(number)
+    end function acos_
+
+    elemental function atan_(number) result(angle)
+        double precision, intent(in) :: number
+        type(Angle_t) :: angle
+
+        angle%radians = atan(number)
+    end function atan_
+
+    elemental function atan2_(y, x) result(angle)
+        double precision, intent(in) :: y
+        double precision, intent(in) :: x
+        type(Angle_t) :: angle
+
+        angle%radians = atan2(y, x)
+    end function atan2_
 end module Angle_m
