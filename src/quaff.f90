@@ -13,6 +13,13 @@ module quaff
             AngleUnit_t, &
             operator(.unit.), &
             fromString, &
+            sin, &
+            cos, &
+            tan, &
+            asin_, &
+            acos_, &
+            atan_, &
+            atan2_, &
             DEFAULT_ANGLE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ANGLE_UNITS => PROVIDED_UNITS, &
             DEGREES, &
