@@ -1,7 +1,7 @@
 module quantity_lower_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Quantity_module_m, only: &
+    use quaff, only: &
             QuantityCamel_t, operator(.unit.), UNITS_CAPITAL
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

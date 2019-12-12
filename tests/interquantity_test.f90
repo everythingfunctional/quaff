@@ -1,16 +1,15 @@
 module interquantity_test
-    use Area_m, only: operator(.unit.), SQUARE_METERS
-    use Area_asserts_m, only: assertEquals
-    use Density_m, only: operator(.unit.), KILOGRAMS_PER_CUBIC_METER
-    use Density_asserts_m, only: assertEquals
-    use Interquantity_operators_m, only: operator(*), operator(/)
-    use Length_m, only: operator(.unit.), METERS
-    use Length_asserts_m, only: assertEquals
-    use Mass_m, only: operator(.unit.), KILOGRAMS
-    use Mass_asserts_m, only: assertEquals
+    use quaff, only: &
+            operator(*), &
+            operator(/), &
+            operator(.unit.), &
+            CUBIC_METERS, &
+            KILOGRAMS, &
+            KILOGRAMS_PER_CUBIC_METER, &
+            METERS, &
+            SQUARE_METERS
+    use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: Result_t, TestItem_t, Describe, It
-    use Volume_m, only: operator(.unit.), CUBIC_METERS
-    use Volume_asserts_m, only: assertEquals
 
     implicit none
     private

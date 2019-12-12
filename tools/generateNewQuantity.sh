@@ -4,15 +4,16 @@ Quantity_module="${1}"
 quantitySnake="${2}"
 QuantityCamel="${3}"
 quantity_lower="${4}"
-units_lower="${5}"
-UNITS_CAPITAL="${6}"
-unit_sym="${7}"
-gnu_sym="${8}"
-ltx_sym="${9}"
+QUANTITY_CAPITAL="${5}"
+units_lower="${6}"
+UNITS_CAPITAL="${7}"
+unit_sym="${8}"
+gnu_sym="${9}"
+ltx_sym="${10}"
 
-if [[ $# -ne 9 ]]; then
+if [[ $# -ne 10 ]]; then
     echo "Usage:"
-    echo "    ${0} Quantity_module quantitySnake QuantityCamel quantity_lower units_lower UNITS_CAPITAL unit_symbol gnuplot_symbol latex_symbol"
+    echo "    ${0} Quantity_module quantitySnake QuantityCamel quantity_lower QUANTITY_CAPITAL units_lower UNITS_CAPITAL unit_symbol gnuplot_symbol latex_symbol"
     exit
 fi
 
@@ -26,6 +27,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "src/Quantity_module_m.f90" \
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
+    | sed "s|QUANTITY_CAPITAL|${QUANTITY_CAPITAL}|g" \
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
@@ -37,6 +39,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_type_test.f90
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
+    | sed "s|QUANTITY_CAPITAL|${QUANTITY_CAPITAL}|g" \
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
@@ -48,6 +51,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_math_operator
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
+    | sed "s|QUANTITY_CAPITAL|${QUANTITY_CAPITAL}|g" \
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
@@ -59,6 +63,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_logical_opera
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
+    | sed "s|QUANTITY_CAPITAL|${QUANTITY_CAPITAL}|g" \
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \
@@ -70,6 +75,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/test_helpers/assertions/Quan
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
+    | sed "s|QUANTITY_CAPITAL|${QUANTITY_CAPITAL}|g" \
     | sed "s|units_lower|${units_lower}|g" \
     | sed "s|UNITS_CAPITAL|${UNITS_CAPITAL}|g" \
     | sed "s|unit_sym|${unit_sym}|g" \

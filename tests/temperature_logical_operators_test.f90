@@ -1,7 +1,7 @@
 module temperature_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Temperature_m, only: &
+    use quaff, only: &
             Temperature_t, operator(.unit.), KELVIN
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

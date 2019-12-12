@@ -7,9 +7,9 @@ module temperature_math_operators_test
             NON_ZERO_DOUBLE_PRECISION_GENERATOR
     use NonZeroDoublePrecisionPairGenerator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
-    use Temperature_m, only: &
+    use quaff, only: &
             Temperature_t, operator(.unit.), KELVIN
-    use Temperature_asserts_m, only: &
+    use quaff_asserts_m, only: &
             assertEquals, assertEqualsWithinRelative
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

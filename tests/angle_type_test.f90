@@ -3,14 +3,14 @@ module angle_type_test
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
     use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
-    use Angle_m, only: &
+    use quaff, only: &
             Angle_t, &
             AngleUnit_t, &
             operator(.unit.), &
             fromString, &
-            PROVIDED_UNITS, &
+            PROVIDED_ANGLE_UNITS, &
             RADIANS
-    use Angle_asserts_m, only: assertEquals
+    use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
             Example_t, &
@@ -51,7 +51,7 @@ contains
         type(UnitsExamples_t) :: examples
         type(TestItem_t) :: individual_tests(6)
 
-        examples = makeUnitsExamples(PROVIDED_UNITS)
+        examples = makeUnitsExamples(PROVIDED_ANGLE_UNITS)
         individual_tests(1) = it( &
                 "gets the same value given the same units", &
                 examples%units, &

@@ -1,9 +1,13 @@
 module speed_test
-    use Density_m, only: Density_t
-    use Interquantity_operators_m, only: operator(/)
-    use Mass_m, only: Mass_t, operator(.unit.), KILOGRAMS
+    use quaff, only: &
+            Density_t, &
+            Mass_t, &
+            Volume_t, &
+            operator(/), &
+            operator(.unit.), &
+            CUBIC_METERS, &
+            KILOGRAMS
     use Vegetables_m, only: Result_t, TestItem_t, assertFasterThan, Describe, It
-    use Volume_m, only: Volume_t, operator(.unit.), CUBIC_METERS
 
     implicit none
     private

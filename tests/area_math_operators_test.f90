@@ -7,9 +7,9 @@ module area_math_operators_test
             NON_ZERO_DOUBLE_PRECISION_GENERATOR
     use NonZeroDoublePrecisionPairGenerator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
-    use Area_m, only: &
+    use quaff, only: &
             Area_t, operator(.unit.), SQUARE_METERS
-    use Area_asserts_m, only: &
+    use quaff_asserts_m, only: &
             assertEquals, assertEqualsWithinRelative
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

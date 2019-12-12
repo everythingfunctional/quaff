@@ -1,7 +1,7 @@
 module amount_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Amount_m, only: &
+    use quaff, only: &
             Amount_t, operator(.unit.), MOLS
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

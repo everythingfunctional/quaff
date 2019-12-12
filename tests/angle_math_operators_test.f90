@@ -7,9 +7,9 @@ module angle_math_operators_test
             NON_ZERO_DOUBLE_PRECISION_GENERATOR
     use NonZeroDoublePrecisionPairGenerator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
-    use Angle_m, only: &
+    use quaff, only: &
             Angle_t, operator(.unit.), RADIANS
-    use Angle_asserts_m, only: &
+    use quaff_asserts_m, only: &
             assertEquals, assertEqualsWithinRelative
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

@@ -1,7 +1,7 @@
 module area_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Area_m, only: &
+    use quaff, only: &
             Area_t, operator(.unit.), SQUARE_METERS
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

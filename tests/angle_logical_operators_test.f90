@@ -1,7 +1,7 @@
 module angle_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Angle_m, only: &
+    use quaff, only: &
             Angle_t, operator(.unit.), RADIANS
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

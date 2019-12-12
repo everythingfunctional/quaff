@@ -7,9 +7,9 @@ module volume_math_operators_test
             NON_ZERO_DOUBLE_PRECISION_GENERATOR
     use NonZeroDoublePrecisionPairGenerator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
-    use Volume_m, only: &
+    use quaff, only: &
             Volume_t, operator(.unit.), CUBIC_METERS
-    use Volume_asserts_m, only: &
+    use quaff_asserts_m, only: &
             assertEquals, assertEqualsWithinRelative
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

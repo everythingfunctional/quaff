@@ -3,14 +3,14 @@ module area_type_test
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
     use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
-    use Area_m, only: &
+    use quaff, only: &
             Area_t, &
             AreaUnit_t, &
             operator(.unit.), &
             fromString, &
-            PROVIDED_UNITS, &
+            PROVIDED_AREA_UNITS, &
             SQUARE_METERS
-    use Area_asserts_m, only: assertEquals
+    use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
             Example_t, &
@@ -51,7 +51,7 @@ contains
         type(UnitsExamples_t) :: examples
         type(TestItem_t) :: individual_tests(6)
 
-        examples = makeUnitsExamples(PROVIDED_UNITS)
+        examples = makeUnitsExamples(PROVIDED_AREA_UNITS)
         individual_tests(1) = it( &
                 "gets the same value given the same units", &
                 examples%units, &

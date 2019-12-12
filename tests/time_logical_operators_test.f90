@@ -1,7 +1,7 @@
 module time_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Time_m, only: &
+    use quaff, only: &
             Time_t, operator(.unit.), SECONDS
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

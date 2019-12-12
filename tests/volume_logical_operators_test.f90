@@ -1,7 +1,7 @@
 module volume_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Volume_m, only: &
+    use quaff, only: &
             Volume_t, operator(.unit.), CUBIC_METERS
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &

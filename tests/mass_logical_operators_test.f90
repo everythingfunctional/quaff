@@ -1,7 +1,7 @@
 module mass_logical_operators_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
-    use Mass_m, only: &
+    use quaff, only: &
             Mass_t, operator(.unit.), KILOGRAMS
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
