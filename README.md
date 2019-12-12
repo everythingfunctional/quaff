@@ -72,4 +72,5 @@ like it to do the math correctly with other quantities.
 
 As you can see, if something you need isn't provided, it's highly likely you'll
 be able to extend the library without having to actually make any changes to the
-upstream code (although pull requests are greatly appreciated :)).
+upstream code (although pull requests are greatly appreciated :)). See the
+[Contributing](CONTRIBUTING.md) file.
