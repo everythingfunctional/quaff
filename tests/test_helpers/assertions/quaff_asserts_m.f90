@@ -27,6 +27,10 @@ module quaff_asserts_m
             assertEquals, &
             assertEqualsWithinAbsolute, &
             assertEqualsWithinRelative
+    use Speed_asserts_m, only: &
+            assertEquals, &
+            assertEqualsWithinAbsolute, &
+            assertEqualsWithinRelative
     use Temperature_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &

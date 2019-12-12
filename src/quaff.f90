@@ -63,6 +63,15 @@ module quaff
             PROVIDED_QUANTITY_CAPITAL_UNITS => PROVIDED_UNITS, &
             UNITS_CAPITAL, &
             UNITS_CAPITAL2
+    use Speed_m, only: &
+            Speed_t, &
+            SpeedUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
+            CENTIMETERS_PER_SECOND, &
+            METERS_PER_SECOND
     use Temperature_m, only: &
             Temperature_t, &
             TemperatureUnit_t, &

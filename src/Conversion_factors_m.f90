@@ -37,4 +37,7 @@ module Conversion_factors_m
 
     ! Density
     double precision, parameter :: GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER = GRAMS_PER_KILOGRAM
+
+    ! Speed
+    double precision, parameter :: CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND = CENTIMETERS_PER_METER
 end module Conversion_factors_m
