@@ -7,6 +7,8 @@ module interquantity_test
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
             METERS, &
+            METERS_PER_SECOND, &
+            SECONDS, &
             SQUARE_METERS
     use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: Result_t, TestItem_t, Describe, It
@@ -19,7 +21,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(10)
+        type(TestItem_t) :: individual_tests(14)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -41,6 +43,14 @@ contains
                 "2 m^3 * 3 kg/m^3 = 6 kg", checkVolumeTimesDensity)
         individual_tests(10) = It( &
                 "6 kg / 3 kg/m^3 = 2 m^3", checkMassDividedByDensity)
+        individual_tests(11) = It( &
+                "6 m / 3 s = 2 m/s", checkLengthDividedByTime)
+        individual_tests(12) = It( &
+                "2 m/s * 3 s = 6 m", checkSpeedTimesTime)
+        individual_tests(13) = It( &
+                "2 s * 3 m/s = 6 m", checkTimeTimesSpeed)
+        individual_tests(14) = It( &
+                "6 m / 3 m/s = 2 s", checkLengthDividedBySpeed)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -123,4 +133,36 @@ contains
                 2.0d0.unit.CUBIC_METERS, &
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.KILOGRAMS_PER_CUBIC_METER))
     end function checkMassDividedByDensity
+
+    pure function checkLengthDividedByTime() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.METERS_PER_SECOND, &
+                (6.0d0.unit.METERS) / (3.0d0.unit.SECONDS))
+    end function checkLengthDividedByTime
+
+    pure function checkSpeedTimesTime() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.METERS, &
+                (2.0d0.unit.METERS_PER_SECOND) * (3.0d0.unit.SECONDS))
+    end function checkSpeedTimesTime
+
+    pure function checkTimeTimesSpeed() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.METERS, &
+                (2.0d0.unit.SECONDS) * (3.0d0.unit.METERS_PER_SECOND))
+    end function
+
+    pure function checkLengthDividedBySpeed() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.SECONDS, &
+                (6.0d0.unit.METERS) / (3.0d0.unit.METERS_PER_SECOND))
+    end function checkLengthDividedBySpeed
 end module interquantity_test

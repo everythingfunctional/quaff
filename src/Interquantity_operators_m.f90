@@ -3,6 +3,8 @@ module Interquantity_operators_m
     use Density_m, only: Density_t
     use Length_m, only: Length_t
     use Mass_m, only: Mass_t
+    use Speed_m, only: Speed_t
+    use Time_m, only: Time_t
     use Volume_m, only: Volume_t
 
     implicit none
@@ -13,11 +15,15 @@ module Interquantity_operators_m
         module procedure densityTimesVolume
         module procedure lengthTimesArea
         module procedure lengthTimesLength
+        module procedure speedTimesTime
+        module procedure timeTimesSpeed
         module procedure volumeTimesDensity
     end interface operator(*)
 
     interface operator(/)
         module procedure areaDividedByLength
+        module procedure lengthDividedBySpeed
+        module procedure lengthDividedByTime
         module procedure massDividedByDensity
         module procedure massDividedByVolume
         module procedure volumeDividedByArea
@@ -50,6 +56,22 @@ contains
         mass%kilograms = density%kilograms_per_cubic_meter * volume%cubic_meters
     end function densityTimesVolume
 
+    elemental function lengthDividedBySpeed(length, speed) result(time)
+        type(Length_t), intent(in) :: length
+        type(Speed_t), intent(in) :: speed
+        type(Time_t) :: time
+
+        time%seconds = length%meters / speed%meters_per_second
+    end function lengthDividedBySpeed
+
+    elemental function lengthDividedByTime(length, time) result(speed)
+        type(Length_t), intent(in) :: length
+        type(Time_t), intent(in) :: time
+        type(Speed_t) :: speed
+
+        speed%meters_per_second = length%meters / time%seconds
+    end function lengthDividedByTime
+
     elemental function lengthTimesArea(length, area) result(volume)
         type(Length_t), intent(in) :: length
         type(Area_t), intent(in) :: area
@@ -81,6 +103,22 @@ contains
 
         density%kilograms_per_cubic_meter = mass%kilograms / volume%cubic_meters
     end function massDividedByVolume
+
+    elemental function speedTimesTime(speed, time) result(length)
+        type(Speed_t), intent(in) :: speed
+        type(Time_t), intent(in) :: time
+        type(Length_t) :: length
+
+        length%meters = speed%meters_per_second * time%seconds
+    end function speedTimesTime
+
+    elemental function timeTimesSpeed(time, speed) result(length)
+        type(Time_t), intent(in) :: time
+        type(Speed_t), intent(in) :: speed
+        type(Length_t) :: length
+
+        length%meters = time%seconds * speed%meters_per_second
+    end function timeTimesSpeed
 
     elemental function volumeDividedByArea(volume, area) result(length)
         type(Volume_t), intent(in) :: volume
