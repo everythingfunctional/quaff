@@ -40,4 +40,7 @@ module Conversion_factors_m
 
     ! Speed
     double precision, parameter :: CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND = CENTIMETERS_PER_METER
+
+    ! Acceleration
+    double precision, parameter :: CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = CENTIMETERS_PER_METER
 end module Conversion_factors_m

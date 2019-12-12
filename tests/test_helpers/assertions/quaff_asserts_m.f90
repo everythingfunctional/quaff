@@ -1,4 +1,8 @@
 module quaff_asserts_m
+    use Acceleration_asserts_m, only: &
+            assertEquals, &
+            assertEqualsWithinAbsolute, &
+            assertEqualsWithinRelative
     use Amount_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &

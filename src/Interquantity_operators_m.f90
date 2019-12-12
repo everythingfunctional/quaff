@@ -1,4 +1,5 @@
 module Interquantity_operators_m
+    use Acceleration_m, only: Acceleration_t
     use Area_m, only: Area_t
     use Density_m, only: Density_t
     use Length_m, only: Length_t
@@ -11,11 +12,13 @@ module Interquantity_operators_m
     private
 
     interface operator(*)
+        module procedure accelerationTimesTime
         module procedure areaTimesLength
         module procedure densityTimesVolume
         module procedure lengthTimesArea
         module procedure lengthTimesLength
         module procedure speedTimesTime
+        module procedure timeTimesAcceleration
         module procedure timeTimesSpeed
         module procedure volumeTimesDensity
     end interface operator(*)
@@ -26,12 +29,22 @@ module Interquantity_operators_m
         module procedure lengthDividedByTime
         module procedure massDividedByDensity
         module procedure massDividedByVolume
+        module procedure speedDividedByAcceleration
+        module procedure speedDividedByTime
         module procedure volumeDividedByArea
         module procedure volumeDividedByLength
     end interface operator(/)
 
     public :: operator(*), operator(/)
 contains
+    elemental function accelerationTimesTime(acceleration, time) result(speed)
+        type(Acceleration_t), intent(in) :: acceleration
+        type(Time_t), intent(in) :: time
+        type(Speed_t) :: speed
+
+        speed%meters_per_second = acceleration%meters_per_square_second * time%seconds
+    end function accelerationTimesTime
+
     elemental function areaDividedByLength(numerator, denomenator) result(length)
         type(Area_t), intent(in) :: numerator
         type(Length_t), intent(in) :: denomenator
@@ -104,6 +117,22 @@ contains
         density%kilograms_per_cubic_meter = mass%kilograms / volume%cubic_meters
     end function massDividedByVolume
 
+    elemental function speedDividedByAcceleration(speed, acceleration) result(time)
+        type(Speed_t), intent(in) :: speed
+        type(Acceleration_t), intent(in) :: acceleration
+        type(Time_t) :: time
+
+        time%seconds = speed%meters_per_second / acceleration%meters_per_square_second
+    end function speedDividedByAcceleration
+
+    elemental function speedDividedByTime(speed, time) result(acceleration)
+        type(Speed_t), intent(in) :: speed
+        type(Time_t), intent(in) :: time
+        type(Acceleration_t) :: acceleration
+
+        acceleration%meters_per_square_second = speed%meters_per_second / time%seconds
+    end function speedDividedByTime
+
     elemental function speedTimesTime(speed, time) result(length)
         type(Speed_t), intent(in) :: speed
         type(Time_t), intent(in) :: time
@@ -111,6 +140,14 @@ contains
 
         length%meters = speed%meters_per_second * time%seconds
     end function speedTimesTime
+
+    elemental function timeTimesAcceleration(time, acceleration) result(speed)
+        type(Time_t), intent(in) :: time
+        type(Acceleration_t), intent(in) :: acceleration
+        type(Speed_t) :: speed
+
+        speed%meters_per_second = time%seconds * acceleration%meters_per_square_second
+    end function timeTimesAcceleration
 
     elemental function timeTimesSpeed(time, speed) result(length)
         type(Time_t), intent(in) :: time
