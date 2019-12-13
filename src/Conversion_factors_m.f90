@@ -3,6 +3,7 @@ module Conversion_factors_m
 
     ! SI Scaling
     double precision, parameter :: CENTI_PER_BASE = 100.0d0
+    double precision, parameter :: MILLI_PER_BASE = 1.0d3
     double precision, parameter :: BASE_PER_KILO = 1.0d3
 
     ! Length
@@ -43,4 +44,7 @@ module Conversion_factors_m
 
     ! Acceleration
     double precision, parameter :: CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = CENTIMETERS_PER_METER
+
+    ! Force
+    double precision, parameter :: MILLINEWTONS_PER_NEWTON = MILLI_PER_BASE
 end module Conversion_factors_m

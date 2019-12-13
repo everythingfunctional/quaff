@@ -51,6 +51,15 @@ module quaff
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_CUBIC_METER
+    use Force_m, only: &
+            Force_t, &
+            ForceUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
+            MILLI_NEWTONS, &
+            NEWTONS
     use Interquantity_operators_m, only: operator(*), operator(/)
     use Length_m, only: &
             Length_t, &

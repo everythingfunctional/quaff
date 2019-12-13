@@ -9,6 +9,7 @@ module interquantity_test
             METERS, &
             METERS_PER_SECOND, &
             METERS_PER_SQUARE_SECOND, &
+            NEWTONS, &
             SECONDS, &
             SQUARE_METERS
     use quaff_asserts_m, only: assertEquals
@@ -22,7 +23,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(18)
+        type(TestItem_t) :: individual_tests(22)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -60,6 +61,14 @@ contains
                 "2 s * 3 m/s^2 = 6 m/s", checkTimeTimesAcceleration)
         individual_tests(18) = It( &
                 "6 m/s / 3 m/s^2 = 2 s", checkSpeedDividedByAcceleration)
+        individual_tests(19) = It( &
+                "2 kg * 3 m/s^2 = 6 N", checkMassTimesAcceleration)
+        individual_tests(20) = It( &
+                "2 m/s^2 * 3 kg = 6 N", checkAccelerationTimesMass)
+        individual_tests(21) = It( &
+                "6 N / 3 m/s^2 = 2 kg", checkForceDividedByAcceleration)
+        individual_tests(22) = It( &
+                "6 N / 3 kg = 2 m/s^2", checkForceDividedByMass)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -206,4 +215,36 @@ contains
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.METERS_PER_SECOND) / (3.0d0.unit.METERS_PER_SQUARE_SECOND))
     end function checkSpeedDividedByAcceleration
+
+    pure function checkMassTimesAcceleration() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.NEWTONS, &
+                (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.METERS_PER_SQUARE_SECOND))
+    end function checkMassTimesAcceleration
+
+    pure function checkAccelerationTimesMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.NEWTONS, &
+                (2.0d0.unit.METERS_PER_SQUARE_SECOND) * (3.0d0.unit.KILOGRAMS))
+    end function checkAccelerationTimesMass
+
+    pure function checkForceDividedByAcceleration() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.KILOGRAMS, &
+                (6.0d0.unit.NEWTONS) / (3.0d0.unit.METERS_PER_SQUARE_SECOND))
+    end function checkForceDividedByAcceleration
+
+    pure function checkForceDividedByMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.METERS_PER_SQUARE_SECOND, &
+                (6.0d0.unit.NEWTONS) / (3.0d0.unit.KILOGRAMS))
+    end function checkForceDividedByMass
 end module interquantity_test

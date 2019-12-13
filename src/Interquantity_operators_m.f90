@@ -2,6 +2,7 @@ module Interquantity_operators_m
     use Acceleration_m, only: Acceleration_t
     use Area_m, only: Area_t
     use Density_m, only: Density_t
+    use Force_m, only: Force_t
     use Length_m, only: Length_t
     use Mass_m, only: Mass_t
     use Speed_m, only: Speed_t
@@ -12,11 +13,13 @@ module Interquantity_operators_m
     private
 
     interface operator(*)
+        module procedure accelerationTimesMass
         module procedure accelerationTimesTime
         module procedure areaTimesLength
         module procedure densityTimesVolume
         module procedure lengthTimesArea
         module procedure lengthTimesLength
+        module procedure massTimesAcceleration
         module procedure speedTimesTime
         module procedure timeTimesAcceleration
         module procedure timeTimesSpeed
@@ -25,6 +28,8 @@ module Interquantity_operators_m
 
     interface operator(/)
         module procedure areaDividedByLength
+        module procedure forceDividedByAcceleration
+        module procedure forceDividedByMass
         module procedure lengthDividedBySpeed
         module procedure lengthDividedByTime
         module procedure massDividedByDensity
@@ -37,6 +42,14 @@ module Interquantity_operators_m
 
     public :: operator(*), operator(/)
 contains
+    elemental function accelerationTimesMass(acceleration, mass) result(force)
+        type(Acceleration_t), intent(in) :: acceleration
+        type(Mass_t), intent(in) :: mass
+        type(Force_t) :: force
+
+        force%newtons = acceleration%meters_per_square_second * mass%kilograms
+    end function accelerationTimesMass
+
     elemental function accelerationTimesTime(acceleration, time) result(speed)
         type(Acceleration_t), intent(in) :: acceleration
         type(Time_t), intent(in) :: time
@@ -68,6 +81,22 @@ contains
 
         mass%kilograms = density%kilograms_per_cubic_meter * volume%cubic_meters
     end function densityTimesVolume
+
+    elemental function forceDividedByAcceleration(force, acceleration) result(mass)
+        type(Force_t), intent(in) :: force
+        type(Acceleration_t), intent(in) :: acceleration
+        type(Mass_t) :: mass
+
+        mass%kilograms = force%newtons / acceleration%meters_per_square_second
+    end function forceDividedByAcceleration
+
+    elemental function forceDividedByMass(force, mass) result(acceleration)
+        type(Force_t), intent(in) :: force
+        type(Mass_t), intent(in) :: mass
+        type(Acceleration_t) :: acceleration
+
+        acceleration%meters_per_square_second = force%newtons / mass%kilograms
+    end function forceDividedByMass
 
     elemental function lengthDividedBySpeed(length, speed) result(time)
         type(Length_t), intent(in) :: length
@@ -116,6 +145,14 @@ contains
 
         density%kilograms_per_cubic_meter = mass%kilograms / volume%cubic_meters
     end function massDividedByVolume
+
+    elemental function massTimesAcceleration(mass, acceleration) result(force)
+        type(Mass_t), intent(in) :: mass
+        type(Acceleration_t), intent(in) :: acceleration
+        type(Force_t) :: force
+
+        force%newtons = mass%kilograms * acceleration%meters_per_square_second
+    end function massTimesAcceleration
 
     elemental function speedDividedByAcceleration(speed, acceleration) result(time)
         type(Speed_t), intent(in) :: speed
