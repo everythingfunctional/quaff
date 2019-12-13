@@ -4,6 +4,7 @@ module interquantity_test
             operator(/), &
             operator(.unit.), &
             CUBIC_METERS, &
+            JOULES, &
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
             METERS, &
@@ -24,7 +25,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(26)
+        type(TestItem_t) :: individual_tests(30)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -78,6 +79,14 @@ contains
                 "2 m^2 * 3 Pa = 6 N", checkAreaTimesPressure)
         individual_tests(26) = It( &
                 "6 N / 3 Pa = 2 m^2", checkForceDividedByPressure)
+        individual_tests(27) = It( &
+                "2 N * 3 m = 6 J", checkForceTimesLength)
+        individual_tests(28) = It( &
+                "2 m * 3 N = 6 J", checkLengthTimesForce)
+        individual_tests(29) = It( &
+                "6 J / 3 N = 2 m", checkEnergyDividedByForce)
+        individual_tests(30) = It( &
+                "6 J / 3 m = 2 N", checkEnergyDividedByLength)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -288,4 +297,36 @@ contains
                 2.0d0.unit.SQUARE_METERS, &
                 (6.0d0.unit.NEWTONS) / (3.0d0.unit.PASCALS))
     end function checkForceDividedByPressure
+
+    pure function checkForceTimesLength() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.NEWTONS) * (3.0d0.unit.METERS))
+    end function checkForceTimesLength
+
+    pure function checkLengthTimesForce() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.METERS) * (3.0d0.unit.NEWTONS))
+    end function checkLengthTimesForce
+
+    pure function checkEnergyDividedByForce() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.METERS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.NEWTONS))
+    end function checkEnergyDividedByForce
+
+    pure function checkEnergyDividedByLength() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.NEWTONS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.METERS))
+    end function checkEnergyDividedByLength
 end module interquantity_test

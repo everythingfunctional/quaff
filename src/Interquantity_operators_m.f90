@@ -2,6 +2,7 @@ module Interquantity_operators_m
     use Acceleration_m, only: Acceleration_t
     use Area_m, only: Area_t
     use Density_m, only: Density_t
+    use Energy_m, only: Energy_t
     use Force_m, only: Force_t
     use Length_m, only: Length_t
     use Mass_m, only: Mass_t
@@ -19,7 +20,9 @@ module Interquantity_operators_m
         module procedure areaTimesLength
         module procedure areaTimesPressure
         module procedure densityTimesVolume
+        module procedure forceTimesLength
         module procedure lengthTimesArea
+        module procedure lengthTimesForce
         module procedure lengthTimesLength
         module procedure massTimesAcceleration
         module procedure pressureTimesArea
@@ -31,6 +34,8 @@ module Interquantity_operators_m
 
     interface operator(/)
         module procedure areaDividedByLength
+        module procedure energyDividedByForce
+        module procedure energyDividedByLength
         module procedure forceDividedByAcceleration
         module procedure forceDividedByArea
         module procedure forceDividedByMass
@@ -95,6 +100,22 @@ contains
         mass%kilograms = density%kilograms_per_cubic_meter * volume%cubic_meters
     end function densityTimesVolume
 
+    elemental function energyDividedByForce(energy, force) result(length)
+        type(Energy_t), intent(in) :: energy
+        type(Force_t), intent(in) :: force
+        type(Length_t) :: length
+
+        length%meters = energy%joules / force%newtons
+    end function energyDividedByForce
+
+    elemental function energyDividedByLength(energy, length) result(force)
+        type(Energy_t), intent(in) :: energy
+        type(Length_t), intent(in) :: length
+        type(Force_t) :: force
+
+        force%newtons = energy%joules / length%meters
+    end function energyDividedByLength
+
     elemental function forceDividedByAcceleration(force, acceleration) result(mass)
         type(Force_t), intent(in) :: force
         type(Acceleration_t), intent(in) :: acceleration
@@ -127,6 +148,14 @@ contains
         area%square_meters = force%newtons / pressure%pascals
     end function forceDividedByPressure
 
+    elemental function forceTimesLength(force, length) result(energy)
+        type(Force_t), intent(in) :: force
+        type(Length_t), intent(in) :: length
+        type(Energy_t) :: energy
+
+        energy%joules = force%newtons * length%meters
+    end function forceTimesLength
+
     elemental function lengthDividedBySpeed(length, speed) result(time)
         type(Length_t), intent(in) :: length
         type(Speed_t), intent(in) :: speed
@@ -150,6 +179,14 @@ contains
 
         volume%cubic_meters = length%meters * area%square_meters
     end function lengthTimesArea
+
+    elemental function lengthTimesForce(length, force) result(energy)
+        type(Length_t), intent(in) :: length
+        type(Force_t), intent(in) :: force
+        type(Energy_t) :: energy
+
+        energy%joules = length%meters * force%newtons
+    end function lengthTimesForce
 
     elemental function lengthTimesLength(lhs, rhs) result(area)
         type(Length_t), intent(in) :: lhs

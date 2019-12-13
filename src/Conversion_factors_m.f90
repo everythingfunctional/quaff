@@ -5,6 +5,7 @@ module Conversion_factors_m
     double precision, parameter :: CENTI_PER_BASE = 100.0d0
     double precision, parameter :: MILLI_PER_BASE = 1.0d3
     double precision, parameter :: BASE_PER_KILO = 1.0d3
+    double precision, parameter :: KILO_PER_BASE = 1.0d0 / BASE_PER_KILO
     double precision, parameter :: BASE_PER_MEGA = 1.0d6
     double precision, parameter :: MEGA_PER_BASE = 1.0d0 / BASE_PER_MEGA
 
@@ -50,6 +51,10 @@ module Conversion_factors_m
     ! Force
     ! Note: 1 N = 1 (kg m)/s^2
     double precision, parameter :: MILLINEWTONS_PER_NEWTON = MILLI_PER_BASE
+
+    ! Energy
+    ! Note: 1 J = 1 (N m)
+    double precision, parameter :: KILOJOULES_PER_JOULE = KILO_PER_BASE
 
     ! Pressure
     ! Note: 1 Pa = 1 N/m^2

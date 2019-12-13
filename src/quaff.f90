@@ -51,6 +51,15 @@ module quaff
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_CUBIC_METER
+    use Energy_m, only: &
+            Energy_t, &
+            EnergyUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
+            JOULES, &
+            KILOJOULES
     use Force_m, only: &
             Force_t, &
             ForceUnit_t, &
