@@ -5,6 +5,8 @@ module Conversion_factors_m
     double precision, parameter :: CENTI_PER_BASE = 100.0d0
     double precision, parameter :: MILLI_PER_BASE = 1.0d3
     double precision, parameter :: BASE_PER_KILO = 1.0d3
+    double precision, parameter :: BASE_PER_MEGA = 1.0d6
+    double precision, parameter :: MEGA_PER_BASE = 1.0d0 / BASE_PER_MEGA
 
     ! Length
     double precision, parameter :: CENTIMETERS_PER_METER = CENTI_PER_BASE
@@ -46,5 +48,10 @@ module Conversion_factors_m
     double precision, parameter :: CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = CENTIMETERS_PER_METER
 
     ! Force
+    ! Note: 1 N = 1 (kg m)/s^2
     double precision, parameter :: MILLINEWTONS_PER_NEWTON = MILLI_PER_BASE
+
+    ! Pressure
+    ! Note: 1 Pa = 1 N/m^2
+    double precision, parameter :: MEGAPASCALS_PER_PASCAL = MEGA_PER_BASE
 end module Conversion_factors_m

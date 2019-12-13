@@ -10,6 +10,7 @@ module interquantity_test
             METERS_PER_SECOND, &
             METERS_PER_SQUARE_SECOND, &
             NEWTONS, &
+            PASCALS, &
             SECONDS, &
             SQUARE_METERS
     use quaff_asserts_m, only: assertEquals
@@ -23,7 +24,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(22)
+        type(TestItem_t) :: individual_tests(26)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -69,6 +70,14 @@ contains
                 "6 N / 3 m/s^2 = 2 kg", checkForceDividedByAcceleration)
         individual_tests(22) = It( &
                 "6 N / 3 kg = 2 m/s^2", checkForceDividedByMass)
+        individual_tests(23) = It( &
+                "6 N / 3 m^2 = 2 Pa", checkForceDividedByArea)
+        individual_tests(24) = It( &
+                "2 Pa * 3 m^2 = 6 N", checkPressureTimesArea)
+        individual_tests(25) = It( &
+                "2 m^2 * 3 Pa = 6 N", checkAreaTimesPressure)
+        individual_tests(26) = It( &
+                "6 N / 3 Pa = 2 m^2", checkForceDividedByPressure)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -247,4 +256,36 @@ contains
                 2.0d0.unit.METERS_PER_SQUARE_SECOND, &
                 (6.0d0.unit.NEWTONS) / (3.0d0.unit.KILOGRAMS))
     end function checkForceDividedByMass
+
+    pure function checkForceDividedByArea() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.PASCALS, &
+                (6.0d0.unit.NEWTONS) / (3.0d0.unit.SQUARE_METERS))
+    end function checkForceDividedByArea
+
+    pure function checkPressureTimesArea() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.NEWTONS, &
+                (2.0d0.unit.PASCALS) * (3.0d0.unit.SQUARE_METERS))
+    end function checkPressureTimesArea
+
+    pure function checkAreaTimesPressure() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.NEWTONS, &
+                (2.0d0.unit.SQUARE_METERS) * (3.0d0.unit.PASCALS))
+    end function checkAreaTimesPressure
+
+    pure function checkForceDividedByPressure() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.SQUARE_METERS, &
+                (6.0d0.unit.NEWTONS) / (3.0d0.unit.PASCALS))
+    end function checkForceDividedByPressure
 end module interquantity_test

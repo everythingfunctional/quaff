@@ -79,6 +79,15 @@ module quaff
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS, &
             KILOGRAMS
+    use Pressure_m, only: &
+            Pressure_t, &
+            PressureUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
+            MEGAPASCALS, &
+            PASCALS
     use Quantity_module_m, only: &
             QuantityCamel_t, &
             QuantityCamelUnit_t, &

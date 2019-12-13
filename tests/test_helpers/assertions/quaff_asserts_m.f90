@@ -31,6 +31,10 @@ module quaff_asserts_m
             assertEquals, &
             assertEqualsWithinAbsolute, &
             assertEqualsWithinRelative
+    use Pressure_asserts_m, only: &
+            assertEquals, &
+            assertEqualsWithinAbsolute, &
+            assertEqualsWithinRelative
     use Quantity_module_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &
