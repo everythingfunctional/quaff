@@ -88,6 +88,15 @@ module quaff
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS, &
             KILOGRAMS
+    use Power_m, only: &
+            Power_t, &
+            PowerUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
+            MEGAWATTS, &
+            WATTS
     use Pressure_m, only: &
             Pressure_t, &
             PressureUnit_t, &

@@ -6,6 +6,7 @@ module Interquantity_operators_m
     use Force_m, only: Force_t
     use Length_m, only: Length_t
     use Mass_m, only: Mass_t
+    use Power_m, only: Power_t
     use Pressure_m, only: Pressure_t
     use Speed_m, only: Speed_t
     use Time_m, only: Time_t
@@ -25,9 +26,11 @@ module Interquantity_operators_m
         module procedure lengthTimesForce
         module procedure lengthTimesLength
         module procedure massTimesAcceleration
+        module procedure powerTimesTime
         module procedure pressureTimesArea
         module procedure speedTimesTime
         module procedure timeTimesAcceleration
+        module procedure timeTimesPower
         module procedure timeTimesSpeed
         module procedure volumeTimesDensity
     end interface operator(*)
@@ -36,6 +39,8 @@ module Interquantity_operators_m
         module procedure areaDividedByLength
         module procedure energyDividedByForce
         module procedure energyDividedByLength
+        module procedure energyDividedByPower
+        module procedure energyDividedByTime
         module procedure forceDividedByAcceleration
         module procedure forceDividedByArea
         module procedure forceDividedByMass
@@ -115,6 +120,22 @@ contains
 
         force%newtons = energy%joules / length%meters
     end function energyDividedByLength
+
+    elemental function energyDividedByPower(energy, power) result(time)
+        type(Energy_t), intent(in) :: energy
+        type(Power_t), intent(in) :: power
+        type(Time_t) :: time
+
+        time%seconds = energy%joules / power%watts
+    end function energyDividedByPower
+
+    elemental function energyDividedByTime(energy, time) result(power)
+        type(Energy_t), intent(in) :: energy
+        type(Time_t), intent(in) :: time
+        type(Power_t) :: power
+
+        power%watts = energy%joules / time%seconds
+    end function energyDividedByTime
 
     elemental function forceDividedByAcceleration(force, acceleration) result(mass)
         type(Force_t), intent(in) :: force
@@ -220,6 +241,14 @@ contains
         force%newtons = mass%kilograms * acceleration%meters_per_square_second
     end function massTimesAcceleration
 
+    elemental function powerTimesTime(power, time) result(energy)
+        type(Power_t), intent(in) :: power
+        type(Time_t), intent(in) :: time
+        type(Energy_t) :: energy
+
+        energy%joules = power%watts * time%seconds
+    end function powerTimesTime
+
     elemental function pressureTimesArea(pressure, area) result(force)
         type(Pressure_t), intent(in) :: pressure
         type(Area_t), intent(in) :: area
@@ -259,6 +288,14 @@ contains
 
         speed%meters_per_second = time%seconds * acceleration%meters_per_square_second
     end function timeTimesAcceleration
+
+    elemental function timeTimesPower(time, power) result(energy)
+        type(Time_t), intent(in) :: time
+        type(Power_t), intent(in) :: power
+        type(Energy_t) :: energy
+
+        energy%joules = time%seconds * power%watts
+    end function timeTimesPower
 
     elemental function timeTimesSpeed(time, speed) result(length)
         type(Time_t), intent(in) :: time

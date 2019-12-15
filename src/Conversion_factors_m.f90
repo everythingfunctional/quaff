@@ -56,6 +56,10 @@ module Conversion_factors_m
     ! Note: 1 J = 1 (N m)
     double precision, parameter :: KILOJOULES_PER_JOULE = KILO_PER_BASE
 
+    ! Power
+    ! Note: 1 W = 1 J/s
+    double precision, parameter :: MEGAWATTS_PER_WATT = MEGA_PER_BASE
+
     ! Pressure
     ! Note: 1 Pa = 1 N/m^2
     double precision, parameter :: MEGAPASCALS_PER_PASCAL = MEGA_PER_BASE

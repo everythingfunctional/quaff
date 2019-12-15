@@ -13,7 +13,8 @@ module interquantity_test
             NEWTONS, &
             PASCALS, &
             SECONDS, &
-            SQUARE_METERS
+            SQUARE_METERS, &
+            WATTS
     use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: Result_t, TestItem_t, Describe, It
 
@@ -25,7 +26,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(30)
+        type(TestItem_t) :: individual_tests(34)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -87,6 +88,14 @@ contains
                 "6 J / 3 N = 2 m", checkEnergyDividedByForce)
         individual_tests(30) = It( &
                 "6 J / 3 m = 2 N", checkEnergyDividedByLength)
+        individual_tests(31) = It( &
+                "6 J / 3 s = 2 W", checkEnergyDividedByTime)
+        individual_tests(32) = It( &
+                "2 W * 3 s = 6 J", checkPowerTimesTime)
+        individual_tests(33) = It( &
+                "2 s * 3 W = 6 J", checkTimeTimesPower)
+        individual_tests(34) = It( &
+                "6 J / 3 W = 2 s", checkEnergyDividedByPower)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -329,4 +338,36 @@ contains
                 2.0d0.unit.NEWTONS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.METERS))
     end function checkEnergyDividedByLength
+
+    pure function checkEnergyDividedByTime() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.WATTS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.SECONDS))
+    end function checkEnergyDividedByTime
+
+    pure function checkPowerTimesTime() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.WATTS) * (3.0d0.unit.SECONDS))
+    end function checkPowerTimesTime
+
+    pure function checkTimeTimesPower() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.SECONDS) * (3.0d0.unit.WATTS))
+    end function checkTimeTimesPower
+
+    pure function checkEnergyDividedByPower() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.SECONDS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.WATTS))
+    end function checkEnergyDividedByPower
 end module interquantity_test
