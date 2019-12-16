@@ -119,8 +119,8 @@ module Time_m
     type(TimeUnit_t), parameter, public :: DAYS = &
             TimeUnit_t( &
                     conversion_factor = DAYS_PER_SECOND, &
-                    symbol = "day", &
-                    gnuplot_symbol = "day", &
+                    symbol = "d", &
+                    gnuplot_symbol = "d", &
                     latex_symbol = "\day")
     type(TimeUnit_t), parameter, public :: HOURS = &
             TimeUnit_t( &
