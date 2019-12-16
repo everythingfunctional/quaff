@@ -1,5 +1,9 @@
 module Force_m
-    use Conversion_factors_m, only: MILLINEWTONS_PER_NEWTON
+    use Conversion_factors_m, only: &
+            DYNES_PER_NEWTON, &
+            KILOPONDS_PER_NEWTON, &
+            MILLINEWTONS_PER_NEWTON, &
+            POUNDS_PER_NEWTON
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -115,6 +119,18 @@ module Force_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    type(ForceUnit_t), parameter, public :: DYNES = &
+            ForceUnit_t( &
+                    conversion_factor = DYNES_PER_NEWTON, &
+                    symbol = "dyn", &
+                    gnuplot_symbol = "dyn", &
+                    latex_symbol = "\dyne")
+    type(ForceUnit_t), parameter, public :: KILOPONDS = &
+            ForceUnit_t( &
+                    conversion_factor = KILOPONDS_PER_NEWTON, &
+                    symbol = "kp", &
+                    gnuplot_symbol = "kp", &
+                    latex_symbol = "\kilopond")
     type(ForceUnit_t), parameter, public :: MILLI_NEWTONS = &
             ForceUnit_t( &
                     conversion_factor = MILLINEWTONS_PER_NEWTON, &
@@ -127,11 +143,17 @@ module Force_m
                     symbol = "N", &
                     gnuplot_symbol = "N", &
                     latex_symbol = "\newton")
+    type(ForceUnit_t), parameter, public :: POUNDS_FORCE = &
+            ForceUnit_t( &
+                    conversion_factor = POUNDS_PER_NEWTON, &
+                    symbol = "lbf", &
+                    gnuplot_symbol = "lbf", &
+                    latex_symbol = "\poundforce")
 
     type(ForceUnit_t), public :: DEFAULT_OUTPUT_UNITS = NEWTONS
 
     type(ForceUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [MILLI_NEWTONS, NEWTONS]
+            [DYNES, KILOPONDS, MILLI_NEWTONS, NEWTONS, POUNDS_FORCE]
 
     public :: operator(.unit.), fromString
 contains

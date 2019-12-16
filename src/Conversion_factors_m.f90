@@ -70,12 +70,17 @@ module Conversion_factors_m
     double precision, parameter :: FEET_PER_SECOND_PER_METERS_PER_SECOND = FEET_PER_METER
 
     ! Acceleration
+    double precision, parameter :: GRAVITY = 9.80665d0 ! m/s^2 according to Wikipedia
     double precision, parameter :: CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = CENTIMETERS_PER_METER
     double precision, parameter :: FEET_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = FEET_PER_METER
 
     ! Force
     ! Note: 1 N = 1 (kg m)/s^2
+    double precision, parameter :: DYNES_PER_NEWTON = &
+            GRAMS_PER_KILOGRAM * CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND
+    double precision, parameter :: KILOPONDS_PER_NEWTON = 1.0d0 / GRAVITY ! 1 kp = 1 kg * gravity
     double precision, parameter :: MILLINEWTONS_PER_NEWTON = MILLI_PER_BASE
+    double precision, parameter :: POUNDS_PER_NEWTON = POUNDS_PER_KILOGRAM / GRAVITY ! 1 lbf = 1 lbm * gravity
 
     ! Energy
     ! Note: 1 J = 1 (N m)

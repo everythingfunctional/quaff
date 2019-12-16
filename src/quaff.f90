@@ -70,8 +70,11 @@ module quaff
             fromString, &
             DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
+            DYNES, &
+            KILOPONDS, &
             MILLI_NEWTONS, &
-            NEWTONS
+            NEWTONS, &
+            POUNDS_FORCE
     use Interquantity_operators_m, only: operator(*), operator(/)
     use Length_m, only: &
             Length_t, &
