@@ -93,6 +93,9 @@ module Conversion_factors_m
 
     ! Power
     ! Note: 1 W = 1 J/s
+    double precision, parameter :: BTU_PER_HOUR_PER_WATT = BTU_PER_JOULE * SECONDS_PER_HOUR
+    double precision, parameter :: CALORIES_PER_SECOND_PER_WATT = CALORIES_PER_JOULE
+    double precision, parameter :: MEGABTU_PER_HOUR_PER_WATT = MEGA_PER_BASE * BTU_PER_HOUR_PER_WATT
     double precision, parameter :: MEGAWATTS_PER_WATT = MEGA_PER_BASE
 
     ! Pressure

@@ -111,6 +111,9 @@ module quaff
             fromString, &
             DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
+            BTU_PER_HOUR, &
+            CALORIES_PER_SECOND, &
+            MEGABTU_PER_HOUR, &
             MEGAWATTS, &
             WATTS
     use Pressure_m, only: &

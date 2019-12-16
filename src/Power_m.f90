@@ -1,5 +1,9 @@
 module Power_m
-    use Conversion_factors_m, only: MEGAWATTS_PER_WATT
+    use Conversion_factors_m, only: &
+            BTU_PER_HOUR_PER_WATT, &
+            CALORIES_PER_SECOND_PER_WATT, &
+            MEGABTU_PER_HOUR_PER_WATT, &
+            MEGAWATTS_PER_WATT
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -115,6 +119,24 @@ module Power_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    type(PowerUnit_t), parameter, public :: BTU_PER_HOUR = &
+            PowerUnit_t( &
+                    conversion_factor = BTU_PER_HOUR_PER_WATT, &
+                    symbol = "BTU/hr", &
+                    gnuplot_symbol = "BTU/hr", &
+                    latex_symbol = "\btu\per\hour")
+    type(PowerUnit_t), parameter, public :: CALORIES_PER_SECOND = &
+            PowerUnit_t( &
+                    conversion_factor = CALORIES_PER_SECOND_PER_WATT, &
+                    symbol = "cal/s", &
+                    gnuplot_symbol = "cal/s", &
+                    latex_symbol = "\calorie\per\second")
+    type(PowerUnit_t), parameter, public :: MEGABTU_PER_HOUR = &
+            PowerUnit_t( &
+                    conversion_factor = MEGABTU_PER_HOUR_PER_WATT, &
+                    symbol = "MBTU/hr", &
+                    gnuplot_symbol = "MBTU/hr", &
+                    latex_symbol = "\mega\btu\per\hour")
     type(PowerUnit_t), parameter, public :: MEGAWATTS = &
             PowerUnit_t( &
                     conversion_factor = MEGAWATTS_PER_WATT, &
@@ -131,7 +153,11 @@ module Power_m
     type(PowerUnit_t), public :: DEFAULT_OUTPUT_UNITS = WATTS
 
     type(PowerUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [MEGAWATTS, WATTS]
+            [BTU_PER_HOUR, &
+            CALORIES_PER_SECOND, &
+            MEGABTU_PER_HOUR, &
+            MEGAWATTS, &
+            WATTS]
 
     public :: operator(.unit.), fromString
 contains
