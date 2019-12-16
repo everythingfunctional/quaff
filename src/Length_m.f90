@@ -1,5 +1,10 @@
 module Length_m
-    use Conversion_factors_m, only: CENTIMETERS_PER_METER
+    use Conversion_factors_m, only: &
+            CENTIMETERS_PER_METER, &
+            FEET_PER_METER, &
+            INCHES_PER_METER, &
+            MICROINCHES_PER_METER, &
+            MICROMETERS_PER_METER
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -121,17 +126,41 @@ module Length_m
                     symbol = "cm", &
                     gnuplot_symbol = "cm", &
                     latex_symbol = "\centi\meter")
+    type(LengthUnit_t), parameter, public :: FEET = &
+            LengthUnit_t( &
+                    conversion_factor = FEET_PER_METER, &
+                    symbol = "ft", &
+                    gnuplot_symbol = "ft", &
+                    latex_symbol = "\foot")
+    type(LengthUnit_t), parameter, public :: INCHES = &
+            LengthUnit_t( &
+                    conversion_factor = INCHES_PER_METER, &
+                    symbol = "in", &
+                    gnuplot_symbol = "in", &
+                    latex_symbol = "\inch")
     type(LengthUnit_t), parameter, public :: METERS = &
             LengthUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m", &
                     gnuplot_symbol = "m", &
                     latex_symbol = "\meter")
+    type(LengthUnit_t), parameter, public :: MICROINCHES = &
+            LengthUnit_t( &
+                    conversion_factor = MICROINCHES_PER_METER, &
+                    symbol = "uin", &
+                    gnuplot_symbol = "{/Symbol m}in", &
+                    latex_symbol = "\micro\inch")
+    type(LengthUnit_t), parameter, public :: MICROMETERS = &
+            LengthUnit_t( &
+                    conversion_factor = MICROMETERS_PER_METER, &
+                    symbol = "um", &
+                    gnuplot_symbol = "{/Symbol m}m", &
+                    latex_symbol = "\micro\meter")
 
     type(LengthUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
 
     type(LengthUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [CENTIMETERS, METERS]
+            [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
 
     public :: operator(.unit.), fromString
 contains

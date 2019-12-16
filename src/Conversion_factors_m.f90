@@ -4,13 +4,21 @@ module Conversion_factors_m
     ! SI Scaling
     double precision, parameter :: CENTI_PER_BASE = 100.0d0
     double precision, parameter :: MILLI_PER_BASE = 1.0d3
+    double precision, parameter :: MICRO_PER_BASE = 1.0d6
     double precision, parameter :: BASE_PER_KILO = 1.0d3
     double precision, parameter :: KILO_PER_BASE = 1.0d0 / BASE_PER_KILO
     double precision, parameter :: BASE_PER_MEGA = 1.0d6
     double precision, parameter :: MEGA_PER_BASE = 1.0d0 / BASE_PER_MEGA
 
     ! Length
+    double precision, parameter :: METERS_PER_INCH = 0.0254d0
+    double precision, parameter :: INCHES_PER_METER = 1.0d0 / METERS_PER_INCH
     double precision, parameter :: CENTIMETERS_PER_METER = CENTI_PER_BASE
+    double precision, parameter :: INCHES_PER_FOOT = 12.0d0
+    double precision, parameter :: FEET_PER_INCH = 1.0d0 / INCHES_PER_FOOT
+    double precision, parameter :: FEET_PER_METER = INCHES_PER_METER * FEET_PER_INCH
+    double precision, parameter :: MICROINCHES_PER_METER = INCHES_PER_METER * MICRO_PER_BASE
+    double precision, parameter :: MICROMETERS_PER_METER = MICRO_PER_BASE
 
     ! Mass
     double precision, parameter :: GRAMS_PER_KILOGRAM = BASE_PER_KILO

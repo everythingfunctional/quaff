@@ -78,7 +78,11 @@ module quaff
             DEFAULT_LENGTH_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_LENGTH_UNITS => PROVIDED_UNITS, &
             CENTIMETERS, &
-            METERS
+            FEET, &
+            INCHES, &
+            METERS, &
+            MICROINCHES, &
+            MICROMETERS
     use Mass_m, only: &
             Mass_t, &
             MassUnit_t, &
