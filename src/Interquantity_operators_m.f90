@@ -1,6 +1,7 @@
 module Interquantity_operators_m
     use Acceleration_m, only: Acceleration_t
     use Area_m, only: Area_t
+    use Burnup_m, only: Burnup_t
     use Density_m, only: Density_t
     use Energy_m, only: Energy_t
     use Force_m, only: Force_t
@@ -20,12 +21,14 @@ module Interquantity_operators_m
         module procedure accelerationTimesTime
         module procedure areaTimesLength
         module procedure areaTimesPressure
+        module procedure burnupTimesMass
         module procedure densityTimesVolume
         module procedure forceTimesLength
         module procedure lengthTimesArea
         module procedure lengthTimesForce
         module procedure lengthTimesLength
         module procedure massTimesAcceleration
+        module procedure massTimesBurnup
         module procedure powerTimesTime
         module procedure pressureTimesArea
         module procedure speedTimesTime
@@ -37,8 +40,10 @@ module Interquantity_operators_m
 
     interface operator(/)
         module procedure areaDividedByLength
+        module procedure energyDividedByBurnup
         module procedure energyDividedByForce
         module procedure energyDividedByLength
+        module procedure energyDividedByMass
         module procedure energyDividedByPower
         module procedure energyDividedByTime
         module procedure forceDividedByAcceleration
@@ -97,6 +102,14 @@ contains
         force%newtons = area%square_meters * pressure%pascals
     end function areaTimesPressure
 
+    elemental function burnupTimesMass(burnup, mass) result(energy)
+        type(Burnup_t), intent(in) :: burnup
+        type(Mass_t), intent(in) :: mass
+        type(Energy_t) :: energy
+
+        energy%joules = burnup%watt_seconds_per_kilogram * mass%kilograms
+    end function burnupTimesMass
+
     elemental function densityTimesVolume(density, volume) result(mass)
         type(Density_t), intent(in) :: density
         type(Volume_t), intent(in) :: volume
@@ -104,6 +117,14 @@ contains
 
         mass%kilograms = density%kilograms_per_cubic_meter * volume%cubic_meters
     end function densityTimesVolume
+
+    elemental function energyDividedByBurnup(energy, burnup) result(mass)
+        type(Energy_t), intent(in) :: energy
+        type(Burnup_t), intent(in) :: burnup
+        type(Mass_t) :: mass
+
+        mass%kilograms = energy%joules / burnup%watt_seconds_per_kilogram
+    end function energyDividedByBurnup
 
     elemental function energyDividedByForce(energy, force) result(length)
         type(Energy_t), intent(in) :: energy
@@ -120,6 +141,14 @@ contains
 
         force%newtons = energy%joules / length%meters
     end function energyDividedByLength
+
+    elemental function energyDividedByMass(energy, mass) result(burnup)
+        type(Energy_t), intent(in) :: energy
+        type(Mass_t), intent(in) :: mass
+        type(Burnup_t) :: burnup
+
+        burnup%watt_seconds_per_kilogram = energy%joules / mass%kilograms
+    end function energyDividedByMass
 
     elemental function energyDividedByPower(energy, power) result(time)
         type(Energy_t), intent(in) :: energy
@@ -240,6 +269,14 @@ contains
 
         force%newtons = mass%kilograms * acceleration%meters_per_square_second
     end function massTimesAcceleration
+
+    elemental function massTimesBurnup(mass, burnup) result(energy)
+        type(Mass_t), intent(in) :: mass
+        type(Burnup_t), intent(in) :: burnup
+        type(Energy_t) :: energy
+
+        energy%joules = mass%kilograms * burnup%watt_seconds_per_kilogram
+    end function massTimesBurnup
 
     elemental function powerTimesTime(power, time) result(energy)
         type(Power_t), intent(in) :: power
