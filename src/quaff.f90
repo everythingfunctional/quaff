@@ -148,7 +148,9 @@ module quaff
             fromString, &
             DEFAULT_TIME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TIME_UNITS => PROVIDED_UNITS, &
+            DAYS, &
             HOURS, &
+            MINUTES, &
             SECONDS
     use Volume_m, only: &
             Volume_t, &

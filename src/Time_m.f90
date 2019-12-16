@@ -1,5 +1,6 @@
 module Time_m
-    use Conversion_factors_m, only: HOURS_PER_SECOND
+    use Conversion_factors_m, only: &
+            DAYS_PER_SECOND, HOURS_PER_SECOND, MINUTES_PER_SECOND
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -115,12 +116,24 @@ module Time_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    type(TimeUnit_t), parameter, public :: DAYS = &
+            TimeUnit_t( &
+                    conversion_factor = DAYS_PER_SECOND, &
+                    symbol = "day", &
+                    gnuplot_symbol = "day", &
+                    latex_symbol = "\day")
     type(TimeUnit_t), parameter, public :: HOURS = &
             TimeUnit_t( &
                     conversion_factor = HOURS_PER_SECOND, &
                     symbol = "hr", &
                     gnuplot_symbol = "hr", &
                     latex_symbol = "\hour")
+    type(TimeUnit_t), parameter, public :: MINUTES = &
+            TimeUnit_t( &
+                    conversion_factor = MINUTES_PER_SECOND, &
+                    symbol = "min", &
+                    gnuplot_symbol = "min", &
+                    latex_symbol = "\minute")
     type(TimeUnit_t), parameter, public :: SECONDS = &
             TimeUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -131,7 +144,7 @@ module Time_m
     type(TimeUnit_t), public :: DEFAULT_OUTPUT_UNITS = SECONDS
 
     type(TimeUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [HOURS, SECONDS]
+            [DAYS, HOURS, MINUTES, SECONDS]
 
     public :: operator(.unit.), fromString
 contains

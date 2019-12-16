@@ -47,8 +47,12 @@ module Conversion_factors_m
     ! Time
     double precision, parameter :: SECONDS_PER_MINUTE = 60.0d0
     double precision, parameter :: MINUTES_PER_HOUR = 60.0d0
+    double precision, parameter :: HOURS_PER_DAY = 24.0d0
+    double precision, parameter :: DAYS_PER_HOUR = 1.0d0 / HOURS_PER_DAY
     double precision, parameter :: SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR
+    double precision, parameter :: MINUTES_PER_SECOND = 1.0d0 / SECONDS_PER_MINUTE
     double precision, parameter :: HOURS_PER_SECOND = 1.0d0 / SECONDS_PER_HOUR
+    double precision, parameter :: DAYS_PER_SECOND = DAYS_PER_HOUR * HOURS_PER_SECOND
 
     ! Area
     double precision, parameter :: SQUARE_CENTIMETERS_PER_SQUARE_METER = CENTIMETERS_PER_METER**2
