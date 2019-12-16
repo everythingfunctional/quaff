@@ -131,6 +131,7 @@ module quaff
             DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
+            FEET_PER_SECOND, &
             METERS_PER_SECOND
     use Temperature_m, only: &
             Temperature_t, &

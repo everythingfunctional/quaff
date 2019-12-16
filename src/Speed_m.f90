@@ -1,5 +1,7 @@
 module Speed_m
-    use Conversion_factors_m, only: CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND
+    use Conversion_factors_m, only: &
+            CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND, &
+            FEET_PER_SECOND_PER_METERS_PER_SECOND
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -121,6 +123,12 @@ module Speed_m
                     symbol = "cm/s", &
                     gnuplot_symbol = "cm/s", &
                     latex_symbol = "\centi\meter\per\second")
+    type(SpeedUnit_t), parameter, public :: FEET_PER_SECOND = &
+            SpeedUnit_t( &
+                    conversion_factor = FEET_PER_SECOND_PER_METERS_PER_SECOND, &
+                    symbol = "ft/s", &
+                    gnuplot_symbol = "ft/s", &
+                    latex_symbol = "\foot\per\second")
     type(SpeedUnit_t), parameter, public :: METERS_PER_SECOND = &
             SpeedUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -131,7 +139,7 @@ module Speed_m
     type(SpeedUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS_PER_SECOND
 
     type(SpeedUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [CENTIMETERS_PER_SECOND, METERS_PER_SECOND]
+            [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND]
 
     public :: operator(.unit.), fromString
 contains
