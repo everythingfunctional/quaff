@@ -1,5 +1,10 @@
 module Energy_m
-    use Conversion_factors_m, only: KILOJOULES_PER_JOULE
+    use Conversion_factors_m, only: &
+            BTU_PER_JOULE, &
+            CALORIES_PER_JOULE, &
+            KILOJOULES_PER_JOULE, &
+            MEGABTU_PER_JOULE, &
+            MEGAWATT_DAYS_PER_JOULE
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -115,6 +120,18 @@ module Energy_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    type(EnergyUnit_t), parameter, public :: BTU = &
+            EnergyUnit_t( &
+                    conversion_factor = BTU_PER_JOULE, &
+                    symbol = "BTU", &
+                    gnuplot_symbol = "BTU", &
+                    latex_symbol = "\btu")
+    type(EnergyUnit_t), parameter, public :: CALORIES = &
+            EnergyUnit_t( &
+                    conversion_factor = CALORIES_PER_JOULE, &
+                    symbol = "cal", &
+                    gnuplot_symbol = "cal", &
+                    latex_symbol = "\calorie")
     type(EnergyUnit_t), parameter, public :: JOULES = &
             EnergyUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -127,11 +144,23 @@ module Energy_m
                     symbol = "kJ", &
                     gnuplot_symbol = "kJ", &
                     latex_symbol = "\kilo\joule")
+    type(EnergyUnit_t), parameter, public :: MEGABTU = &
+            EnergyUnit_t( &
+                    conversion_factor = MEGABTU_PER_JOULE, &
+                    symbol = "MBTU", &
+                    gnuplot_symbol = "MBTU", &
+                    latex_symbol = "\mega\btu")
+    type(EnergyUnit_t), parameter, public :: MEGAWATT_DAYS = &
+            EnergyUnit_t( &
+                    conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
+                    symbol = "MW d", &
+                    gnuplot_symbol = "MW d", &
+                    latex_symbol = "\mega\watt\day")
 
     type(EnergyUnit_t), public :: DEFAULT_OUTPUT_UNITS = JOULES
 
     type(EnergyUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [JOULES, KILOJOULES]
+            [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS]
 
     public :: operator(.unit.), fromString
 contains

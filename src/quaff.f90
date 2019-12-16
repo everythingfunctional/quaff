@@ -61,8 +61,12 @@ module quaff
             fromString, &
             DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
+            BTU, &
+            CALORIES, &
             JOULES, &
-            KILOJOULES
+            KILOJOULES, &
+            MEGABTU, &
+            MEGAWATT_DAYS
     use Force_m, only: &
             Force_t, &
             ForceUnit_t, &

@@ -84,7 +84,12 @@ module Conversion_factors_m
 
     ! Energy
     ! Note: 1 J = 1 (N m)
+    double precision, parameter :: JOULES_PER_CALORIE = 4.184d0
+    double precision, parameter :: BTU_PER_JOULE = 1055.06d0
+    double precision, parameter :: CALORIES_PER_JOULE = 1.0d0 / JOULES_PER_CALORIE
     double precision, parameter :: KILOJOULES_PER_JOULE = KILO_PER_BASE
+    double precision, parameter :: MEGABTU_PER_JOULE = MEGA_PER_BASE * BTU_PER_JOULE
+    double precision, parameter :: MEGAWATT_DAYS_PER_JOULE = MEGA_PER_BASE * DAYS_PER_SECOND
 
     ! Power
     ! Note: 1 W = 1 J/s
