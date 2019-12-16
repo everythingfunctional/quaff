@@ -1,5 +1,8 @@
 module Area_m
-    use Conversion_factors_m, only: SQUARE_CENTIMETERS_PER_SQUARE_METER
+    use Conversion_factors_m, only: &
+            SQUARE_CENTIMETERS_PER_SQUARE_METER, &
+            SQUARE_FEET_PER_SQUARE_METER, &
+            SQUARE_INCHES_PER_SQUARE_METER
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -121,6 +124,18 @@ module Area_m
                     symbol = "cm^2", &
                     gnuplot_symbol = "cm^2", &
                     latex_symbol = "\square\centi\meter")
+    type(AreaUnit_t), parameter, public :: SQUARE_FEET = &
+            AreaUnit_t( &
+                    conversion_factor = SQUARE_FEET_PER_SQUARE_METER, &
+                    symbol = "ft^2", &
+                    gnuplot_symbol = "ft^2", &
+                    latex_symbol = "\square\foot")
+    type(AreaUnit_t), parameter, public :: SQUARE_INCHES = &
+            AreaUnit_t( &
+                    conversion_factor = SQUARE_INCHES_PER_SQUARE_METER, &
+                    symbol = "in^2", &
+                    gnuplot_symbol = "in^2", &
+                    latex_symbol = "\square\inch")
     type(AreaUnit_t), parameter, public :: SQUARE_METERS = &
             AreaUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -131,7 +146,7 @@ module Area_m
     type(AreaUnit_t), public :: DEFAULT_OUTPUT_UNITS = SQUARE_METERS
 
     type(AreaUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [SQUARE_CENTIMETERS, SQUARE_METERS]
+            [SQUARE_CENTIMETERS, SQUARE_FEET, SQUARE_INCHES, SQUARE_METERS]
 
     public :: operator(.unit.), fromString
 contains

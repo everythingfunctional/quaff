@@ -41,6 +41,8 @@ module quaff
             DEFAULT_AREA_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AREA_UNITS => PROVIDED_UNITS, &
             SQUARE_CENTIMETERS, &
+            SQUARE_FEET, &
+            SQUARE_INCHES, &
             SQUARE_METERS
     use Density_m, only: &
             Density_t, &
