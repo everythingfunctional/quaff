@@ -91,7 +91,9 @@ module quaff
             DEFAULT_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS, &
-            KILOGRAMS
+            KILOGRAMS, &
+            POUNDS_MASS, &
+            TONS
     use Power_m, only: &
             Power_t, &
             PowerUnit_t, &

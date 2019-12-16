@@ -1,5 +1,8 @@
 module Mass_m
-    use Conversion_factors_m, only: GRAMS_PER_KILOGRAM
+    use Conversion_factors_m, only: &
+            GRAMS_PER_KILOGRAM, &
+            POUNDS_PER_KILOGRAM, &
+            TONS_PER_KILOGRAM
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -127,11 +130,23 @@ module Mass_m
                     symbol = "kg", &
                     gnuplot_symbol = "kg", &
                     latex_symbol = "\kilo\gram")
+    type(MassUnit_t), parameter, public :: POUNDS_MASS = &
+            MassUnit_t( &
+                    conversion_factor = POUNDS_PER_KILOGRAM, &
+                    symbol = "lbm", &
+                    gnuplot_symbol = "lbm", &
+                    latex_symbol = "\poundmass")
+    type(MassUnit_t), parameter, public :: TONS = &
+            MassUnit_t( &
+                    conversion_factor = TONS_PER_KILOGRAM, &
+                    symbol = "t", &
+                    gnuplot_symbol = "t", &
+                    latex_symbol = "\ton")
 
     type(MassUnit_t), public :: DEFAULT_OUTPUT_UNITS = KILOGRAMS
 
     type(MassUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [GRAMS, KILOGRAMS]
+            [GRAMS, KILOGRAMS, POUNDS_MASS, TONS]
 
     public :: operator(.unit.), fromString
 contains
