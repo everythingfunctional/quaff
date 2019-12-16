@@ -71,6 +71,7 @@ module Conversion_factors_m
 
     ! Acceleration
     double precision, parameter :: CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = CENTIMETERS_PER_METER
+    double precision, parameter :: FEET_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND = FEET_PER_METER
 
     ! Force
     ! Note: 1 N = 1 (kg m)/s^2

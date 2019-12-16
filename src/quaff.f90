@@ -7,6 +7,7 @@ module quaff
             DEFAULT_ACCELERATION_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ACCELERATION_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SQUARE_SECOND, &
+            FEET_PER_SQUARE_SECOND, &
             METERS_PER_SQUARE_SECOND
     use Amount_m, only: &
             Amount_t, &

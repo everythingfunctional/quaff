@@ -1,6 +1,7 @@
 module Acceleration_m
     use Conversion_factors_m, only: &
-            CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND
+            CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
+            FEET_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -122,6 +123,12 @@ module Acceleration_m
                     symbol = "cm/s^2", &
                     gnuplot_symbol = "cm/s^2", &
                     latex_symbol = "\centi\meter\per\square\second")
+    type(AccelerationUnit_t), parameter, public :: FEET_PER_SQUARE_SECOND = &
+            AccelerationUnit_t( &
+                    conversion_factor = FEET_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
+                    symbol = "ft/s^2", &
+                    gnuplot_symbol = "ft/s^2", &
+                    latex_symbol = "\foot\per\square\second")
     type(AccelerationUnit_t), parameter, public :: METERS_PER_SQUARE_SECOND = &
             AccelerationUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -132,7 +139,9 @@ module Acceleration_m
     type(AccelerationUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS_PER_SQUARE_SECOND
 
     type(AccelerationUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [CENTIMETERS_PER_SQUARE_SECOND, METERS_PER_SQUARE_SECOND]
+            [CENTIMETERS_PER_SQUARE_SECOND, &
+            FEET_PER_SQUARE_SECOND, &
+            METERS_PER_SQUARE_SECOND]
 
     public :: operator(.unit.), fromString
 contains
