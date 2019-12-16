@@ -123,8 +123,12 @@ module quaff
             fromString, &
             DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
+            DYNES_PER_SQUARE_CENTIMETER, &
+            KILOPASCALS, &
+            KILOPONDS_PER_SQUARE_CENTIMETER, &
             MEGAPASCALS, &
-            PASCALS
+            PASCALS, &
+            POUNDS_PER_SQUARE_INCH
     use Quantity_module_m, only: &
             QuantityCamel_t, &
             QuantityCamelUnit_t, &

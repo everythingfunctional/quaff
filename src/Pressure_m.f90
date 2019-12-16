@@ -1,5 +1,10 @@
 module Pressure_m
-    use Conversion_factors_m, only: MEGAPASCALS_PER_PASCAL
+    use Conversion_factors_m, only: &
+            DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
+            KILOPASCALS_PER_PASCAL, &
+            KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
+            MEGAPASCALS_PER_PASCAL, &
+            POUNDS_PER_SQUARE_INCH_PER_PASCAL
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -115,6 +120,24 @@ module Pressure_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    type(PressureUnit_t), parameter, public :: DYNES_PER_SQUARE_CENTIMETER = &
+            PressureUnit_t( &
+                    conversion_factor = DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
+                    symbol = "dyn/cm^2", &
+                    gnuplot_symbol = "dyn/cm^2", &
+                    latex_symbol = "\dyne\per\square\centi\meter")
+    type(PressureUnit_t), parameter, public :: KILOPASCALS = &
+            PressureUnit_t( &
+                    conversion_factor = KILOPASCALS_PER_PASCAL, &
+                    symbol = "kPa", &
+                    gnuplot_symbol = "kPa", &
+                    latex_symbol = "\kilo\pascal")
+    type(PressureUnit_t), parameter, public :: KILOPONDS_PER_SQUARE_CENTIMETER = &
+            PressureUnit_t( &
+                    conversion_factor = KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
+                    symbol = "kp/cm^2", &
+                    gnuplot_symbol = "kp/cm^2", &
+                    latex_symbol = "\kilopond\per\square\centi\meter")
     type(PressureUnit_t), parameter, public :: MEGAPASCALS = &
             PressureUnit_t( &
                     conversion_factor = MEGAPASCALS_PER_PASCAL, &
@@ -127,11 +150,22 @@ module Pressure_m
                     symbol = "Pa", &
                     gnuplot_symbol = "Pa", &
                     latex_symbol = "\pascal")
+    type(PressureUnit_t), parameter, public :: POUNDS_PER_SQUARE_INCH = &
+            PressureUnit_t( &
+                    conversion_factor = POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
+                    symbol = "psi", &
+                    gnuplot_symbol = "psi", &
+                    latex_symbol = "\psi")
 
     type(PressureUnit_t), public :: DEFAULT_OUTPUT_UNITS = PASCALS
 
     type(PressureUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [MEGAPASCALS, PASCALS]
+            [DYNES_PER_SQUARE_CENTIMETER, &
+            KILOPASCALS, &
+            KILOPONDS_PER_SQUARE_CENTIMETER, &
+            MEGAPASCALS, &
+            PASCALS, &
+            POUNDS_PER_SQUARE_INCH]
 
     public :: operator(.unit.), fromString
 contains

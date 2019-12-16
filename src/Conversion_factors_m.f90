@@ -100,5 +100,10 @@ module Conversion_factors_m
 
     ! Pressure
     ! Note: 1 Pa = 1 N/m^2
+    double precision, parameter :: DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL = DYNES_PER_NEWTON / SQUARE_CENTIMETERS_PER_SQUARE_METER
+    double precision, parameter :: KILOPASCALS_PER_PASCAL = KILO_PER_BASE
+    double precision, parameter :: KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL = &
+            KILOPONDS_PER_NEWTON / SQUARE_CENTIMETERS_PER_SQUARE_METER
     double precision, parameter :: MEGAPASCALS_PER_PASCAL = MEGA_PER_BASE
+    double precision, parameter :: POUNDS_PER_SQUARE_INCH_PER_PASCAL = POUNDS_PER_NEWTON / SQUARE_INCHES_PER_SQUARE_METER
 end module Conversion_factors_m
