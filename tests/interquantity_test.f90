@@ -15,7 +15,6 @@ module interquantity_test
             PASCALS, &
             SECONDS, &
             SQUARE_METERS, &
-            WATT_SECONDS_PER_KILOGRAM, &
             WATTS
     use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: Result_t, TestItem_t, Describe, It
@@ -28,7 +27,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(42)
+        type(TestItem_t) :: individual_tests(38)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -99,20 +98,12 @@ contains
         individual_tests(34) = It( &
                 "6 J / 3 W = 2 s", checkEnergyDividedByPower)
         individual_tests(35) = It( &
-                "6 J / 3 kg = 2 (W s)/kg", checkEnergyDividedByMass)
-        individual_tests(36) = It( &
-                "2 (W s)/kg * 3 kg = 6 J", checkBurnupTimesMass)
-        individual_tests(37) = It( &
-                "2 kg * 3 (W s)/kg = 6 J", checkMassTimesBurnup)
-        individual_tests(38) = It( &
-                "6 J / 3 (W s)/kg = 2 kg", checkEnergyDividedByBurnup)
-        individual_tests(39) = It( &
                 "2 Pa * 3 s = 6 Pa s", checkPressureTimesTime)
-        individual_tests(40) = It( &
+        individual_tests(36) = It( &
                 "2 s * 3 Pa = 6 Pa s", checkTimeTimesPressure)
-        individual_tests(41) = It( &
+        individual_tests(37) = It( &
                 "6 Pa s / 3 s = 2 Pa", checkDynamicViscosityDividedByTime)
-        individual_tests(42) = It( &
+        individual_tests(38) = It( &
                 "6 Pa s / 3 Pa = 2 s", checkDynamicViscosityDividedByPressure)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
@@ -388,38 +379,6 @@ contains
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.WATTS))
     end function checkEnergyDividedByPower
-
-    pure function checkEnergyDividedByMass() result(result_)
-        type(Result_t) :: result_
-
-        result_ = assertEquals( &
-                2.0d0.unit.WATT_SECONDS_PER_KILOGRAM, &
-                (6.0d0.unit.JOULES) / (3.0d0.unit.KILOGRAMS))
-    end function checkEnergyDividedByMass
-
-    pure function checkBurnupTimesMass() result(result_)
-        type(Result_t) :: result_
-
-        result_ = assertEquals( &
-                6.0d0.unit.JOULES, &
-                (2.0d0.unit.WATT_SECONDS_PER_KILOGRAM) * (3.0d0.unit.KILOGRAMS))
-    end function checkBurnupTimesMass
-
-    pure function checkMassTimesBurnup() result(result_)
-        type(Result_t) :: result_
-
-        result_ = assertEquals( &
-                6.0d0.unit.JOULES, &
-                (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.WATT_SECONDS_PER_KILOGRAM))
-    end function checkMassTimesBurnup
-
-    pure function checkEnergyDividedByBurnup() result(result_)
-        type(Result_t) :: result_
-
-        result_ = assertEquals( &
-                2.0d0.unit.KILOGRAMS, &
-                (6.0d0.unit.JOULES) / (3.0d0.unit.WATT_SECONDS_PER_KILOGRAM))
-    end function checkEnergyDividedByBurnup
 
     pure function checkPressureTimesTime() result(result_)
         type(Result_t) :: result_

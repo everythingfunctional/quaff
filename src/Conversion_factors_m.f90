@@ -107,10 +107,6 @@ module Conversion_factors_m
     double precision, parameter :: MEGAPASCALS_PER_PASCAL = MEGA_PER_BASE
     double precision, parameter :: POUNDS_PER_SQUARE_INCH_PER_PASCAL = POUNDS_PER_NEWTON / SQUARE_INCHES_PER_SQUARE_METER
 
-    ! Burnup
-    double precision, parameter :: MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM = &
-            MEGA_PER_BASE * DAYS_PER_SECOND / TONS_PER_KILOGRAM
-
     ! Dynamic Viscosity
     double precision, parameter :: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND = MEGA_PER_BASE
 end module Conversion_factors_m

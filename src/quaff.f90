@@ -45,15 +45,6 @@ module quaff
             SQUARE_FEET, &
             SQUARE_INCHES, &
             SQUARE_METERS
-    use Burnup_m, only: &
-            Burnup_t, &
-            BurnupUnit_t, &
-            operator(.unit.), &
-            fromString, &
-            DEFAULT_BURNUP_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
-            MEGAWATT_DAYS_PER_TON, &
-            WATT_SECONDS_PER_KILOGRAM
     use Density_m, only: &
             Density_t, &
             DensityUnit_t, &

@@ -15,10 +15,6 @@ module quaff_asserts_m
             assertEquals, &
             assertEqualsWithinAbsolute, &
             assertEqualsWithinRelative
-    use Burnup_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
     use Density_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &
