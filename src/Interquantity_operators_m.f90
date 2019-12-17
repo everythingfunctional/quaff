@@ -3,6 +3,7 @@ module Interquantity_operators_m
     use Area_m, only: Area_t
     use Burnup_m, only: Burnup_t
     use Density_m, only: Density_t
+    use Dynamic_viscosity_m, only: DynamicViscosity_t
     use Energy_m, only: Energy_t
     use Force_m, only: Force_t
     use Length_m, only: Length_t
@@ -31,15 +32,19 @@ module Interquantity_operators_m
         module procedure massTimesBurnup
         module procedure powerTimesTime
         module procedure pressureTimesArea
+        module procedure pressureTimesTime
         module procedure speedTimesTime
         module procedure timeTimesAcceleration
         module procedure timeTimesPower
+        module procedure timeTimesPressure
         module procedure timeTimesSpeed
         module procedure volumeTimesDensity
     end interface operator(*)
 
     interface operator(/)
         module procedure areaDividedByLength
+        module procedure dynamicViscosityDividedByPressure
+        module procedure dynamicViscosityDividedByTime
         module procedure energyDividedByBurnup
         module procedure energyDividedByForce
         module procedure energyDividedByLength
@@ -117,6 +122,22 @@ contains
 
         mass%kilograms = density%kilograms_per_cubic_meter * volume%cubic_meters
     end function densityTimesVolume
+
+    elemental function dynamicViscosityDividedByPressure(dynamic_viscosity, pressure) result(time)
+        type(DynamicViscosity_t), intent(in) :: dynamic_viscosity
+        type(Pressure_t), intent(in) :: pressure
+        type(Time_t) :: time
+
+        time%seconds = dynamic_viscosity%pascal_seconds / pressure%pascals
+    end function dynamicViscosityDividedByPressure
+
+    elemental function dynamicViscosityDividedByTime(dynamic_viscosity, time) result(pressure)
+        type(DynamicViscosity_t), intent(in) :: dynamic_viscosity
+        type(Time_t), intent(in) :: time
+        type(Pressure_t) :: pressure
+
+        pressure%pascals = dynamic_viscosity%pascal_seconds / time%seconds
+    end function dynamicViscosityDividedByTime
 
     elemental function energyDividedByBurnup(energy, burnup) result(mass)
         type(Energy_t), intent(in) :: energy
@@ -294,6 +315,14 @@ contains
         force%newtons = pressure%pascals * area%square_meters
     end function pressureTimesArea
 
+    elemental function pressureTimesTime(pressure, time) result(dynamic_viscosity)
+        type(Pressure_t), intent(in) :: pressure
+        type(Time_t), intent(in) :: time
+        type(DynamicViscosity_t) :: dynamic_viscosity
+
+        dynamic_viscosity%pascal_seconds = pressure%pascals * time%seconds
+    end function pressureTimesTime
+
     elemental function speedDividedByAcceleration(speed, acceleration) result(time)
         type(Speed_t), intent(in) :: speed
         type(Acceleration_t), intent(in) :: acceleration
@@ -333,6 +362,14 @@ contains
 
         energy%joules = time%seconds * power%watts
     end function timeTimesPower
+
+    elemental function timeTimesPressure(time, pressure) result(dynamic_viscosity)
+        type(Time_t), intent(in) :: time
+        type(Pressure_t), intent(in) :: pressure
+        type(DynamicViscosity_t) :: dynamic_viscosity
+
+        dynamic_viscosity%pascal_seconds = time%seconds * pressure%pascals
+    end function timeTimesPressure
 
     elemental function timeTimesSpeed(time, speed) result(length)
         type(Time_t), intent(in) :: time

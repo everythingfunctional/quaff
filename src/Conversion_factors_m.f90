@@ -110,4 +110,7 @@ module Conversion_factors_m
     ! Burnup
     double precision, parameter :: MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM = &
             MEGA_PER_BASE * DAYS_PER_SECOND / TONS_PER_KILOGRAM
+
+    ! Dynamic Viscosity
+    double precision, parameter :: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND = MEGA_PER_BASE
 end module Conversion_factors_m
