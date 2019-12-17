@@ -19,8 +19,8 @@ fi
 
 new_module_name="src/${Quantity_module}_m.f90"
 new_type_test_name="tests/${quantity_lower}_type_test.f90"
-new_math_test_name="tests/${quantity_lower}_math_operators_test.f90"
-new_logical_test_name="tests/${quantity_lower}_logical_operators_test.f90"
+new_math_test_name="tests/${quantity_lower}_math_ops_test.f90"
+new_logical_test_name="tests/${quantity_lower}_logic_ops_test.f90"
 new_asserts_name="tests/test_helpers/assertions/${Quantity_module}_asserts_m.f90"
 
 sed "s|Quantity_module|${Quantity_module}|g" "src/Quantity_module_m.f90" \
@@ -47,7 +47,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_type_test.f90
     | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_type_test_name}"
 
-sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_math_operators_test.f90" \
+sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_math_ops_test.f90" \
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
@@ -59,7 +59,7 @@ sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_math_operator
     | sed "s|ltx_sym|${ltx_sym}|g" \
     > "${new_math_test_name}"
 
-sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_logical_operators_test.f90" \
+sed "s|Quantity_module|${Quantity_module}|g" "tests/quantity_lower_logic_ops_test.f90" \
     | sed "s|quantitySnake|${quantitySnake}|g" \
     | sed "s|QuantityCamel|${QuantityCamel}|g" \
     | sed "s|quantity_lower|${quantity_lower}|g" \
