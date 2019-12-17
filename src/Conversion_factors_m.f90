@@ -109,4 +109,7 @@ module Conversion_factors_m
 
     ! Dynamic Viscosity
     double precision, parameter :: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND = MEGA_PER_BASE
+
+    ! Enthalpy
+    double precision, parameter :: KILOJOULES_PER_KILOGRAM_PER_JOULES_PER_KILOGRAM = KILO_PER_BASE
 end module Conversion_factors_m

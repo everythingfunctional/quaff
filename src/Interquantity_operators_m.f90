@@ -4,6 +4,7 @@ module Interquantity_operators_m
     use Density_m, only: Density_t
     use Dynamic_viscosity_m, only: DynamicViscosity_t
     use Energy_m, only: Energy_t
+    use Enthalpy_m, only: Enthalpy_t
     use Force_m, only: Force_t
     use Length_m, only: Length_t
     use Mass_m, only: Mass_t
@@ -22,11 +23,13 @@ module Interquantity_operators_m
         module procedure areaTimesLength
         module procedure areaTimesPressure
         module procedure densityTimesVolume
+        module procedure enthalpyTimesMass
         module procedure forceTimesLength
         module procedure lengthTimesArea
         module procedure lengthTimesForce
         module procedure lengthTimesLength
         module procedure massTimesAcceleration
+        module procedure massTimesEnthalpy
         module procedure powerTimesTime
         module procedure pressureTimesArea
         module procedure pressureTimesTime
@@ -42,8 +45,10 @@ module Interquantity_operators_m
         module procedure areaDividedByLength
         module procedure dynamicViscosityDividedByPressure
         module procedure dynamicViscosityDividedByTime
+        module procedure energyDividedByEnthalpy
         module procedure energyDividedByForce
         module procedure energyDividedByLength
+        module procedure energyDividedByMass
         module procedure energyDividedByPower
         module procedure energyDividedByTime
         module procedure forceDividedByAcceleration
@@ -126,6 +131,14 @@ contains
         pressure%pascals = dynamic_viscosity%pascal_seconds / time%seconds
     end function dynamicViscosityDividedByTime
 
+    elemental function energyDividedByEnthalpy(energy, enthalpy) result(mass)
+        type(Energy_t), intent(in) :: energy
+        type(Enthalpy_t), intent(in) :: enthalpy
+        type(Mass_t) :: mass
+
+        mass%kilograms = energy%joules / enthalpy%joules_per_kilogram
+    end function energyDividedByEnthalpy
+
     elemental function energyDividedByForce(energy, force) result(length)
         type(Energy_t), intent(in) :: energy
         type(Force_t), intent(in) :: force
@@ -142,6 +155,14 @@ contains
         force%newtons = energy%joules / length%meters
     end function energyDividedByLength
 
+    elemental function energyDividedByMass(energy, mass) result(enthalpy)
+        type(Energy_t), intent(in) :: energy
+        type(Mass_t), intent(in) :: mass
+        type(Enthalpy_t) :: enthalpy
+
+        enthalpy%joules_per_kilogram = energy%joules / mass%kilograms
+    end function energyDividedByMass
+
     elemental function energyDividedByPower(energy, power) result(time)
         type(Energy_t), intent(in) :: energy
         type(Power_t), intent(in) :: power
@@ -157,6 +178,14 @@ contains
 
         power%watts = energy%joules / time%seconds
     end function energyDividedByTime
+
+    elemental function enthalpyTimesMass(enthalpy, mass) result(energy)
+        type(Enthalpy_t), intent(in) :: enthalpy
+        type(Mass_t), intent(in) :: mass
+        type(Energy_t) :: energy
+
+        energy%joules = enthalpy%joules_per_kilogram * mass%kilograms
+    end function enthalpyTimesMass
 
     elemental function forceDividedByAcceleration(force, acceleration) result(mass)
         type(Force_t), intent(in) :: force
@@ -261,6 +290,14 @@ contains
 
         force%newtons = mass%kilograms * acceleration%meters_per_square_second
     end function massTimesAcceleration
+
+    elemental function massTimesEnthalpy(mass, enthalpy) result(energy)
+        type(Mass_t), intent(in) :: mass
+        type(Enthalpy_t), intent(in) :: enthalpy
+        type(Energy_t) :: energy
+
+        energy%joules = mass%kilograms * enthalpy%joules_per_kilogram
+    end function massTimesEnthalpy
 
     elemental function powerTimesTime(power, time) result(energy)
         type(Power_t), intent(in) :: power

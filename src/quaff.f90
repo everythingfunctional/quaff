@@ -76,6 +76,15 @@ module quaff
             KILOJOULES, &
             MEGABTU, &
             MEGAWATT_DAYS
+    use Enthalpy_m, only: &
+            Enthalpy_t, &
+            EnthalpyUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_ENTHALPY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
+            KILOJOULES_PER_KILOGRAM, &
+            JOULES_PER_KILOGRAM
     use Force_m, only: &
             Force_t, &
             ForceUnit_t, &

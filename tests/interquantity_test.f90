@@ -5,6 +5,7 @@ module interquantity_test
             operator(.unit.), &
             CUBIC_METERS, &
             JOULES, &
+            JOULES_PER_KILOGRAM, &
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
             METERS, &
@@ -27,7 +28,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(38)
+        type(TestItem_t) :: individual_tests(42)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -105,6 +106,14 @@ contains
                 "6 Pa s / 3 s = 2 Pa", checkDynamicViscosityDividedByTime)
         individual_tests(38) = It( &
                 "6 Pa s / 3 Pa = 2 s", checkDynamicViscosityDividedByPressure)
+        individual_tests(39) = It( &
+                "6 J / 3 kg = 2 J/kg", checkEnergyDividedByMass)
+        individual_tests(40) = It( &
+                "2 J/kg * 3 kg = 6 J", checkEnthalpyTimesMass)
+        individual_tests(41) = It( &
+                "2 kg * 3 J/kg = 6 J", checkMassTimesEnthalpy)
+        individual_tests(42) = It( &
+                "6 J / 3 J/kg = 2 kg", checkEnergyDividedByEnthalpy)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -411,4 +420,36 @@ contains
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.PASCAL_SECONDS) / (3.0d0.unit.PASCALS))
     end function checkDynamicViscosityDividedByPressure
+
+    pure function checkEnergyDividedByMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.JOULES_PER_KILOGRAM, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.KILOGRAMS))
+    end function checkEnergyDividedByMass
+
+    pure function checkEnthalpyTimesMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.JOULES_PER_KILOGRAM) * (3.0d0.unit.KILOGRAMS))
+    end function checkEnthalpyTimesMass
+
+    pure function checkMassTimesEnthalpy() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.JOULES_PER_KILOGRAM))
+    end function checkMassTimesEnthalpy
+
+    pure function checkEnergyDividedByEnthalpy() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.KILOGRAMS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_KILOGRAM))
+    end function checkEnergyDividedByEnthalpy
 end module interquantity_test
