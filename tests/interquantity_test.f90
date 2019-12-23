@@ -3,6 +3,7 @@ module interquantity_test
             operator(*), &
             operator(/), &
             operator(.unit.), &
+            asBurnup, &
             CUBIC_METERS, &
             JOULES, &
             JOULES_PER_KILOGRAM, &
@@ -18,6 +19,7 @@ module interquantity_test
             PASCALS, &
             SECONDS, &
             SQUARE_METERS, &
+            WATT_SECONDS_PER_KILOGRAM, &
             WATTS
     use quaff_asserts_m, only: assertEquals
     use Vegetables_m, only: Result_t, TestItem_t, Describe, It
@@ -30,7 +32,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(46)
+        type(TestItem_t) :: individual_tests(50)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -124,6 +126,14 @@ contains
                 "2 mol * 3 kg/mol = 6 kg", checkAmountTimesMolarMass)
         individual_tests(46) = It( &
                 "6 kg / 3 kg/mol = 2 mol", checkMassDividedByMolarMass)
+        individual_tests(47) = It( &
+                "2 (W s)/kg * 3 kg = 6 J", checkBurnupTimesMass)
+        individual_tests(48) = It( &
+                "2 kg * 3 (W s)/kg = 6 J", checkMassTimesBurnup)
+        individual_tests(49) = It( &
+                "6 J / 3 (W s)/kg = 2 kg", checkEnergyDividedByBurnup)
+        individual_tests(50) = It( &
+                "2 J/kg = 2 (W s)/kg", checkEnthalpyToBurnup)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -494,4 +504,36 @@ contains
                 2.0d0.unit.MOLS, &
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.KILOGRAMS_PER_MOL))
     end function checkMassDividedByMolarMass
+
+    pure function checkBurnupTimesMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.WATT_SECONDS_PER_KILOGRAM) * (3.0d0.unit.KILOGRAMS))
+    end function checkBurnupTimesMass
+
+    pure function checkMassTimesBurnup() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.WATT_SECONDS_PER_KILOGRAM))
+    end function checkMassTimesBurnup
+
+    pure function checkEnergyDividedByBurnup() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.KILOGRAMS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.WATT_SECONDS_PER_KILOGRAM))
+    end function checkEnergyDividedByBurnup
+
+    pure function checkEnthalpyToBurnup() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.WATT_SECONDS_PER_KILOGRAM, &
+                asBurnup(2.0d0.unit.JOULES_PER_KILOGRAM))
+    end function checkEnthalpyToBurnup
 end module interquantity_test

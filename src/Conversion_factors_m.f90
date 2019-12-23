@@ -115,4 +115,8 @@ module Conversion_factors_m
 
     ! Enthalpy
     double precision, parameter :: KILOJOULES_PER_KILOGRAM_PER_JOULES_PER_KILOGRAM = KILO_PER_BASE
+
+    ! Burnup
+    double precision, parameter :: MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM = &
+            MEGA_PER_BASE * DAYS_PER_SECOND / TONS_PER_KILOGRAM
 end module Conversion_factors_m
