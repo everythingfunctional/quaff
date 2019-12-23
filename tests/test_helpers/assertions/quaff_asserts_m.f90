@@ -43,6 +43,10 @@ module quaff_asserts_m
             assertEquals, &
             assertEqualsWithinAbsolute, &
             assertEqualsWithinRelative
+    use Molar_mass_asserts_m, only: &
+            assertEquals, &
+            assertEqualsWithinAbsolute, &
+            assertEqualsWithinRelative
     use Power_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &

@@ -8,9 +8,11 @@ module interquantity_test
             JOULES_PER_KILOGRAM, &
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
+            KILOGRAMS_PER_MOL, &
             METERS, &
             METERS_PER_SECOND, &
             METERS_PER_SQUARE_SECOND, &
+            MOLS, &
             NEWTONS, &
             PASCAL_SECONDS, &
             PASCALS, &
@@ -28,7 +30,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(42)
+        type(TestItem_t) :: individual_tests(46)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -114,6 +116,14 @@ contains
                 "2 kg * 3 J/kg = 6 J", checkMassTimesEnthalpy)
         individual_tests(42) = It( &
                 "6 J / 3 J/kg = 2 kg", checkEnergyDividedByEnthalpy)
+        individual_tests(43) = It( &
+                "6 kg / 3 mol = 2 kg/mol", checkMassDividedByAmount)
+        individual_tests(44) = It( &
+                "2 kg/mol * 3 mol = 6 kg", checkMolarMassTimesAmount)
+        individual_tests(45) = It( &
+                "2 mol * 3 kg/mol = 6 kg", checkAmountTimesMolarMass)
+        individual_tests(46) = It( &
+                "6 kg / 3 kg/mol = 2 mol", checkMassDividedByMolarMass)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -452,4 +462,36 @@ contains
                 2.0d0.unit.KILOGRAMS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_KILOGRAM))
     end function checkEnergyDividedByEnthalpy
+
+    pure function checkMassDividedByAmount() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.KILOGRAMS_PER_MOL, &
+                (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.MOLS))
+    end function checkMassDividedByAmount
+
+    pure function checkMolarMassTimesAmount() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.KILOGRAMS, &
+                (2.0d0.unit.KILOGRAMS_PER_MOL) * (3.0d0.unit.MOLS))
+    end function checkMolarMassTimesAmount
+
+    pure function checkAmountTimesMolarMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.KILOGRAMS, &
+                (2.0d0.unit.MOLS) * (3.0d0.unit.KILOGRAMS_PER_MOL))
+    end function checkAmountTimesMolarMass
+
+    pure function checkMassDividedByMolarMass() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.MOLS, &
+                (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.KILOGRAMS_PER_MOL))
+    end function checkMassDividedByMolarMass
 end module interquantity_test

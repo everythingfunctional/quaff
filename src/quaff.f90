@@ -122,6 +122,15 @@ module quaff
             KILOGRAMS, &
             POUNDS_MASS, &
             TONS
+    use Molar_mass_m, only: &
+            MolarMass_t, &
+            MolarMassUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
+            GRAMS_PER_MOL, &
+            KILOGRAMS_PER_MOL
     use Power_m, only: &
             Power_t, &
             PowerUnit_t, &

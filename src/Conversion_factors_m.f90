@@ -65,6 +65,9 @@ module Conversion_factors_m
     ! Density
     double precision, parameter :: GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER = GRAMS_PER_KILOGRAM
 
+    ! Molar Mass
+    double precision, parameter :: GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL = BASE_PER_KILO
+
     ! Speed
     double precision, parameter :: CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND = CENTIMETERS_PER_METER
     double precision, parameter :: FEET_PER_SECOND_PER_METERS_PER_SECOND = FEET_PER_METER

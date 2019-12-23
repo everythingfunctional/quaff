@@ -1,5 +1,6 @@
 module Interquantity_operators_m
     use Acceleration_m, only: Acceleration_t
+    use Amount_m, only: Amount_t
     use Area_m, only: Area_t
     use Density_m, only: Density_t
     use Dynamic_viscosity_m, only: DynamicViscosity_t
@@ -8,6 +9,7 @@ module Interquantity_operators_m
     use Force_m, only: Force_t
     use Length_m, only: Length_t
     use Mass_m, only: Mass_t
+    use Molar_mass_m, only: MolarMass_t
     use Power_m, only: Power_t
     use Pressure_m, only: Pressure_t
     use Speed_m, only: Speed_t
@@ -20,6 +22,7 @@ module Interquantity_operators_m
     interface operator(*)
         module procedure accelerationTimesMass
         module procedure accelerationTimesTime
+        module procedure amountTimesMolarMass
         module procedure areaTimesLength
         module procedure areaTimesPressure
         module procedure densityTimesVolume
@@ -30,6 +33,7 @@ module Interquantity_operators_m
         module procedure lengthTimesLength
         module procedure massTimesAcceleration
         module procedure massTimesEnthalpy
+        module procedure molarMassTimesAmount
         module procedure powerTimesTime
         module procedure pressureTimesArea
         module procedure pressureTimesTime
@@ -57,7 +61,9 @@ module Interquantity_operators_m
         module procedure forceDividedByPressure
         module procedure lengthDividedBySpeed
         module procedure lengthDividedByTime
+        module procedure massDividedByAmount
         module procedure massDividedByDensity
+        module procedure massDividedByMolarMass
         module procedure massDividedByVolume
         module procedure speedDividedByAcceleration
         module procedure speedDividedByTime
@@ -82,6 +88,14 @@ contains
 
         speed%meters_per_second = acceleration%meters_per_square_second * time%seconds
     end function accelerationTimesTime
+
+    elemental function amountTimesMolarMass(amount, molar_mass) result(mass)
+        type(Amount_t), intent(in) :: amount
+        type(MolarMass_t), intent(in) :: molar_mass
+        type(Mass_t) :: mass
+
+        mass%kilograms = amount%mols * molar_mass%kilograms_per_mol
+    end function amountTimesMolarMass
 
     elemental function areaDividedByLength(numerator, denomenator) result(length)
         type(Area_t), intent(in) :: numerator
@@ -267,6 +281,14 @@ contains
         area%square_meters = lhs%meters * rhs%meters
     end function lengthTimesLength
 
+    elemental function massDividedByAmount(mass, amount) result(molar_mass)
+        type(Mass_t), intent(in) :: mass
+        type(Amount_t), intent(in) :: amount
+        type(MolarMass_t) :: molar_mass
+
+        molar_mass%kilograms_per_mol = mass%kilograms / amount%mols
+    end function massDividedByAmount
+
     elemental function massDividedByDensity(mass, density) result(volume)
         type(Mass_t), intent(in) :: mass
         type(Density_t), intent(in) :: density
@@ -274,6 +296,14 @@ contains
 
         volume%cubic_meters = mass%kilograms / density%kilograms_per_cubic_meter
     end function massDividedByDensity
+
+    elemental function massDividedByMolarMass(mass, molar_mass) result(amount)
+        type(Mass_t), intent(in) :: mass
+        type(MolarMass_t), intent(in) :: molar_mass
+        type(Amount_t) :: amount
+
+        amount%mols = mass%kilograms / molar_mass%kilograms_per_mol
+    end function massDividedByMolarMass
 
     elemental function massDividedByVolume(mass, volume) result(density)
         type(Mass_t), intent(in) :: mass
@@ -298,6 +328,14 @@ contains
 
         energy%joules = mass%kilograms * enthalpy%joules_per_kilogram
     end function massTimesEnthalpy
+
+    elemental function molarMassTimesAmount(molar_mass, amount) result(mass)
+        type(MolarMass_t), intent(in) :: molar_mass
+        type(Amount_t), intent(in) :: amount
+        type(Mass_t) :: mass
+
+        mass%kilograms = molar_mass%kilograms_per_mol * amount%mols
+    end function molarMassTimesAmount
 
     elemental function powerTimesTime(power, time) result(energy)
         type(Power_t), intent(in) :: power
