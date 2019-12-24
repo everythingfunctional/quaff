@@ -120,6 +120,10 @@ module Energy_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumEnergy
+    end interface sum
+
     type(EnergyUnit_t), parameter, public :: BTU = &
             EnergyUnit_t( &
                     conversion_factor = BTU_PER_JOULE, &
@@ -162,7 +166,7 @@ module Energy_m
     type(EnergyUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, energy)
         character(len=*), intent(in) :: string
@@ -356,6 +360,13 @@ contains
         new_energy%joules = &
                 energy1%joules - energy2%joules
     end function energyMinusEnergy
+
+    pure function sumEnergy(energys)
+        type(Energy_t), intent(in) :: energys(:)
+        type(Energy_t) :: sumEnergy
+
+        sumEnergy%joules = sum(energys%joules)
+    end function sumEnergy
 
     elemental function greaterThan(lhs, rhs)
         class(Energy_t), intent(in) :: lhs

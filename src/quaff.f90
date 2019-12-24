@@ -4,6 +4,7 @@ module quaff
             AccelerationUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_ACCELERATION_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ACCELERATION_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SQUARE_SECOND, &
@@ -14,6 +15,7 @@ module quaff
             AmountUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_UNITS => PROVIDED_UNITS, &
             MOLS, &
@@ -23,6 +25,7 @@ module quaff
             AngleUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             sin, &
             cos, &
             tan, &
@@ -39,6 +42,7 @@ module quaff
             AreaUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_AREA_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AREA_UNITS => PROVIDED_UNITS, &
             SQUARE_CENTIMETERS, &
@@ -50,6 +54,7 @@ module quaff
             BurnupUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_BURNUP_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
@@ -59,6 +64,7 @@ module quaff
             DensityUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
@@ -68,6 +74,7 @@ module quaff
             DynamicViscosityUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_DYNAMIC_VISCOSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
@@ -77,6 +84,7 @@ module quaff
             EnergyUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
             BTU, &
@@ -90,6 +98,7 @@ module quaff
             EnthalpyUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_ENTHALPY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
             KILOJOULES_PER_KILOGRAM, &
@@ -99,6 +108,7 @@ module quaff
             ForceUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
             DYNES, &
@@ -112,6 +122,7 @@ module quaff
             LengthUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_LENGTH_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_LENGTH_UNITS => PROVIDED_UNITS, &
             CENTIMETERS, &
@@ -125,6 +136,7 @@ module quaff
             MassUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS, &
@@ -136,6 +148,7 @@ module quaff
             MolarMassUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
@@ -145,6 +158,7 @@ module quaff
             PowerUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR, &
@@ -157,6 +171,7 @@ module quaff
             PressureUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
             DYNES_PER_SQUARE_CENTIMETER, &
@@ -170,6 +185,7 @@ module quaff
             QuantityCamelUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_QUANTITY_CAPITAL_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_QUANTITY_CAPITAL_UNITS => PROVIDED_UNITS, &
             UNITS_CAPITAL, &
@@ -179,6 +195,7 @@ module quaff
             SpeedUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
@@ -189,6 +206,7 @@ module quaff
             TemperatureUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             CELSIUS, &
@@ -200,6 +218,7 @@ module quaff
             TimeUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_TIME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TIME_UNITS => PROVIDED_UNITS, &
             DAYS, &
@@ -211,6 +230,7 @@ module quaff
             VolumeUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_VOLUME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &

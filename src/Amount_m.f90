@@ -115,6 +115,10 @@ module Amount_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumAmount
+    end interface sum
+
     type(AmountUnit_t), parameter, public :: MOLS = &
             AmountUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -133,7 +137,7 @@ module Amount_m
     type(AmountUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [MOLS, PARTICLES]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, amount)
         character(len=*), intent(in) :: string
@@ -327,6 +331,13 @@ contains
         new_amount%mols = &
                 amount1%mols - amount2%mols
     end function amountMinusAmount
+
+    pure function sumAmount(amounts)
+        type(Amount_t), intent(in) :: amounts(:)
+        type(Amount_t) :: sumAmount
+
+        sumAmount%mols = sum(amounts%mols)
+    end function sumAmount
 
     elemental function greaterThan(lhs, rhs)
         class(Amount_t), intent(in) :: lhs

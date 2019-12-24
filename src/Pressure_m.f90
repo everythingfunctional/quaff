@@ -120,6 +120,10 @@ module Pressure_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumPressure
+    end interface sum
+
     type(PressureUnit_t), parameter, public :: DYNES_PER_SQUARE_CENTIMETER = &
             PressureUnit_t( &
                     conversion_factor = DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
@@ -167,7 +171,7 @@ module Pressure_m
             PASCALS, &
             POUNDS_PER_SQUARE_INCH]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, pressure)
         character(len=*), intent(in) :: string
@@ -361,6 +365,13 @@ contains
         new_pressure%pascals = &
                 pressure1%pascals - pressure2%pascals
     end function pressureMinusPressure
+
+    pure function sumPressure(pressures)
+        type(Pressure_t), intent(in) :: pressures(:)
+        type(Pressure_t) :: sumPressure
+
+        sumPressure%pascals = sum(pressures%pascals)
+    end function sumPressure
 
     elemental function greaterThan(lhs, rhs)
         class(Pressure_t), intent(in) :: lhs

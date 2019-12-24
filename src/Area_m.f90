@@ -118,6 +118,10 @@ module Area_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumArea
+    end interface sum
+
     type(AreaUnit_t), parameter, public :: SQUARE_CENTIMETERS = &
             AreaUnit_t( &
                     conversion_factor = SQUARE_CENTIMETERS_PER_SQUARE_METER, &
@@ -148,7 +152,7 @@ module Area_m
     type(AreaUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [SQUARE_CENTIMETERS, SQUARE_FEET, SQUARE_INCHES, SQUARE_METERS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, area)
         character(len=*), intent(in) :: string
@@ -342,6 +346,13 @@ contains
         new_area%square_meters = &
                 area1%square_meters - area2%square_meters
     end function areaMinusArea
+
+    pure function sumArea(areas)
+        type(Area_t), intent(in) :: areas(:)
+        type(Area_t) :: sumArea
+
+        sumArea%square_meters = sum(areas%square_meters)
+    end function sumArea
 
     elemental function greaterThan(lhs, rhs)
         class(Area_t), intent(in) :: lhs

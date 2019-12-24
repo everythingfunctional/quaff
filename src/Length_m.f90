@@ -120,6 +120,10 @@ module Length_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumLength
+    end interface sum
+
     type(LengthUnit_t), parameter, public :: CENTIMETERS = &
             LengthUnit_t( &
                     conversion_factor = CENTIMETERS_PER_METER, &
@@ -162,7 +166,7 @@ module Length_m
     type(LengthUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, length)
         character(len=*), intent(in) :: string
@@ -356,6 +360,13 @@ contains
         new_length%meters = &
                 length1%meters - length2%meters
     end function lengthMinusLength
+
+    pure function sumLength(lengths)
+        type(Length_t), intent(in) :: lengths(:)
+        type(Length_t) :: sumLength
+
+        sumLength%meters = sum(lengths%meters)
+    end function sumLength
 
     elemental function greaterThan(lhs, rhs)
         class(Length_t), intent(in) :: lhs

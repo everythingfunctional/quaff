@@ -115,6 +115,10 @@ module Enthalpy_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumEnthalpy
+    end interface sum
+
     type(EnthalpyUnit_t), parameter, public :: KILOJOULES_PER_KILOGRAM = &
             EnthalpyUnit_t( &
                     conversion_factor = KILOJOULES_PER_KILOGRAM_PER_JOULES_PER_KILOGRAM, &
@@ -133,7 +137,7 @@ module Enthalpy_m
     type(EnthalpyUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [KILOJOULES_PER_KILOGRAM, JOULES_PER_KILOGRAM]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, enthalpy)
         character(len=*), intent(in) :: string
@@ -327,6 +331,13 @@ contains
         new_enthalpy%joules_per_kilogram = &
                 enthalpy1%joules_per_kilogram - enthalpy2%joules_per_kilogram
     end function enthalpyMinusEnthalpy
+
+    pure function sumEnthalpy(enthalpys)
+        type(Enthalpy_t), intent(in) :: enthalpys(:)
+        type(Enthalpy_t) :: sumEnthalpy
+
+        sumEnthalpy%joules_per_kilogram = sum(enthalpys%joules_per_kilogram)
+    end function sumEnthalpy
 
     elemental function greaterThan(lhs, rhs)
         class(Enthalpy_t), intent(in) :: lhs

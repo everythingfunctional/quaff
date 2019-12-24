@@ -8,6 +8,7 @@ module volume_type_test
             VolumeUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             PROVIDED_VOLUME_UNITS, &
             CUBIC_METERS
     use quaff_asserts_m, only: assertEquals
@@ -49,7 +50,7 @@ contains
         type(TestItem_t) :: tests
 
         type(UnitsExamples_t) :: examples
-        type(TestItem_t) :: individual_tests(6)
+        type(TestItem_t) :: individual_tests(7)
 
         examples = makeUnitsExamples(PROVIDED_VOLUME_UNITS)
         individual_tests(1) = it( &
@@ -73,6 +74,7 @@ contains
         individual_tests(6) = it( &
                 "Trying to parse a bad number is an error", &
                 checkBadNumber)
+        individual_tests(7) = it("Can be summed", checkSum)
         tests = describe("Volume_t", individual_tests)
     end function test_volume
 
@@ -142,6 +144,16 @@ contains
         call fromString("bad m^3", errors, volume)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
+
+    pure function checkSum() result(result_)
+        type(Result_t) :: result_
+
+        double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
+
+        result_ = assertEquals( &
+                sum(numbers).unit.CUBIC_METERS, &
+                sum(numbers.unit.CUBIC_METERS))
+    end function checkSum
 
     pure function makeUnitsExamples(units) result(examples)
         type(VolumeUnit_t), intent(in) :: units(:)

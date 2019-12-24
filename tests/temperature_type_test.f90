@@ -8,6 +8,7 @@ module temperature_type_test
             TemperatureUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             PROVIDED_TEMPERATURE_UNITS, &
             KELVIN
     use quaff_asserts_m, only: assertEquals
@@ -49,7 +50,7 @@ contains
         type(TestItem_t) :: tests
 
         type(UnitsExamples_t) :: examples
-        type(TestItem_t) :: individual_tests(5)
+        type(TestItem_t) :: individual_tests(6)
 
         examples = makeUnitsExamples(PROVIDED_TEMPERATURE_UNITS)
         individual_tests(1) = it( &
@@ -69,6 +70,7 @@ contains
         individual_tests(5) = it( &
                 "Trying to parse a bad number is an error", &
                 checkBadNumber)
+        individual_tests(6) = it("Can be summed", checkSum)
         tests = describe("Temperature_t", individual_tests)
     end function test_temperature
 
@@ -126,6 +128,16 @@ contains
         call fromString("bad K", errors, temperature)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
+
+    pure function checkSum() result(result_)
+        type(Result_t) :: result_
+
+        double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
+
+        result_ = assertEquals( &
+                sum(numbers).unit.KELVIN, &
+                sum(numbers.unit.KELVIN))
+    end function checkSum
 
     pure function makeUnitsExamples(units) result(examples)
         type(TemperatureUnit_t), intent(in) :: units(:)

@@ -115,6 +115,10 @@ module Burnup_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumBurnup
+    end interface sum
+
     type(BurnupUnit_t), parameter, public :: MEGAWATT_DAYS_PER_TON = &
             BurnupUnit_t( &
                     conversion_factor = MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM, &
@@ -133,7 +137,7 @@ module Burnup_m
     type(BurnupUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [MEGAWATT_DAYS_PER_TON, WATT_SECONDS_PER_KILOGRAM]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, burnup)
         character(len=*), intent(in) :: string
@@ -327,6 +331,13 @@ contains
         new_burnup%watt_seconds_per_kilogram = &
                 burnup1%watt_seconds_per_kilogram - burnup2%watt_seconds_per_kilogram
     end function burnupMinusBurnup
+
+    pure function sumBurnup(burnups)
+        type(Burnup_t), intent(in) :: burnups(:)
+        type(Burnup_t) :: sumBurnup
+
+        sumBurnup%watt_seconds_per_kilogram = sum(burnups%watt_seconds_per_kilogram)
+    end function sumBurnup
 
     elemental function greaterThan(lhs, rhs)
         class(Burnup_t), intent(in) :: lhs

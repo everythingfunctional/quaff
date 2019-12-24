@@ -116,6 +116,10 @@ module Time_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumTime
+    end interface sum
+
     type(TimeUnit_t), parameter, public :: DAYS = &
             TimeUnit_t( &
                     conversion_factor = DAYS_PER_SECOND, &
@@ -146,7 +150,7 @@ module Time_m
     type(TimeUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [DAYS, HOURS, MINUTES, SECONDS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, time)
         character(len=*), intent(in) :: string
@@ -340,6 +344,13 @@ contains
         new_time%seconds = &
                 time1%seconds - time2%seconds
     end function timeMinusTime
+
+    pure function sumTime(times)
+        type(Time_t), intent(in) :: times(:)
+        type(Time_t) :: sumTime
+
+        sumTime%seconds = sum(times%seconds)
+    end function sumTime
 
     elemental function greaterThan(lhs, rhs)
         class(Time_t), intent(in) :: lhs

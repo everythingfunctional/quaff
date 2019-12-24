@@ -115,6 +115,10 @@ module Molar_mass_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumMolarMass
+    end interface sum
+
     type(MolarMassUnit_t), parameter, public :: GRAMS_PER_MOL = &
             MolarMassUnit_t( &
                     conversion_factor = GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL, &
@@ -133,7 +137,7 @@ module Molar_mass_m
     type(MolarMassUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS_PER_MOL, KILOGRAMS_PER_MOL]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, molar_mass)
         character(len=*), intent(in) :: string
@@ -327,6 +331,13 @@ contains
         new_molar_mass%kilograms_per_mol = &
                 molar_mass1%kilograms_per_mol - molar_mass2%kilograms_per_mol
     end function molarMassMinusMolarMass
+
+    pure function sumMolarMass(molar_masss)
+        type(MolarMass_t), intent(in) :: molar_masss(:)
+        type(MolarMass_t) :: sumMolarMass
+
+        sumMolarMass%kilograms_per_mol = sum(molar_masss%kilograms_per_mol)
+    end function sumMolarMass
 
     elemental function greaterThan(lhs, rhs)
         class(MolarMass_t), intent(in) :: lhs

@@ -115,6 +115,10 @@ module Dynamic_viscosity_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumDynamicViscosity
+    end interface sum
+
     type(DynamicViscosityUnit_t), parameter, public :: MEGAPASCAL_SECONDS = &
             DynamicViscosityUnit_t( &
                     conversion_factor = MEGAPASCAL_SECONDS_PER_PASCAL_SECOND, &
@@ -133,7 +137,7 @@ module Dynamic_viscosity_m
     type(DynamicViscosityUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [MEGAPASCAL_SECONDS, PASCAL_SECONDS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, dynamic_viscosity)
         character(len=*), intent(in) :: string
@@ -327,6 +331,13 @@ contains
         new_dynamic_viscosity%pascal_seconds = &
                 dynamic_viscosity1%pascal_seconds - dynamic_viscosity2%pascal_seconds
     end function dynamicViscosityMinusDynamicViscosity
+
+    pure function sumDynamicViscosity(dynamic_viscositys)
+        type(DynamicViscosity_t), intent(in) :: dynamic_viscositys(:)
+        type(DynamicViscosity_t) :: sumDynamicViscosity
+
+        sumDynamicViscosity%pascal_seconds = sum(dynamic_viscositys%pascal_seconds)
+    end function sumDynamicViscosity
 
     elemental function greaterThan(lhs, rhs)
         class(DynamicViscosity_t), intent(in) :: lhs

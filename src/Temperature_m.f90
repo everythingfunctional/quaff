@@ -119,6 +119,10 @@ module Temperature_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumTemperature
+    end interface sum
+
     type(TemperatureUnit_t), parameter, public :: CELSIUS = TemperatureUnit_t( &
             conversion_factor = 1.0d0, &
             difference = CELSIUS_KELVIN_DIFFERENCE, &
@@ -149,7 +153,7 @@ module Temperature_m
     type(TemperatureUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, temperature)
         character(len=*), intent(in) :: string
@@ -343,6 +347,13 @@ contains
         new_temperature%kelvin = &
                 temperature1%kelvin - temperature2%kelvin
     end function temperatureMinusTemperature
+
+    pure function sumTemperature(temperatures)
+        type(Temperature_t), intent(in) :: temperatures(:)
+        type(Temperature_t) :: sumTemperature
+
+        sumTemperature%kelvin = sum(temperatures%kelvin)
+    end function sumTemperature
 
     elemental function greaterThan(lhs, rhs)
         class(Temperature_t), intent(in) :: lhs

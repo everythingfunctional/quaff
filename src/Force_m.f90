@@ -119,6 +119,10 @@ module Force_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumForce
+    end interface sum
+
     type(ForceUnit_t), parameter, public :: DYNES = &
             ForceUnit_t( &
                     conversion_factor = DYNES_PER_NEWTON, &
@@ -155,7 +159,7 @@ module Force_m
     type(ForceUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [DYNES, KILOPONDS, MILLI_NEWTONS, NEWTONS, POUNDS_FORCE]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, force)
         character(len=*), intent(in) :: string
@@ -349,6 +353,13 @@ contains
         new_force%newtons = &
                 force1%newtons - force2%newtons
     end function forceMinusForce
+
+    pure function sumForce(forces)
+        type(Force_t), intent(in) :: forces(:)
+        type(Force_t) :: sumForce
+
+        sumForce%newtons = sum(forces%newtons)
+    end function sumForce
 
     elemental function greaterThan(lhs, rhs)
         class(Force_t), intent(in) :: lhs

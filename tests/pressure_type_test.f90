@@ -8,6 +8,7 @@ module pressure_type_test
             PressureUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             PROVIDED_PRESSURE_UNITS, &
             PASCALS
     use quaff_asserts_m, only: assertEquals
@@ -49,7 +50,7 @@ contains
         type(TestItem_t) :: tests
 
         type(UnitsExamples_t) :: examples
-        type(TestItem_t) :: individual_tests(6)
+        type(TestItem_t) :: individual_tests(7)
 
         examples = makeUnitsExamples(PROVIDED_PRESSURE_UNITS)
         individual_tests(1) = it( &
@@ -73,6 +74,7 @@ contains
         individual_tests(6) = it( &
                 "Trying to parse a bad number is an error", &
                 checkBadNumber)
+        individual_tests(7) = it("Can be summed", checkSum)
         tests = describe("Pressure_t", individual_tests)
     end function test_pressure
 
@@ -142,6 +144,16 @@ contains
         call fromString("bad Pa", errors, pressure)
         result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadNumber
+
+    pure function checkSum() result(result_)
+        type(Result_t) :: result_
+
+        double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
+
+        result_ = assertEquals( &
+                sum(numbers).unit.PASCALS, &
+                sum(numbers.unit.PASCALS))
+    end function checkSum
 
     pure function makeUnitsExamples(units) result(examples)
         type(PressureUnit_t), intent(in) :: units(:)

@@ -114,6 +114,10 @@ module Quantity_module_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumQuantityCamel
+    end interface sum
+
     type(QuantityCamelUnit_t), parameter, public :: UNITS_CAPITAL = &
             QuantityCamelUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -132,7 +136,7 @@ module Quantity_module_m
     type(QuantityCamelUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [UNITS_CAPITAL, UNITS_CAPITAL2]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, quantity_lower)
         character(len=*), intent(in) :: string
@@ -326,6 +330,13 @@ contains
         new_quantity_lower%units_lower = &
                 quantity_lower1%units_lower - quantity_lower2%units_lower
     end function quantitySnakeMinusQuantityCamel
+
+    pure function sumQuantityCamel(quantity_lowers)
+        type(QuantityCamel_t), intent(in) :: quantity_lowers(:)
+        type(QuantityCamel_t) :: sumQuantityCamel
+
+        sumQuantityCamel%units_lower = sum(quantity_lowers%units_lower)
+    end function sumQuantityCamel
 
     elemental function greaterThan(lhs, rhs)
         class(QuantityCamel_t), intent(in) :: lhs

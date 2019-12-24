@@ -127,6 +127,10 @@ module Angle_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumAngle
+    end interface sum
+
     type(AngleUnit_t), parameter, public :: DEGREES = &
             AngleUnit_t( &
                     conversion_factor = DEGREES_PER_RADIAN, &
@@ -148,6 +152,7 @@ module Angle_m
     public :: &
             operator(.unit.), &
             fromString, &
+            sum, &
             sin, &
             cos, &
             tan, &
@@ -348,6 +353,13 @@ contains
         new_angle%radians = &
                 angle1%radians - angle2%radians
     end function angleMinusAngle
+
+    pure function sumAngle(angles)
+        type(Angle_t), intent(in) :: angles(:)
+        type(Angle_t) :: sumAngle
+
+        sumAngle%radians = sum(angles%radians)
+    end function sumAngle
 
     elemental function greaterThan(lhs, rhs)
         class(Angle_t), intent(in) :: lhs

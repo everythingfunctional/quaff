@@ -118,6 +118,10 @@ module Mass_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumMass
+    end interface sum
+
     type(MassUnit_t), parameter, public :: GRAMS = &
             MassUnit_t( &
                     conversion_factor = GRAMS_PER_KILOGRAM, &
@@ -148,7 +152,7 @@ module Mass_m
     type(MassUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS, POUNDS_MASS, TONS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, mass)
         character(len=*), intent(in) :: string
@@ -342,6 +346,13 @@ contains
         new_mass%kilograms = &
                 mass1%kilograms - mass2%kilograms
     end function massMinusMass
+
+    pure function sumMass(masss)
+        type(Mass_t), intent(in) :: masss(:)
+        type(Mass_t) :: sumMass
+
+        sumMass%kilograms = sum(masss%kilograms)
+    end function sumMass
 
     elemental function greaterThan(lhs, rhs)
         class(Mass_t), intent(in) :: lhs

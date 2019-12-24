@@ -115,6 +115,10 @@ module Volume_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumVolume
+    end interface sum
+
     type(VolumeUnit_t), parameter, public :: CUBIC_CENTIMETERS = &
             VolumeUnit_t( &
                     conversion_factor = CUBIC_CENTIMETERS_PER_CUBIC_METER, &
@@ -133,7 +137,7 @@ module Volume_m
     type(VolumeUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CUBIC_CENTIMETERS, CUBIC_METERS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, volume)
         character(len=*), intent(in) :: string
@@ -327,6 +331,13 @@ contains
         new_volume%cubic_meters = &
                 volume1%cubic_meters - volume2%cubic_meters
     end function volumeMinusVolume
+
+    pure function sumVolume(volumes)
+        type(Volume_t), intent(in) :: volumes(:)
+        type(Volume_t) :: sumVolume
+
+        sumVolume%cubic_meters = sum(volumes%cubic_meters)
+    end function sumVolume
 
     elemental function greaterThan(lhs, rhs)
         class(Volume_t), intent(in) :: lhs

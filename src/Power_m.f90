@@ -119,6 +119,10 @@ module Power_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumPower
+    end interface sum
+
     type(PowerUnit_t), parameter, public :: BTU_PER_HOUR = &
             PowerUnit_t( &
                     conversion_factor = BTU_PER_HOUR_PER_WATT, &
@@ -159,7 +163,7 @@ module Power_m
             MEGAWATTS, &
             WATTS]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, power)
         character(len=*), intent(in) :: string
@@ -353,6 +357,13 @@ contains
         new_power%watts = &
                 power1%watts - power2%watts
     end function powerMinusPower
+
+    pure function sumPower(powers)
+        type(Power_t), intent(in) :: powers(:)
+        type(Power_t) :: sumPower
+
+        sumPower%watts = sum(powers%watts)
+    end function sumPower
 
     elemental function greaterThan(lhs, rhs)
         class(Power_t), intent(in) :: lhs

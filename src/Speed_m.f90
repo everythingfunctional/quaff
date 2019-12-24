@@ -117,6 +117,10 @@ module Speed_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumSpeed
+    end interface sum
+
     type(SpeedUnit_t), parameter, public :: CENTIMETERS_PER_SECOND = &
             SpeedUnit_t( &
                     conversion_factor = CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND, &
@@ -141,7 +145,7 @@ module Speed_m
     type(SpeedUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, speed)
         character(len=*), intent(in) :: string
@@ -335,6 +339,13 @@ contains
         new_speed%meters_per_second = &
                 speed1%meters_per_second - speed2%meters_per_second
     end function speedMinusSpeed
+
+    pure function sumSpeed(speeds)
+        type(Speed_t), intent(in) :: speeds(:)
+        type(Speed_t) :: sumSpeed
+
+        sumSpeed%meters_per_second = sum(speeds%meters_per_second)
+    end function sumSpeed
 
     elemental function greaterThan(lhs, rhs)
         class(Speed_t), intent(in) :: lhs

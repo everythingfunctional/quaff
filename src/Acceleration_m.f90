@@ -117,6 +117,10 @@ module Acceleration_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumAcceleration
+    end interface sum
+
     type(AccelerationUnit_t), parameter, public :: CENTIMETERS_PER_SQUARE_SECOND = &
             AccelerationUnit_t( &
                     conversion_factor = CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
@@ -143,7 +147,7 @@ module Acceleration_m
             FEET_PER_SQUARE_SECOND, &
             METERS_PER_SQUARE_SECOND]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, acceleration)
         character(len=*), intent(in) :: string
@@ -337,6 +341,13 @@ contains
         new_acceleration%meters_per_square_second = &
                 acceleration1%meters_per_square_second - acceleration2%meters_per_square_second
     end function accelerationMinusAcceleration
+
+    pure function sumAcceleration(accelerations)
+        type(Acceleration_t), intent(in) :: accelerations(:)
+        type(Acceleration_t) :: sumAcceleration
+
+        sumAcceleration%meters_per_square_second = sum(accelerations%meters_per_square_second)
+    end function sumAcceleration
 
     elemental function greaterThan(lhs, rhs)
         class(Acceleration_t), intent(in) :: lhs

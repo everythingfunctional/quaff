@@ -116,6 +116,10 @@ module Density_m
         module procedure unitFromStringWithUnitsS
     end interface fromString
 
+    interface sum
+        module procedure sumDensity
+    end interface sum
+
     type(DensityUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER = &
             DensityUnit_t( &
                     conversion_factor = GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER, &
@@ -134,7 +138,7 @@ module Density_m
     type(DensityUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS_PER_CUBIC_METER, KILOGRAMS_PER_CUBIC_METER]
 
-    public :: operator(.unit.), fromString
+    public :: operator(.unit.), fromString, sum
 contains
     pure subroutine fromStringBasicC(string, errors, density)
         character(len=*), intent(in) :: string
@@ -328,6 +332,13 @@ contains
         new_density%kilograms_per_cubic_meter = &
                 density1%kilograms_per_cubic_meter - density2%kilograms_per_cubic_meter
     end function densityMinusDensity
+
+    pure function sumDensity(densitys)
+        type(Density_t), intent(in) :: densitys(:)
+        type(Density_t) :: sumDensity
+
+        sumDensity%kilograms_per_cubic_meter = sum(densitys%kilograms_per_cubic_meter)
+    end function sumDensity
 
     elemental function greaterThan(lhs, rhs)
         class(Density_t), intent(in) :: lhs
