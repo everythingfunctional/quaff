@@ -96,7 +96,7 @@ module Pressure_m
 
     type, public :: PressureUnit_t
         double precision :: conversion_factor
-        character(len=10) :: symbol
+        character(len=20) :: symbol
         character(len=50) :: gnuplot_symbol
         character(len=100) :: latex_symbol
     contains

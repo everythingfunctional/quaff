@@ -213,6 +213,16 @@ module quaff
             FAHRENHEIT, &
             KELVIN, &
             RANKINE
+    use Thermal_conductivity_m, only: &
+            ThermalConductivity_t, &
+            ThermalConductivityUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            DEFAULT_THERMAL_CONDUCTIVITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_THERMAL_CONDUCTIVITY_UNITS => PROVIDED_UNITS, &
+            CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
+            WATTS_PER_CENTIMETER_KELVIN, &
+            WATTS_PER_METER_KELVIN
     use Time_m, only: &
             Time_t, &
             TimeUnit_t, &

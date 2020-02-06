@@ -71,6 +71,10 @@ module quaff_asserts_m
             assertEquals, &
             assertEqualsWithinAbsolute, &
             assertEqualsWithinRelative
+    use Thermal_conductivity_asserts_m, only: &
+            assertEquals, &
+            assertEqualsWithinAbsolute, &
+            assertEqualsWithinRelative
     use Time_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &

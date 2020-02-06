@@ -16,6 +16,7 @@ module Conversion_factors_m
     double precision, parameter :: INCHES_PER_FOOT = 12.0d0
     double precision, parameter :: FEET_PER_INCH = 1.0d0 / INCHES_PER_FOOT
     double precision, parameter :: CENTIMETERS_PER_METER = CENTI_PER_BASE
+    double precision, parameter :: METERS_PER_CENTIMETER = 1.0d0 / CENTIMETERS_PER_METER
     double precision, parameter :: FEET_PER_METER = INCHES_PER_METER * FEET_PER_INCH
     double precision, parameter :: MICROINCHES_PER_METER = INCHES_PER_METER * MICRO_PER_BASE
     double precision, parameter :: MICROMETERS_PER_METER = MICRO_PER_BASE
@@ -119,4 +120,10 @@ module Conversion_factors_m
     ! Burnup
     double precision, parameter :: MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM = &
             MEGA_PER_BASE * DAYS_PER_SECOND / TONS_PER_KILOGRAM
+
+    ! Thermal Conductivity
+    double precision, parameter :: CAL_PER_SEC_CM_K_PER_WATTS_PER_METER_KELVIN = &
+            CALORIES_PER_SECOND_PER_WATT / CENTIMETERS_PER_METER
+    double precision, parameter :: WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN = &
+            METERS_PER_CENTIMETER
 end module Conversion_factors_m
