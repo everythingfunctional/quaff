@@ -1,5 +1,6 @@
 module Pressure_m
     use Conversion_factors_m, only: &
+            BAR_PER_PASCAL, &
             DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
             KILOPASCALS_PER_PASCAL, &
             KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
@@ -124,6 +125,12 @@ module Pressure_m
         module procedure sumPressure
     end interface sum
 
+    type(PressureUnit_t), parameter, public :: BAR = &
+            PressureUnit_t( &
+                    conversion_factor = BAR_PER_PASCAL, &
+                    symbol = "bar", &
+                    gnuplot_symbol = "bar", &
+                    latex_symbol = "\bar")
     type(PressureUnit_t), parameter, public :: DYNES_PER_SQUARE_CENTIMETER = &
             PressureUnit_t( &
                     conversion_factor = DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
@@ -164,7 +171,8 @@ module Pressure_m
     type(PressureUnit_t), public :: DEFAULT_OUTPUT_UNITS = PASCALS
 
     type(PressureUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [DYNES_PER_SQUARE_CENTIMETER, &
+            [BAR, &
+            DYNES_PER_SQUARE_CENTIMETER, &
             KILOPASCALS, &
             KILOPONDS_PER_SQUARE_CENTIMETER, &
             MEGAPASCALS, &
