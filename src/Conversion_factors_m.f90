@@ -22,15 +22,13 @@ module Conversion_factors_m
     double precision, parameter :: MICROMETERS_PER_METER = MICRO_PER_BASE
 
     ! Mass
-    double precision, parameter :: GRAMS_PER_OUNCE = 28.34952d0
-    double precision, parameter :: OUNCES_PER_GRAM = 1.0d0 / GRAMS_PER_OUNCE
+    double precision, parameter :: KILOGRAMS_PER_POUND = 0.45359237d0 ! Taken from NIST (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f22)
+    double precision, parameter :: POUNDS_PER_KILOGRAM = 1.0d0 / KILOGRAMS_PER_POUND
+    double precision, parameter :: GRAMS_PER_KILOGRAM = BASE_PER_KILO
     double precision, parameter :: OUNCES_PER_POUND = 16.0d0
-    double precision, parameter :: POUNDS_PER_OUNCE = 1.0d0 / OUNCES_PER_POUND
     double precision, parameter :: POUNDS_PER_TON = 2000.0d0
     double precision, parameter :: TONS_PER_POUND = 1.0d0 / POUNDS_PER_TON
-    double precision, parameter :: GRAMS_PER_KILOGRAM = BASE_PER_KILO
-    double precision, parameter :: OUNCES_PER_KILOGRAM = OUNCES_PER_GRAM * GRAMS_PER_KILOGRAM
-    double precision, parameter :: POUNDS_PER_KILOGRAM = POUNDS_PER_OUNCE * OUNCES_PER_KILOGRAM
+    double precision, parameter :: OUNCES_PER_KILOGRAM = POUNDS_PER_KILOGRAM * OUNCES_PER_POUND
     double precision, parameter :: TONS_PER_KILOGRAM = TONS_PER_POUND * POUNDS_PER_KILOGRAM
 
     ! Temperature
@@ -88,8 +86,8 @@ module Conversion_factors_m
 
     ! Energy
     ! Note: 1 J = 1 (N m)
-    double precision, parameter :: JOULES_PER_CALORIE = 4.184d0
-    double precision, parameter :: BTU_PER_JOULE = 1055.06d0
+    double precision, parameter :: JOULES_PER_CALORIE = 4.1868d0 ! Taken from NIST for "IT" (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f09)
+    double precision, parameter :: BTU_PER_JOULE = 1.05505585262d3 ! Taken from NIST for "IT" (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f09)
     double precision, parameter :: CALORIES_PER_JOULE = 1.0d0 / JOULES_PER_CALORIE
     double precision, parameter :: KILOJOULES_PER_JOULE = KILO_PER_BASE
     double precision, parameter :: MEGABTU_PER_JOULE = MEGA_PER_BASE * BTU_PER_JOULE
