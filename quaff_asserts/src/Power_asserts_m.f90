@@ -1,6 +1,6 @@
-module Burnup_asserts_m
+module Power_asserts_m
     use iso_varying_string, only: VARYING_STRING, operator(//), var_str
-    use Burnup_m, only: Burnup_t
+    use quaff, only: Power_t
     use strff, only: toString
     use Vegetables_m, only: &
             Result_t, &
@@ -48,8 +48,8 @@ module Burnup_asserts_m
     public :: assertEquals, assertEqualsWithinAbsolute, assertEqualsWithinRelative
 contains
     pure function assertEqualsBasic(expected, actual) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         type(Result_t) :: result__
 
         result__ = assertEquals(expected, actual, var_str(""), var_str(""))
@@ -57,8 +57,8 @@ contains
 
     pure function assertEqualsWithMessageC( &
             expected, actual, message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         character(len=*), intent(in) :: message
         type(Result_t) :: result__
 
@@ -68,8 +68,8 @@ contains
 
     pure function assertEqualsWithMessageS( &
             expected, actual, message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         type(VARYING_STRING), intent(in) :: message
         type(Result_t) :: result__
 
@@ -79,8 +79,8 @@ contains
 
     pure function assertEqualsWithMessagesCC( &
             expected, actual, success_message, failure_message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -94,8 +94,8 @@ contains
 
     pure function assertEqualsWithMessagesCS( &
             expected, actual, success_message, failure_message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
         type(VARYING_STRING), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -109,8 +109,8 @@ contains
 
     pure function assertEqualsWithMessagesSC( &
             expected, actual, success_message, failure_message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         type(VARYING_STRING), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -128,8 +128,8 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         type(VARYING_STRING), intent(in) :: success_message
         type(VARYING_STRING), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -150,9 +150,9 @@ contains
 
     pure function assertEqualsWithinAbsoluteBasic( &
             expected, actual, tolerance) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         type(Result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
@@ -161,9 +161,9 @@ contains
 
     pure function assertEqualsWithinAbsoluteWithMessageC( &
             expected, actual, tolerance, message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         character(len=*), intent(in) :: message
         type(Result_t) :: result__
 
@@ -173,9 +173,9 @@ contains
 
     pure function assertEqualsWithinAbsoluteWithMessageS( &
             expected, actual, tolerance, message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         type(VARYING_STRING), intent(in) :: message
         type(Result_t) :: result__
 
@@ -190,9 +190,9 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -212,9 +212,9 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         type(VARYING_STRING), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -234,9 +234,9 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         type(VARYING_STRING), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -256,9 +256,9 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
-        class(Burnup_t), intent(in) :: tolerance
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
+        class(Power_t), intent(in) :: tolerance
         type(VARYING_STRING), intent(in) :: success_message
         type(VARYING_STRING), intent(in) :: failure_message
         type(Result_t) :: result__
@@ -282,8 +282,8 @@ contains
 
     pure function assertEqualsWithinRelativeBasic( &
             expected, actual, tolerance) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(Result_t) :: result__
 
@@ -293,8 +293,8 @@ contains
 
     pure function assertEqualsWithinRelativeWithMessageC( &
             expected, actual, tolerance, message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: message
         type(Result_t) :: result__
@@ -305,8 +305,8 @@ contains
 
     pure function assertEqualsWithinRelativeWithMessageS( &
             expected, actual, tolerance, message) result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(VARYING_STRING), intent(in) :: message
         type(Result_t) :: result__
@@ -322,8 +322,8 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
@@ -344,8 +344,8 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         type(VARYING_STRING), intent(in) :: failure_message
@@ -366,8 +366,8 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(VARYING_STRING), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
@@ -388,8 +388,8 @@ contains
             success_message, &
             failure_message) &
             result(result__)
-        class(Burnup_t), intent(in) :: expected
-        class(Burnup_t), intent(in) :: actual
+        class(Power_t), intent(in) :: expected
+        class(Power_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(VARYING_STRING), intent(in) :: success_message
         type(VARYING_STRING), intent(in) :: failure_message
@@ -411,4 +411,4 @@ contains
                     failure_message))
         end if
     end function assertEqualsWithinRelativeWithMessagesSS
-end module Burnup_asserts_m
+end module Power_asserts_m

@@ -21,7 +21,7 @@ new_module_name="src/${Quantity_module}_m.f90"
 new_type_test_name="tests/${quantity_lower}_type_test.f90"
 new_math_test_name="tests/${quantity_lower}_math_ops_test.f90"
 new_logical_test_name="tests/${quantity_lower}_logic_ops_test.f90"
-new_asserts_name="tests/test_helpers/assertions/${Quantity_module}_asserts_m.f90"
+new_asserts_name="quaff_asserts/src/${Quantity_module}_asserts_m.f90"
 
 sed "s|Quantity_module|${Quantity_module}|g" "src/Quantity_module_m.f90" \
     | sed "s|quantitySnake|${quantitySnake}|g" \
