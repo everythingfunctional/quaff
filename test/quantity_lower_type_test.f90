@@ -2,7 +2,7 @@ module quantity_lower_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
-    use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+    use Miscellaneous_m, only: PARSE_ERROR
     use quaff, only: &
             QuantityCamel_t, &
             QuantityCamelUnit_t, &

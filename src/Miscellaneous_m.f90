@@ -1,6 +1,7 @@
 module Miscellaneous_m
     use iso_varying_string, only: VARYING_STRING, operator(//), var_str
     use Message_m, only: MessageType_t
+    use parff, only: ParserOutput_t, State_t, parseChar, parseString
 
     implicit none
     private
@@ -33,6 +34,10 @@ module Miscellaneous_m
             equalWithinAbsolute, &
             equalWithinRelative, &
             operator(.safeEq.), &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
             wrapInLatexQuantity, &
             wrapInLatexUnit
 contains
@@ -62,6 +67,34 @@ contains
                 (effectivelyZero(a) .and. effectivelyZero(b)) &
                 .or. (abs(a - b) / max(abs(a), abs(b))) < tolerance
     end function equalWithinRelative
+
+    pure function parseCloseBrace(state_) result(result_)
+        type(State_t), intent(in) :: state_
+        type(ParserOutput_t) :: result_
+
+        result_ = parseChar("}", state_)
+    end function parseCloseBrace
+
+    pure function parseOpenBrace(state_) result(result_)
+        type(State_t), intent(in) :: state_
+        type(ParserOutput_t) :: result_
+
+        result_ = parseChar("{", state_)
+    end function parseOpenBrace
+
+    pure function parseSI(state_) result(result_)
+        type(State_t), intent(in) :: state_
+        type(ParserOutput_t) :: result_
+
+        result_ = parseString("\SI", state_)
+    end function parseSI
+
+    pure function parseSpace(state_) result(result_)
+        type(State_t), intent(in) :: state_
+        type(ParserOutput_t) :: result_
+
+        result_ = parseChar(" ", state_)
+    end function parseSpace
 
     elemental function safeEq(a, b)
         double precision, intent(in) :: a

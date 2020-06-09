@@ -12,10 +12,13 @@ module Quantity_module_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
             wrapInLatexQuantity, &
             wrapInLatexUnit, &
-            PARSE_ERROR, &
-            UNKNOWN_UNIT
+            PARSE_ERROR
     use parff, only: &
             ParsedRational_t, &
             ParseResult_t, &
@@ -517,13 +520,6 @@ contains
                     parseUnit)
         end function theParser
 
-        pure function parseSpace(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseChar(" ", state_)
-        end function parseSpace
-
         pure function parseUnit(state_) result(result_)
             type(State_t), intent(in) :: state_
             type(ParserOutput_t) :: result_
@@ -562,13 +558,6 @@ contains
                     thenDrop(parseRational, parseSpace, state_), &
                     parseUnit)
         end function theParser
-
-        pure function parseSpace(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseChar(" ", state_)
-        end function parseSpace
 
         pure function parseUnit(state_) result(result_)
             type(State_t), intent(in) :: state_
@@ -616,27 +605,6 @@ contains
                             parseUnit), &
                     parseCloseBrace)
         end function theParser
-
-        pure function parseSI(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString("\SI", state_)
-        end function parseSI
-
-        pure function parseOpenBrace(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseChar("{", state_)
-        end function parseOpenBrace
-
-        pure function parseCloseBrace(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseChar("}", state_)
-        end function parseCloseBrace
 
         pure function parseUnit(state_) result(result_)
             type(State_t), intent(in) :: state_
