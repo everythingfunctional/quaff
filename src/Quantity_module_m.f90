@@ -18,7 +18,8 @@ module Quantity_module_m
             parseSpace, &
             wrapInLatexQuantity, &
             wrapInLatexUnit, &
-            PARSE_ERROR
+            PARSE_ERROR, &
+            UNKNOWN_UNIT
     use parff, only: &
             ParsedRational_t, &
             ParseResult_t, &
@@ -152,6 +153,10 @@ module Quantity_module_m
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
+        module procedure simpleUnitFromStringC
+        module procedure simpleUnitFromStringS
+        module procedure simpleUnitFromStringWithUnitsC
+        module procedure simpleUnitFromStringWithUnitsS
     end interface fromString
 
     interface sum
@@ -192,7 +197,7 @@ module Quantity_module_m
     type(QuantityCamelLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
             [UNITS_CAPITAL_LATEX, UNITS_CAPITAL2_LATEX]
 
-    public :: operator(.unit.), fromString, sum
+    public :: operator(.unit.), fromString, selectUnit, sum
 contains
     pure subroutine fromStringBasicC(string, errors, quantity_lower)
         character(len=*), intent(in) :: string
@@ -643,4 +648,92 @@ contains
 
         string = wrapInLatexQuantity(value_, trim(self%symbol))
     end function latexValueToString
+
+    pure subroutine simpleUnitFromStringC(string, errors, unit)
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("simpleUnitFromStringC"))
+    end subroutine simpleUnitFromStringC
+
+    pure subroutine simpleUnitFromStringS(string, errors, unit)
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(string, PROVIDED_UNITS, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("simpleUnitFromStringS"))
+    end subroutine simpleUnitFromStringS
+
+    pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
+        character(len=*), intent(in) :: string
+        type(QuantityCamelSimpleUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(var_str(string), units, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Quantity_module_m"), &
+                Procedure_("simpleUnitFromStringWithUnitsC"))
+    end subroutine simpleUnitFromStringWithUnitsC
+
+    pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
+        type(VARYING_STRING), intent(in) :: string
+        type(QuantityCamelSimpleUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(QuantityCamelSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+        integer :: which_unit
+
+        call selectUnit(string, units, errors, which_unit)
+        if (errors_%hasAny()) then
+            call errors%appendErrors( &
+                    errors_, &
+                    Module_("Quantity_module_m"), &
+                    Procedure_("simpleUnitFromStringWithUnitsS"))
+        else
+            unit = units(which_unit)
+        end if
+    end subroutine simpleUnitFromStringWithUnitsS
+
+    pure subroutine selectUnit(string, units, errors, index)
+        type(VARYING_STRING), intent(in) :: string
+        class(QuantityCamelUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        integer, intent(out) :: index
+
+        integer :: i
+        type(VARYING_STRING) :: unit_strings(size(units))
+
+        do i = 1, size(units)
+            if (string == units(i)%toString()) then
+                index = i
+                return
+            end if
+        end do
+        do i = 1, size(units)
+            unit_strings(i) = units(i)%toString()
+        end do
+        call errors%appendError(Fatal( &
+                UNKNOWN_UNIT, &
+                Module_("Quantity_module_m"), &
+                Procedure_("selectUnit"), &
+                '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
+    end subroutine selectUnit
 end module Quantity_module_m
