@@ -8,6 +8,7 @@ copyright = "2020 Brad Richardson"
 [dependencies]
 erloff = { git = "https://gitlab.com/everythingfunctional/erloff.git", tag = "v1.0.0" }
 iso_varying_string = { git = "https://gitlab.com/everythingfunctional/iso_varying_string.git", tag = "v1.0.0" }
+parff = { git = "https://gitlab.com/everythingfunctional/parff.git", tag = "v1.1.0" }
 strff = { git = "https://gitlab.com/everythingfunctional/strff.git", tag = "v1.0.0" }
 
 [dev-dependencies]
