@@ -116,7 +116,7 @@ module quaff
             MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
-    use Interquantity_operators_m, only: operator(*), operator(/), asBurnup
+    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
     use Length_m, only: &
             Length_t, &
             LengthUnit_t, &

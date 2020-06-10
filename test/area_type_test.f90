@@ -2,7 +2,6 @@ module area_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
-    use Miscellaneous_m, only: PARSE_ERROR
     use quaff, only: &
             Area_t, &
             AreaUnit_t, &
@@ -12,6 +11,7 @@ module area_type_test
             PROVIDED_AREA_UNITS, &
             SQUARE_METERS
     use quaff_asserts_m, only: assertEquals
+    use quaff_Utilities_m, only: PARSE_ERROR
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
             Example_t, &

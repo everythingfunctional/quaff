@@ -1,5 +1,4 @@
 module Dynamic_viscosity_m
-    use Conversion_factors_m, only: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -9,18 +8,6 @@ module Dynamic_viscosity_m
             len, &
             split, &
             var_str
-    use Miscellaneous_m, only: &
-            operator(.safeEq.), &
-            equalWithinAbsolute_ => equalWithinAbsolute, &
-            equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
-            parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
-            PARSE_ERROR, &
-            UNKNOWN_UNIT
     use parff, only: &
             ParsedRational_t, &
             ParseResult_t, &
@@ -32,6 +19,19 @@ module Dynamic_viscosity_m
             parseString, &
             parseWith, &
             thenDrop
+    use quaff_Conversion_factors_m, only: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND
+    use quaff_Utilities_m, only: &
+            operator(.safeEq.), &
+            equalWithinAbsolute_ => equalWithinAbsolute, &
+            equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
+            wrapInLatexQuantity, &
+            wrapInLatexUnit, &
+            PARSE_ERROR, &
+            UNKNOWN_UNIT
     use strff, only: join, toString
 
     implicit none

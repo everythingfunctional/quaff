@@ -2,7 +2,6 @@ module speed_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
-    use Miscellaneous_m, only: PARSE_ERROR
     use quaff, only: &
             Speed_t, &
             SpeedUnit_t, &
@@ -12,6 +11,7 @@ module speed_type_test
             PROVIDED_SPEED_UNITS, &
             METERS_PER_SECOND
     use quaff_asserts_m, only: assertEquals
+    use quaff_Utilities_m, only: PARSE_ERROR
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
             Example_t, &

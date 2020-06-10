@@ -1,4 +1,4 @@
-module Interquantity_operators_m
+module quaff_Interquantity_operators_m
     use Acceleration_m, only: Acceleration_t
     use Amount_m, only: Amount_t
     use Area_m, only: Area_t
@@ -475,4 +475,4 @@ contains
 
         mass%kilograms = volume%cubic_meters * density%kilograms_per_cubic_meter
     end function volumeTimesDensity
-end module Interquantity_operators_m
+end module quaff_Interquantity_operators_m

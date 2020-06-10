@@ -1,4 +1,4 @@
-module Miscellaneous_m
+module quaff_Utilities_m
     use iso_varying_string, only: VARYING_STRING, operator(//), var_str
     use Message_m, only: MessageType_t
     use parff, only: ParserOutput_t, State_t, parseChar, parseString
@@ -149,4 +149,4 @@ contains
 
         latex_command = "\si{" // units // "}"
     end function wrapInLatexUnitS
-end module Miscellaneous_m
+end module quaff_Utilities_m

@@ -2,7 +2,6 @@ module density_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
-    use Miscellaneous_m, only: PARSE_ERROR
     use quaff, only: &
             Density_t, &
             DensityUnit_t, &
@@ -12,6 +11,7 @@ module density_type_test
             PROVIDED_DENSITY_UNITS, &
             KILOGRAMS_PER_CUBIC_METER
     use quaff_asserts_m, only: assertEquals
+    use quaff_Utilities_m, only: PARSE_ERROR
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
             Example_t, &

@@ -1,8 +1,4 @@
 module Area_m
-    use Conversion_factors_m, only: &
-            SQUARE_CENTIMETERS_PER_SQUARE_METER, &
-            SQUARE_FEET_PER_SQUARE_METER, &
-            SQUARE_INCHES_PER_SQUARE_METER
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -12,18 +8,6 @@ module Area_m
             len, &
             split, &
             var_str
-    use Miscellaneous_m, only: &
-            operator(.safeEq.), &
-            equalWithinAbsolute_ => equalWithinAbsolute, &
-            equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
-            parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
-            PARSE_ERROR, &
-            UNKNOWN_UNIT
     use parff, only: &
             ParsedRational_t, &
             ParseResult_t, &
@@ -35,6 +19,22 @@ module Area_m
             parseString, &
             parseWith, &
             thenDrop
+    use quaff_Conversion_factors_m, only: &
+            SQUARE_CENTIMETERS_PER_SQUARE_METER, &
+            SQUARE_FEET_PER_SQUARE_METER, &
+            SQUARE_INCHES_PER_SQUARE_METER
+    use quaff_Utilities_m, only: &
+            operator(.safeEq.), &
+            equalWithinAbsolute_ => equalWithinAbsolute, &
+            equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
+            wrapInLatexQuantity, &
+            wrapInLatexUnit, &
+            PARSE_ERROR, &
+            UNKNOWN_UNIT
     use strff, only: join, toString
 
     implicit none

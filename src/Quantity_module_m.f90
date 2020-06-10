@@ -8,18 +8,6 @@ module Quantity_module_m
             len, &
             split, &
             var_str
-    use Miscellaneous_m, only: &
-            operator(.safeEq.), &
-            equalWithinAbsolute_ => equalWithinAbsolute, &
-            equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
-            parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
-            PARSE_ERROR, &
-            UNKNOWN_UNIT
     use parff, only: &
             ParsedRational_t, &
             ParseResult_t, &
@@ -31,6 +19,18 @@ module Quantity_module_m
             parseString, &
             parseWith, &
             thenDrop
+    use quaff_Utilities_m, only: &
+            operator(.safeEq.), &
+            equalWithinAbsolute_ => equalWithinAbsolute, &
+            equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
+            wrapInLatexQuantity, &
+            wrapInLatexUnit, &
+            PARSE_ERROR, &
+            UNKNOWN_UNIT
     use strff, only: join, toString
 
     implicit none
