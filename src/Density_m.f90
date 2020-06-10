@@ -14,9 +14,25 @@ module Density_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
             wrapInLatexQuantity, &
+            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
+    use parff, only: &
+            ParsedRational_t, &
+            ParseResult_t, &
+            ParserOutput_t, &
+            State_t, &
+            dropThen, &
+            parseChar, &
+            parseRational, &
+            parseString, &
+            parseWith, &
+            thenDrop
     use strff, only: join, toString
 
     implicit none
@@ -72,34 +88,63 @@ module Density_m
         procedure :: toStringInWithPrecision
         generic, public :: toStringIn => &
                 toStringInFullPrecision, toStringInWithPrecision
-        procedure :: toGnuplotStringFullPrecision
-        procedure :: toGnuplotStringWithPrecision
-        generic, public :: toGnuplotString => &
-                toGnuplotStringFullPrecision, toGnuplotStringWithPrecision
-        procedure :: toGnuplotStringInFullPrecision
-        procedure :: toGnuplotStringInWithPrecision
-        generic, public :: toGnuplotStringIn => &
-                toGnuplotStringInFullPrecision, toGnuplotStringInWithPrecision
-        procedure :: toLatexStringFullPrecision
-        procedure :: toLatexStringWithPrecision
-        generic, public :: toLatexString => &
-                toLatexStringFullPrecision, toLatexStringWithPrecision
-        procedure :: toLatexStringInFullPrecision
-        procedure :: toLatexStringInWithPrecision
-        generic, public :: toLatexStringIn => &
-                toLatexStringInFullPrecision, toLatexStringInWithPrecision
     end type Density_t
 
-    type, public :: DensityUnit_t
+    type, abstract, public :: DensityUnit_t
         double precision :: conversion_factor
-        character(len=20) :: symbol
-        character(len=50) :: gnuplot_symbol
-        character(len=100) :: latex_symbol
     contains
-        procedure :: toString => unitToString
-        procedure :: toGnuplotString => unitToGnuplotString
-        procedure :: toLatexString => unitToLatexString
+        procedure(justUnitToString), deferred :: unitToString
+        procedure(unitWithValueToString), deferred :: valueToString
+        generic :: toString => unitToString, valueToString
+        procedure(parseAsI), deferred :: parseAs
     end type DensityUnit_t
+
+    type, extends(DensityUnit_t), public :: DensitySimpleUnit_t
+        character(len=20) :: symbol
+    contains
+        procedure :: unitToString => simpleUnitToString
+        procedure :: valueToString => simpleValueToString
+        procedure :: parseAs => simpleParseAs
+    end type DensitySimpleUnit_t
+
+    type, extends(DensityUnit_t), public :: DensityGnuplotUnit_t
+        character(len=50) :: symbol
+    contains
+        procedure :: unitToString => gnuplotUnitToString
+        procedure :: valueToString => gnuplotValueToString
+        procedure :: parseAs => gnuplotParseAs
+    end type DensityGnuplotUnit_t
+
+    type, extends(DensityUnit_t), public :: DensityLatexUnit_t
+        character(len=100) :: symbol
+    contains
+        procedure :: unitToString => latexUnitToString
+        procedure :: valueToString => latexValueToString
+        procedure :: parseAs => latexParseAs
+    end type DensityLatexUnit_t
+
+    abstract interface
+        elemental function justUnitToString(self) result(string)
+            import DensityUnit_t, VARYING_STRING
+            class(DensityUnit_t), intent(in) :: self
+            type(VARYING_STRING) :: string
+        end function justUnitToString
+
+        pure function unitWithValueToString(self, value_) result(string)
+            import DensityUnit_t, VARYING_STRING
+            class(DensityUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: value_
+            type(VARYING_STRING) :: string
+        end function unitWithValueToString
+
+        pure subroutine parseAsI(self, string, errors, density)
+            import ErrorList_t, Density_t, DensityUnit_t, VARYING_STRING
+            class(DensityUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: string
+            type(ErrorList_t), intent(out) :: errors
+            type(Density_t), intent(out) :: density
+        end subroutine parseAsI
+    end interface
 
     interface operator(.unit.)
         module procedure fromUnits
@@ -110,35 +155,51 @@ module Density_m
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-        module procedure unitFromStringBasicC
-        module procedure unitFromStringBasicS
-        module procedure unitFromStringWithUnitsC
-        module procedure unitFromStringWithUnitsS
+        module procedure simpleUnitFromStringC
+        module procedure simpleUnitFromStringS
+        module procedure simpleUnitFromStringWithUnitsC
+        module procedure simpleUnitFromStringWithUnitsS
     end interface fromString
 
     interface sum
         module procedure sumDensity
     end interface sum
 
-    type(DensityUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER = &
-            DensityUnit_t( &
+    type(DensitySimpleUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER = &
+            DensitySimpleUnit_t( &
                     conversion_factor = GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER, &
-                    symbol = "g/m^3", &
-                    gnuplot_symbol = "g/m^3", &
-                    latex_symbol = "\gram\per\cubic\meter")
-    type(DensityUnit_t), parameter, public :: KILOGRAMS_PER_CUBIC_METER = &
-            DensityUnit_t( &
+                    symbol = "g/m^3")
+    type(DensityGnuplotUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER_GNUPLOT = &
+            DensityGnuplotUnit_t( &
+                    conversion_factor = GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER, &
+                    symbol = "g/m^3")
+    type(DensityLatexUnit_t), parameter, public :: GRAMS_PER_CUBIC_METER_LATEX = &
+            DensityLatexUnit_t( &
+                    conversion_factor = GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER, &
+                    symbol = "\gram\per\cubic\meter")
+    type(DensitySimpleUnit_t), parameter, public :: KILOGRAMS_PER_CUBIC_METER = &
+            DensitySimpleUnit_t( &
                     conversion_factor = 1.0d0, &
-                    symbol = "kg/m^3", &
-                    gnuplot_symbol = "kg/m^3", &
-                    latex_symbol = "\kilo\gram\per\cubic\meter")
+                    symbol = "kg/m^3")
+    type(DensityGnuplotUnit_t), parameter, public :: KILOGRAMS_PER_CUBIC_METER_GNUPLOT = &
+            DensityGnuplotUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    symbol = "kg/m^3")
+    type(DensityLatexUnit_t), parameter, public :: KILOGRAMS_PER_CUBIC_METER_LATEX = &
+            DensityLatexUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    symbol = "\kilo\gram\per\cubic\meter")
 
-    type(DensityUnit_t), public :: DEFAULT_OUTPUT_UNITS = KILOGRAMS_PER_CUBIC_METER
+    type(DensitySimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = KILOGRAMS_PER_CUBIC_METER
 
-    type(DensityUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
+    type(DensitySimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS_PER_CUBIC_METER, KILOGRAMS_PER_CUBIC_METER]
+    type(DensityGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
+            [GRAMS_PER_CUBIC_METER_GNUPLOT, KILOGRAMS_PER_CUBIC_METER_GNUPLOT]
+    type(DensityLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
+            [GRAMS_PER_CUBIC_METER_LATEX, KILOGRAMS_PER_CUBIC_METER_LATEX]
 
-    public :: operator(.unit.), fromString, sum
+    public :: operator(.unit.), fromString, selectUnit, sum
 contains
     pure subroutine fromStringBasicC(string, errors, density)
         character(len=*), intent(in) :: string
@@ -172,7 +233,7 @@ contains
 
     pure subroutine fromStringWithUnitsC(string, units, errors, density)
         character(len=*), intent(in) :: string
-        type(DensityUnit_t), intent(in) :: units(:)
+        class(DensityUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Density_t), intent(out) :: density
 
@@ -188,49 +249,28 @@ contains
 
     pure subroutine fromStringWithUnitsS(string, units, errors, density)
         type(VARYING_STRING), intent(in) :: string
-        type(DensityUnit_t), intent(in) :: units(:)
+        class(DensityUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Density_t), intent(out) :: density
 
-        double precision :: number
-        character(len=100) :: number_chars
-        type(VARYING_STRING) :: number_string
-        integer :: status
-        type(VARYING_STRING) :: symbol
-        type(DensityUnit_t) :: unit
-        type(ErrorList_t) :: unit_errors
+        type(ErrorList_t) :: all_errors(size(units))
+        integer :: i
 
-        density%kilograms_per_cubic_meter = 0.0d0
-        symbol = string
-        call split(symbol, number_string, " ")
-        if (len(symbol) == 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
+        do i = 1, size(units)
+            call units(i)%parseAs(string, all_errors(i), density)
+            if (.not. all_errors(i)%hasAny()) return
+        end do
+        do i = 1, size(units)
+            call errors%appendErrors( &
+                    all_errors(i), &
                     Module_("Density_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'No unit symbol found in string "' // string // '"'))
-            return
-        end if
-        number_chars = number_string
-        read(number_chars, *, iostat=status) number
-        if (status /= 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Density_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'Error parsing number from string "' // number_string // '"'))
-        end if
-        call fromString(symbol, units, unit_errors, unit)
-        density = number.unit.unit
-        call errors%appendErrors( &
-                unit_errors, &
-                Module_("Density_m"), &
-                Procedure_("fromStringWithUnitsS"))
+                    Procedure_("fromStringWithUnitsS"))
+        end do
     end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(density)
         double precision, intent(in) :: value_
-        type(DensityUnit_t), intent(in) :: units
+        class(DensityUnit_t), intent(in) :: units
         type(Density_t) :: density
 
         density%kilograms_per_cubic_meter = value_ / units%conversion_factor
@@ -428,7 +468,7 @@ contains
         class(DensityUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
 
-        string = toString(self.in.units) // " " // units%toString()
+        string = units%toString(toString(self.in.units))
     end function toStringInFullPrecision
 
     elemental function toStringInWithPrecision( &
@@ -438,119 +478,212 @@ contains
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
 
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toString()
+        string = units%toString(toString(self.in.units, significant_digits))
     end function toStringInWithPrecision
 
-    elemental function toGnuplotStringFullPrecision(self) result(string)
-        class(Density_t), intent(in) :: self
+    elemental function simpleUnitToString(self) result(string)
+        class(DensitySimpleUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toGnuplotStringFullPrecision
+        string = trim(self%symbol)
+    end function simpleUnitToString
 
-    elemental function toGnuplotStringWithPrecision( &
-            self, significant_digits) result(string)
-        class(Density_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
+    pure function simpleValueToString(self, value_) result(string)
+        class(DensitySimpleUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn( &
-                DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toGnuplotStringWithPrecision
+        string = value_ // " " // self%toString()
+    end function simpleValueToString
 
-    elemental function toGnuplotStringInFullPrecision(self, units) result(string)
-        class(Density_t), intent(in) :: self
-        class(DensityUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = toString(self.in.units) // " " // units%toGnuplotString()
-    end function toGnuplotStringInFullPrecision
-
-    elemental function toGnuplotStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Density_t), intent(in) :: self
-        class(DensityUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toGnuplotString()
-    end function toGnuplotStringInWithPrecision
-
-    elemental function toLatexStringFullPrecision(self) result(string)
-        class(Density_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toLatexStringFullPrecision
-
-    elemental function toLatexStringWithPrecision(self, significant_digits) result(string)
-        class(Density_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toLatexStringWithPrecision
-
-    elemental function toLatexStringInFullPrecision(self, units) result(string)
-        class(Density_t), intent(in) :: self
-        class(DensityUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units), units%toLatexString())
-    end function toLatexStringInFullPrecision
-
-    elemental function toLatexStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Density_t), intent(in) :: self
-        class(DensityUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units, significant_digits), &
-                units%toLatexString())
-    end function toLatexStringInWithPrecision
-
-    pure subroutine unitFromStringBasicC(string, errors, unit)
-        character(len=*), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(DensityUnit_t), intent(out) :: unit
-
-        type(ErrorList_t) :: errors_
-
-        call fromString( &
-                var_str(string), PROVIDED_UNITS, errors_, unit)
-        call errors%appendErrors( &
-                errors_, &
-                Module_("Density_m"), &
-                Procedure_("unitFromStringBasicC"))
-    end subroutine unitFromStringBasicC
-
-    pure subroutine unitFromStringBasicS(string, errors, unit)
+    pure subroutine simpleParseAs(self, string, errors, density)
+        class(DensitySimpleUnit_t), intent(in) :: self
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(DensityUnit_t), intent(out) :: unit
+        type(Density_t), intent(out) :: density
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                density = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Density_m"), &
+                    Procedure_("simpleParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine simpleParseAs
+
+    pure subroutine gnuplotParseAs(self, string, errors, density)
+        class(DensityGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Density_t), intent(out) :: density
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                density = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Density_m"), &
+                    Procedure_("gnuplotParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine gnuplotParseAs
+
+    pure subroutine latexParseAs(self, string, errors, density)
+        class(DensityLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Density_t), intent(out) :: density
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                density = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Density_m"), &
+                    Procedure_("latexParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop( &
+                            thenDrop( &
+                                    thenDrop( &
+                                            dropThen( &
+                                                    dropThen(parseSI, parseOpenBrace, state_), &
+                                                    parseRational), &
+                                            parseCloseBrace), &
+                                    parseOpenBrace), &
+                            parseUnit), &
+                    parseCloseBrace)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine latexParseAs
+
+    elemental function gnuplotUnitToString(self) result(string)
+        class(DensityGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%symbol)
+    end function gnuplotUnitToString
+
+    pure function gnuplotValueToString(self, value_) result(string)
+        class(DensityGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
+        type(VARYING_STRING) :: string
+
+        string = value_ // " " // self%toString()
+    end function gnuplotValueToString
+
+    elemental function latexUnitToString(self) result(string)
+        class(DensityLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexUnit(trim(self%symbol))
+    end function latexUnitToString
+
+    pure function latexValueToString(self, value_) result(string)
+        class(DensityLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity(value_, trim(self%symbol))
+    end function latexValueToString
+
+    pure subroutine simpleUnitFromStringC(string, errors, unit)
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(DensitySimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        call fromString( &
-                string, PROVIDED_UNITS, errors_, unit)
+        call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Density_m"), &
-                Procedure_("unitFromStringBasicS"))
-    end subroutine unitFromStringBasicS
+                Procedure_("simpleUnitFromStringC"))
+    end subroutine simpleUnitFromStringC
 
-    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
-        character(len=*), intent(in) :: string
-        type(DensityUnit_t), intent(in) :: units(:)
+    pure subroutine simpleUnitFromStringS(string, errors, unit)
+        type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(DensityUnit_t), intent(out) :: unit
+        type(DensitySimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(string, PROVIDED_UNITS, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Density_m"), &
+                Procedure_("simpleUnitFromStringS"))
+    end subroutine simpleUnitFromStringS
+
+    pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
+        character(len=*), intent(in) :: string
+        type(DensitySimpleUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(DensitySimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
@@ -558,54 +691,51 @@ contains
         call errors%appendErrors( &
                 errors_, &
                 Module_("Density_m"), &
-                Procedure_("unitFromStringWithUnitsC"))
-    end subroutine unitFromStringWithUnitsC
+                Procedure_("simpleUnitFromStringWithUnitsC"))
+    end subroutine simpleUnitFromStringWithUnitsC
 
-    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
+    pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
-        type(DensityUnit_t), intent(in) :: units(:)
+        type(DensitySimpleUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(DensityUnit_t), intent(out) :: unit
+        type(DensitySimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+        integer :: which_unit
+
+        call selectUnit(string, units, errors, which_unit)
+        if (errors_%hasAny()) then
+            call errors%appendErrors( &
+                    errors_, &
+                    Module_("Density_m"), &
+                    Procedure_("simpleUnitFromStringWithUnitsS"))
+        else
+            unit = units(which_unit)
+        end if
+    end subroutine simpleUnitFromStringWithUnitsS
+
+    pure subroutine selectUnit(string, units, errors, index)
+        type(VARYING_STRING), intent(in) :: string
+        class(DensityUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        integer, intent(out) :: index
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
 
         do i = 1, size(units)
-            if (string == units(i)%symbol) then
-                unit = units(i)
-                exit
+            if (string == units(i)%toString()) then
+                index = i
+                return
             end if
         end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Density_m"), &
-                    Procedure_("unitFromStringWithUnitsS"), &
-                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
-        end if
-    end subroutine unitFromStringWithUnitsS
-
-    elemental function unitToString(self) result(string)
-        class(DensityUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function unitToString
-
-    elemental function unitToGnuplotString(self) result(string)
-        class(DensityUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%gnuplot_symbol)
-    end function unitToGnuplotString
-
-    elemental function unitToLatexString(self) result(string)
-        class(DensityUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%latex_symbol)
-    end function unitToLatexString
+        do i = 1, size(units)
+            unit_strings(i) = units(i)%toString()
+        end do
+        call errors%appendError(Fatal( &
+                UNKNOWN_UNIT, &
+                Module_("Density_m"), &
+                Procedure_("selectUnit"), &
+                '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
+    end subroutine selectUnit
 end module Density_m

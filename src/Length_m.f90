@@ -18,9 +18,25 @@ module Length_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
             wrapInLatexQuantity, &
+            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
+    use parff, only: &
+            ParsedRational_t, &
+            ParseResult_t, &
+            ParserOutput_t, &
+            State_t, &
+            dropThen, &
+            parseChar, &
+            parseRational, &
+            parseString, &
+            parseWith, &
+            thenDrop
     use strff, only: join, toString
 
     implicit none
@@ -76,34 +92,63 @@ module Length_m
         procedure :: toStringInWithPrecision
         generic, public :: toStringIn => &
                 toStringInFullPrecision, toStringInWithPrecision
-        procedure :: toGnuplotStringFullPrecision
-        procedure :: toGnuplotStringWithPrecision
-        generic, public :: toGnuplotString => &
-                toGnuplotStringFullPrecision, toGnuplotStringWithPrecision
-        procedure :: toGnuplotStringInFullPrecision
-        procedure :: toGnuplotStringInWithPrecision
-        generic, public :: toGnuplotStringIn => &
-                toGnuplotStringInFullPrecision, toGnuplotStringInWithPrecision
-        procedure :: toLatexStringFullPrecision
-        procedure :: toLatexStringWithPrecision
-        generic, public :: toLatexString => &
-                toLatexStringFullPrecision, toLatexStringWithPrecision
-        procedure :: toLatexStringInFullPrecision
-        procedure :: toLatexStringInWithPrecision
-        generic, public :: toLatexStringIn => &
-                toLatexStringInFullPrecision, toLatexStringInWithPrecision
     end type Length_t
 
-    type, public :: LengthUnit_t
+    type, abstract, public :: LengthUnit_t
         double precision :: conversion_factor
-        character(len=20) :: symbol
-        character(len=50) :: gnuplot_symbol
-        character(len=100) :: latex_symbol
     contains
-        procedure :: toString => unitToString
-        procedure :: toGnuplotString => unitToGnuplotString
-        procedure :: toLatexString => unitToLatexString
+        procedure(justUnitToString), deferred :: unitToString
+        procedure(unitWithValueToString), deferred :: valueToString
+        generic :: toString => unitToString, valueToString
+        procedure(parseAsI), deferred :: parseAs
     end type LengthUnit_t
+
+    type, extends(LengthUnit_t), public :: LengthSimpleUnit_t
+        character(len=20) :: symbol
+    contains
+        procedure :: unitToString => simpleUnitToString
+        procedure :: valueToString => simpleValueToString
+        procedure :: parseAs => simpleParseAs
+    end type LengthSimpleUnit_t
+
+    type, extends(LengthUnit_t), public :: LengthGnuplotUnit_t
+        character(len=50) :: symbol
+    contains
+        procedure :: unitToString => gnuplotUnitToString
+        procedure :: valueToString => gnuplotValueToString
+        procedure :: parseAs => gnuplotParseAs
+    end type LengthGnuplotUnit_t
+
+    type, extends(LengthUnit_t), public :: LengthLatexUnit_t
+        character(len=100) :: symbol
+    contains
+        procedure :: unitToString => latexUnitToString
+        procedure :: valueToString => latexValueToString
+        procedure :: parseAs => latexParseAs
+    end type LengthLatexUnit_t
+
+    abstract interface
+        elemental function justUnitToString(self) result(string)
+            import LengthUnit_t, VARYING_STRING
+            class(LengthUnit_t), intent(in) :: self
+            type(VARYING_STRING) :: string
+        end function justUnitToString
+
+        pure function unitWithValueToString(self, value_) result(string)
+            import LengthUnit_t, VARYING_STRING
+            class(LengthUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: value_
+            type(VARYING_STRING) :: string
+        end function unitWithValueToString
+
+        pure subroutine parseAsI(self, string, errors, length)
+            import ErrorList_t, Length_t, LengthUnit_t, VARYING_STRING
+            class(LengthUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: string
+            type(ErrorList_t), intent(out) :: errors
+            type(Length_t), intent(out) :: length
+        end subroutine parseAsI
+    end interface
 
     interface operator(.unit.)
         module procedure fromUnits
@@ -114,59 +159,92 @@ module Length_m
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-        module procedure unitFromStringBasicC
-        module procedure unitFromStringBasicS
-        module procedure unitFromStringWithUnitsC
-        module procedure unitFromStringWithUnitsS
+        module procedure simpleUnitFromStringC
+        module procedure simpleUnitFromStringS
+        module procedure simpleUnitFromStringWithUnitsC
+        module procedure simpleUnitFromStringWithUnitsS
     end interface fromString
 
     interface sum
         module procedure sumLength
     end interface sum
 
-    type(LengthUnit_t), parameter, public :: CENTIMETERS = &
-            LengthUnit_t( &
+    type(LengthSimpleUnit_t), parameter, public :: CENTIMETERS = &
+            LengthSimpleUnit_t( &
                     conversion_factor = CENTIMETERS_PER_METER, &
-                    symbol = "cm", &
-                    gnuplot_symbol = "cm", &
-                    latex_symbol = "\centi\meter")
-    type(LengthUnit_t), parameter, public :: FEET = &
-            LengthUnit_t( &
+                    symbol = "cm")
+    type(LengthGnuplotUnit_t), parameter, public :: CENTIMETERS_GNUPLOT = &
+            LengthGnuplotUnit_t( &
+                    conversion_factor = CENTIMETERS_PER_METER, &
+                    symbol = "cm")
+    type(LengthLatexUnit_t), parameter, public :: CENTIMETERS_LATEX = &
+            LengthLatexUnit_t( &
+                    conversion_factor = CENTIMETERS_PER_METER, &
+                    symbol = "\centi\meter")
+    type(LengthSimpleUnit_t), parameter, public :: FEET = &
+            LengthSimpleUnit_t( &
                     conversion_factor = FEET_PER_METER, &
-                    symbol = "ft", &
-                    gnuplot_symbol = "ft", &
-                    latex_symbol = "\foot")
-    type(LengthUnit_t), parameter, public :: INCHES = &
-            LengthUnit_t( &
+                    symbol = "ft")
+    type(LengthGnuplotUnit_t), parameter, public :: FEET_GNUPLOT = &
+            LengthGnuplotUnit_t( &
+                    conversion_factor = FEET_PER_METER, &
+                    symbol = "ft")
+    type(LengthSimpleUnit_t), parameter, public :: INCHES = &
+            LengthSimpleUnit_t( &
                     conversion_factor = INCHES_PER_METER, &
-                    symbol = "in", &
-                    gnuplot_symbol = "in", &
-                    latex_symbol = "\inch")
-    type(LengthUnit_t), parameter, public :: METERS = &
-            LengthUnit_t( &
+                    symbol = "in")
+    type(LengthGnuplotUnit_t), parameter, public :: INCHES_GNUPLOT = &
+            LengthGnuplotUnit_t( &
+                    conversion_factor = INCHES_PER_METER, &
+                    symbol = "in")
+    type(LengthSimpleUnit_t), parameter, public :: METERS = &
+            LengthSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
-                    symbol = "m", &
-                    gnuplot_symbol = "m", &
-                    latex_symbol = "\meter")
-    type(LengthUnit_t), parameter, public :: MICROINCHES = &
-            LengthUnit_t( &
+                    symbol = "m")
+    type(LengthGnuplotUnit_t), parameter, public :: METERS_GNUPLOT = &
+            LengthGnuplotUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    symbol = "m")
+    type(LengthLatexUnit_t), parameter, public :: METERS_LATEX = &
+            LengthLatexUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    symbol = "\meter")
+    type(LengthSimpleUnit_t), parameter, public :: MICROINCHES = &
+            LengthSimpleUnit_t( &
                     conversion_factor = MICROINCHES_PER_METER, &
-                    symbol = "uin", &
-                    gnuplot_symbol = "{/Symbol m}in", &
-                    latex_symbol = "\micro\inch")
-    type(LengthUnit_t), parameter, public :: MICROMETERS = &
-            LengthUnit_t( &
+                    symbol = "uin")
+    type(LengthGnuplotUnit_t), parameter, public :: MICROINCHES_GNUPLOT = &
+            LengthGnuplotUnit_t( &
+                    conversion_factor = MICROINCHES_PER_METER, &
+                    symbol = "{/Symbol m}in")
+    type(LengthSimpleUnit_t), parameter, public :: MICROMETERS = &
+            LengthSimpleUnit_t( &
                     conversion_factor = MICROMETERS_PER_METER, &
-                    symbol = "um", &
-                    gnuplot_symbol = "{/Symbol m}m", &
-                    latex_symbol = "\micro\meter")
+                    symbol = "um")
+    type(LengthGnuplotUnit_t), parameter, public :: MICROMETERS_GNUPLOT = &
+            LengthGnuplotUnit_t( &
+                    conversion_factor = MICROMETERS_PER_METER, &
+                    symbol = "{/Symbol m}m")
+    type(LengthLatexUnit_t), parameter, public :: MICROMETERS_LATEX = &
+            LengthLatexUnit_t( &
+                    conversion_factor = MICROMETERS_PER_METER, &
+                    symbol = "\micro\meter")
 
-    type(LengthUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
+    type(LengthSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
 
-    type(LengthUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
+    type(LengthSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
+    type(LengthGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
+            [CENTIMETERS_GNUPLOT, &
+            FEET_GNUPLOT, &
+            INCHES_GNUPLOT, &
+            METERS_GNUPLOT, &
+            MICROINCHES_GNUPLOT, &
+            MICROMETERS_GNUPLOT]
+    type(LengthLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
+            [CENTIMETERS_LATEX, METERS_LATEX, MICROMETERS_LATEX]
 
-    public :: operator(.unit.), fromString, sum
+    public :: operator(.unit.), fromString, selectUnit, sum
 contains
     pure subroutine fromStringBasicC(string, errors, length)
         character(len=*), intent(in) :: string
@@ -200,7 +278,7 @@ contains
 
     pure subroutine fromStringWithUnitsC(string, units, errors, length)
         character(len=*), intent(in) :: string
-        type(LengthUnit_t), intent(in) :: units(:)
+        class(LengthUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
@@ -216,49 +294,28 @@ contains
 
     pure subroutine fromStringWithUnitsS(string, units, errors, length)
         type(VARYING_STRING), intent(in) :: string
-        type(LengthUnit_t), intent(in) :: units(:)
+        class(LengthUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
-        double precision :: number
-        character(len=100) :: number_chars
-        type(VARYING_STRING) :: number_string
-        integer :: status
-        type(VARYING_STRING) :: symbol
-        type(LengthUnit_t) :: unit
-        type(ErrorList_t) :: unit_errors
+        type(ErrorList_t) :: all_errors(size(units))
+        integer :: i
 
-        length%meters = 0.0d0
-        symbol = string
-        call split(symbol, number_string, " ")
-        if (len(symbol) == 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
+        do i = 1, size(units)
+            call units(i)%parseAs(string, all_errors(i), length)
+            if (.not. all_errors(i)%hasAny()) return
+        end do
+        do i = 1, size(units)
+            call errors%appendErrors( &
+                    all_errors(i), &
                     Module_("Length_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'No unit symbol found in string "' // string // '"'))
-            return
-        end if
-        number_chars = number_string
-        read(number_chars, *, iostat=status) number
-        if (status /= 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Length_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'Error parsing number from string "' // number_string // '"'))
-        end if
-        call fromString(symbol, units, unit_errors, unit)
-        length = number.unit.unit
-        call errors%appendErrors( &
-                unit_errors, &
-                Module_("Length_m"), &
-                Procedure_("fromStringWithUnitsS"))
+                    Procedure_("fromStringWithUnitsS"))
+        end do
     end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(length)
         double precision, intent(in) :: value_
-        type(LengthUnit_t), intent(in) :: units
+        class(LengthUnit_t), intent(in) :: units
         type(Length_t) :: length
 
         length%meters = value_ / units%conversion_factor
@@ -456,7 +513,7 @@ contains
         class(LengthUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
 
-        string = toString(self.in.units) // " " // units%toString()
+        string = units%toString(toString(self.in.units))
     end function toStringInFullPrecision
 
     elemental function toStringInWithPrecision( &
@@ -466,119 +523,212 @@ contains
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
 
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toString()
+        string = units%toString(toString(self.in.units, significant_digits))
     end function toStringInWithPrecision
 
-    elemental function toGnuplotStringFullPrecision(self) result(string)
-        class(Length_t), intent(in) :: self
+    elemental function simpleUnitToString(self) result(string)
+        class(LengthSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toGnuplotStringFullPrecision
+        string = trim(self%symbol)
+    end function simpleUnitToString
 
-    elemental function toGnuplotStringWithPrecision( &
-            self, significant_digits) result(string)
-        class(Length_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
+    pure function simpleValueToString(self, value_) result(string)
+        class(LengthSimpleUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn( &
-                DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toGnuplotStringWithPrecision
+        string = value_ // " " // self%toString()
+    end function simpleValueToString
 
-    elemental function toGnuplotStringInFullPrecision(self, units) result(string)
-        class(Length_t), intent(in) :: self
-        class(LengthUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = toString(self.in.units) // " " // units%toGnuplotString()
-    end function toGnuplotStringInFullPrecision
-
-    elemental function toGnuplotStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Length_t), intent(in) :: self
-        class(LengthUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toGnuplotString()
-    end function toGnuplotStringInWithPrecision
-
-    elemental function toLatexStringFullPrecision(self) result(string)
-        class(Length_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toLatexStringFullPrecision
-
-    elemental function toLatexStringWithPrecision(self, significant_digits) result(string)
-        class(Length_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toLatexStringWithPrecision
-
-    elemental function toLatexStringInFullPrecision(self, units) result(string)
-        class(Length_t), intent(in) :: self
-        class(LengthUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units), units%toLatexString())
-    end function toLatexStringInFullPrecision
-
-    elemental function toLatexStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Length_t), intent(in) :: self
-        class(LengthUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units, significant_digits), &
-                units%toLatexString())
-    end function toLatexStringInWithPrecision
-
-    pure subroutine unitFromStringBasicC(string, errors, unit)
-        character(len=*), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(LengthUnit_t), intent(out) :: unit
-
-        type(ErrorList_t) :: errors_
-
-        call fromString( &
-                var_str(string), PROVIDED_UNITS, errors_, unit)
-        call errors%appendErrors( &
-                errors_, &
-                Module_("Length_m"), &
-                Procedure_("unitFromStringBasicC"))
-    end subroutine unitFromStringBasicC
-
-    pure subroutine unitFromStringBasicS(string, errors, unit)
+    pure subroutine simpleParseAs(self, string, errors, length)
+        class(LengthSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(LengthUnit_t), intent(out) :: unit
+        type(Length_t), intent(out) :: length
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                length = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Length_m"), &
+                    Procedure_("simpleParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine simpleParseAs
+
+    pure subroutine gnuplotParseAs(self, string, errors, length)
+        class(LengthGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Length_t), intent(out) :: length
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                length = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Length_m"), &
+                    Procedure_("gnuplotParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine gnuplotParseAs
+
+    pure subroutine latexParseAs(self, string, errors, length)
+        class(LengthLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Length_t), intent(out) :: length
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                length = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Length_m"), &
+                    Procedure_("latexParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop( &
+                            thenDrop( &
+                                    thenDrop( &
+                                            dropThen( &
+                                                    dropThen(parseSI, parseOpenBrace, state_), &
+                                                    parseRational), &
+                                            parseCloseBrace), &
+                                    parseOpenBrace), &
+                            parseUnit), &
+                    parseCloseBrace)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine latexParseAs
+
+    elemental function gnuplotUnitToString(self) result(string)
+        class(LengthGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%symbol)
+    end function gnuplotUnitToString
+
+    pure function gnuplotValueToString(self, value_) result(string)
+        class(LengthGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
+        type(VARYING_STRING) :: string
+
+        string = value_ // " " // self%toString()
+    end function gnuplotValueToString
+
+    elemental function latexUnitToString(self) result(string)
+        class(LengthLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexUnit(trim(self%symbol))
+    end function latexUnitToString
+
+    pure function latexValueToString(self, value_) result(string)
+        class(LengthLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity(value_, trim(self%symbol))
+    end function latexValueToString
+
+    pure subroutine simpleUnitFromStringC(string, errors, unit)
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(LengthSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        call fromString( &
-                string, PROVIDED_UNITS, errors_, unit)
+        call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Length_m"), &
-                Procedure_("unitFromStringBasicS"))
-    end subroutine unitFromStringBasicS
+                Procedure_("simpleUnitFromStringC"))
+    end subroutine simpleUnitFromStringC
 
-    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
-        character(len=*), intent(in) :: string
-        type(LengthUnit_t), intent(in) :: units(:)
+    pure subroutine simpleUnitFromStringS(string, errors, unit)
+        type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(LengthUnit_t), intent(out) :: unit
+        type(LengthSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(string, PROVIDED_UNITS, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Length_m"), &
+                Procedure_("simpleUnitFromStringS"))
+    end subroutine simpleUnitFromStringS
+
+    pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
+        character(len=*), intent(in) :: string
+        type(LengthSimpleUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(LengthSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
@@ -586,54 +736,51 @@ contains
         call errors%appendErrors( &
                 errors_, &
                 Module_("Length_m"), &
-                Procedure_("unitFromStringWithUnitsC"))
-    end subroutine unitFromStringWithUnitsC
+                Procedure_("simpleUnitFromStringWithUnitsC"))
+    end subroutine simpleUnitFromStringWithUnitsC
 
-    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
+    pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
-        type(LengthUnit_t), intent(in) :: units(:)
+        type(LengthSimpleUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(LengthUnit_t), intent(out) :: unit
+        type(LengthSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+        integer :: which_unit
+
+        call selectUnit(string, units, errors, which_unit)
+        if (errors_%hasAny()) then
+            call errors%appendErrors( &
+                    errors_, &
+                    Module_("Length_m"), &
+                    Procedure_("simpleUnitFromStringWithUnitsS"))
+        else
+            unit = units(which_unit)
+        end if
+    end subroutine simpleUnitFromStringWithUnitsS
+
+    pure subroutine selectUnit(string, units, errors, index)
+        type(VARYING_STRING), intent(in) :: string
+        class(LengthUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        integer, intent(out) :: index
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
 
         do i = 1, size(units)
-            if (string == units(i)%symbol) then
-                unit = units(i)
-                exit
+            if (string == units(i)%toString()) then
+                index = i
+                return
             end if
         end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Length_m"), &
-                    Procedure_("unitFromStringWithUnitsS"), &
-                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
-        end if
-    end subroutine unitFromStringWithUnitsS
-
-    elemental function unitToString(self) result(string)
-        class(LengthUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function unitToString
-
-    elemental function unitToGnuplotString(self) result(string)
-        class(LengthUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%gnuplot_symbol)
-    end function unitToGnuplotString
-
-    elemental function unitToLatexString(self) result(string)
-        class(LengthUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%latex_symbol)
-    end function unitToLatexString
+        do i = 1, size(units)
+            unit_strings(i) = units(i)%toString()
+        end do
+        call errors%appendError(Fatal( &
+                UNKNOWN_UNIT, &
+                Module_("Length_m"), &
+                Procedure_("selectUnit"), &
+                '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
+    end subroutine selectUnit
 end module Length_m

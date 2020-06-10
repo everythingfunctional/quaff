@@ -2,7 +2,7 @@ module density_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
-    use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
+    use Miscellaneous_m, only: PARSE_ERROR
     use quaff, only: &
             Density_t, &
             DensityUnit_t, &
@@ -132,7 +132,7 @@ contains
 
         call fromString( &
                 "1.0 bad", [KILOGRAMS_PER_CUBIC_METER], errors, density)
-        result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
+        result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadUnit
 
     pure function checkBadNumber() result(result_)
@@ -156,7 +156,7 @@ contains
     end function checkSum
 
     pure function makeUnitsExamples(units) result(examples)
-        type(DensityUnit_t), intent(in) :: units(:)
+        class(DensityUnit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
         integer :: i
@@ -202,7 +202,7 @@ contains
     end function makeUnitsExamples
 
     function checkRoundTripIn(units) result(result_)
-        type(DensityUnit_t), intent(in) :: units
+        class(DensityUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
         type(TestItem_t) :: the_test
@@ -233,8 +233,8 @@ contains
 
     pure function checkConversionFactorsAreInverse( &
             from, to) result(result_)
-        type(DensityUnit_t), intent(in) :: to
-        type(DensityUnit_t), intent(in) :: from
+        class(DensityUnit_t), intent(in) :: to
+        class(DensityUnit_t), intent(in) :: from
         type(Result_t) :: result_
 
         double precision :: factor1
@@ -250,7 +250,7 @@ contains
     end function checkConversionFactorsAreInverse
 
     function checkStringTrip(units) result(result_)
-        type(DensityUnit_t), intent(in) :: units
+        class(DensityUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
         type(TestItem_t) :: the_test

@@ -16,9 +16,25 @@ module Temperature_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
+            parseCloseBrace, &
+            parseOpenBrace, &
+            parseSI, &
+            parseSpace, &
             wrapInLatexQuantity, &
+            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
+    use parff, only: &
+            ParsedRational_t, &
+            ParseResult_t, &
+            ParserOutput_t, &
+            State_t, &
+            dropThen, &
+            parseChar, &
+            parseRational, &
+            parseString, &
+            parseWith, &
+            thenDrop
     use strff, only: join, toString
 
     implicit none
@@ -74,35 +90,64 @@ module Temperature_m
         procedure :: toStringInWithPrecision
         generic, public :: toStringIn => &
                 toStringInFullPrecision, toStringInWithPrecision
-        procedure :: toGnuplotStringFullPrecision
-        procedure :: toGnuplotStringWithPrecision
-        generic, public :: toGnuplotString => &
-                toGnuplotStringFullPrecision, toGnuplotStringWithPrecision
-        procedure :: toGnuplotStringInFullPrecision
-        procedure :: toGnuplotStringInWithPrecision
-        generic, public :: toGnuplotStringIn => &
-                toGnuplotStringInFullPrecision, toGnuplotStringInWithPrecision
-        procedure :: toLatexStringFullPrecision
-        procedure :: toLatexStringWithPrecision
-        generic, public :: toLatexString => &
-                toLatexStringFullPrecision, toLatexStringWithPrecision
-        procedure :: toLatexStringInFullPrecision
-        procedure :: toLatexStringInWithPrecision
-        generic, public :: toLatexStringIn => &
-                toLatexStringInFullPrecision, toLatexStringInWithPrecision
     end type Temperature_t
 
-    type, public :: TemperatureUnit_t
+    type, abstract, public :: TemperatureUnit_t
         double precision :: conversion_factor
         double precision :: difference
-        character(len=20) :: symbol
-        character(len=50) :: gnuplot_symbol
-        character(len=100) :: latex_symbol
     contains
-        procedure :: toString => unitToString
-        procedure :: toGnuplotString => unitToGnuplotString
-        procedure :: toLatexString => unitToLatexString
+        procedure(justUnitToString), deferred :: unitToString
+        procedure(unitWithValueToString), deferred :: valueToString
+        generic :: toString => unitToString, valueToString
+        procedure(parseAsI), deferred :: parseAs
     end type TemperatureUnit_t
+
+    type, extends(TemperatureUnit_t), public :: TemperatureSimpleUnit_t
+        character(len=20) :: symbol
+    contains
+        procedure :: unitToString => simpleUnitToString
+        procedure :: valueToString => simpleValueToString
+        procedure :: parseAs => simpleParseAs
+    end type TemperatureSimpleUnit_t
+
+    type, extends(TemperatureUnit_t), public :: TemperatureGnuplotUnit_t
+        character(len=50) :: symbol
+    contains
+        procedure :: unitToString => gnuplotUnitToString
+        procedure :: valueToString => gnuplotValueToString
+        procedure :: parseAs => gnuplotParseAs
+    end type TemperatureGnuplotUnit_t
+
+    type, extends(TemperatureUnit_t), public :: TemperatureLatexUnit_t
+        character(len=100) :: symbol
+    contains
+        procedure :: unitToString => latexUnitToString
+        procedure :: valueToString => latexValueToString
+        procedure :: parseAs => latexParseAs
+    end type TemperatureLatexUnit_t
+
+    abstract interface
+        elemental function justUnitToString(self) result(string)
+            import TemperatureUnit_t, VARYING_STRING
+            class(TemperatureUnit_t), intent(in) :: self
+            type(VARYING_STRING) :: string
+        end function justUnitToString
+
+        pure function unitWithValueToString(self, value_) result(string)
+            import TemperatureUnit_t, VARYING_STRING
+            class(TemperatureUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: value_
+            type(VARYING_STRING) :: string
+        end function unitWithValueToString
+
+        pure subroutine parseAsI(self, string, errors, temperature)
+            import ErrorList_t, Temperature_t, TemperatureUnit_t, VARYING_STRING
+            class(TemperatureUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: string
+            type(ErrorList_t), intent(out) :: errors
+            type(Temperature_t), intent(out) :: temperature
+        end subroutine parseAsI
+    end interface
 
     interface operator(.unit.)
         module procedure fromUnits
@@ -113,47 +158,77 @@ module Temperature_m
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-        module procedure unitFromStringBasicC
-        module procedure unitFromStringBasicS
-        module procedure unitFromStringWithUnitsC
-        module procedure unitFromStringWithUnitsS
+        module procedure simpleUnitFromStringC
+        module procedure simpleUnitFromStringS
+        module procedure simpleUnitFromStringWithUnitsC
+        module procedure simpleUnitFromStringWithUnitsS
     end interface fromString
 
     interface sum
         module procedure sumTemperature
     end interface sum
 
-    type(TemperatureUnit_t), parameter, public :: CELSIUS = TemperatureUnit_t( &
-            conversion_factor = 1.0d0, &
-            difference = CELSIUS_KELVIN_DIFFERENCE, &
-            symbol = "C", &
-            gnuplot_symbol = "{/Symbol \260}C", &
-            latex_symbol = "\celsius")
-    type(TemperatureUnit_t), parameter, public :: FAHRENHEIT = TemperatureUnit_t( &
-            conversion_factor = RANKINE_PER_KELVIN, &
-            difference = FAHRENHEIT_RANKINE_DIFFERENCE, &
-            symbol = "F", &
-            gnuplot_symbol = "{/Symbold \260}F", &
-            latex_symbol = "\fahrenheit")
-    type(TemperatureUnit_t), parameter, public :: KELVIN = TemperatureUnit_t( &
-            conversion_factor = 1.0d0, &
-            difference = 0.0d0, &
-            symbol = "K", &
-            gnuplot_symbol = "K", &
-            latex_symbol = "\kelvin")
-    type(TemperatureUnit_t), parameter, public :: RANKINE = TemperatureUnit_t( &
-            conversion_factor = RANKINE_PER_KELVIN, &
-            difference = 0.0d0, &
-            symbol = "R", &
-            gnuplot_symbol = "{/Symbold \260}R", &
-            latex_symbol = "\rankine")
+    type(TemperatureSimpleUnit_t), parameter, public :: CELSIUS = &
+            TemperatureSimpleUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    difference = CELSIUS_KELVIN_DIFFERENCE, &
+                    symbol = "C")
+    type(TemperatureGnuplotUnit_t), parameter, public :: CELSIUS_GNUPLOT = &
+            TemperatureGnuplotUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    difference = CELSIUS_KELVIN_DIFFERENCE, &
+                    symbol = "{/Symbol \260}C")
+    type(TemperatureLatexUnit_t), parameter, public :: CELSIUS_LATEX = &
+            TemperatureLatexUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    difference = CELSIUS_KELVIN_DIFFERENCE, &
+                    symbol = "\degreeCelsius")
+    type(TemperatureSimpleUnit_t), parameter, public :: FAHRENHEIT = &
+            TemperatureSimpleUnit_t( &
+                    conversion_factor = RANKINE_PER_KELVIN, &
+                    difference = FAHRENHEIT_RANKINE_DIFFERENCE, &
+                    symbol = "F")
+    type(TemperatureGnuplotUnit_t), parameter, public :: FAHRENHEIT_GNUPLOT = &
+            TemperatureGnuplotUnit_t( &
+                    conversion_factor = RANKINE_PER_KELVIN, &
+                    difference = FAHRENHEIT_RANKINE_DIFFERENCE, &
+                    symbol = "{/Symbol \260}F")
+    type(TemperatureSimpleUnit_t), parameter, public :: KELVIN = &
+            TemperatureSimpleUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    difference = 0.0d0, &
+                    symbol = "K")
+    type(TemperatureGnuplotUnit_t), parameter, public :: KELVIN_GNUPLOT = &
+            TemperatureGnuplotUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    difference = 0.0d0, &
+                    symbol = "K")
+    type(TemperatureLatexUnit_t), parameter, public :: KELVIN_LATEX = &
+            TemperatureLatexUnit_t( &
+                    conversion_factor = 1.0d0, &
+                    difference = 0.0d0, &
+                    symbol = "\kelvin")
+    type(TemperatureSimpleUnit_t), parameter, public :: RANKINE = &
+            TemperatureSimpleUnit_t( &
+                    conversion_factor = RANKINE_PER_KELVIN, &
+                    difference = 0.0d0, &
+                    symbol = "R")
+    type(TemperatureGnuplotUnit_t), parameter, public :: RANKINE_GNUPLOT = &
+            TemperatureGnuplotUnit_t( &
+                    conversion_factor = RANKINE_PER_KELVIN, &
+                    difference = 0.0d0, &
+                    symbol = "{/Symbol \260}R")
 
-    type(TemperatureUnit_t), public :: DEFAULT_OUTPUT_UNITS = KELVIN
+    type(TemperatureSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = KELVIN
 
-    type(TemperatureUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
+    type(TemperatureSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
+    type(TemperatureGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
+            [CELSIUS_GNUPLOT, FAHRENHEIT_GNUPLOT, KELVIN_GNUPLOT, RANKINE_GNUPLOT]
+    type(TemperatureLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
+            [CELSIUS_LATEX, KELVIN_LATEX]
 
-    public :: operator(.unit.), fromString, sum
+    public :: operator(.unit.), fromString, selectUnit, sum
 contains
     pure subroutine fromStringBasicC(string, errors, temperature)
         character(len=*), intent(in) :: string
@@ -187,7 +262,7 @@ contains
 
     pure subroutine fromStringWithUnitsC(string, units, errors, temperature)
         character(len=*), intent(in) :: string
-        type(TemperatureUnit_t), intent(in) :: units(:)
+        class(TemperatureUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Temperature_t), intent(out) :: temperature
 
@@ -203,49 +278,28 @@ contains
 
     pure subroutine fromStringWithUnitsS(string, units, errors, temperature)
         type(VARYING_STRING), intent(in) :: string
-        type(TemperatureUnit_t), intent(in) :: units(:)
+        class(TemperatureUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Temperature_t), intent(out) :: temperature
 
-        double precision :: number
-        character(len=100) :: number_chars
-        type(VARYING_STRING) :: number_string
-        integer :: status
-        type(VARYING_STRING) :: symbol
-        type(TemperatureUnit_t) :: unit
-        type(ErrorList_t) :: unit_errors
+        type(ErrorList_t) :: all_errors(size(units))
+        integer :: i
 
-        temperature%kelvin = 0.0d0
-        symbol = string
-        call split(symbol, number_string, " ")
-        if (len(symbol) == 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
+        do i = 1, size(units)
+            call units(i)%parseAs(string, all_errors(i), temperature)
+            if (.not. all_errors(i)%hasAny()) return
+        end do
+        do i = 1, size(units)
+            call errors%appendErrors( &
+                    all_errors(i), &
                     Module_("Temperature_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'No unit symbol found in string "' // string // '"'))
-            return
-        end if
-        number_chars = number_string
-        read(number_chars, *, iostat=status) number
-        if (status /= 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Temperature_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'Error parsing number from string "' // number_string // '"'))
-        end if
-        call fromString(symbol, units, unit_errors, unit)
-        temperature = number.unit.unit
-        call errors%appendErrors( &
-                unit_errors, &
-                Module_("Temperature_m"), &
-                Procedure_("fromStringWithUnitsS"))
+                    Procedure_("fromStringWithUnitsS"))
+        end do
     end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(temperature)
         double precision, intent(in) :: value_
-        type(TemperatureUnit_t), intent(in) :: units
+        class(TemperatureUnit_t), intent(in) :: units
         type(Temperature_t) :: temperature
 
         temperature%kelvin = (value_ + units%difference) / units%conversion_factor
@@ -443,7 +497,7 @@ contains
         class(TemperatureUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
 
-        string = toString(self.in.units) // " " // units%toString()
+        string = units%toString(toString(self.in.units))
     end function toStringInFullPrecision
 
     elemental function toStringInWithPrecision( &
@@ -453,119 +507,212 @@ contains
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
 
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toString()
+        string = units%toString(toString(self.in.units, significant_digits))
     end function toStringInWithPrecision
 
-    elemental function toGnuplotStringFullPrecision(self) result(string)
-        class(Temperature_t), intent(in) :: self
+    elemental function simpleUnitToString(self) result(string)
+        class(TemperatureSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toGnuplotStringFullPrecision
+        string = trim(self%symbol)
+    end function simpleUnitToString
 
-    elemental function toGnuplotStringWithPrecision( &
-            self, significant_digits) result(string)
-        class(Temperature_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
+    pure function simpleValueToString(self, value_) result(string)
+        class(TemperatureSimpleUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn( &
-                DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toGnuplotStringWithPrecision
+        string = value_ // " " // self%toString()
+    end function simpleValueToString
 
-    elemental function toGnuplotStringInFullPrecision(self, units) result(string)
-        class(Temperature_t), intent(in) :: self
-        class(TemperatureUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = toString(self.in.units) // " " // units%toGnuplotString()
-    end function toGnuplotStringInFullPrecision
-
-    elemental function toGnuplotStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Temperature_t), intent(in) :: self
-        class(TemperatureUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toGnuplotString()
-    end function toGnuplotStringInWithPrecision
-
-    elemental function toLatexStringFullPrecision(self) result(string)
-        class(Temperature_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toLatexStringFullPrecision
-
-    elemental function toLatexStringWithPrecision(self, significant_digits) result(string)
-        class(Temperature_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toLatexStringWithPrecision
-
-    elemental function toLatexStringInFullPrecision(self, units) result(string)
-        class(Temperature_t), intent(in) :: self
-        class(TemperatureUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units), units%toLatexString())
-    end function toLatexStringInFullPrecision
-
-    elemental function toLatexStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Temperature_t), intent(in) :: self
-        class(TemperatureUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units, significant_digits), &
-                units%toLatexString())
-    end function toLatexStringInWithPrecision
-
-    pure subroutine unitFromStringBasicC(string, errors, unit)
-        character(len=*), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t), intent(out) :: unit
-
-        type(ErrorList_t) :: errors_
-
-        call fromString( &
-                var_str(string), PROVIDED_UNITS, errors_, unit)
-        call errors%appendErrors( &
-                errors_, &
-                Module_("Temperature_m"), &
-                Procedure_("unitFromStringBasicC"))
-    end subroutine unitFromStringBasicC
-
-    pure subroutine unitFromStringBasicS(string, errors, unit)
+    pure subroutine simpleParseAs(self, string, errors, temperature)
+        class(TemperatureSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t), intent(out) :: unit
+        type(Temperature_t), intent(out) :: temperature
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                temperature = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Temperature_m"), &
+                    Procedure_("simpleParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine simpleParseAs
+
+    pure subroutine gnuplotParseAs(self, string, errors, temperature)
+        class(TemperatureGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Temperature_t), intent(out) :: temperature
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                temperature = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Temperature_m"), &
+                    Procedure_("gnuplotParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine gnuplotParseAs
+
+    pure subroutine latexParseAs(self, string, errors, temperature)
+        class(TemperatureLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(Temperature_t), intent(out) :: temperature
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                temperature = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Temperature_m"), &
+                    Procedure_("latexParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop( &
+                            thenDrop( &
+                                    thenDrop( &
+                                            dropThen( &
+                                                    dropThen(parseSI, parseOpenBrace, state_), &
+                                                    parseRational), &
+                                            parseCloseBrace), &
+                                    parseOpenBrace), &
+                            parseUnit), &
+                    parseCloseBrace)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine latexParseAs
+
+    elemental function gnuplotUnitToString(self) result(string)
+        class(TemperatureGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = trim(self%symbol)
+    end function gnuplotUnitToString
+
+    pure function gnuplotValueToString(self, value_) result(string)
+        class(TemperatureGnuplotUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
+        type(VARYING_STRING) :: string
+
+        string = value_ // " " // self%toString()
+    end function gnuplotValueToString
+
+    elemental function latexUnitToString(self) result(string)
+        class(TemperatureLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexUnit(trim(self%symbol))
+    end function latexUnitToString
+
+    pure function latexValueToString(self, value_) result(string)
+        class(TemperatureLatexUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
+        type(VARYING_STRING) :: string
+
+        string = wrapInLatexQuantity(value_, trim(self%symbol))
+    end function latexValueToString
+
+    pure subroutine simpleUnitFromStringC(string, errors, unit)
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(TemperatureSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        call fromString( &
-                string, PROVIDED_UNITS, errors_, unit)
+        call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
-                Procedure_("unitFromStringBasicS"))
-    end subroutine unitFromStringBasicS
+                Procedure_("simpleUnitFromStringC"))
+    end subroutine simpleUnitFromStringC
 
-    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
-        character(len=*), intent(in) :: string
-        type(TemperatureUnit_t), intent(in) :: units(:)
+    pure subroutine simpleUnitFromStringS(string, errors, unit)
+        type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t), intent(out) :: unit
+        type(TemperatureSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(string, PROVIDED_UNITS, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Temperature_m"), &
+                Procedure_("simpleUnitFromStringS"))
+    end subroutine simpleUnitFromStringS
+
+    pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
+        character(len=*), intent(in) :: string
+        type(TemperatureSimpleUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(TemperatureSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
@@ -573,54 +720,51 @@ contains
         call errors%appendErrors( &
                 errors_, &
                 Module_("Temperature_m"), &
-                Procedure_("unitFromStringWithUnitsC"))
-    end subroutine unitFromStringWithUnitsC
+                Procedure_("simpleUnitFromStringWithUnitsC"))
+    end subroutine simpleUnitFromStringWithUnitsC
 
-    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
+    pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
-        type(TemperatureUnit_t), intent(in) :: units(:)
+        type(TemperatureSimpleUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(TemperatureUnit_t), intent(out) :: unit
+        type(TemperatureSimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+        integer :: which_unit
+
+        call selectUnit(string, units, errors, which_unit)
+        if (errors_%hasAny()) then
+            call errors%appendErrors( &
+                    errors_, &
+                    Module_("Temperature_m"), &
+                    Procedure_("simpleUnitFromStringWithUnitsS"))
+        else
+            unit = units(which_unit)
+        end if
+    end subroutine simpleUnitFromStringWithUnitsS
+
+    pure subroutine selectUnit(string, units, errors, index)
+        type(VARYING_STRING), intent(in) :: string
+        class(TemperatureUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        integer, intent(out) :: index
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
 
         do i = 1, size(units)
-            if (string == units(i)%symbol) then
-                unit = units(i)
-                exit
+            if (string == units(i)%toString()) then
+                index = i
+                return
             end if
         end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Temperature_m"), &
-                    Procedure_("unitFromStringWithUnitsS"), &
-                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
-        end if
-    end subroutine unitFromStringWithUnitsS
-
-    elemental function unitToString(self) result(string)
-        class(TemperatureUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function unitToString
-
-    elemental function unitToGnuplotString(self) result(string)
-        class(TemperatureUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%gnuplot_symbol)
-    end function unitToGnuplotString
-
-    elemental function unitToLatexString(self) result(string)
-        class(TemperatureUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%latex_symbol)
-    end function unitToLatexString
+        do i = 1, size(units)
+            unit_strings(i) = units(i)%toString()
+        end do
+        call errors%appendError(Fatal( &
+                UNKNOWN_UNIT, &
+                Module_("Temperature_m"), &
+                Procedure_("selectUnit"), &
+                '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
+    end subroutine selectUnit
 end module Temperature_m
