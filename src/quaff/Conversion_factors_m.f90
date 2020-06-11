@@ -109,6 +109,8 @@ module quaff_Conversion_factors_m
     double precision, parameter :: MEGAPASCALS_PER_PASCAL = MEGA_PER_BASE
     double precision, parameter :: POUNDS_PER_SQUARE_INCH_PER_PASCAL = POUNDS_PER_NEWTON / SQUARE_INCHES_PER_SQUARE_METER
     double precision, parameter :: BAR_PER_PASCAL = 100000.0d0
+    double precision, parameter :: PASCALS_PER_ATMOSPHERE = 101325.0d0
+    double precision, parameter :: ATMOSPHERES_PER_PASCAL = 1.0d0 / PASCALS_PER_ATMOSPHERE
 
     ! Dynamic Viscosity
     double precision, parameter :: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND = MEGA_PER_BASE
@@ -125,4 +127,12 @@ module quaff_Conversion_factors_m
             CALORIES_PER_SECOND_PER_WATT / CENTIMETERS_PER_METER
     double precision, parameter :: WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN = &
             METERS_PER_CENTIMETER
+
+    ! Energy Per Amount
+    double precision, parameter :: KILOJOULES_PER_MOL_PER_JOULES_PER_MOL = &
+            KILO_PER_BASE
+
+    ! Energy Per Temperature Amount
+    double precision, parameter :: KILOJOULES_PER_KELVIN_MOL_PER_JOULES_PER_KELVIN_MOL = &
+            KILO_PER_BASE
 end module quaff_Conversion_factors_m

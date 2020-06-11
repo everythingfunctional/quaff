@@ -93,6 +93,26 @@ module quaff
             KILOJOULES, &
             MEGABTU, &
             MEGAWATT_DAYS
+    use Energy_per_amount_m, only: &
+            EnergyPerAmount_t, &
+            EnergyPerAmountUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            sum, &
+            DEFAULT_ENERGY_PER_AMOUNT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_MOL, &
+            KILOJOULES_PER_MOL
+    use Energy_per_temperature_amount_m, only: &
+            EnergyPerTemperatureAmount_t, &
+            EnergyPerTemperatureAmountUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            sum, &
+            DEFAULT_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_KELVIN_MOL, &
+            KILOJOULES_PER_KELVIN_MOL
     use Enthalpy_m, only: &
             Enthalpy_t, &
             EnthalpyUnit_t, &
@@ -116,7 +136,6 @@ module quaff
             MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
-    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
     use Length_m, only: &
             Length_t, &
             LengthUnit_t, &
@@ -174,12 +193,16 @@ module quaff
             sum, &
             DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
+            ATMOSPHERES, &
+            BAR, &
             DYNES_PER_SQUARE_CENTIMETER, &
             KILOPASCALS, &
             KILOPONDS_PER_SQUARE_CENTIMETER, &
             MEGAPASCALS, &
             PASCALS, &
             POUNDS_PER_SQUARE_INCH
+    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
+    use quaff_physical_constants
     use Quantity_module_m, only: &
             QuantityCamel_t, &
             QuantityCamelUnit_t, &

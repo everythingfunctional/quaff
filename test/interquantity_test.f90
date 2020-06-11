@@ -6,7 +6,10 @@ module interquantity_test
             asBurnup, &
             CUBIC_METERS, &
             JOULES, &
+            JOULES_PER_KELVIN_MOL, &
             JOULES_PER_KILOGRAM, &
+            JOULES_PER_MOL, &
+            KELVIN, &
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_MOL, &
@@ -32,7 +35,7 @@ contains
     function test_interquantity_operators() result(tests)
         type(TestItem_t) :: tests
 
-        type(TestItem_t) :: individual_tests(50)
+        type(TestItem_t) :: individual_tests(55)
 
         individual_tests(1) = It( &
                 "2 m * 3 m = 6 m^2", checkLengthTimesLength)
@@ -134,6 +137,16 @@ contains
                 "6 J / 3 (W s)/kg = 2 kg", checkEnergyDividedByBurnup)
         individual_tests(50) = It( &
                 "2 J/kg = 2 (W s)/kg", checkEnthalpyToBurnup)
+        individual_tests(51) = It( &
+                "2 Pa * 3 m^3 = 6 J", checkPressureTimesVolume)
+        individual_tests(52) = It( &
+                "2 m^3 * 3 Pa = 6 J", checkVolumeTimesPressure)
+        individual_tests(53) = It( &
+                "2 J/(K mol) * 3 K = 6 J/mol", checkEnergyPerTemperatureAmountTimesTemperature)
+        individual_tests(54) = It( &
+                "2 K * 3 J/(K mol) = 6 J/mol", checkTemperatureTimesEnergyPerTemperatureAmount)
+        individual_tests(55) = It( &
+                "6 J / 3 J/mol = 2 mol", checkEnergyDividedByEnergyPerAmount)
         tests = Describe("Interquantity operations", individual_tests)
     end function test_interquantity_operators
 
@@ -536,4 +549,44 @@ contains
                 2.0d0.unit.WATT_SECONDS_PER_KILOGRAM, &
                 asBurnup(2.0d0.unit.JOULES_PER_KILOGRAM))
     end function checkEnthalpyToBurnup
+
+    pure function checkPressureTimesVolume() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.PASCALS) * (3.0d0.unit.CUBIC_METERS))
+    end function checkPressureTimesVolume
+
+    pure function checkVolumeTimesPressure() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES, &
+                (2.0d0.unit.CUBIC_METERS) * (3.0d0.unit.PASCALS))
+    end function checkVolumeTimesPressure
+
+    pure function checkEnergyPerTemperatureAmountTimesTemperature() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES_PER_MOL, &
+                (2.0d0.unit.JOULES_PER_KELVIN_MOL) * (3.0d0.unit.KELVIN))
+    end function checkEnergyPerTemperatureAmountTimesTemperature
+
+    pure function checkTemperatureTimesEnergyPerTemperatureAmount() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                6.0d0.unit.JOULES_PER_MOL, &
+                (2.0d0.unit.KELVIN) * (3.0d0.unit.JOULES_PER_KELVIN_MOL))
+    end function checkTemperatureTimesEnergyPerTemperatureAmount
+
+    pure function checkEnergyDividedByEnergyPerAmount() result(result_)
+        type(Result_t) :: result_
+
+        result_ = assertEquals( &
+                2.0d0.unit.MOLS, &
+                (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_MOL))
+    end function checkEnergyDividedByEnergyPerAmount
 end module interquantity_test

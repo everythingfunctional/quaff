@@ -1,4 +1,4 @@
-module Pressure_m
+module Energy_per_amount_m
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -20,13 +20,7 @@ module Pressure_m
             parseWith, &
             thenDrop
     use quaff_Conversion_factors_m, only: &
-            ATMOSPHERES_PER_PASCAL, &
-            BAR_PER_PASCAL, &
-            DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
-            KILOPASCALS_PER_PASCAL, &
-            KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
-            MEGAPASCALS_PER_PASCAL, &
-            POUNDS_PER_SQUARE_INCH_PER_PASCAL
+            KILOJOULES_PER_MOL_PER_JOULES_PER_MOL
     use quaff_Utilities_m, only: &
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
@@ -39,32 +33,32 @@ module Pressure_m
     implicit none
     private
 
-    type, public :: Pressure_t
-        double precision :: pascals
+    type, public :: EnergyPerAmount_t
+        double precision :: joules_per_mol
     contains
         private
         procedure :: toUnits
         generic, public :: operator(.in.) => toUnits
-        procedure, pass(pressure) :: doubleTimesPressure
-        procedure, pass(pressure) :: integerTimesPressure
-        procedure, pass(pressure) :: pressureTimesDouble
-        procedure, pass(pressure) :: pressureTimesInteger
+        procedure, pass(energy_per_amount) :: doubleTimesEnergyPerAmount
+        procedure, pass(energy_per_amount) :: integerTimesEnergyPerAmount
+        procedure, pass(energy_per_amount) :: energyPerAmountTimesDouble
+        procedure, pass(energy_per_amount) :: energyPerAmountTimesInteger
         generic, public :: operator(*) => &
-                doubleTimesPressure, &
-                integerTimesPressure, &
-                pressureTimesDouble, &
-                pressureTimesInteger
-        procedure :: pressureDividedByDouble
-        procedure :: pressureDividedByInteger
-        procedure, pass(numerator) :: pressureDividedByPressure
+                doubleTimesEnergyPerAmount, &
+                integerTimesEnergyPerAmount, &
+                energyPerAmountTimesDouble, &
+                energyPerAmountTimesInteger
+        procedure :: energyPerAmountDividedByDouble
+        procedure :: energyPerAmountDividedByInteger
+        procedure, pass(numerator) :: energyPerAmountDividedByEnergyPerAmount
         generic, public :: operator(/) => &
-                pressureDividedByDouble, &
-                pressureDividedByInteger, &
-                pressureDividedByPressure
-        procedure :: pressurePlusPressure
-        generic, public :: operator(+) => pressurePlusPressure
-        procedure :: pressureMinusPressure
-        generic, public :: operator(-) => pressureMinusPressure
+                energyPerAmountDividedByDouble, &
+                energyPerAmountDividedByInteger, &
+                energyPerAmountDividedByEnergyPerAmount
+        procedure :: energyPerAmountPlusEnergyPerAmount
+        generic, public :: operator(+) => energyPerAmountPlusEnergyPerAmount
+        procedure :: energyPerAmountMinusEnergyPerAmount
+        generic, public :: operator(-) => energyPerAmountMinusEnergyPerAmount
         procedure :: greaterThan
         generic, public :: operator(>) => greaterThan
         procedure :: lessThan
@@ -89,45 +83,45 @@ module Pressure_m
         procedure :: toStringInWithPrecision
         generic, public :: toStringIn => &
                 toStringInFullPrecision, toStringInWithPrecision
-    end type Pressure_t
+    end type EnergyPerAmount_t
 
-    type, abstract, public :: PressureUnit_t
+    type, abstract, public :: EnergyPerAmountUnit_t
         double precision :: conversion_factor
     contains
         procedure(justUnitToString), deferred :: unitToString
         procedure(unitWithValueToString), deferred :: valueToString
         generic :: toString => unitToString, valueToString
         procedure(parseAsI), deferred :: parseAs
-    end type PressureUnit_t
+    end type EnergyPerAmountUnit_t
 
-    type, extends(PressureUnit_t), public :: PressureSimpleUnit_t
+    type, extends(EnergyPerAmountUnit_t), public :: EnergyPerAmountSimpleUnit_t
         character(len=20) :: symbol
     contains
         procedure :: unitToString => simpleUnitToString
         procedure :: valueToString => simpleValueToString
         procedure :: parseAs => simpleParseAs
-    end type PressureSimpleUnit_t
+    end type EnergyPerAmountSimpleUnit_t
 
     abstract interface
         elemental function justUnitToString(self) result(string)
-            import PressureUnit_t, VARYING_STRING
-            class(PressureUnit_t), intent(in) :: self
+            import EnergyPerAmountUnit_t, VARYING_STRING
+            class(EnergyPerAmountUnit_t), intent(in) :: self
             type(VARYING_STRING) :: string
         end function justUnitToString
 
         pure function unitWithValueToString(self, value_) result(string)
-            import PressureUnit_t, VARYING_STRING
-            class(PressureUnit_t), intent(in) :: self
+            import EnergyPerAmountUnit_t, VARYING_STRING
+            class(EnergyPerAmountUnit_t), intent(in) :: self
             type(VARYING_STRING), intent(in) :: value_
             type(VARYING_STRING) :: string
         end function unitWithValueToString
 
-        pure subroutine parseAsI(self, string, errors, pressure)
-            import ErrorList_t, Pressure_t, PressureUnit_t, VARYING_STRING
-            class(PressureUnit_t), intent(in) :: self
+        pure subroutine parseAsI(self, string, errors, energy_per_amount)
+            import ErrorList_t, EnergyPerAmount_t, EnergyPerAmountUnit_t, VARYING_STRING
+            class(EnergyPerAmountUnit_t), intent(in) :: self
             type(VARYING_STRING), intent(in) :: string
             type(ErrorList_t), intent(out) :: errors
-            type(Pressure_t), intent(out) :: pressure
+            type(EnergyPerAmount_t), intent(out) :: energy_per_amount
         end subroutine parseAsI
     end interface
 
@@ -147,312 +141,281 @@ module Pressure_m
     end interface fromString
 
     interface sum
-        module procedure sumPressure
+        module procedure sumEnergyPerAmount
     end interface sum
 
-    type(PressureSimpleUnit_t), parameter, public :: ATMOSPHERES = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = ATMOSPHERES_PER_PASCAL, &
-                    symbol = "atm")
-    type(PressureSimpleUnit_t), parameter, public :: BAR = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = BAR_PER_PASCAL, &
-                    symbol = "bar")
-    type(PressureSimpleUnit_t), parameter, public :: DYNES_PER_SQUARE_CENTIMETER = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
-                    symbol = "dyn/cm^2")
-    type(PressureSimpleUnit_t), parameter, public :: KILOPASCALS = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = KILOPASCALS_PER_PASCAL, &
-                    symbol = "kPa")
-    type(PressureSimpleUnit_t), parameter, public :: KILOPONDS_PER_SQUARE_CENTIMETER = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
-                    symbol = "kp/cm^2")
-    type(PressureSimpleUnit_t), parameter, public :: MEGAPASCALS = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = MEGAPASCALS_PER_PASCAL, &
-                    symbol = "MPa")
-    type(PressureSimpleUnit_t), parameter, public :: PASCALS = &
-            PressureSimpleUnit_t( &
+    type(EnergyPerAmountSimpleUnit_t), parameter, public :: JOULES_PER_MOL = &
+            EnergyPerAmountSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
-                    symbol = "Pa")
-    type(PressureSimpleUnit_t), parameter, public :: POUNDS_PER_SQUARE_INCH = &
-            PressureSimpleUnit_t( &
-                    conversion_factor = POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
-                    symbol = "psi")
+                    symbol = "J/mol")
+    type(EnergyPerAmountSimpleUnit_t), parameter, public :: KILOJOULES_PER_MOL = &
+            EnergyPerAmountSimpleUnit_t( &
+                    conversion_factor = KILOJOULES_PER_MOL_PER_JOULES_PER_MOL, &
+                    symbol = "kJ/mol")
 
-    type(PressureSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = PASCALS
+    type(EnergyPerAmountSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = JOULES_PER_MOL
 
-    type(PressureSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [ATMOSPHERES, &
-            BAR, &
-            DYNES_PER_SQUARE_CENTIMETER, &
-            KILOPASCALS, &
-            KILOPONDS_PER_SQUARE_CENTIMETER, &
-            MEGAPASCALS, &
-            PASCALS, &
-            POUNDS_PER_SQUARE_INCH]
+    type(EnergyPerAmountSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
+            [JOULES_PER_MOL, KILOJOULES_PER_MOL]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
-    pure subroutine fromStringBasicC(string, errors, pressure)
+    pure subroutine fromStringBasicC(string, errors, energy_per_amount)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
+        type(EnergyPerAmount_t), intent(out) :: energy_per_amount
 
         type(ErrorList_t) :: errors_
 
         call fromString( &
-                var_str(string), PROVIDED_UNITS, errors_, pressure)
+                var_str(string), PROVIDED_UNITS, errors_, energy_per_amount)
         call errors%appendErrors( &
                 errors_, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("fromStringBasicC"))
     end subroutine fromStringBasicC
 
-    pure subroutine fromStringBasicS(string, errors, pressure)
+    pure subroutine fromStringBasicS(string, errors, energy_per_amount)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
+        type(EnergyPerAmount_t), intent(out) :: energy_per_amount
 
         type(ErrorList_t) :: errors_
 
         call fromString( &
-                string, PROVIDED_UNITS, errors_, pressure)
+                string, PROVIDED_UNITS, errors_, energy_per_amount)
         call errors%appendErrors( &
                 errors_, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("fromStringBasicS"))
     end subroutine fromStringBasicS
 
-    pure subroutine fromStringWithUnitsC(string, units, errors, pressure)
+    pure subroutine fromStringWithUnitsC(string, units, errors, energy_per_amount)
         character(len=*), intent(in) :: string
-        class(PressureUnit_t), intent(in) :: units(:)
+        class(EnergyPerAmountUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
+        type(EnergyPerAmount_t), intent(out) :: energy_per_amount
 
         type(ErrorList_t) :: errors_
 
         call fromString( &
-                var_str(string), units, errors_, pressure)
+                var_str(string), units, errors_, energy_per_amount)
         call errors%appendErrors( &
                 errors_, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("fromStringWithUnitsC"))
     end subroutine fromStringWithUnitsC
 
-    pure subroutine fromStringWithUnitsS(string, units, errors, pressure)
+    pure subroutine fromStringWithUnitsS(string, units, errors, energy_per_amount)
         type(VARYING_STRING), intent(in) :: string
-        class(PressureUnit_t), intent(in) :: units(:)
+        class(EnergyPerAmountUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
+        type(EnergyPerAmount_t), intent(out) :: energy_per_amount
 
         type(ErrorList_t) :: all_errors(size(units))
         integer :: i
 
         do i = 1, size(units)
-            call units(i)%parseAs(string, all_errors(i), pressure)
+            call units(i)%parseAs(string, all_errors(i), energy_per_amount)
             if (.not. all_errors(i)%hasAny()) return
         end do
         do i = 1, size(units)
             call errors%appendErrors( &
                     all_errors(i), &
-                    Module_("Pressure_m"), &
+                    Module_("Energy_per_amount_m"), &
                     Procedure_("fromStringWithUnitsS"))
         end do
     end subroutine fromStringWithUnitsS
 
-    elemental function fromUnits(value_, units) result(pressure)
+    elemental function fromUnits(value_, units) result(energy_per_amount)
         double precision, intent(in) :: value_
-        class(PressureUnit_t), intent(in) :: units
-        type(Pressure_t) :: pressure
+        class(EnergyPerAmountUnit_t), intent(in) :: units
+        type(EnergyPerAmount_t) :: energy_per_amount
 
-        pressure%pascals = value_ / units%conversion_factor
+        energy_per_amount%joules_per_mol = value_ / units%conversion_factor
     end function fromUnits
 
-    elemental function toUnits(self, units) result(pressure)
-        class(Pressure_t), intent(in) :: self
-        class(PressureUnit_t), intent(in) :: units
-        double precision :: pressure
+    elemental function toUnits(self, units) result(energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: self
+        class(EnergyPerAmountUnit_t), intent(in) :: units
+        double precision :: energy_per_amount
 
-        pressure = self%pascals * units%conversion_factor
+        energy_per_amount = self%joules_per_mol * units%conversion_factor
     end function toUnits
 
-    elemental function doubleTimesPressure( &
-            multiplier, pressure) result(new_pressure)
+    elemental function doubleTimesEnergyPerAmount( &
+            multiplier, energy_per_amount) result(new_energy_per_amount)
         double precision, intent(in) :: multiplier
-        class(Pressure_t), intent(in) :: pressure
-        type(Pressure_t) :: new_pressure
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                multiplier * pressure%pascals
-    end function doubleTimesPressure
+        new_energy_per_amount%joules_per_mol = &
+                multiplier * energy_per_amount%joules_per_mol
+    end function doubleTimesEnergyPerAmount
 
-    elemental function integerTimesPressure( &
-            multiplier, pressure) result(new_pressure)
+    elemental function integerTimesEnergyPerAmount( &
+            multiplier, energy_per_amount) result(new_energy_per_amount)
         integer, intent(in) :: multiplier
-        class(Pressure_t), intent(in) :: pressure
-        type(Pressure_t) :: new_pressure
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                dble(multiplier) * pressure%pascals
-    end function integerTimesPressure
+        new_energy_per_amount%joules_per_mol = &
+                dble(multiplier) * energy_per_amount%joules_per_mol
+    end function integerTimesEnergyPerAmount
 
-    elemental function pressureTimesDouble( &
-            pressure, multiplier) result(new_pressure)
-        class(Pressure_t), intent(in) :: pressure
+    elemental function energyPerAmountTimesDouble( &
+            energy_per_amount, multiplier) result(new_energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount
         double precision, intent(in) :: multiplier
-        type(Pressure_t) :: new_pressure
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                pressure%pascals * multiplier
-    end function pressureTimesDouble
+        new_energy_per_amount%joules_per_mol = &
+                energy_per_amount%joules_per_mol * multiplier
+    end function energyPerAmountTimesDouble
 
-    elemental function pressureTimesInteger( &
-            pressure, multiplier) result(new_pressure)
-        class(Pressure_t), intent(in) :: pressure
+    elemental function energyPerAmountTimesInteger( &
+            energy_per_amount, multiplier) result(new_energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount
         integer, intent(in) :: multiplier
-        type(Pressure_t) :: new_pressure
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                pressure%pascals * dble(multiplier)
-    end function pressureTimesInteger
+        new_energy_per_amount%joules_per_mol = &
+                energy_per_amount%joules_per_mol * dble(multiplier)
+    end function energyPerAmountTimesInteger
 
-    elemental function pressureDividedByDouble( &
-            pressure, divisor) result(new_pressure)
-        class(Pressure_t), intent(in) :: pressure
+    elemental function energyPerAmountDividedByDouble( &
+            energy_per_amount, divisor) result(new_energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount
         double precision, intent(in) :: divisor
-        type(Pressure_t) :: new_pressure
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                pressure%pascals / divisor
-    end function pressureDividedByDouble
+        new_energy_per_amount%joules_per_mol = &
+                energy_per_amount%joules_per_mol / divisor
+    end function energyPerAmountDividedByDouble
 
-    elemental function pressureDividedByInteger( &
-            pressure, divisor) result(new_pressure)
-        class(Pressure_t), intent(in) :: pressure
+    elemental function energyPerAmountDividedByInteger( &
+            energy_per_amount, divisor) result(new_energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount
         integer, intent(in) :: divisor
-        type(Pressure_t) :: new_pressure
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                pressure%pascals / dble(divisor)
-    end function pressureDividedByInteger
+        new_energy_per_amount%joules_per_mol = &
+                energy_per_amount%joules_per_mol / dble(divisor)
+    end function energyPerAmountDividedByInteger
 
-    elemental function pressureDividedByPressure( &
+    elemental function energyPerAmountDividedByEnergyPerAmount( &
             numerator, denomenator) result(ratio)
-        class(Pressure_t), intent(in) :: numerator
-        class(Pressure_t), intent(in) :: denomenator
+        class(EnergyPerAmount_t), intent(in) :: numerator
+        class(EnergyPerAmount_t), intent(in) :: denomenator
         double precision :: ratio
 
-        ratio = numerator%pascals / denomenator%pascals
-    end function pressureDividedByPressure
+        ratio = numerator%joules_per_mol / denomenator%joules_per_mol
+    end function energyPerAmountDividedByEnergyPerAmount
 
-    elemental function pressurePlusPressure( &
-            pressure1, pressure2) result(new_pressure)
-        class(Pressure_t), intent(in) :: pressure1
-        class(Pressure_t), intent(in) :: pressure2
-        type(Pressure_t) :: new_pressure
+    elemental function energyPerAmountPlusEnergyPerAmount( &
+            energy_per_amount1, energy_per_amount2) result(new_energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount1
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount2
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                pressure1%pascals + pressure2%pascals
-    end function pressurePlusPressure
+        new_energy_per_amount%joules_per_mol = &
+                energy_per_amount1%joules_per_mol + energy_per_amount2%joules_per_mol
+    end function energyPerAmountPlusEnergyPerAmount
 
-    elemental function pressureMinusPressure( &
-            pressure1, pressure2) result(new_pressure)
-        class(Pressure_t), intent(in) :: pressure1
-        class(Pressure_t), intent(in) :: pressure2
-        type(Pressure_t) :: new_pressure
+    elemental function energyPerAmountMinusEnergyPerAmount( &
+            energy_per_amount1, energy_per_amount2) result(new_energy_per_amount)
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount1
+        class(EnergyPerAmount_t), intent(in) :: energy_per_amount2
+        type(EnergyPerAmount_t) :: new_energy_per_amount
 
-        new_pressure%pascals = &
-                pressure1%pascals - pressure2%pascals
-    end function pressureMinusPressure
+        new_energy_per_amount%joules_per_mol = &
+                energy_per_amount1%joules_per_mol - energy_per_amount2%joules_per_mol
+    end function energyPerAmountMinusEnergyPerAmount
 
-    pure function sumPressure(pressures)
-        type(Pressure_t), intent(in) :: pressures(:)
-        type(Pressure_t) :: sumPressure
+    pure function sumEnergyPerAmount(energy_per_amounts)
+        type(EnergyPerAmount_t), intent(in) :: energy_per_amounts(:)
+        type(EnergyPerAmount_t) :: sumEnergyPerAmount
 
-        sumPressure%pascals = sum(pressures%pascals)
-    end function sumPressure
+        sumEnergyPerAmount%joules_per_mol = sum(energy_per_amounts%joules_per_mol)
+    end function sumEnergyPerAmount
 
     elemental function greaterThan(lhs, rhs)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         logical :: greaterThan
 
-        greaterThan = lhs%pascals > rhs%pascals
+        greaterThan = lhs%joules_per_mol > rhs%joules_per_mol
     end function greaterThan
 
     elemental function lessThan(lhs,rhs)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         logical :: lessThan
 
-        lessThan = lhs%pascals < rhs%pascals
+        lessThan = lhs%joules_per_mol < rhs%joules_per_mol
     end function lessThan
 
     elemental function greaterThanOrEqual(lhs, rhs)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         logical :: greaterThanOrEqual
 
-        greaterThanOrEqual = lhs%pascals >= rhs%pascals
+        greaterThanOrEqual = lhs%joules_per_mol >= rhs%joules_per_mol
     end function greaterThanOrEqual
 
     elemental function lessThanOrEqual(lhs, rhs)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         logical :: lessThanOrEqual
 
-        lessThanOrEqual = lhs%pascals <= rhs%pascals
+        lessThanOrEqual = lhs%joules_per_mol <= rhs%joules_per_mol
     end function lessThanOrEqual
 
     elemental function equal_(lhs,rhs)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         logical :: equal_
 
-        equal_ = lhs%pascals .safeEq. rhs%pascals
+        equal_ = lhs%joules_per_mol .safeEq. rhs%joules_per_mol
     end function equal_
 
     elemental function equalWithinAbsolute(lhs, rhs, within)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
-        class(Pressure_t), intent(in) :: within
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: within
         logical :: equalWithinAbsolute
 
         equalWithinAbsolute = equalWithinAbsolute_( &
-                lhs%pascals, rhs%pascals, within%pascals)
+                lhs%joules_per_mol, rhs%joules_per_mol, within%joules_per_mol)
     end function equalWithinAbsolute
 
     elemental function equalWithinRelative(lhs, rhs, within)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         double precision, intent(in) :: within
         logical :: equalWithinRelative
 
         equalWithinRelative = equalWithinRelative_( &
-                lhs%pascals, rhs%pascals, within)
+                lhs%joules_per_mol, rhs%joules_per_mol, within)
     end function equalWithinRelative
 
     elemental function notEqual(lhs, rhs)
-        class(Pressure_t), intent(in) :: lhs
-        class(Pressure_t), intent(in) :: rhs
+        class(EnergyPerAmount_t), intent(in) :: lhs
+        class(EnergyPerAmount_t), intent(in) :: rhs
         logical :: notEqual
 
         notEqual = .not. lhs == rhs
     end function notEqual
 
     elemental function toStringFullPrecision(self) result(string)
-        class(Pressure_t), intent(in) :: self
+        class(EnergyPerAmount_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS)
     end function toStringFullPrecision
 
     elemental function toStringWithPrecision(self, significant_digits) result(string)
-        class(Pressure_t), intent(in) :: self
+        class(EnergyPerAmount_t), intent(in) :: self
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
 
@@ -460,8 +423,8 @@ contains
     end function toStringWithPrecision
 
     elemental function toStringInFullPrecision(self, units) result(string)
-        class(Pressure_t), intent(in) :: self
-        class(PressureUnit_t), intent(in) :: units
+        class(EnergyPerAmount_t), intent(in) :: self
+        class(EnergyPerAmountUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
 
         string = units%toString(toString(self.in.units))
@@ -469,8 +432,8 @@ contains
 
     elemental function toStringInWithPrecision( &
             self, units, significant_digits) result(string)
-        class(Pressure_t), intent(in) :: self
-        class(PressureUnit_t), intent(in) :: units
+        class(EnergyPerAmount_t), intent(in) :: self
+        class(EnergyPerAmountUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
 
@@ -478,25 +441,25 @@ contains
     end function toStringInWithPrecision
 
     elemental function simpleUnitToString(self) result(string)
-        class(PressureSimpleUnit_t), intent(in) :: self
+        class(EnergyPerAmountSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
         string = trim(self%symbol)
     end function simpleUnitToString
 
     pure function simpleValueToString(self, value_) result(string)
-        class(PressureSimpleUnit_t), intent(in) :: self
+        class(EnergyPerAmountSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING), intent(in) :: value_
         type(VARYING_STRING) :: string
 
         string = value_ // " " // self%toString()
     end function simpleValueToString
 
-    pure subroutine simpleParseAs(self, string, errors, pressure)
-        class(PressureSimpleUnit_t), intent(in) :: self
+    pure subroutine simpleParseAs(self, string, errors, energy_per_amount)
+        class(EnergyPerAmountSimpleUnit_t), intent(in) :: self
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
+        type(EnergyPerAmount_t), intent(out) :: energy_per_amount
 
         type(ParseResult_t) :: parse_result
 
@@ -504,12 +467,12 @@ contains
         if (parse_result%ok) then
             select type (the_number => parse_result%parsed)
             type is (ParsedRational_t)
-                pressure = the_number%value_.unit.self
+                energy_per_amount = the_number%value_.unit.self
             end select
         else
             call errors%appendError(Fatal( &
                     PARSE_ERROR, &
-                    Module_("Pressure_m"), &
+                    Module_("Energy_per_amount_m"), &
                     Procedure_("simpleParseAs"), &
                     parse_result%message))
         end if
@@ -534,51 +497,51 @@ contains
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(PressureSimpleUnit_t), intent(out) :: unit
+        type(EnergyPerAmountSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
         call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("simpleUnitFromStringC"))
     end subroutine simpleUnitFromStringC
 
     pure subroutine simpleUnitFromStringS(string, errors, unit)
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(PressureSimpleUnit_t), intent(out) :: unit
+        type(EnergyPerAmountSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
         call fromString(string, PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("simpleUnitFromStringS"))
     end subroutine simpleUnitFromStringS
 
     pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
         character(len=*), intent(in) :: string
-        type(PressureSimpleUnit_t), intent(in) :: units(:)
+        type(EnergyPerAmountSimpleUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(PressureSimpleUnit_t), intent(out) :: unit
+        type(EnergyPerAmountSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
         call fromString(var_str(string), units, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("simpleUnitFromStringWithUnitsC"))
     end subroutine simpleUnitFromStringWithUnitsC
 
     pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
-        type(PressureSimpleUnit_t), intent(in) :: units(:)
+        type(EnergyPerAmountSimpleUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(PressureSimpleUnit_t), intent(out) :: unit
+        type(EnergyPerAmountSimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
         integer :: which_unit
@@ -587,7 +550,7 @@ contains
         if (errors_%hasAny()) then
             call errors%appendErrors( &
                     errors_, &
-                    Module_("Pressure_m"), &
+                    Module_("Energy_per_amount_m"), &
                     Procedure_("simpleUnitFromStringWithUnitsS"))
         else
             unit = units(which_unit)
@@ -596,7 +559,7 @@ contains
 
     pure subroutine selectUnit(string, units, errors, index)
         type(VARYING_STRING), intent(in) :: string
-        class(PressureUnit_t), intent(in) :: units(:)
+        class(EnergyPerAmountUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         integer, intent(out) :: index
 
@@ -614,8 +577,8 @@ contains
         end do
         call errors%appendError(Fatal( &
                 UNKNOWN_UNIT, &
-                Module_("Pressure_m"), &
+                Module_("Energy_per_amount_m"), &
                 Procedure_("selectUnit"), &
                 '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
     end subroutine selectUnit
-end module Pressure_m
+end module Energy_per_amount_m
