@@ -6,6 +6,8 @@ module quaff_Interquantity_operators_m
     use Density_m, only: Density_t
     use Dynamic_viscosity_m, only: DynamicViscosity_t
     use Energy_m, only: Energy_t
+    use Energy_per_amount_m, only: EnergyPerAmount_t
+    use Energy_per_temperature_amount_m, only: EnergyPerTemperatureAmount_t
     use Enthalpy_m, only: Enthalpy_t
     use Force_m, only: Force_t
     use Length_m, only: Length_t
@@ -14,6 +16,7 @@ module quaff_Interquantity_operators_m
     use Power_m, only: Power_t
     use Pressure_m, only: Pressure_t
     use Speed_m, only: Speed_t
+    use Temperature_m, only: Temperature_t
     use Time_m, only: Time_t
     use Volume_m, only: Volume_t
 
@@ -28,6 +31,7 @@ module quaff_Interquantity_operators_m
         module procedure areaTimesPressure
         module procedure burnupTimesMass
         module procedure densityTimesVolume
+        module procedure energyPerTemperatureAmountTimesTemperature
         module procedure enthalpyTimesMass
         module procedure forceTimesLength
         module procedure lengthTimesArea
@@ -40,12 +44,15 @@ module quaff_Interquantity_operators_m
         module procedure powerTimesTime
         module procedure pressureTimesArea
         module procedure pressureTimesTime
+        module procedure pressureTimesVolume
         module procedure speedTimesTime
+        module procedure temperatureTimesEnergyPerTemperatureAmount
         module procedure timeTimesAcceleration
         module procedure timeTimesPower
         module procedure timeTimesPressure
         module procedure timeTimesSpeed
         module procedure volumeTimesDensity
+        module procedure volumeTimesPressure
     end interface operator(*)
 
     interface operator(/)
@@ -53,6 +60,7 @@ module quaff_Interquantity_operators_m
         module procedure dynamicViscosityDividedByPressure
         module procedure dynamicViscosityDividedByTime
         module procedure energyDividedByBurnup
+        module procedure energyDividedByEnergyPerAmount
         module procedure energyDividedByEnthalpy
         module procedure energyDividedByForce
         module procedure energyDividedByLength
@@ -172,6 +180,14 @@ contains
         mass%kilograms = energy%joules / burnup%watt_seconds_per_kilogram
     end function energyDividedByBurnup
 
+    elemental function energyDividedByEnergyPerAmount(energy, energy_per_amount) result(amount)
+        type(Energy_t), intent(in) :: energy
+        type(EnergyPerAmount_t), intent(in) :: energy_per_amount
+        type(Amount_t) :: amount
+
+        amount%mols = energy%joules / energy_per_amount%joules_per_mol
+    end function energyDividedByEnergyPerAmount
+
     elemental function energyDividedByEnthalpy(energy, enthalpy) result(mass)
         type(Energy_t), intent(in) :: energy
         type(Enthalpy_t), intent(in) :: enthalpy
@@ -219,6 +235,16 @@ contains
 
         power%watts = energy%joules / time%seconds
     end function energyDividedByTime
+
+    elemental function energyPerTemperatureAmountTimesTemperature( &
+            energy_per_temperature_amount, temperature) result(energy_per_amount)
+        type(EnergyPerTemperatureAmount_t), intent(in) :: energy_per_temperature_amount
+        type(Temperature_t), intent(in) :: temperature
+        type(EnergyPerAmount_t) :: energy_per_amount
+
+        energy_per_amount%joules_per_mol = &
+                energy_per_temperature_amount%joules_per_kelvin_mol * temperature%kelvin
+    end function energyPerTemperatureAmountTimesTemperature
 
     elemental function enthalpyTimesMass(enthalpy, mass) result(energy)
         type(Enthalpy_t), intent(in) :: enthalpy
@@ -396,6 +422,14 @@ contains
         dynamic_viscosity%pascal_seconds = pressure%pascals * time%seconds
     end function pressureTimesTime
 
+    elemental function pressureTimesVolume(pressure, volume) result(energy)
+        type(Pressure_t), intent(in) :: pressure
+        type(Volume_t), intent(in) :: volume
+        type(Energy_t) :: energy
+
+        energy%joules = pressure%pascals * volume%cubic_meters
+    end function pressureTimesVolume
+
     elemental function speedDividedByAcceleration(speed, acceleration) result(time)
         type(Speed_t), intent(in) :: speed
         type(Acceleration_t), intent(in) :: acceleration
@@ -419,6 +453,16 @@ contains
 
         length%meters = speed%meters_per_second * time%seconds
     end function speedTimesTime
+
+    elemental function temperatureTimesEnergyPerTemperatureAmount( &
+            temperature, energy_per_temperature_amount) result(energy_per_amount)
+        type(Temperature_t), intent(in) :: temperature
+        type(EnergyPerTemperatureAmount_t), intent(in) :: energy_per_temperature_amount
+        type(EnergyPerAmount_t) :: energy_per_amount
+
+        energy_per_amount%joules_per_mol = &
+                temperature%kelvin * energy_per_temperature_amount%joules_per_kelvin_mol
+    end function temperatureTimesEnergyPerTemperatureAmount
 
     elemental function timeTimesAcceleration(time, acceleration) result(speed)
         type(Time_t), intent(in) :: time
@@ -475,4 +519,12 @@ contains
 
         mass%kilograms = volume%cubic_meters * density%kilograms_per_cubic_meter
     end function volumeTimesDensity
+
+    elemental function volumeTimesPressure(volume, pressure) result(energy)
+        type(Volume_t), intent(in) :: volume
+        type(Pressure_t), intent(in) :: pressure
+        type(Energy_t) :: energy
+
+        energy%joules = volume%cubic_meters * pressure%pascals
+    end function volumeTimesPressure
 end module quaff_Interquantity_operators_m
