@@ -136,7 +136,6 @@ module quaff
             MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
-    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
     use Length_m, only: &
             Length_t, &
             LengthUnit_t, &
@@ -202,6 +201,8 @@ module quaff
             MEGAPASCALS, &
             PASCALS, &
             POUNDS_PER_SQUARE_INCH
+    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
+    use quaff_physical_constants
     use Quantity_module_m, only: &
             QuantityCamel_t, &
             QuantityCamelUnit_t, &
