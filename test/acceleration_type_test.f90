@@ -2,7 +2,6 @@ module acceleration_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: ErrorList_t
     use iso_varying_string, only: operator(//)
-    use Miscellaneous_m, only: PARSE_ERROR, UNKNOWN_UNIT
     use quaff, only: &
             Acceleration_t, &
             AccelerationUnit_t, &
@@ -12,6 +11,7 @@ module acceleration_type_test
             PROVIDED_ACCELERATION_UNITS, &
             METERS_PER_SQUARE_SECOND
     use quaff_asserts_m, only: assertEquals
+    use quaff_Utilities_m, only: PARSE_ERROR
     use Vegetables_m, only: &
             DoublePrecisionInput_t, &
             Example_t, &
@@ -132,7 +132,7 @@ contains
 
         call fromString( &
                 "1.0 bad", [METERS_PER_SQUARE_SECOND], errors, acceleration)
-        result_ = assertThat(errors.hasType.UNKNOWN_UNIT, errors%toString())
+        result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
     end function checkBadUnit
 
     pure function checkBadNumber() result(result_)
@@ -156,7 +156,7 @@ contains
     end function checkSum
 
     pure function makeUnitsExamples(units) result(examples)
-        type(AccelerationUnit_t), intent(in) :: units(:)
+        class(AccelerationUnit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
         integer :: i
@@ -202,7 +202,7 @@ contains
     end function makeUnitsExamples
 
     function checkRoundTripIn(units) result(result_)
-        type(AccelerationUnit_t), intent(in) :: units
+        class(AccelerationUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
         type(TestItem_t) :: the_test
@@ -233,8 +233,8 @@ contains
 
     pure function checkConversionFactorsAreInverse( &
             from, to) result(result_)
-        type(AccelerationUnit_t), intent(in) :: to
-        type(AccelerationUnit_t), intent(in) :: from
+        class(AccelerationUnit_t), intent(in) :: to
+        class(AccelerationUnit_t), intent(in) :: from
         type(Result_t) :: result_
 
         double precision :: factor1
@@ -250,7 +250,7 @@ contains
     end function checkConversionFactorsAreInverse
 
     function checkStringTrip(units) result(result_)
-        type(AccelerationUnit_t), intent(in) :: units
+        class(AccelerationUnit_t), intent(in) :: units
         type(Result_t) :: result_
 
         type(TestItem_t) :: the_test

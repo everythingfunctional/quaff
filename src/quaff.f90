@@ -113,10 +113,10 @@ module quaff
             PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
             DYNES, &
             KILOPONDS, &
-            MILLI_NEWTONS, &
+            MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
-    use Interquantity_operators_m, only: operator(*), operator(/), asBurnup
+    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
     use Length_m, only: &
             Length_t, &
             LengthUnit_t, &
@@ -218,6 +218,7 @@ module quaff
             ThermalConductivityUnit_t, &
             operator(.unit.), &
             fromString, &
+            sum, &
             DEFAULT_THERMAL_CONDUCTIVITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_CONDUCTIVITY_UNITS => PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &

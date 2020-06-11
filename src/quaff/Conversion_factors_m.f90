@@ -1,4 +1,4 @@
-module Conversion_factors_m
+module quaff_Conversion_factors_m
     implicit none
 
     ! SI Scaling
@@ -125,4 +125,4 @@ module Conversion_factors_m
             CALORIES_PER_SECOND_PER_WATT / CENTIMETERS_PER_METER
     double precision, parameter :: WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN = &
             METERS_PER_CENTIMETER
-end module Conversion_factors_m
+end module quaff_Conversion_factors_m

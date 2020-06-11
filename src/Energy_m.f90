@@ -1,10 +1,4 @@
 module Energy_m
-    use Conversion_factors_m, only: &
-            BTU_PER_JOULE, &
-            CALORIES_PER_JOULE, &
-            KILOJOULES_PER_JOULE, &
-            MEGABTU_PER_JOULE, &
-            MEGAWATT_DAYS_PER_JOULE
     use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
     use iso_varying_string, only: &
             VARYING_STRING, &
@@ -14,11 +8,28 @@ module Energy_m
             len, &
             split, &
             var_str
-    use Miscellaneous_m, only: &
+    use parff, only: &
+            ParsedRational_t, &
+            ParseResult_t, &
+            ParserOutput_t, &
+            State_t, &
+            dropThen, &
+            parseChar, &
+            parseRational, &
+            parseString, &
+            parseWith, &
+            thenDrop
+    use quaff_Conversion_factors_m, only: &
+            BTU_PER_JOULE, &
+            CALORIES_PER_JOULE, &
+            KILOJOULES_PER_JOULE, &
+            MEGABTU_PER_JOULE, &
+            MEGAWATT_DAYS_PER_JOULE
+    use quaff_Utilities_m, only: &
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            wrapInLatexQuantity, &
+            parseSpace, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -76,34 +87,47 @@ module Energy_m
         procedure :: toStringInWithPrecision
         generic, public :: toStringIn => &
                 toStringInFullPrecision, toStringInWithPrecision
-        procedure :: toGnuplotStringFullPrecision
-        procedure :: toGnuplotStringWithPrecision
-        generic, public :: toGnuplotString => &
-                toGnuplotStringFullPrecision, toGnuplotStringWithPrecision
-        procedure :: toGnuplotStringInFullPrecision
-        procedure :: toGnuplotStringInWithPrecision
-        generic, public :: toGnuplotStringIn => &
-                toGnuplotStringInFullPrecision, toGnuplotStringInWithPrecision
-        procedure :: toLatexStringFullPrecision
-        procedure :: toLatexStringWithPrecision
-        generic, public :: toLatexString => &
-                toLatexStringFullPrecision, toLatexStringWithPrecision
-        procedure :: toLatexStringInFullPrecision
-        procedure :: toLatexStringInWithPrecision
-        generic, public :: toLatexStringIn => &
-                toLatexStringInFullPrecision, toLatexStringInWithPrecision
     end type Energy_t
 
-    type, public :: EnergyUnit_t
+    type, abstract, public :: EnergyUnit_t
         double precision :: conversion_factor
-        character(len=20) :: symbol
-        character(len=50) :: gnuplot_symbol
-        character(len=100) :: latex_symbol
     contains
-        procedure :: toString => unitToString
-        procedure :: toGnuplotString => unitToGnuplotString
-        procedure :: toLatexString => unitToLatexString
+        procedure(justUnitToString), deferred :: unitToString
+        procedure(unitWithValueToString), deferred :: valueToString
+        generic :: toString => unitToString, valueToString
+        procedure(parseAsI), deferred :: parseAs
     end type EnergyUnit_t
+
+    type, extends(EnergyUnit_t), public :: EnergySimpleUnit_t
+        character(len=20) :: symbol
+    contains
+        procedure :: unitToString => simpleUnitToString
+        procedure :: valueToString => simpleValueToString
+        procedure :: parseAs => simpleParseAs
+    end type EnergySimpleUnit_t
+
+    abstract interface
+        elemental function justUnitToString(self) result(string)
+            import EnergyUnit_t, VARYING_STRING
+            class(EnergyUnit_t), intent(in) :: self
+            type(VARYING_STRING) :: string
+        end function justUnitToString
+
+        pure function unitWithValueToString(self, value_) result(string)
+            import EnergyUnit_t, VARYING_STRING
+            class(EnergyUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: value_
+            type(VARYING_STRING) :: string
+        end function unitWithValueToString
+
+        pure subroutine parseAsI(self, string, errors, energy)
+            import ErrorList_t, Energy_t, EnergyUnit_t, VARYING_STRING
+            class(EnergyUnit_t), intent(in) :: self
+            type(VARYING_STRING), intent(in) :: string
+            type(ErrorList_t), intent(out) :: errors
+            type(Energy_t), intent(out) :: energy
+        end subroutine parseAsI
+    end interface
 
     interface operator(.unit.)
         module procedure fromUnits
@@ -114,59 +138,47 @@ module Energy_m
         module procedure fromStringBasicS
         module procedure fromStringWithUnitsC
         module procedure fromStringWithUnitsS
-        module procedure unitFromStringBasicC
-        module procedure unitFromStringBasicS
-        module procedure unitFromStringWithUnitsC
-        module procedure unitFromStringWithUnitsS
+        module procedure simpleUnitFromStringC
+        module procedure simpleUnitFromStringS
+        module procedure simpleUnitFromStringWithUnitsC
+        module procedure simpleUnitFromStringWithUnitsS
     end interface fromString
 
     interface sum
         module procedure sumEnergy
     end interface sum
 
-    type(EnergyUnit_t), parameter, public :: BTU = &
-            EnergyUnit_t( &
+    type(EnergySimpleUnit_t), parameter, public :: BTU = &
+            EnergySimpleUnit_t( &
                     conversion_factor = BTU_PER_JOULE, &
-                    symbol = "BTU", &
-                    gnuplot_symbol = "BTU", &
-                    latex_symbol = "\btu")
-    type(EnergyUnit_t), parameter, public :: CALORIES = &
-            EnergyUnit_t( &
+                    symbol = "BTU")
+    type(EnergySimpleUnit_t), parameter, public :: CALORIES = &
+            EnergySimpleUnit_t( &
                     conversion_factor = CALORIES_PER_JOULE, &
-                    symbol = "cal", &
-                    gnuplot_symbol = "cal", &
-                    latex_symbol = "\calorie")
-    type(EnergyUnit_t), parameter, public :: JOULES = &
-            EnergyUnit_t( &
+                    symbol = "cal")
+    type(EnergySimpleUnit_t), parameter, public :: JOULES = &
+            EnergySimpleUnit_t( &
                     conversion_factor = 1.0d0, &
-                    symbol = "J", &
-                    gnuplot_symbol = "J", &
-                    latex_symbol = "\joule")
-    type(EnergyUnit_t), parameter, public :: KILOJOULES = &
-            EnergyUnit_t( &
+                    symbol = "J")
+    type(EnergySimpleUnit_t), parameter, public :: KILOJOULES = &
+            EnergySimpleUnit_t( &
                     conversion_factor = KILOJOULES_PER_JOULE, &
-                    symbol = "kJ", &
-                    gnuplot_symbol = "kJ", &
-                    latex_symbol = "\kilo\joule")
-    type(EnergyUnit_t), parameter, public :: MEGABTU = &
-            EnergyUnit_t( &
+                    symbol = "kJ")
+    type(EnergySimpleUnit_t), parameter, public :: MEGABTU = &
+            EnergySimpleUnit_t( &
                     conversion_factor = MEGABTU_PER_JOULE, &
-                    symbol = "MBTU", &
-                    gnuplot_symbol = "MBTU", &
-                    latex_symbol = "\mega\btu")
-    type(EnergyUnit_t), parameter, public :: MEGAWATT_DAYS = &
-            EnergyUnit_t( &
+                    symbol = "MBTU")
+    type(EnergySimpleUnit_t), parameter, public :: MEGAWATT_DAYS = &
+            EnergySimpleUnit_t( &
                     conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
-                    symbol = "MW d", &
-                    gnuplot_symbol = "MW d", &
-                    latex_symbol = "\mega\watt\day")
+                    symbol = "MW d")
 
-    type(EnergyUnit_t), public :: DEFAULT_OUTPUT_UNITS = JOULES
+    type(EnergySimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = JOULES
 
-    type(EnergyUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
+    type(EnergySimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS]
 
-    public :: operator(.unit.), fromString, sum
+    public :: operator(.unit.), fromString, selectUnit, sum
 contains
     pure subroutine fromStringBasicC(string, errors, energy)
         character(len=*), intent(in) :: string
@@ -200,7 +212,7 @@ contains
 
     pure subroutine fromStringWithUnitsC(string, units, errors, energy)
         character(len=*), intent(in) :: string
-        type(EnergyUnit_t), intent(in) :: units(:)
+        class(EnergyUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Energy_t), intent(out) :: energy
 
@@ -216,49 +228,28 @@ contains
 
     pure subroutine fromStringWithUnitsS(string, units, errors, energy)
         type(VARYING_STRING), intent(in) :: string
-        type(EnergyUnit_t), intent(in) :: units(:)
+        class(EnergyUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
         type(Energy_t), intent(out) :: energy
 
-        double precision :: number
-        character(len=100) :: number_chars
-        type(VARYING_STRING) :: number_string
-        integer :: status
-        type(VARYING_STRING) :: symbol
-        type(EnergyUnit_t) :: unit
-        type(ErrorList_t) :: unit_errors
+        type(ErrorList_t) :: all_errors(size(units))
+        integer :: i
 
-        energy%joules = 0.0d0
-        symbol = string
-        call split(symbol, number_string, " ")
-        if (len(symbol) == 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
+        do i = 1, size(units)
+            call units(i)%parseAs(string, all_errors(i), energy)
+            if (.not. all_errors(i)%hasAny()) return
+        end do
+        do i = 1, size(units)
+            call errors%appendErrors( &
+                    all_errors(i), &
                     Module_("Energy_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'No unit symbol found in string "' // string // '"'))
-            return
-        end if
-        number_chars = number_string
-        read(number_chars, *, iostat=status) number
-        if (status /= 0) then
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Energy_m"), &
-                    Procedure_("fromStringWithUnitsS"), &
-                    'Error parsing number from string "' // number_string // '"'))
-        end if
-        call fromString(symbol, units, unit_errors, unit)
-        energy = number.unit.unit
-        call errors%appendErrors( &
-                unit_errors, &
-                Module_("Energy_m"), &
-                Procedure_("fromStringWithUnitsS"))
+                    Procedure_("fromStringWithUnitsS"))
+        end do
     end subroutine fromStringWithUnitsS
 
     elemental function fromUnits(value_, units) result(energy)
         double precision, intent(in) :: value_
-        type(EnergyUnit_t), intent(in) :: units
+        class(EnergyUnit_t), intent(in) :: units
         type(Energy_t) :: energy
 
         energy%joules = value_ / units%conversion_factor
@@ -456,7 +447,7 @@ contains
         class(EnergyUnit_t), intent(in) :: units
         type(VARYING_STRING) :: string
 
-        string = toString(self.in.units) // " " // units%toString()
+        string = units%toString(toString(self.in.units))
     end function toStringInFullPrecision
 
     elemental function toStringInWithPrecision( &
@@ -466,119 +457,96 @@ contains
         integer, intent(in) :: significant_digits
         type(VARYING_STRING) :: string
 
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toString()
+        string = units%toString(toString(self.in.units, significant_digits))
     end function toStringInWithPrecision
 
-    elemental function toGnuplotStringFullPrecision(self) result(string)
-        class(Energy_t), intent(in) :: self
+    elemental function simpleUnitToString(self) result(string)
+        class(EnergySimpleUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toGnuplotStringFullPrecision
+        string = trim(self%symbol)
+    end function simpleUnitToString
 
-    elemental function toGnuplotStringWithPrecision( &
-            self, significant_digits) result(string)
-        class(Energy_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
+    pure function simpleValueToString(self, value_) result(string)
+        class(EnergySimpleUnit_t), intent(in) :: self
+        type(VARYING_STRING), intent(in) :: value_
         type(VARYING_STRING) :: string
 
-        string = self%toGnuplotStringIn( &
-                DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toGnuplotStringWithPrecision
+        string = value_ // " " // self%toString()
+    end function simpleValueToString
 
-    elemental function toGnuplotStringInFullPrecision(self, units) result(string)
-        class(Energy_t), intent(in) :: self
-        class(EnergyUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = toString(self.in.units) // " " // units%toGnuplotString()
-    end function toGnuplotStringInFullPrecision
-
-    elemental function toGnuplotStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Energy_t), intent(in) :: self
-        class(EnergyUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = &
-                toString(self.in.units, significant_digits) &
-                // " " // units%toGnuplotString()
-    end function toGnuplotStringInWithPrecision
-
-    elemental function toLatexStringFullPrecision(self) result(string)
-        class(Energy_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS)
-    end function toLatexStringFullPrecision
-
-    elemental function toLatexStringWithPrecision(self, significant_digits) result(string)
-        class(Energy_t), intent(in) :: self
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = self%toLatexStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
-    end function toLatexStringWithPrecision
-
-    elemental function toLatexStringInFullPrecision(self, units) result(string)
-        class(Energy_t), intent(in) :: self
-        class(EnergyUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units), units%toLatexString())
-    end function toLatexStringInFullPrecision
-
-    elemental function toLatexStringInWithPrecision( &
-            self, units, significant_digits) result(string)
-        class(Energy_t), intent(in) :: self
-        class(EnergyUnit_t), intent(in) :: units
-        integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity( &
-                toString(self.in.units, significant_digits), &
-                units%toLatexString())
-    end function toLatexStringInWithPrecision
-
-    pure subroutine unitFromStringBasicC(string, errors, unit)
-        character(len=*), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(EnergyUnit_t), intent(out) :: unit
-
-        type(ErrorList_t) :: errors_
-
-        call fromString( &
-                var_str(string), PROVIDED_UNITS, errors_, unit)
-        call errors%appendErrors( &
-                errors_, &
-                Module_("Energy_m"), &
-                Procedure_("unitFromStringBasicC"))
-    end subroutine unitFromStringBasicC
-
-    pure subroutine unitFromStringBasicS(string, errors, unit)
+    pure subroutine simpleParseAs(self, string, errors, energy)
+        class(EnergySimpleUnit_t), intent(in) :: self
         type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(EnergyUnit_t), intent(out) :: unit
+        type(Energy_t), intent(out) :: energy
+
+        type(ParseResult_t) :: parse_result
+
+        parse_result = parseWith(theParser, string)
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
+            type is (ParsedRational_t)
+                energy = the_number%value_.unit.self
+            end select
+        else
+            call errors%appendError(Fatal( &
+                    PARSE_ERROR, &
+                    Module_("Energy_m"), &
+                    Procedure_("simpleParseAs"), &
+                    parse_result%message))
+        end if
+    contains
+        pure function theParser(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = thenDrop( &
+                    thenDrop(parseRational, parseSpace, state_), &
+                    parseUnit)
+        end function theParser
+
+        pure function parseUnit(state_) result(result_)
+            type(State_t), intent(in) :: state_
+            type(ParserOutput_t) :: result_
+
+            result_ = parseString(trim(self%symbol), state_)
+        end function parseUnit
+    end subroutine simpleParseAs
+
+    pure subroutine simpleUnitFromStringC(string, errors, unit)
+        character(len=*), intent(in) :: string
+        type(ErrorList_t), intent(out) :: errors
+        type(EnergySimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
-        call fromString( &
-                string, PROVIDED_UNITS, errors_, unit)
+        call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
         call errors%appendErrors( &
                 errors_, &
                 Module_("Energy_m"), &
-                Procedure_("unitFromStringBasicS"))
-    end subroutine unitFromStringBasicS
+                Procedure_("simpleUnitFromStringC"))
+    end subroutine simpleUnitFromStringC
 
-    pure subroutine unitFromStringWithUnitsC(string, units, errors, unit)
-        character(len=*), intent(in) :: string
-        type(EnergyUnit_t), intent(in) :: units(:)
+    pure subroutine simpleUnitFromStringS(string, errors, unit)
+        type(VARYING_STRING), intent(in) :: string
         type(ErrorList_t), intent(out) :: errors
-        type(EnergyUnit_t), intent(out) :: unit
+        type(EnergySimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+
+        call fromString(string, PROVIDED_UNITS, errors_, unit)
+        call errors%appendErrors( &
+                errors_, &
+                Module_("Energy_m"), &
+                Procedure_("simpleUnitFromStringS"))
+    end subroutine simpleUnitFromStringS
+
+    pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
+        character(len=*), intent(in) :: string
+        type(EnergySimpleUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        type(EnergySimpleUnit_t), intent(out) :: unit
 
         type(ErrorList_t) :: errors_
 
@@ -586,54 +554,51 @@ contains
         call errors%appendErrors( &
                 errors_, &
                 Module_("Energy_m"), &
-                Procedure_("unitFromStringWithUnitsC"))
-    end subroutine unitFromStringWithUnitsC
+                Procedure_("simpleUnitFromStringWithUnitsC"))
+    end subroutine simpleUnitFromStringWithUnitsC
 
-    pure subroutine unitFromStringWithUnitsS(string, units, errors, unit)
+    pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
         type(VARYING_STRING), intent(in) :: string
-        type(EnergyUnit_t), intent(in) :: units(:)
+        type(EnergySimpleUnit_t), intent(in) :: units(:)
         type(ErrorList_t), intent(out) :: errors
-        type(EnergyUnit_t), intent(out) :: unit
+        type(EnergySimpleUnit_t), intent(out) :: unit
+
+        type(ErrorList_t) :: errors_
+        integer :: which_unit
+
+        call selectUnit(string, units, errors, which_unit)
+        if (errors_%hasAny()) then
+            call errors%appendErrors( &
+                    errors_, &
+                    Module_("Energy_m"), &
+                    Procedure_("simpleUnitFromStringWithUnitsS"))
+        else
+            unit = units(which_unit)
+        end if
+    end subroutine simpleUnitFromStringWithUnitsS
+
+    pure subroutine selectUnit(string, units, errors, index)
+        type(VARYING_STRING), intent(in) :: string
+        class(EnergyUnit_t), intent(in) :: units(:)
+        type(ErrorList_t), intent(out) :: errors
+        integer, intent(out) :: index
 
         integer :: i
         type(VARYING_STRING) :: unit_strings(size(units))
 
         do i = 1, size(units)
-            if (string == units(i)%symbol) then
-                unit = units(i)
-                exit
+            if (string == units(i)%toString()) then
+                index = i
+                return
             end if
         end do
-        if (i > size(units)) then
-            do i = 1, size(units)
-                unit_strings(i) = units(i)%toString()
-            end do
-            call errors%appendError(Fatal( &
-                    UNKNOWN_UNIT, &
-                    Module_("Energy_m"), &
-                    Procedure_("unitFromStringWithUnitsS"), &
-                    '"' // string // '", known units: [' // join(unit_strings, ', ') // ']' ))
-        end if
-    end subroutine unitFromStringWithUnitsS
-
-    elemental function unitToString(self) result(string)
-        class(EnergyUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function unitToString
-
-    elemental function unitToGnuplotString(self) result(string)
-        class(EnergyUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%gnuplot_symbol)
-    end function unitToGnuplotString
-
-    elemental function unitToLatexString(self) result(string)
-        class(EnergyUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%latex_symbol)
-    end function unitToLatexString
+        do i = 1, size(units)
+            unit_strings(i) = units(i)%toString()
+        end do
+        call errors%appendError(Fatal( &
+                UNKNOWN_UNIT, &
+                Module_("Energy_m"), &
+                Procedure_("selectUnit"), &
+                '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
+    end subroutine selectUnit
 end module Energy_m

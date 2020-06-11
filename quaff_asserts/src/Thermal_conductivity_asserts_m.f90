@@ -1,6 +1,6 @@
 module Thermal_conductivity_asserts_m
     use iso_varying_string, only: VARYING_STRING, operator(//), var_str
-    use Thermal_conductivity_m, only: ThermalConductivity_t
+    use quaff, only: ThermalConductivity_t
     use strff, only: toString
     use Vegetables_m, only: &
             Result_t, &
