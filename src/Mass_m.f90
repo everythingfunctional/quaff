@@ -27,12 +27,7 @@ module Mass_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -117,14 +112,6 @@ module Mass_m
         procedure :: parseAs => gnuplotParseAs
     end type MassGnuplotUnit_t
 
-    type, extends(MassUnit_t), public :: MassLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type MassLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import MassUnit_t, VARYING_STRING
@@ -175,10 +162,6 @@ module Mass_m
             MassGnuplotUnit_t( &
                     conversion_factor = GRAMS_PER_KILOGRAM, &
                     symbol = "g")
-    type(MassLatexUnit_t), parameter, public :: GRAMS_LATEX = &
-            MassLatexUnit_t( &
-                    conversion_factor = GRAMS_PER_KILOGRAM, &
-                    symbol = "\gram")
     type(MassSimpleUnit_t), parameter, public :: KILOGRAMS = &
             MassSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -187,10 +170,6 @@ module Mass_m
             MassGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "kg")
-    type(MassLatexUnit_t), parameter, public :: KILOGRAMS_LATEX = &
-            MassLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\kilo\gram")
     type(MassSimpleUnit_t), parameter, public :: POUNDS_MASS = &
             MassSimpleUnit_t( &
                     conversion_factor = POUNDS_PER_KILOGRAM, &
@@ -214,8 +193,6 @@ module Mass_m
             [GRAMS, KILOGRAMS, POUNDS_MASS, TONS]
     type(MassGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [GRAMS_GNUPLOT, KILOGRAMS_GNUPLOT, POUNDS_MASS_GNUPLOT, TONS_GNUPLOT]
-    type(MassLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [GRAMS_LATEX, KILOGRAMS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -592,53 +569,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, mass)
-        class(MassLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Mass_t), intent(out) :: mass
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                mass = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Mass_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(MassGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -653,21 +583,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(MassLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(MassLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

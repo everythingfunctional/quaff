@@ -10,18 +10,6 @@ module quaff_Utilities_m
         module procedure safeEq
     end interface operator(.safeEq.)
 
-    interface wrapInLatexQuantity
-        module procedure wrapInLatexQuantityCC
-        module procedure wrapInLatexQuantityCS
-        module procedure wrapInLatexQuantitySC
-        module procedure wrapInLatexQuantitySS
-    end interface wrapInLatexQuantity
-
-    interface wrapInLatexUnit
-        module procedure wrapInLatexUnitC
-        module procedure wrapInLatexUnitS
-    end interface wrapInLatexUnit
-
     double precision, parameter :: MACHINE_EPSILON = epsilon(1.0d0)
 
     type(MessageType_t), parameter, public :: PARSE_ERROR = &
@@ -34,12 +22,7 @@ module quaff_Utilities_m
             equalWithinAbsolute, &
             equalWithinRelative, &
             operator(.safeEq.), &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
-            parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit
+            parseSpace
 contains
     elemental function effectivelyZero(a)
         double precision, intent(in) :: a
@@ -68,27 +51,6 @@ contains
                 .or. (abs(a - b) / max(abs(a), abs(b))) < tolerance
     end function equalWithinRelative
 
-    pure function parseCloseBrace(state_) result(result_)
-        type(State_t), intent(in) :: state_
-        type(ParserOutput_t) :: result_
-
-        result_ = parseChar("}", state_)
-    end function parseCloseBrace
-
-    pure function parseOpenBrace(state_) result(result_)
-        type(State_t), intent(in) :: state_
-        type(ParserOutput_t) :: result_
-
-        result_ = parseChar("{", state_)
-    end function parseOpenBrace
-
-    pure function parseSI(state_) result(result_)
-        type(State_t), intent(in) :: state_
-        type(ParserOutput_t) :: result_
-
-        result_ = parseString("\SI", state_)
-    end function parseSI
-
     pure function parseSpace(state_) result(result_)
         type(State_t), intent(in) :: state_
         type(ParserOutput_t) :: result_
@@ -103,50 +65,4 @@ contains
 
         safeEq = equalWithinRelative(a, b, MACHINE_EPSILON)
     end function safeEq
-
-    pure function wrapInLatexQuantityCC(number, units) result(latex_command)
-        character(len=*), intent(in) :: number
-        character(len=*), intent(in) :: units
-        type(VARYING_STRING) :: latex_command
-
-        latex_command = wrapInLatexQuantity(var_str(number), var_str(units))
-    end function wrapInLatexQuantityCC
-
-    pure function wrapInLatexQuantityCS(number, units) result(latex_command)
-        character(len=*), intent(in) :: number
-        type(VARYING_STRING), intent(in) :: units
-        type(VARYING_STRING) :: latex_command
-
-        latex_command = wrapInLatexQuantity(var_str(number), units)
-    end function wrapInLatexQuantityCS
-
-    pure function wrapInLatexQuantitySC(number, units) result(latex_command)
-        type(VARYING_STRING), intent(in) :: number
-        character(len=*), intent(in) :: units
-        type(VARYING_STRING) :: latex_command
-
-        latex_command = wrapInLatexQuantity(number, var_str(units))
-    end function wrapInLatexQuantitySC
-
-    pure function wrapInLatexQuantitySS(number, units) result(latex_command)
-        type(VARYING_STRING), intent(in) :: number
-        type(VARYING_STRING), intent(in) :: units
-        type(VARYING_STRING) :: latex_command
-
-        latex_command = "\SI{" // number // "}{" // units // "}"
-    end function wrapInLatexQuantitySS
-
-    pure function wrapInLatexUnitC(units) result(latex_command)
-        character(len=*), intent(in) :: units
-        type(VARYING_STRING) :: latex_command
-
-        latex_command = wrapInLatexUnit(var_str(units))
-    end function wrapInLatexUnitC
-
-    pure function wrapInLatexUnitS(units) result(latex_command)
-        type(VARYING_STRING), intent(in) :: units
-        type(VARYING_STRING) :: latex_command
-
-        latex_command = "\si{" // units // "}"
-    end function wrapInLatexUnitS
 end module quaff_Utilities_m

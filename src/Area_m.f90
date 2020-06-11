@@ -27,12 +27,7 @@ module Area_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -117,14 +112,6 @@ module Area_m
         procedure :: parseAs => gnuplotParseAs
     end type AreaGnuplotUnit_t
 
-    type, extends(AreaUnit_t), public :: AreaLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type AreaLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import AreaUnit_t, VARYING_STRING
@@ -175,10 +162,6 @@ module Area_m
             AreaGnuplotUnit_t( &
                     conversion_factor = SQUARE_CENTIMETERS_PER_SQUARE_METER, &
                     symbol = "cm^2")
-    type(AreaLatexUnit_t), parameter, public :: SQUARE_CENTIMETERS_LATEX = &
-            AreaLatexUnit_t( &
-                    conversion_factor = SQUARE_CENTIMETERS_PER_SQUARE_METER, &
-                    symbol = "\square\centi\meter")
     type(AreaSimpleUnit_t), parameter, public :: SQUARE_FEET = &
             AreaSimpleUnit_t( &
                     conversion_factor = SQUARE_FEET_PER_SQUARE_METER, &
@@ -203,10 +186,6 @@ module Area_m
             AreaGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m^2")
-    type(AreaLatexUnit_t), parameter, public :: SQUARE_METERS_LATEX = &
-            AreaLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\square\meter")
 
     type(AreaSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = SQUARE_METERS
 
@@ -217,8 +196,6 @@ module Area_m
             SQUARE_FEET_GNUPLOT, &
             SQUARE_INCHES_GNUPLOT, &
             SQUARE_METERS_GNUPLOT]
-    type(AreaLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [SQUARE_CENTIMETERS_LATEX, SQUARE_METERS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -595,53 +572,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, area)
-        class(AreaLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Area_t), intent(out) :: area
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                area = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Area_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(AreaGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -656,21 +586,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(AreaLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(AreaLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

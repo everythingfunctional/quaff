@@ -28,12 +28,7 @@ module Power_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -118,14 +113,6 @@ module Power_m
         procedure :: parseAs => gnuplotParseAs
     end type PowerGnuplotUnit_t
 
-    type, extends(PowerUnit_t), public :: PowerLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type PowerLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import PowerUnit_t, VARYING_STRING
@@ -200,10 +187,6 @@ module Power_m
             PowerGnuplotUnit_t( &
                     conversion_factor = MEGAWATTS_PER_WATT, &
                     symbol = "MW")
-    type(PowerLatexUnit_t), parameter, public :: MEGAWATTS_LATEX = &
-            PowerLatexUnit_t( &
-                    conversion_factor = MEGAWATTS_PER_WATT, &
-                    symbol = "\mega\watt")
     type(PowerSimpleUnit_t), parameter, public :: WATTS = &
             PowerSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -212,10 +195,6 @@ module Power_m
             PowerGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "W")
-    type(PowerLatexUnit_t), parameter, public :: WATTS_LATEX = &
-            PowerLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\watt")
 
     type(PowerSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = WATTS
 
@@ -231,8 +210,6 @@ module Power_m
             MEGABTU_PER_HOUR_GNUPLOT, &
             MEGAWATTS_GNUPLOT, &
             WATTS_GNUPLOT]
-    type(PowerLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [MEGAWATTS_LATEX, WATTS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -609,53 +586,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, power)
-        class(PowerLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Power_t), intent(out) :: power
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                power = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Power_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(PowerGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -670,21 +600,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(PowerLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(PowerLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

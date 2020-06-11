@@ -24,12 +24,7 @@ module Dynamic_viscosity_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -114,14 +109,6 @@ module Dynamic_viscosity_m
         procedure :: parseAs => gnuplotParseAs
     end type DynamicViscosityGnuplotUnit_t
 
-    type, extends(DynamicViscosityUnit_t), public :: DynamicViscosityLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type DynamicViscosityLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import DynamicViscosityUnit_t, VARYING_STRING
@@ -172,10 +159,6 @@ module Dynamic_viscosity_m
             DynamicViscosityGnuplotUnit_t( &
                     conversion_factor = MEGAPASCAL_SECONDS_PER_PASCAL_SECOND, &
                     symbol = "MPa s")
-    type(DynamicViscosityLatexUnit_t), parameter, public :: MEGAPASCAL_SECONDS_LATEX = &
-            DynamicViscosityLatexUnit_t( &
-                    conversion_factor = MEGAPASCAL_SECONDS_PER_PASCAL_SECOND, &
-                    symbol = "\mega\pascal\second")
     type(DynamicViscositySimpleUnit_t), parameter, public :: PASCAL_SECONDS = &
             DynamicViscositySimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -184,10 +167,6 @@ module Dynamic_viscosity_m
             DynamicViscosityGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "Pa s")
-    type(DynamicViscosityLatexUnit_t), parameter, public :: PASCAL_SECONDS_LATEX = &
-            DynamicViscosityLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\pascal\second")
 
     type(DynamicViscositySimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = PASCAL_SECONDS
 
@@ -195,8 +174,6 @@ module Dynamic_viscosity_m
             [MEGAPASCAL_SECONDS, PASCAL_SECONDS]
     type(DynamicViscosityGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [MEGAPASCAL_SECONDS_GNUPLOT, PASCAL_SECONDS_GNUPLOT]
-    type(DynamicViscosityLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [MEGAPASCAL_SECONDS_LATEX, PASCAL_SECONDS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -573,53 +550,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, dynamic_viscosity)
-        class(DynamicViscosityLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(DynamicViscosity_t), intent(out) :: dynamic_viscosity
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                dynamic_viscosity = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Dynamic_viscosity_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(DynamicViscosityGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -634,21 +564,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(DynamicViscosityLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(DynamicViscosityLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

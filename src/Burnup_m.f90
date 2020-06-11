@@ -25,12 +25,7 @@ module Burnup_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -115,14 +110,6 @@ module Burnup_m
         procedure :: parseAs => gnuplotParseAs
     end type BurnupGnuplotUnit_t
 
-    type, extends(BurnupUnit_t), public :: BurnupLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type BurnupLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import BurnupUnit_t, VARYING_STRING
@@ -173,10 +160,6 @@ module Burnup_m
             BurnupGnuplotUnit_t( &
                     conversion_factor = MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM, &
                     symbol = "(MW d)/t")
-    type(BurnupLatexUnit_t), parameter, public :: MEGAWATT_DAYS_PER_TON_LATEX = &
-            BurnupLatexUnit_t( &
-                    conversion_factor = MEGAWATT_DAYS_PER_TON_PER_WATT_SECONDS_PER_KILOGRAM, &
-                    symbol = "\mega\watt\day\per\ton")
     type(BurnupSimpleUnit_t), parameter, public :: WATT_SECONDS_PER_KILOGRAM = &
             BurnupSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -185,10 +168,6 @@ module Burnup_m
             BurnupGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "(W s)/kg")
-    type(BurnupLatexUnit_t), parameter, public :: WATT_SECONDS_PER_KILOGRAM_LATEX = &
-            BurnupLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\watt\second\per\kilogram")
 
     type(BurnupSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = WATT_SECONDS_PER_KILOGRAM
 
@@ -196,8 +175,6 @@ module Burnup_m
             [MEGAWATT_DAYS_PER_TON, WATT_SECONDS_PER_KILOGRAM]
     type(BurnupGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [MEGAWATT_DAYS_PER_TON_GNUPLOT, WATT_SECONDS_PER_KILOGRAM_GNUPLOT]
-    type(BurnupLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [MEGAWATT_DAYS_PER_TON_LATEX, WATT_SECONDS_PER_KILOGRAM_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -574,53 +551,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, burnup)
-        class(BurnupLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Burnup_t), intent(out) :: burnup
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                burnup = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Burnup_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(BurnupGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -635,21 +565,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(BurnupLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(BurnupLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

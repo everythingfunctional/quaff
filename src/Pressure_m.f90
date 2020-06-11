@@ -30,12 +30,7 @@ module Pressure_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -120,14 +115,6 @@ module Pressure_m
         procedure :: parseAs => gnuplotParseAs
     end type PressureGnuplotUnit_t
 
-    type, extends(PressureUnit_t), public :: PressureLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type PressureLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import PressureUnit_t, VARYING_STRING
@@ -194,10 +181,6 @@ module Pressure_m
             PressureGnuplotUnit_t( &
                     conversion_factor = KILOPASCALS_PER_PASCAL, &
                     symbol = "kPa")
-    type(PressureLatexUnit_t), parameter, public :: KILOPASCALS_LATEX = &
-            PressureLatexUnit_t( &
-                    conversion_factor = KILOPASCALS_PER_PASCAL, &
-                    symbol = "\kilo\pascal")
     type(PressureSimpleUnit_t), parameter, public :: KILOPONDS_PER_SQUARE_CENTIMETER = &
             PressureSimpleUnit_t( &
                     conversion_factor = KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
@@ -214,10 +197,6 @@ module Pressure_m
             PressureGnuplotUnit_t( &
                     conversion_factor = MEGAPASCALS_PER_PASCAL, &
                     symbol = "MPa")
-    type(PressureLatexUnit_t), parameter, public :: MEGAPASCALS_LATEX = &
-            PressureLatexUnit_t( &
-                    conversion_factor = MEGAPASCALS_PER_PASCAL, &
-                    symbol = "\mega\pascal")
     type(PressureSimpleUnit_t), parameter, public :: PASCALS = &
             PressureSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -226,10 +205,6 @@ module Pressure_m
             PressureGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "Pa")
-    type(PressureLatexUnit_t), parameter, public :: PASCALS_LATEX = &
-            PressureLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\pascal")
     type(PressureSimpleUnit_t), parameter, public :: POUNDS_PER_SQUARE_INCH = &
             PressureSimpleUnit_t( &
                     conversion_factor = POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
@@ -257,8 +232,6 @@ module Pressure_m
             MEGAPASCALS_GNUPLOT, &
             PASCALS_GNUPLOT, &
             POUNDS_PER_SQUARE_INCH_GNUPLOT]
-    type(PressureLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [KILOPASCALS_LATEX, MEGAPASCALS_LATEX, PASCALS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -635,53 +608,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, pressure)
-        class(PressureLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                pressure = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Pressure_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(PressureGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -696,21 +622,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(PressureLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(PressureLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

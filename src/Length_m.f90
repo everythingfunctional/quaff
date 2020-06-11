@@ -29,12 +29,7 @@ module Length_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -119,14 +114,6 @@ module Length_m
         procedure :: parseAs => gnuplotParseAs
     end type LengthGnuplotUnit_t
 
-    type, extends(LengthUnit_t), public :: LengthLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type LengthLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import LengthUnit_t, VARYING_STRING
@@ -177,10 +164,6 @@ module Length_m
             LengthGnuplotUnit_t( &
                     conversion_factor = CENTIMETERS_PER_METER, &
                     symbol = "cm")
-    type(LengthLatexUnit_t), parameter, public :: CENTIMETERS_LATEX = &
-            LengthLatexUnit_t( &
-                    conversion_factor = CENTIMETERS_PER_METER, &
-                    symbol = "\centi\meter")
     type(LengthSimpleUnit_t), parameter, public :: FEET = &
             LengthSimpleUnit_t( &
                     conversion_factor = FEET_PER_METER, &
@@ -205,10 +188,6 @@ module Length_m
             LengthGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m")
-    type(LengthLatexUnit_t), parameter, public :: METERS_LATEX = &
-            LengthLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\meter")
     type(LengthSimpleUnit_t), parameter, public :: MICROINCHES = &
             LengthSimpleUnit_t( &
                     conversion_factor = MICROINCHES_PER_METER, &
@@ -225,10 +204,6 @@ module Length_m
             LengthGnuplotUnit_t( &
                     conversion_factor = MICROMETERS_PER_METER, &
                     symbol = "{/Symbol m}m")
-    type(LengthLatexUnit_t), parameter, public :: MICROMETERS_LATEX = &
-            LengthLatexUnit_t( &
-                    conversion_factor = MICROMETERS_PER_METER, &
-                    symbol = "\micro\meter")
 
     type(LengthSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
 
@@ -241,8 +216,6 @@ module Length_m
             METERS_GNUPLOT, &
             MICROINCHES_GNUPLOT, &
             MICROMETERS_GNUPLOT]
-    type(LengthLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [CENTIMETERS_LATEX, METERS_LATEX, MICROMETERS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -619,53 +592,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, length)
-        class(LengthLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Length_t), intent(out) :: length
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                length = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Length_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(LengthGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -680,21 +606,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(LengthLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(LengthLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

@@ -24,12 +24,7 @@ module Amount_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -114,14 +109,6 @@ module Amount_m
         procedure :: parseAs => gnuplotParseAs
     end type AmountGnuplotUnit_t
 
-    type, extends(AmountUnit_t), public :: AmountLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type AmountLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import AmountUnit_t, VARYING_STRING
@@ -172,10 +159,6 @@ module Amount_m
             AmountGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "mol")
-    type(AmountLatexUnit_t), parameter, public :: MOLS_LATEX = &
-            AmountLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\mole")
     type(AmountSimpleUnit_t), parameter, public :: PARTICLES = &
             AmountSimpleUnit_t( &
                     conversion_factor = AVOGADROS_NUMBER, &
@@ -184,10 +167,6 @@ module Amount_m
             AmountGnuplotUnit_t( &
                     conversion_factor = AVOGADROS_NUMBER, &
                     symbol = "particles")
-    type(AmountLatexUnit_t), parameter, public :: PARTICLES_LATEX = &
-            AmountLatexUnit_t( &
-                    conversion_factor = AVOGADROS_NUMBER, &
-                    symbol = ".particles")
 
     type(AmountSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = MOLS
 
@@ -195,8 +174,6 @@ module Amount_m
             [MOLS, PARTICLES]
     type(AmountGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [MOLS_GNUPLOT, PARTICLES_GNUPLOT]
-    type(AmountLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [MOLS_LATEX, PARTICLES_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -573,53 +550,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, amount)
-        class(AmountLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Amount_t), intent(out) :: amount
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                amount = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Amount_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(AmountGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -634,21 +564,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(AmountLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(AmountLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

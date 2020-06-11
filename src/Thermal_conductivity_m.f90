@@ -26,12 +26,7 @@ module Thermal_conductivity_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -116,14 +111,6 @@ module Thermal_conductivity_m
         procedure :: parseAs => gnuplotParseAs
     end type ThermalConductivityGnuplotUnit_t
 
-    type, extends(ThermalConductivityUnit_t), public :: ThermalConductivityLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type ThermalConductivityLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import ThermalConductivityUnit_t, VARYING_STRING
@@ -182,10 +169,6 @@ module Thermal_conductivity_m
             ThermalConductivityGnuplotUnit_t( &
                     conversion_factor = WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN, &
                     symbol = "W/(cm K)")
-    type(ThermalConductivityLatexUnit_t), parameter, public :: WATTS_PER_CENTIMETER_KELVIN_LATEX = &
-            ThermalConductivityLatexUnit_t( &
-                    conversion_factor = WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN, &
-                    symbol = "\watt\per\centi\meter\per\kelvin")
     type(ThermalConductivitySimpleUnit_t), parameter, public :: WATTS_PER_METER_KELVIN = &
             ThermalConductivitySimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -194,10 +177,6 @@ module Thermal_conductivity_m
             ThermalConductivityGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "W/(m K)")
-    type(ThermalConductivityLatexUnit_t), parameter, public :: WATTS_PER_METER_KELVIN_LATEX = &
-            ThermalConductivityLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\watt\per\meter\per\kelvin")
 
     type(ThermalConductivitySimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = WATTS_PER_METER_KELVIN
 
@@ -209,8 +188,6 @@ module Thermal_conductivity_m
             [CALORIES_PER_SECOND_CENTIMETER_KELVIN_GNUPLOT, &
             WATTS_PER_CENTIMETER_KELVIN_GNUPLOT, &
             WATTS_PER_METER_KELVIN_GNUPLOT]
-    type(ThermalConductivityLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [WATTS_PER_CENTIMETER_KELVIN_LATEX, WATTS_PER_METER_KELVIN_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -587,53 +564,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, thermal_conductivity)
-        class(ThermalConductivityLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(ThermalConductivity_t), intent(out) :: thermal_conductivity
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                thermal_conductivity = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Thermal_conductivity_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(ThermalConductivityGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -648,21 +578,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(ThermalConductivityLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(ThermalConductivityLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

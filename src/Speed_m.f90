@@ -26,12 +26,7 @@ module Speed_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -116,14 +111,6 @@ module Speed_m
         procedure :: parseAs => gnuplotParseAs
     end type SpeedGnuplotUnit_t
 
-    type, extends(SpeedUnit_t), public :: SpeedLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type SpeedLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import SpeedUnit_t, VARYING_STRING
@@ -174,10 +161,6 @@ module Speed_m
             SpeedGnuplotUnit_t( &
                     conversion_factor = CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND, &
                     symbol = "cm/s")
-    type(SpeedLatexUnit_t), parameter, public :: CENTIMETERS_PER_SECOND_LATEX = &
-            SpeedLatexUnit_t( &
-                    conversion_factor = CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND, &
-                    symbol = "\centi\meter\per\second")
     type(SpeedSimpleUnit_t), parameter, public :: FEET_PER_SECOND = &
             SpeedSimpleUnit_t( &
                     conversion_factor = FEET_PER_SECOND_PER_METERS_PER_SECOND, &
@@ -194,10 +177,6 @@ module Speed_m
             SpeedGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m/s")
-    type(SpeedLatexUnit_t), parameter, public :: METERS_PER_SECOND_LATEX = &
-            SpeedLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\meter\per\second")
 
     type(SpeedSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS_PER_SECOND
 
@@ -207,8 +186,6 @@ module Speed_m
             [CENTIMETERS_PER_SECOND_GNUPLOT, &
             FEET_PER_SECOND_GNUPLOT, &
             METERS_PER_SECOND_GNUPLOT]
-    type(SpeedLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [CENTIMETERS_PER_SECOND_LATEX, METERS_PER_SECOND_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -585,53 +562,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, speed)
-        class(SpeedLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Speed_t), intent(out) :: speed
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                speed = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Speed_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(SpeedGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -646,21 +576,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(SpeedLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(SpeedLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

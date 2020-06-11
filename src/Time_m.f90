@@ -25,12 +25,7 @@ module Time_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -115,14 +110,6 @@ module Time_m
         procedure :: parseAs => gnuplotParseAs
     end type TimeGnuplotUnit_t
 
-    type, extends(TimeUnit_t), public :: TimeLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type TimeLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import TimeUnit_t, VARYING_STRING
@@ -173,10 +160,6 @@ module Time_m
             TimeGnuplotUnit_t( &
                     conversion_factor = DAYS_PER_SECOND, &
                     symbol = "d")
-    type(TimeLatexUnit_t), parameter, public :: DAYS_LATEX = &
-            TimeLatexUnit_t( &
-                    conversion_factor = DAYS_PER_SECOND, &
-                    symbol = "\day")
     type(TimeSimpleUnit_t), parameter, public :: HOURS = &
             TimeSimpleUnit_t( &
                     conversion_factor = HOURS_PER_SECOND, &
@@ -185,10 +168,6 @@ module Time_m
             TimeGnuplotUnit_t( &
                     conversion_factor = HOURS_PER_SECOND, &
                     symbol = "h")
-    type(TimeLatexUnit_t), parameter, public :: HOURS_LATEX = &
-            TimeLatexUnit_t( &
-                    conversion_factor = HOURS_PER_SECOND, &
-                    symbol = "\hour")
     type(TimeSimpleUnit_t), parameter, public :: MINUTES = &
             TimeSimpleUnit_t( &
                     conversion_factor = MINUTES_PER_SECOND, &
@@ -197,10 +176,6 @@ module Time_m
             TimeGnuplotUnit_t( &
                     conversion_factor = MINUTES_PER_SECOND, &
                     symbol = "min")
-    type(TimeLatexUnit_t), parameter, public :: MINUTES_LATEX = &
-            TimeLatexUnit_t( &
-                    conversion_factor = MINUTES_PER_SECOND, &
-                    symbol = "\minute")
     type(TimeSimpleUnit_t), parameter, public :: SECONDS = &
             TimeSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -209,10 +184,6 @@ module Time_m
             TimeGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "s")
-    type(TimeLatexUnit_t), parameter, public :: SECONDS_LATEX = &
-            TimeLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\second")
 
     type(TimeSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = SECONDS
 
@@ -220,8 +191,6 @@ module Time_m
             [DAYS, HOURS, MINUTES, SECONDS]
     type(TimeGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [DAYS_GNUPLOT, HOURS_GNUPLOT, MINUTES_GNUPLOT, SECONDS_GNUPLOT]
-    type(TimeLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [DAYS_LATEX, HOURS_LATEX, MINUTES_LATEX, SECONDS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -598,53 +567,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, time)
-        class(TimeLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Time_t), intent(out) :: time
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                time = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Time_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(TimeGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -659,21 +581,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(TimeLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(TimeLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

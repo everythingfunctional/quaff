@@ -29,12 +29,7 @@ module Energy_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -119,14 +114,6 @@ module Energy_m
         procedure :: parseAs => gnuplotParseAs
     end type EnergyGnuplotUnit_t
 
-    type, extends(EnergyUnit_t), public :: EnergyLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type EnergyLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import EnergyUnit_t, VARYING_STRING
@@ -193,10 +180,6 @@ module Energy_m
             EnergyGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "J")
-    type(EnergyLatexUnit_t), parameter, public :: JOULES_LATEX = &
-            EnergyLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\joule")
     type(EnergySimpleUnit_t), parameter, public :: KILOJOULES = &
             EnergySimpleUnit_t( &
                     conversion_factor = KILOJOULES_PER_JOULE, &
@@ -205,10 +188,6 @@ module Energy_m
             EnergyGnuplotUnit_t( &
                     conversion_factor = KILOJOULES_PER_JOULE, &
                     symbol = "kJ")
-    type(EnergyLatexUnit_t), parameter, public :: KILOJOULES_LATEX = &
-            EnergyLatexUnit_t( &
-                    conversion_factor = KILOJOULES_PER_JOULE, &
-                    symbol = "\kilo\joule")
     type(EnergySimpleUnit_t), parameter, public :: MEGABTU = &
             EnergySimpleUnit_t( &
                     conversion_factor = MEGABTU_PER_JOULE, &
@@ -225,10 +204,6 @@ module Energy_m
             EnergyGnuplotUnit_t( &
                     conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
                     symbol = "MW d")
-    type(EnergyLatexUnit_t), parameter, public :: MEGAWATT_DAYS_LATEX = &
-            EnergyLatexUnit_t( &
-                    conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
-                    symbol = "\mega\watt\day")
 
     type(EnergySimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = JOULES
 
@@ -241,8 +216,6 @@ module Energy_m
             KILOJOULES_GNUPLOT, &
             MEGABTU_GNUPLOT, &
             MEGAWATT_DAYS_GNUPLOT]
-    type(EnergyLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [JOULES_LATEX, KILOJOULES_LATEX, MEGAWATT_DAYS_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -619,53 +592,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, energy)
-        class(EnergyLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Energy_t), intent(out) :: energy
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                energy = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Energy_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(EnergyGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -680,21 +606,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(EnergyLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(EnergyLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

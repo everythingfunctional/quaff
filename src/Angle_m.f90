@@ -24,12 +24,7 @@ module Angle_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -114,14 +109,6 @@ module Angle_m
         procedure :: parseAs => gnuplotParseAs
     end type AngleGnuplotUnit_t
 
-    type, extends(AngleUnit_t), public :: AngleLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type AngleLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import AngleUnit_t, VARYING_STRING
@@ -184,10 +171,6 @@ module Angle_m
             AngleGnuplotUnit_t( &
                     conversion_factor = DEGREES_PER_RADIAN, &
                     symbol = "{/Symbol \260}")
-    type(AngleLatexUnit_t), parameter, public :: DEGREES_LATEX = &
-            AngleLatexUnit_t( &
-                    conversion_factor = DEGREES_PER_RADIAN, &
-                    symbol = "\degree")
     type(AngleSimpleUnit_t), parameter, public :: RADIANS = &
             AngleSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
@@ -196,10 +179,6 @@ module Angle_m
             AngleGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "rad")
-    type(AngleLatexUnit_t), parameter, public :: RADIANS_LATEX = &
-            AngleLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "\radian")
 
     type(AngleSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = RADIANS
 
@@ -207,8 +186,6 @@ module Angle_m
             [DEGREES, RADIANS]
     type(AngleGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [DEGREES_GNUPLOT, RADIANS_GNUPLOT]
-    type(AngleLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [DEGREES_LATEX, RADIANS_LATEX]
 
     public :: &
             operator(.unit.), &
@@ -596,53 +573,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, angle)
-        class(AngleLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Angle_t), intent(out) :: angle
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                angle = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Angle_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(AngleGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -657,21 +587,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(AngleLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(AngleLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

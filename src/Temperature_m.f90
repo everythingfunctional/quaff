@@ -27,12 +27,7 @@ module Temperature_m
             operator(.safeEq.), &
             equalWithinAbsolute_ => equalWithinAbsolute, &
             equalWithinRelative_ => equalWithinRelative, &
-            parseCloseBrace, &
-            parseOpenBrace, &
-            parseSI, &
             parseSpace, &
-            wrapInLatexQuantity, &
-            wrapInLatexUnit, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, toString
@@ -118,14 +113,6 @@ module Temperature_m
         procedure :: parseAs => gnuplotParseAs
     end type TemperatureGnuplotUnit_t
 
-    type, extends(TemperatureUnit_t), public :: TemperatureLatexUnit_t
-        character(len=100) :: symbol
-    contains
-        procedure :: unitToString => latexUnitToString
-        procedure :: valueToString => latexValueToString
-        procedure :: parseAs => latexParseAs
-    end type TemperatureLatexUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import TemperatureUnit_t, VARYING_STRING
@@ -178,11 +165,6 @@ module Temperature_m
                     conversion_factor = 1.0d0, &
                     difference = CELSIUS_KELVIN_DIFFERENCE, &
                     symbol = "{/Symbol \260}C")
-    type(TemperatureLatexUnit_t), parameter, public :: CELSIUS_LATEX = &
-            TemperatureLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    difference = CELSIUS_KELVIN_DIFFERENCE, &
-                    symbol = "\degreeCelsius")
     type(TemperatureSimpleUnit_t), parameter, public :: FAHRENHEIT = &
             TemperatureSimpleUnit_t( &
                     conversion_factor = RANKINE_PER_KELVIN, &
@@ -203,11 +185,6 @@ module Temperature_m
                     conversion_factor = 1.0d0, &
                     difference = 0.0d0, &
                     symbol = "K")
-    type(TemperatureLatexUnit_t), parameter, public :: KELVIN_LATEX = &
-            TemperatureLatexUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    difference = 0.0d0, &
-                    symbol = "\kelvin")
     type(TemperatureSimpleUnit_t), parameter, public :: RANKINE = &
             TemperatureSimpleUnit_t( &
                     conversion_factor = RANKINE_PER_KELVIN, &
@@ -225,8 +202,6 @@ module Temperature_m
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
     type(TemperatureGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
             [CELSIUS_GNUPLOT, FAHRENHEIT_GNUPLOT, KELVIN_GNUPLOT, RANKINE_GNUPLOT]
-    type(TemperatureLatexUnit_t), parameter, public :: PROVIDED_LATEX_UNITS(*) = &
-            [CELSIUS_LATEX, KELVIN_LATEX]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -603,53 +578,6 @@ contains
         end function parseUnit
     end subroutine gnuplotParseAs
 
-    pure subroutine latexParseAs(self, string, errors, temperature)
-        class(TemperatureLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Temperature_t), intent(out) :: temperature
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                temperature = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Temperature_m"), &
-                    Procedure_("latexParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop( &
-                            thenDrop( &
-                                    thenDrop( &
-                                            dropThen( &
-                                                    dropThen(parseSI, parseOpenBrace, state_), &
-                                                    parseRational), &
-                                            parseCloseBrace), &
-                                    parseOpenBrace), &
-                            parseUnit), &
-                    parseCloseBrace)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine latexParseAs
-
     elemental function gnuplotUnitToString(self) result(string)
         class(TemperatureGnuplotUnit_t), intent(in) :: self
         type(VARYING_STRING) :: string
@@ -664,21 +592,6 @@ contains
 
         string = value_ // " " // self%toString()
     end function gnuplotValueToString
-
-    elemental function latexUnitToString(self) result(string)
-        class(TemperatureLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexUnit(trim(self%symbol))
-    end function latexUnitToString
-
-    pure function latexValueToString(self, value_) result(string)
-        class(TemperatureLatexUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = wrapInLatexQuantity(value_, trim(self%symbol))
-    end function latexValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string
