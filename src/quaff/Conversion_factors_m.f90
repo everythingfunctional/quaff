@@ -126,6 +126,10 @@ module quaff_Conversion_factors_m
     double precision, parameter :: WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN = &
             METERS_PER_CENTIMETER
 
+    ! Energy Per Amount
+    double precision, parameter :: KILOJOULES_PER_MOL_PER_JOULES_PER_MOL = &
+            KILO_PER_BASE
+
     ! Energy Per Temperature Amount
     double precision, parameter :: KILOJOULES_PER_KELVIN_MOL_PER_JOULES_PER_KELVIN_MOL = &
             KILO_PER_BASE

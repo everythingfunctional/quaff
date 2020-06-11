@@ -93,6 +93,16 @@ module quaff
             KILOJOULES, &
             MEGABTU, &
             MEGAWATT_DAYS
+    use Energy_per_amount_m, only: &
+            EnergyPerAmount_t, &
+            EnergyPerAmountUnit_t, &
+            operator(.unit.), &
+            fromString, &
+            sum, &
+            DEFAULT_ENERGY_PER_AMOUNT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_MOL, &
+            KILOJOULES_PER_MOL
     use Energy_per_temperature_amount_m, only: &
             EnergyPerTemperatureAmount_t, &
             EnergyPerTemperatureAmountUnit_t, &

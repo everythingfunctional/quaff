@@ -31,6 +31,10 @@ module quaff_asserts_m
             assertEquals, &
             assertEqualsWithinAbsolute, &
             assertEqualsWithinRelative
+    use Energy_per_amount_asserts_m, only: &
+            assertEquals, &
+            assertEqualsWithinAbsolute, &
+            assertEqualsWithinRelative
     use Energy_per_temperature_amount_asserts_m, only: &
             assertEquals, &
             assertEqualsWithinAbsolute, &
