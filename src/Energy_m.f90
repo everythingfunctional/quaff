@@ -106,14 +106,6 @@ module Energy_m
         procedure :: parseAs => simpleParseAs
     end type EnergySimpleUnit_t
 
-    type, extends(EnergyUnit_t), public :: EnergyGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type EnergyGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import EnergyUnit_t, VARYING_STRING
@@ -160,48 +152,24 @@ module Energy_m
             EnergySimpleUnit_t( &
                     conversion_factor = BTU_PER_JOULE, &
                     symbol = "BTU")
-    type(EnergyGnuplotUnit_t), parameter, public :: BTU_GNUPLOT = &
-            EnergyGnuplotUnit_t( &
-                    conversion_factor = BTU_PER_JOULE, &
-                    symbol = "BTU")
     type(EnergySimpleUnit_t), parameter, public :: CALORIES = &
             EnergySimpleUnit_t( &
-                    conversion_factor = CALORIES_PER_JOULE, &
-                    symbol = "cal")
-    type(EnergyGnuplotUnit_t), parameter, public :: CALORIES_GNUPLOT = &
-            EnergyGnuplotUnit_t( &
                     conversion_factor = CALORIES_PER_JOULE, &
                     symbol = "cal")
     type(EnergySimpleUnit_t), parameter, public :: JOULES = &
             EnergySimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "J")
-    type(EnergyGnuplotUnit_t), parameter, public :: JOULES_GNUPLOT = &
-            EnergyGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "J")
     type(EnergySimpleUnit_t), parameter, public :: KILOJOULES = &
             EnergySimpleUnit_t( &
-                    conversion_factor = KILOJOULES_PER_JOULE, &
-                    symbol = "kJ")
-    type(EnergyGnuplotUnit_t), parameter, public :: KILOJOULES_GNUPLOT = &
-            EnergyGnuplotUnit_t( &
                     conversion_factor = KILOJOULES_PER_JOULE, &
                     symbol = "kJ")
     type(EnergySimpleUnit_t), parameter, public :: MEGABTU = &
             EnergySimpleUnit_t( &
                     conversion_factor = MEGABTU_PER_JOULE, &
                     symbol = "MBTU")
-    type(EnergyGnuplotUnit_t), parameter, public :: MEGABTU_GNUPLOT = &
-            EnergyGnuplotUnit_t( &
-                    conversion_factor = MEGABTU_PER_JOULE, &
-                    symbol = "MBTU")
     type(EnergySimpleUnit_t), parameter, public :: MEGAWATT_DAYS = &
             EnergySimpleUnit_t( &
-                    conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
-                    symbol = "MW d")
-    type(EnergyGnuplotUnit_t), parameter, public :: MEGAWATT_DAYS_GNUPLOT = &
-            EnergyGnuplotUnit_t( &
                     conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
                     symbol = "MW d")
 
@@ -209,13 +177,6 @@ module Energy_m
 
     type(EnergySimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS]
-    type(EnergyGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [BTU_GNUPLOT, &
-            CALORIES_GNUPLOT, &
-            JOULES_GNUPLOT, &
-            KILOJOULES_GNUPLOT, &
-            MEGABTU_GNUPLOT, &
-            MEGAWATT_DAYS_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -552,60 +513,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, energy)
-        class(EnergyGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Energy_t), intent(out) :: energy
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                energy = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Energy_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(EnergyGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(EnergyGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

@@ -102,14 +102,6 @@ module Enthalpy_m
         procedure :: parseAs => simpleParseAs
     end type EnthalpySimpleUnit_t
 
-    type, extends(EnthalpyUnit_t), public :: EnthalpyGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type EnthalpyGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import EnthalpyUnit_t, VARYING_STRING
@@ -156,16 +148,8 @@ module Enthalpy_m
             EnthalpySimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "J/kg")
-    type(EnthalpyGnuplotUnit_t), parameter, public :: JOULES_PER_KILOGRAM_GNUPLOT = &
-            EnthalpyGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "J/kg")
     type(EnthalpySimpleUnit_t), parameter, public :: KILOJOULES_PER_KILOGRAM = &
             EnthalpySimpleUnit_t( &
-                    conversion_factor = KILOJOULES_PER_KILOGRAM_PER_JOULES_PER_KILOGRAM, &
-                    symbol = "kJ/kg")
-    type(EnthalpyGnuplotUnit_t), parameter, public :: KILOJOULES_PER_KILOGRAM_GNUPLOT = &
-            EnthalpyGnuplotUnit_t( &
                     conversion_factor = KILOJOULES_PER_KILOGRAM_PER_JOULES_PER_KILOGRAM, &
                     symbol = "kJ/kg")
 
@@ -173,8 +157,6 @@ module Enthalpy_m
 
     type(EnthalpySimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [JOULES_PER_KILOGRAM, KILOJOULES_PER_KILOGRAM]
-    type(EnthalpyGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [JOULES_PER_KILOGRAM_GNUPLOT, KILOJOULES_PER_KILOGRAM_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -511,60 +493,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, enthalpy)
-        class(EnthalpyGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Enthalpy_t), intent(out) :: enthalpy
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                enthalpy = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Enthalpy_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(EnthalpyGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(EnthalpyGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

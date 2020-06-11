@@ -101,14 +101,6 @@ module Molar_mass_m
         procedure :: parseAs => simpleParseAs
     end type MolarMassSimpleUnit_t
 
-    type, extends(MolarMassUnit_t), public :: MolarMassGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type MolarMassGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import MolarMassUnit_t, VARYING_STRING
@@ -155,16 +147,8 @@ module Molar_mass_m
             MolarMassSimpleUnit_t( &
                     conversion_factor = GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL, &
                     symbol = "g/mol")
-    type(MolarMassGnuplotUnit_t), parameter, public :: GRAMS_PER_MOL_GNUPLOT = &
-            MolarMassGnuplotUnit_t( &
-                    conversion_factor = GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL, &
-                    symbol = "g/mol")
     type(MolarMassSimpleUnit_t), parameter, public :: KILOGRAMS_PER_MOL = &
             MolarMassSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "kg/mol")
-    type(MolarMassGnuplotUnit_t), parameter, public :: KILOGRAMS_PER_MOL_GNUPLOT = &
-            MolarMassGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "kg/mol")
 
@@ -172,8 +156,6 @@ module Molar_mass_m
 
     type(MolarMassSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS_PER_MOL, KILOGRAMS_PER_MOL]
-    type(MolarMassGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [GRAMS_PER_MOL_GNUPLOT, KILOGRAMS_PER_MOL_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -510,60 +492,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, molar_mass)
-        class(MolarMassGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(MolarMass_t), intent(out) :: molar_mass
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                molar_mass = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Molar_mass_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(MolarMassGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(MolarMassGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

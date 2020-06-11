@@ -106,14 +106,6 @@ module Length_m
         procedure :: parseAs => simpleParseAs
     end type LengthSimpleUnit_t
 
-    type, extends(LengthUnit_t), public :: LengthGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type LengthGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import LengthUnit_t, VARYING_STRING
@@ -160,62 +152,31 @@ module Length_m
             LengthSimpleUnit_t( &
                     conversion_factor = CENTIMETERS_PER_METER, &
                     symbol = "cm")
-    type(LengthGnuplotUnit_t), parameter, public :: CENTIMETERS_GNUPLOT = &
-            LengthGnuplotUnit_t( &
-                    conversion_factor = CENTIMETERS_PER_METER, &
-                    symbol = "cm")
     type(LengthSimpleUnit_t), parameter, public :: FEET = &
             LengthSimpleUnit_t( &
-                    conversion_factor = FEET_PER_METER, &
-                    symbol = "ft")
-    type(LengthGnuplotUnit_t), parameter, public :: FEET_GNUPLOT = &
-            LengthGnuplotUnit_t( &
                     conversion_factor = FEET_PER_METER, &
                     symbol = "ft")
     type(LengthSimpleUnit_t), parameter, public :: INCHES = &
             LengthSimpleUnit_t( &
                     conversion_factor = INCHES_PER_METER, &
                     symbol = "in")
-    type(LengthGnuplotUnit_t), parameter, public :: INCHES_GNUPLOT = &
-            LengthGnuplotUnit_t( &
-                    conversion_factor = INCHES_PER_METER, &
-                    symbol = "in")
     type(LengthSimpleUnit_t), parameter, public :: METERS = &
             LengthSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "m")
-    type(LengthGnuplotUnit_t), parameter, public :: METERS_GNUPLOT = &
-            LengthGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m")
     type(LengthSimpleUnit_t), parameter, public :: MICROINCHES = &
             LengthSimpleUnit_t( &
                     conversion_factor = MICROINCHES_PER_METER, &
                     symbol = "uin")
-    type(LengthGnuplotUnit_t), parameter, public :: MICROINCHES_GNUPLOT = &
-            LengthGnuplotUnit_t( &
-                    conversion_factor = MICROINCHES_PER_METER, &
-                    symbol = "{/Symbol m}in")
     type(LengthSimpleUnit_t), parameter, public :: MICROMETERS = &
             LengthSimpleUnit_t( &
                     conversion_factor = MICROMETERS_PER_METER, &
                     symbol = "um")
-    type(LengthGnuplotUnit_t), parameter, public :: MICROMETERS_GNUPLOT = &
-            LengthGnuplotUnit_t( &
-                    conversion_factor = MICROMETERS_PER_METER, &
-                    symbol = "{/Symbol m}m")
 
     type(LengthSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
 
     type(LengthSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
-    type(LengthGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [CENTIMETERS_GNUPLOT, &
-            FEET_GNUPLOT, &
-            INCHES_GNUPLOT, &
-            METERS_GNUPLOT, &
-            MICROINCHES_GNUPLOT, &
-            MICROMETERS_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -552,60 +513,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, length)
-        class(LengthGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Length_t), intent(out) :: length
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                length = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Length_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(LengthGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(LengthGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

@@ -105,14 +105,6 @@ module Temperature_m
         procedure :: parseAs => simpleParseAs
     end type TemperatureSimpleUnit_t
 
-    type, extends(TemperatureUnit_t), public :: TemperatureGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type TemperatureGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import TemperatureUnit_t, VARYING_STRING
@@ -160,28 +152,13 @@ module Temperature_m
                     conversion_factor = 1.0d0, &
                     difference = CELSIUS_KELVIN_DIFFERENCE, &
                     symbol = "C")
-    type(TemperatureGnuplotUnit_t), parameter, public :: CELSIUS_GNUPLOT = &
-            TemperatureGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    difference = CELSIUS_KELVIN_DIFFERENCE, &
-                    symbol = "{/Symbol \260}C")
     type(TemperatureSimpleUnit_t), parameter, public :: FAHRENHEIT = &
             TemperatureSimpleUnit_t( &
                     conversion_factor = RANKINE_PER_KELVIN, &
                     difference = FAHRENHEIT_RANKINE_DIFFERENCE, &
                     symbol = "F")
-    type(TemperatureGnuplotUnit_t), parameter, public :: FAHRENHEIT_GNUPLOT = &
-            TemperatureGnuplotUnit_t( &
-                    conversion_factor = RANKINE_PER_KELVIN, &
-                    difference = FAHRENHEIT_RANKINE_DIFFERENCE, &
-                    symbol = "{/Symbol \260}F")
     type(TemperatureSimpleUnit_t), parameter, public :: KELVIN = &
             TemperatureSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    difference = 0.0d0, &
-                    symbol = "K")
-    type(TemperatureGnuplotUnit_t), parameter, public :: KELVIN_GNUPLOT = &
-            TemperatureGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     difference = 0.0d0, &
                     symbol = "K")
@@ -190,18 +167,11 @@ module Temperature_m
                     conversion_factor = RANKINE_PER_KELVIN, &
                     difference = 0.0d0, &
                     symbol = "R")
-    type(TemperatureGnuplotUnit_t), parameter, public :: RANKINE_GNUPLOT = &
-            TemperatureGnuplotUnit_t( &
-                    conversion_factor = RANKINE_PER_KELVIN, &
-                    difference = 0.0d0, &
-                    symbol = "{/Symbol \260}R")
 
     type(TemperatureSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = KELVIN
 
     type(TemperatureSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
-    type(TemperatureGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [CELSIUS_GNUPLOT, FAHRENHEIT_GNUPLOT, KELVIN_GNUPLOT, RANKINE_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -538,60 +508,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, temperature)
-        class(TemperatureGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Temperature_t), intent(out) :: temperature
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                temperature = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Temperature_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(TemperatureGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(TemperatureGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

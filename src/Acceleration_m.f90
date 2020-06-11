@@ -103,14 +103,6 @@ module Acceleration_m
         procedure :: parseAs => simpleParseAs
     end type AccelerationSimpleUnit_t
 
-    type, extends(AccelerationUnit_t), public :: AccelerationGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type AccelerationGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import AccelerationUnit_t, VARYING_STRING
@@ -157,24 +149,12 @@ module Acceleration_m
             AccelerationSimpleUnit_t( &
                     conversion_factor = CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
                     symbol = "cm/s^2")
-    type(AccelerationGnuplotUnit_t), parameter, public :: CENTIMETERS_PER_SQUARE_SECOND_GNUPLOT = &
-            AccelerationGnuplotUnit_t( &
-                    conversion_factor = CENTIMETERS_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
-                    symbol = "cm/s^2")
     type(AccelerationSimpleUnit_t), parameter, public :: FEET_PER_SQUARE_SECOND = &
             AccelerationSimpleUnit_t( &
                     conversion_factor = FEET_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
                     symbol = "ft/s^2")
-    type(AccelerationGnuplotUnit_t), parameter, public :: FEET_PER_SQUARE_SECOND_GNUPLOT = &
-            AccelerationGnuplotUnit_t( &
-                    conversion_factor = FEET_PER_SQUARE_SECOND_PER_METERS_PER_SQUARE_SECOND, &
-                    symbol = "ft/s^2")
     type(AccelerationSimpleUnit_t), parameter, public :: METERS_PER_SQUARE_SECOND = &
             AccelerationSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "m/s^2")
-    type(AccelerationGnuplotUnit_t), parameter, public :: METERS_PER_SQUARE_SECOND_GNUPLOT = &
-            AccelerationGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m/s^2")
 
@@ -184,10 +164,6 @@ module Acceleration_m
             [CENTIMETERS_PER_SQUARE_SECOND, &
             FEET_PER_SQUARE_SECOND, &
             METERS_PER_SQUARE_SECOND]
-    type(AccelerationGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [CENTIMETERS_PER_SQUARE_SECOND_GNUPLOT, &
-            FEET_PER_SQUARE_SECOND_GNUPLOT, &
-            METERS_PER_SQUARE_SECOND_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -524,60 +500,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, acceleration)
-        class(AccelerationGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Acceleration_t), intent(out) :: acceleration
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                acceleration = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Acceleration_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(AccelerationGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(AccelerationGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

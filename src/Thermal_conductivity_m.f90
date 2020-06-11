@@ -103,14 +103,6 @@ module Thermal_conductivity_m
         procedure :: parseAs => simpleParseAs
     end type ThermalConductivitySimpleUnit_t
 
-    type, extends(ThermalConductivityUnit_t), public :: ThermalConductivityGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type ThermalConductivityGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import ThermalConductivityUnit_t, VARYING_STRING
@@ -157,24 +149,12 @@ module Thermal_conductivity_m
             ThermalConductivitySimpleUnit_t( &
                     conversion_factor = CAL_PER_SEC_CM_K_PER_WATTS_PER_METER_KELVIN, &
                     symbol = "cal/(s cm K)")
-    type(ThermalConductivityGnuplotUnit_t), parameter, public :: CALORIES_PER_SECOND_CENTIMETER_KELVIN_GNUPLOT = &
-            ThermalConductivityGnuplotUnit_t( &
-                    conversion_factor = CAL_PER_SEC_CM_K_PER_WATTS_PER_METER_KELVIN, &
-                    symbol = "cal/(s cm K)")
     type(ThermalConductivitySimpleUnit_t), parameter, public :: WATTS_PER_CENTIMETER_KELVIN = &
             ThermalConductivitySimpleUnit_t( &
                     conversion_factor = WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN, &
                     symbol = "W/(cm K)")
-    type(ThermalConductivityGnuplotUnit_t), parameter, public :: WATTS_PER_CENTIMETER_KELVIN_GNUPLOT = &
-            ThermalConductivityGnuplotUnit_t( &
-                    conversion_factor = WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN, &
-                    symbol = "W/(cm K)")
     type(ThermalConductivitySimpleUnit_t), parameter, public :: WATTS_PER_METER_KELVIN = &
             ThermalConductivitySimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "W/(m K)")
-    type(ThermalConductivityGnuplotUnit_t), parameter, public :: WATTS_PER_METER_KELVIN_GNUPLOT = &
-            ThermalConductivityGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "W/(m K)")
 
@@ -184,10 +164,6 @@ module Thermal_conductivity_m
             [CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
             WATTS_PER_CENTIMETER_KELVIN, &
             WATTS_PER_METER_KELVIN]
-    type(ThermalConductivityGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [CALORIES_PER_SECOND_CENTIMETER_KELVIN_GNUPLOT, &
-            WATTS_PER_CENTIMETER_KELVIN_GNUPLOT, &
-            WATTS_PER_METER_KELVIN_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -524,60 +500,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, thermal_conductivity)
-        class(ThermalConductivityGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(ThermalConductivity_t), intent(out) :: thermal_conductivity
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                thermal_conductivity = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Thermal_conductivity_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(ThermalConductivityGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(ThermalConductivityGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

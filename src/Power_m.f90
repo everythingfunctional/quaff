@@ -105,14 +105,6 @@ module Power_m
         procedure :: parseAs => simpleParseAs
     end type PowerSimpleUnit_t
 
-    type, extends(PowerUnit_t), public :: PowerGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type PowerGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import PowerUnit_t, VARYING_STRING
@@ -159,40 +151,20 @@ module Power_m
             PowerSimpleUnit_t( &
                     conversion_factor = BTU_PER_HOUR_PER_WATT, &
                     symbol = "BTU/hr")
-    type(PowerGnuplotUnit_t), parameter, public :: BTU_PER_HOUR_GNUPLOT = &
-            PowerGnuplotUnit_t( &
-                    conversion_factor = BTU_PER_HOUR_PER_WATT, &
-                    symbol = "BTU/hr")
     type(PowerSimpleUnit_t), parameter, public :: CALORIES_PER_SECOND = &
             PowerSimpleUnit_t( &
-                    conversion_factor = CALORIES_PER_SECOND_PER_WATT, &
-                    symbol = "cal/s")
-    type(PowerGnuplotUnit_t), parameter, public :: CALORIES_PER_SECOND_GNUPLOT = &
-            PowerGnuplotUnit_t( &
                     conversion_factor = CALORIES_PER_SECOND_PER_WATT, &
                     symbol = "cal/s")
     type(PowerSimpleUnit_t), parameter, public :: MEGABTU_PER_HOUR = &
             PowerSimpleUnit_t( &
                     conversion_factor = MEGABTU_PER_HOUR_PER_WATT, &
                     symbol = "MBTU/hr")
-    type(PowerGnuplotUnit_t), parameter, public :: MEGABTU_PER_HOUR_GNUPLOT = &
-            PowerGnuplotUnit_t( &
-                    conversion_factor = MEGABTU_PER_HOUR_PER_WATT, &
-                    symbol = "MBTU/hr")
     type(PowerSimpleUnit_t), parameter, public :: MEGAWATTS = &
             PowerSimpleUnit_t( &
                     conversion_factor = MEGAWATTS_PER_WATT, &
                     symbol = "MW")
-    type(PowerGnuplotUnit_t), parameter, public :: MEGAWATTS_GNUPLOT = &
-            PowerGnuplotUnit_t( &
-                    conversion_factor = MEGAWATTS_PER_WATT, &
-                    symbol = "MW")
     type(PowerSimpleUnit_t), parameter, public :: WATTS = &
             PowerSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "W")
-    type(PowerGnuplotUnit_t), parameter, public :: WATTS_GNUPLOT = &
-            PowerGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "W")
 
@@ -204,12 +176,6 @@ module Power_m
             MEGABTU_PER_HOUR, &
             MEGAWATTS, &
             WATTS]
-    type(PowerGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [BTU_PER_HOUR_GNUPLOT, &
-            CALORIES_PER_SECOND_GNUPLOT, &
-            MEGABTU_PER_HOUR_GNUPLOT, &
-            MEGAWATTS_GNUPLOT, &
-            WATTS_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -546,60 +512,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, power)
-        class(PowerGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Power_t), intent(out) :: power
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                power = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Power_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(PowerGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(PowerGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

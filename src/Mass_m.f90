@@ -104,14 +104,6 @@ module Mass_m
         procedure :: parseAs => simpleParseAs
     end type MassSimpleUnit_t
 
-    type, extends(MassUnit_t), public :: MassGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type MassGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import MassUnit_t, VARYING_STRING
@@ -158,32 +150,16 @@ module Mass_m
             MassSimpleUnit_t( &
                     conversion_factor = GRAMS_PER_KILOGRAM, &
                     symbol = "g")
-    type(MassGnuplotUnit_t), parameter, public :: GRAMS_GNUPLOT = &
-            MassGnuplotUnit_t( &
-                    conversion_factor = GRAMS_PER_KILOGRAM, &
-                    symbol = "g")
     type(MassSimpleUnit_t), parameter, public :: KILOGRAMS = &
             MassSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "kg")
-    type(MassGnuplotUnit_t), parameter, public :: KILOGRAMS_GNUPLOT = &
-            MassGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "kg")
     type(MassSimpleUnit_t), parameter, public :: POUNDS_MASS = &
             MassSimpleUnit_t( &
                     conversion_factor = POUNDS_PER_KILOGRAM, &
                     symbol = "lbm")
-    type(MassGnuplotUnit_t), parameter, public :: POUNDS_MASS_GNUPLOT = &
-            MassGnuplotUnit_t( &
-                    conversion_factor = POUNDS_PER_KILOGRAM, &
-                    symbol = "lbm")
     type(MassSimpleUnit_t), parameter, public :: TONS = &
             MassSimpleUnit_t( &
-                    conversion_factor = TONS_PER_KILOGRAM, &
-                    symbol = "t")
-    type(MassGnuplotUnit_t), parameter, public :: TONS_GNUPLOT = &
-            MassGnuplotUnit_t( &
                     conversion_factor = TONS_PER_KILOGRAM, &
                     symbol = "t")
 
@@ -191,8 +167,6 @@ module Mass_m
 
     type(MassSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS, POUNDS_MASS, TONS]
-    type(MassGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [GRAMS_GNUPLOT, KILOGRAMS_GNUPLOT, POUNDS_MASS_GNUPLOT, TONS_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -529,60 +503,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, mass)
-        class(MassGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Mass_t), intent(out) :: mass
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                mass = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Mass_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(MassGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(MassGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

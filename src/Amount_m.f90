@@ -101,14 +101,6 @@ module Amount_m
         procedure :: parseAs => simpleParseAs
     end type AmountSimpleUnit_t
 
-    type, extends(AmountUnit_t), public :: AmountGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type AmountGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import AmountUnit_t, VARYING_STRING
@@ -155,16 +147,8 @@ module Amount_m
             AmountSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "mol")
-    type(AmountGnuplotUnit_t), parameter, public :: MOLS_GNUPLOT = &
-            AmountGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "mol")
     type(AmountSimpleUnit_t), parameter, public :: PARTICLES = &
             AmountSimpleUnit_t( &
-                    conversion_factor = AVOGADROS_NUMBER, &
-                    symbol = "particles")
-    type(AmountGnuplotUnit_t), parameter, public :: PARTICLES_GNUPLOT = &
-            AmountGnuplotUnit_t( &
                     conversion_factor = AVOGADROS_NUMBER, &
                     symbol = "particles")
 
@@ -172,8 +156,6 @@ module Amount_m
 
     type(AmountSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [MOLS, PARTICLES]
-    type(AmountGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [MOLS_GNUPLOT, PARTICLES_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -510,60 +492,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, amount)
-        class(AmountGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Amount_t), intent(out) :: amount
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                amount = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Amount_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(AmountGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(AmountGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

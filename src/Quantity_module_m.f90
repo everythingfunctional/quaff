@@ -100,14 +100,6 @@ module Quantity_module_m
         procedure :: parseAs => simpleParseAs
     end type QuantityCamelSimpleUnit_t
 
-    type, extends(QuantityCamelUnit_t), public :: QuantityCamelGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type QuantityCamelGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import QuantityCamelUnit_t, VARYING_STRING
@@ -154,25 +146,15 @@ module Quantity_module_m
             QuantityCamelSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "unit_sym")
-    type(QuantityCamelGnuplotUnit_t), parameter, public :: UNITS_CAPITAL_GNUPLOT = &
-            QuantityCamelGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "gnu_sym")
     type(QuantityCamelSimpleUnit_t), parameter, public :: UNITS_CAPITAL2 = &
             QuantityCamelSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "unit_sym")
-    type(QuantityCamelGnuplotUnit_t), parameter, public :: UNITS_CAPITAL2_GNUPLOT = &
-            QuantityCamelGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "gnu_sym")
 
     type(QuantityCamelSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = UNITS_CAPITAL
 
     type(QuantityCamelSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [UNITS_CAPITAL, UNITS_CAPITAL2]
-    type(QuantityCamelGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [UNITS_CAPITAL_GNUPLOT, UNITS_CAPITAL2_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -509,60 +491,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, quantity_lower)
-        class(QuantityCamelGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(QuantityCamel_t), intent(out) :: quantity_lower
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                quantity_lower = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Quantity_module_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(QuantityCamelGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(QuantityCamelGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

@@ -101,14 +101,6 @@ module Angle_m
         procedure :: parseAs => simpleParseAs
     end type AngleSimpleUnit_t
 
-    type, extends(AngleUnit_t), public :: AngleGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type AngleGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import AngleUnit_t, VARYING_STRING
@@ -167,16 +159,8 @@ module Angle_m
             AngleSimpleUnit_t( &
                     conversion_factor = DEGREES_PER_RADIAN, &
                     symbol = "deg")
-    type(AngleGnuplotUnit_t), parameter, public :: DEGREES_GNUPLOT = &
-            AngleGnuplotUnit_t( &
-                    conversion_factor = DEGREES_PER_RADIAN, &
-                    symbol = "{/Symbol \260}")
     type(AngleSimpleUnit_t), parameter, public :: RADIANS = &
             AngleSimpleUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "rad")
-    type(AngleGnuplotUnit_t), parameter, public :: RADIANS_GNUPLOT = &
-            AngleGnuplotUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "rad")
 
@@ -184,8 +168,6 @@ module Angle_m
 
     type(AngleSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [DEGREES, RADIANS]
-    type(AngleGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [DEGREES_GNUPLOT, RADIANS_GNUPLOT]
 
     public :: &
             operator(.unit.), &
@@ -533,60 +515,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, angle)
-        class(AngleGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Angle_t), intent(out) :: angle
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                angle = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Angle_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(AngleGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(AngleGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

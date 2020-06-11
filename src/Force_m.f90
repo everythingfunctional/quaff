@@ -105,14 +105,6 @@ module Force_m
         procedure :: parseAs => simpleParseAs
     end type ForceSimpleUnit_t
 
-    type, extends(ForceUnit_t), public :: ForceGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type ForceGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import ForceUnit_t, VARYING_STRING
@@ -159,40 +151,20 @@ module Force_m
             ForceSimpleUnit_t( &
                     conversion_factor = DYNES_PER_NEWTON, &
                     symbol = "dyn")
-    type(ForceGnuplotUnit_t), parameter, public :: DYNES_GNUPLOT = &
-            ForceGnuplotUnit_t( &
-                    conversion_factor = DYNES_PER_NEWTON, &
-                    symbol = "dyn")
     type(ForceSimpleUnit_t), parameter, public :: KILOPONDS = &
             ForceSimpleUnit_t( &
-                    conversion_factor = KILOPONDS_PER_NEWTON, &
-                    symbol = "kp")
-    type(ForceGnuplotUnit_t), parameter, public :: KILOPONDS_GNUPLOT = &
-            ForceGnuplotUnit_t( &
                     conversion_factor = KILOPONDS_PER_NEWTON, &
                     symbol = "kp")
     type(ForceSimpleUnit_t), parameter, public :: MILLINEWTONS = &
             ForceSimpleUnit_t( &
                     conversion_factor = MILLINEWTONS_PER_NEWTON, &
                     symbol = "mN")
-    type(ForceGnuplotUnit_t), parameter, public :: MILLINEWTONS_GNUPLOT = &
-            ForceGnuplotUnit_t( &
-                    conversion_factor = MILLINEWTONS_PER_NEWTON, &
-                    symbol = "mN")
     type(ForceSimpleUnit_t), parameter, public :: NEWTONS = &
             ForceSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "N")
-    type(ForceGnuplotUnit_t), parameter, public :: NEWTONS_GNUPLOT = &
-            ForceGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "N")
     type(ForceSimpleUnit_t), parameter, public :: POUNDS_FORCE = &
             ForceSimpleUnit_t( &
-                    conversion_factor = POUNDS_PER_NEWTON, &
-                    symbol = "lbf")
-    type(ForceGnuplotUnit_t), parameter, public :: POUNDS_FORCE_GNUPLOT = &
-            ForceGnuplotUnit_t( &
                     conversion_factor = POUNDS_PER_NEWTON, &
                     symbol = "lbf")
 
@@ -200,12 +172,6 @@ module Force_m
 
     type(ForceSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
             [DYNES, KILOPONDS, MILLINEWTONS, NEWTONS, POUNDS_FORCE]
-    type(ForceGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [DYNES_GNUPLOT, &
-            KILOPONDS_GNUPLOT, &
-            MILLINEWTONS_GNUPLOT, &
-            NEWTONS_GNUPLOT, &
-            POUNDS_FORCE_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -542,60 +508,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, force)
-        class(ForceGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Force_t), intent(out) :: force
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                force = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Force_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(ForceGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(ForceGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string

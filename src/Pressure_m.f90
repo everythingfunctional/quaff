@@ -107,14 +107,6 @@ module Pressure_m
         procedure :: parseAs => simpleParseAs
     end type PressureSimpleUnit_t
 
-    type, extends(PressureUnit_t), public :: PressureGnuplotUnit_t
-        character(len=50) :: symbol
-    contains
-        procedure :: unitToString => gnuplotUnitToString
-        procedure :: valueToString => gnuplotValueToString
-        procedure :: parseAs => gnuplotParseAs
-    end type PressureGnuplotUnit_t
-
     abstract interface
         elemental function justUnitToString(self) result(string)
             import PressureUnit_t, VARYING_STRING
@@ -161,56 +153,28 @@ module Pressure_m
             PressureSimpleUnit_t( &
                     conversion_factor = BAR_PER_PASCAL, &
                     symbol = "bar")
-    type(PressureGnuplotUnit_t), parameter, public :: BAR_GNUPLOT = &
-            PressureGnuplotUnit_t( &
-                    conversion_factor = BAR_PER_PASCAL, &
-                    symbol = "bar")
     type(PressureSimpleUnit_t), parameter, public :: DYNES_PER_SQUARE_CENTIMETER = &
             PressureSimpleUnit_t( &
-                    conversion_factor = DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
-                    symbol = "dyn/cm^2")
-    type(PressureGnuplotUnit_t), parameter, public :: DYNES_PER_SQUARE_CENTIMETER_GNUPLOT = &
-            PressureGnuplotUnit_t( &
                     conversion_factor = DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
                     symbol = "dyn/cm^2")
     type(PressureSimpleUnit_t), parameter, public :: KILOPASCALS = &
             PressureSimpleUnit_t( &
                     conversion_factor = KILOPASCALS_PER_PASCAL, &
                     symbol = "kPa")
-    type(PressureGnuplotUnit_t), parameter, public :: KILOPASCALS_GNUPLOT = &
-            PressureGnuplotUnit_t( &
-                    conversion_factor = KILOPASCALS_PER_PASCAL, &
-                    symbol = "kPa")
     type(PressureSimpleUnit_t), parameter, public :: KILOPONDS_PER_SQUARE_CENTIMETER = &
             PressureSimpleUnit_t( &
-                    conversion_factor = KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
-                    symbol = "kp/cm^2")
-    type(PressureGnuplotUnit_t), parameter, public :: KILOPONDS_PER_SQUARE_CENTIMETER_GNUPLOT = &
-            PressureGnuplotUnit_t( &
                     conversion_factor = KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
                     symbol = "kp/cm^2")
     type(PressureSimpleUnit_t), parameter, public :: MEGAPASCALS = &
             PressureSimpleUnit_t( &
                     conversion_factor = MEGAPASCALS_PER_PASCAL, &
                     symbol = "MPa")
-    type(PressureGnuplotUnit_t), parameter, public :: MEGAPASCALS_GNUPLOT = &
-            PressureGnuplotUnit_t( &
-                    conversion_factor = MEGAPASCALS_PER_PASCAL, &
-                    symbol = "MPa")
     type(PressureSimpleUnit_t), parameter, public :: PASCALS = &
             PressureSimpleUnit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "Pa")
-    type(PressureGnuplotUnit_t), parameter, public :: PASCALS_GNUPLOT = &
-            PressureGnuplotUnit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "Pa")
     type(PressureSimpleUnit_t), parameter, public :: POUNDS_PER_SQUARE_INCH = &
             PressureSimpleUnit_t( &
-                    conversion_factor = POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
-                    symbol = "psi")
-    type(PressureGnuplotUnit_t), parameter, public :: POUNDS_PER_SQUARE_INCH_GNUPLOT = &
-            PressureGnuplotUnit_t( &
                     conversion_factor = POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
                     symbol = "psi")
 
@@ -224,14 +188,6 @@ module Pressure_m
             MEGAPASCALS, &
             PASCALS, &
             POUNDS_PER_SQUARE_INCH]
-    type(PressureGnuplotUnit_t), parameter, public :: PROVIDED_GNUPLOT_UNITS(*) = &
-            [BAR_GNUPLOT, &
-            DYNES_PER_SQUARE_CENTIMETER_GNUPLOT, &
-            KILOPASCALS_GNUPLOT, &
-            KILOPONDS_PER_SQUARE_CENTIMETER_GNUPLOT, &
-            MEGAPASCALS_GNUPLOT, &
-            PASCALS_GNUPLOT, &
-            POUNDS_PER_SQUARE_INCH_GNUPLOT]
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
@@ -568,60 +524,6 @@ contains
             result_ = parseString(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
-
-    pure subroutine gnuplotParseAs(self, string, errors, pressure)
-        class(PressureGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
-        type(Pressure_t), intent(out) :: pressure
-
-        type(ParseResult_t) :: parse_result
-
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                pressure = the_number%value_.unit.self
-            end select
-        else
-            call errors%appendError(Fatal( &
-                    PARSE_ERROR, &
-                    Module_("Pressure_m"), &
-                    Procedure_("gnuplotParseAs"), &
-                    parse_result%message))
-        end if
-    contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
-                    parseUnit)
-        end function theParser
-
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
-
-            result_ = parseString(trim(self%symbol), state_)
-        end function parseUnit
-    end subroutine gnuplotParseAs
-
-    elemental function gnuplotUnitToString(self) result(string)
-        class(PressureGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
-
-        string = trim(self%symbol)
-    end function gnuplotUnitToString
-
-    pure function gnuplotValueToString(self, value_) result(string)
-        class(PressureGnuplotUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
-
-        string = value_ // " " // self%toString()
-    end function gnuplotValueToString
 
     pure subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string
