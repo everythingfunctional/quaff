@@ -194,6 +194,8 @@ module quaff
             sum, &
             DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
+            ATMOSPHERES, &
+            BAR, &
             DYNES_PER_SQUARE_CENTIMETER, &
             KILOPASCALS, &
             KILOPONDS_PER_SQUARE_CENTIMETER, &

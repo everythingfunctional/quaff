@@ -20,6 +20,7 @@ module Pressure_m
             parseWith, &
             thenDrop
     use quaff_Conversion_factors_m, only: &
+            ATMOSPHERES_PER_PASCAL, &
             BAR_PER_PASCAL, &
             DYNES_PER_SQUARE_CENTIMETER_PER_PASCAL, &
             KILOPASCALS_PER_PASCAL, &
@@ -149,6 +150,10 @@ module Pressure_m
         module procedure sumPressure
     end interface sum
 
+    type(PressureSimpleUnit_t), parameter, public :: ATMOSPHERES = &
+            PressureSimpleUnit_t( &
+                    conversion_factor = ATMOSPHERES_PER_PASCAL, &
+                    symbol = "atm")
     type(PressureSimpleUnit_t), parameter, public :: BAR = &
             PressureSimpleUnit_t( &
                     conversion_factor = BAR_PER_PASCAL, &
@@ -181,7 +186,8 @@ module Pressure_m
     type(PressureSimpleUnit_t), public :: DEFAULT_OUTPUT_UNITS = PASCALS
 
     type(PressureSimpleUnit_t), parameter, public :: PROVIDED_UNITS(*) = &
-            [BAR, &
+            [ATMOSPHERES, &
+            BAR, &
             DYNES_PER_SQUARE_CENTIMETER, &
             KILOPASCALS, &
             KILOPONDS_PER_SQUARE_CENTIMETER, &
