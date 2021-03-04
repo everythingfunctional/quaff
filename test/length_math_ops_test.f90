@@ -129,8 +129,8 @@ contains
                     length1, &
                     (length1 + length2) - length2, &
                     1.0d-8, &
-                    "length1 = " // length1%toString() &
-                    // ", length2 = " // length2%toString())
+                    "length1 = " // length1%to_string() &
+                    // ", length2 = " // length2%to_string())
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
         end select

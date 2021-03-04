@@ -139,13 +139,13 @@ contains
         if (expected == actual) then
             result_ = succeed(with_user_message( &
                     make_equals_success_message( &
-                            expected%toString()), &
+                            expected%to_string()), &
                     success_message))
         else
             result_ = fail(with_user_message( &
                     make_equals_failure_message( &
-                            expected%toString(), &
-                            actual%toString()), &
+                            expected%to_string(), &
+                            actual%to_string()), &
                     failure_message))
         end if
     end function
@@ -268,16 +268,16 @@ contains
         if (expected%equal(actual, within = tolerance)) then
             result_ =  succeed(with_user_message( &
                     make_within_success_message( &
-                            expected%toString(), &
-                            actual%toString(), &
-                            tolerance%toString()), &
+                            expected%to_string(), &
+                            actual%to_string(), &
+                            tolerance%to_string()), &
                     success_message))
         else
             result_ = fail(with_user_message( &
                     make_within_failure_message( &
-                            expected%toString(), &
-                            actual%toString(), &
-                            tolerance%toString()), &
+                            expected%to_string(), &
+                            actual%to_string(), &
+                            tolerance%to_string()), &
                     failure_message))
         end if
     end function
@@ -400,15 +400,15 @@ contains
         if (expected%equal(actual, within = tolerance)) then
             result_ =  succeed(with_user_message( &
                     make_within_success_message( &
-                            expected%toString(), &
-                            actual%toString(), &
+                            expected%to_string(), &
+                            actual%to_string(), &
                             to_string(tolerance * 100.0d0) // "%"), &
                     success_message))
         else
             result_ = fail(with_user_message( &
                     make_within_failure_message( &
-                            expected%toString(), &
-                            actual%toString(), &
+                            expected%to_string(), &
+                            actual%to_string(), &
                             to_string(tolerance * 100.0d0) // "%"), &
                     failure_message))
         end if

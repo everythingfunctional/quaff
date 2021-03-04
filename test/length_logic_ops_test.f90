@@ -173,7 +173,7 @@ contains
             the_length = number%input().unit.METERS
             result_ = assert_that( &
                     the_length == the_length, &
-                    the_length%toString() // " == " // the_length%toString())
+                    the_length%to_string() // " == " // the_length%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -192,7 +192,7 @@ contains
             length2 = (1.0d0 + number%input()).unit.METERS
             result_ = assert_not( &
                     length1 == length2, &
-                    length1%toString() // " == " // length2%toString())
+                    length1%to_string() // " == " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -209,7 +209,7 @@ contains
             the_length = number%input().unit.METERS
             result_ = assert_not( &
                     the_length /= the_length, &
-                    the_length%toString() // " /= " // the_length%toString())
+                    the_length%to_string() // " /= " // the_length%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -228,7 +228,7 @@ contains
             length2 = (1.0d0 + number%input()).unit.METERS
             result_ = assert_that( &
                     length1 /= length2, &
-                    length1%toString() // " /= " // length2%toString())
+                    length1%to_string() // " /= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -247,9 +247,9 @@ contains
             tolerance = TINY(1.0d0).unit.METERS
             result_ = assert_that( &
                     the_length%equal(the_length, within = tolerance), &
-                    "(" // the_length%toString() // ")%equal(" &
-                        // the_length%toString() // ", within = " &
-                        // tolerance%toString() // ")")
+                    "(" // the_length%to_string() // ")%equal(" &
+                        // the_length%to_string() // ", within = " &
+                        // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -270,9 +270,9 @@ contains
             tolerance = 0.1d0.unit.METERS
             result_ = assert_that( &
                     length1%equal(length2, within = tolerance), &
-                    "(" // length1%toString() // ")%equal(" &
-                        // length2%toString() // ", within = " &
-                        // tolerance%toString() // ")")
+                    "(" // length1%to_string() // ")%equal(" &
+                        // length2%to_string() // ", within = " &
+                        // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -293,9 +293,9 @@ contains
             tolerance = 0.1d0.unit.METERS
             result_ = assert_not( &
                     length1%equal(length2, within = tolerance), &
-                    "(" // length1%toString() // ")%equal(" &
-                    // length2%toString() // ", within = " &
-                    // tolerance%toString() // ")")
+                    "(" // length1%to_string() // ")%equal(" &
+                    // length2%to_string() // ", within = " &
+                    // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -314,7 +314,7 @@ contains
             length2 = (number%input() - 1.0d0).unit.METERS
             result_ = assert_that( &
                     length1 >= length2, &
-                    length1%toString() // " >= " // length2%toString())
+                    length1%to_string() // " >= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -333,7 +333,7 @@ contains
             length2 = number%input().unit.METERS
             result_ = assert_that( &
                     length1 >= length2, &
-                    length1%toString() // " >= " // length2%toString())
+                    length1%to_string() // " >= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -352,7 +352,7 @@ contains
             length2 = (1.0d0 + number%input()).unit.METERS
             result_ = assert_not( &
                     length1 >= length2, &
-                    length1%toString() // " >= " // length2%toString())
+                    length1%to_string() // " >= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -371,7 +371,7 @@ contains
             length2 = (1.0d0 + number%input()).unit.METERS
             result_ = assert_that( &
                     length1 <= length2, &
-                    length1%toString() // " <= " // length2%toString())
+                    length1%to_string() // " <= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -390,7 +390,7 @@ contains
             length2 = number%input().unit.METERS
             result_ = assert_that( &
                     length1 <= length2, &
-                    length1%toString() // " <= " // length2%toString())
+                    length1%to_string() // " <= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -409,7 +409,7 @@ contains
             length2 = (number%input() - 1.0d0).unit.METERS
             result_ = assert_not( &
                     length1 <= length2, &
-                    length1%toString() // " <= " // length2%toString())
+                    length1%to_string() // " <= " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -428,7 +428,7 @@ contains
             length2 = (number%input() - 1.0d0).unit.METERS
             result_ = assert_that( &
                     length1 > length2, &
-                    length1%toString() // " > " // length2%toString())
+                    length1%to_string() // " > " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -447,7 +447,7 @@ contains
             length2 = number%input().unit.METERS
             result_ = assert_not( &
                     length1 > length2, &
-                    length1%toString() // " > " // length2%toString())
+                    length1%to_string() // " > " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -466,7 +466,7 @@ contains
             length2 = (1.0d0 + number%input()).unit.METERS
             result_ = assert_not( &
                     length1 > length2, &
-                    length1%toString() // " > " // length2%toString())
+                    length1%to_string() // " > " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -485,7 +485,7 @@ contains
             length2 = (1.0d0 + number%input()).unit.METERS
             result_ = assert_that( &
                     length1 < length2, &
-                    length1%toString() // " < " // length2%toString())
+                    length1%to_string() // " < " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -504,7 +504,7 @@ contains
             length2 = number%input().unit.METERS
             result_ = assert_not( &
                     length1 < length2, &
-                    length1%toString() // " < " // length2%toString())
+                    length1%to_string() // " < " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -523,7 +523,7 @@ contains
             length2 = (number%input() - 1.0d0).unit.METERS
             result_ = assert_not( &
                     length1 < length2, &
-                    length1%toString() // " < " // length2%toString())
+                    length1%to_string() // " < " // length2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select

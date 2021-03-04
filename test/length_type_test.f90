@@ -3,10 +3,11 @@ module length_type_test
     use erloff, only: error_list_t
     use iso_varying_string, only: operator(//)
     use quaff, only: &
-            Length_t, &
-            LengthUnit_t, &
+            length_t, &
+            fallible_length_t, &
+            length_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_length, &
             sum, &
             PROVIDED_LENGTH_UNITS, &
             METERS
@@ -30,12 +31,12 @@ module length_type_test
     private
 
     type, public, extends(input_t) :: UnitsInput_t
-        class(LengthUnit_t), allocatable :: unit
+        class(length_unit_t), allocatable :: unit
     end type UnitsInput_t
 
     type, public, extends(input_t) :: UnitsPairInput_t
-        class(LengthUnit_t), allocatable :: first
-        class(LengthUnit_t), allocatable :: second
+        class(length_unit_t), allocatable :: first
+        class(length_unit_t), allocatable :: second
     end type UnitsPairInput_t
 
     type, public :: UnitsExamples_t
@@ -74,7 +75,7 @@ contains
                 "Trying to parse a bad number is an error", &
                 checkBadNumber)
         individual_tests(7) = it("Can be summed", checkSum)
-        tests = describe("Length_t", individual_tests)
+        tests = describe("length_t", individual_tests)
     end function test_length
 
     function checkRoundTrip(units) result(result_)
@@ -117,9 +118,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(Length_t) :: length
+        type(fallible_length_t) :: maybe_length
 
-        call fromString("bad", errors, length)
+        maybe_length = parse_length("bad")
+        errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function checkBadString
 
@@ -127,10 +129,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(Length_t) :: length
+        type(fallible_length_t) :: maybe_length
 
-        call fromString( &
-                "1.0 bad", [METERS], errors, length)
+        maybe_length = parse_length("1.0 bad", [METERS])
+        errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function checkBadUnit
 
@@ -138,9 +140,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(Length_t) :: length
+        type(fallible_length_t) :: maybe_length
 
-        call fromString("bad m", errors, length)
+        maybe_length = parse_length("bad m")
+        errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function checkBadNumber
 
@@ -155,7 +158,7 @@ contains
     end function checkSum
 
     function makeUnitsExamples(units) result(examples)
-        class(LengthUnit_t), intent(in) :: units(:)
+        class(length_unit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
         integer :: i
@@ -201,13 +204,13 @@ contains
     end function makeUnitsExamples
 
     function checkRoundTripIn(units) result(result_)
-        class(LengthUnit_t), intent(in) :: units
+        class(length_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
         type(test_result_item_t) :: the_result
 
-        the_test = It(units%toString(), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
+        the_test = It(units%to_string(), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
         the_result = the_test%run()
         result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
     contains
@@ -215,7 +218,7 @@ contains
             class(input_t), intent(in) :: input
             type(result_t) :: result__
 
-            type(Length_t) :: intermediate
+            type(length_t) :: intermediate
 
             select type (input)
             type is (double_precision_input_t)
@@ -232,8 +235,8 @@ contains
 
     pure function checkConversionFactorsAreInverse( &
             from, to) result(result_)
-        class(LengthUnit_t), intent(in) :: to
-        class(LengthUnit_t), intent(in) :: from
+        class(length_unit_t), intent(in) :: to
+        class(length_unit_t), intent(in) :: from
         type(result_t) :: result_
 
         double precision :: factor1
@@ -245,17 +248,17 @@ contains
                 factor1, &
                 1.0d0 / factor2, &
                 1.0d-12, &
-                from%toString() // " to " // to%toString())
+                from%to_string() // " to " // to%to_string())
     end function checkConversionFactorsAreInverse
 
     function checkStringTrip(units) result(result_)
-        class(LengthUnit_t), intent(in) :: units
+        class(length_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
         type(test_result_item_t) :: the_result
 
-        the_test = It(units%toString(), DOUBLE_PRECISION_GENERATOR, doCheck)
+        the_test = It(units%to_string(), DOUBLE_PRECISION_GENERATOR, doCheck)
         the_result = the_test%run()
         result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
     contains
@@ -264,16 +267,17 @@ contains
             type(result_t) :: result__
 
             type(error_list_t) :: errors
-            type(Length_t) :: original_length
-            type(Length_t) :: new_length
+            type(length_t) :: original_length
+            type(fallible_length_t) :: maybe_length
+            type(length_t) :: new_length
 
             select type (input)
             type is (double_precision_input_t)
                 original_length = input%input().unit.units
-                call fromString( &
-                        original_length%toStringIn(units), &
-                        errors, &
-                        new_length)
+                maybe_length = parse_length( &
+                        original_length%to_string_in(units))
+                new_length = maybe_length%length()
+                errors = maybe_length%errors()
                 result__ = &
                         assert_equals( &
                                 original_length, &
