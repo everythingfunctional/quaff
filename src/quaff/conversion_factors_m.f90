@@ -1,4 +1,4 @@
-module quaff_Conversion_factors_m
+module quaff_conversion_factors_m
     implicit none
 
     ! SI Scaling
@@ -136,4 +136,4 @@ module quaff_Conversion_factors_m
     ! Energy Per Temperature Amount
     double precision, parameter :: KILOJOULES_PER_KELVIN_MOL_PER_JOULES_PER_KELVIN_MOL = &
             KILO_PER_BASE
-end module quaff_Conversion_factors_m
+end module

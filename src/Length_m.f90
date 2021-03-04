@@ -17,17 +17,17 @@ module Length_m
             parse_string, &
             parse_with, &
             then_drop
-    use quaff_Conversion_factors_m, only: &
+    use quaff_conversion_factors_m, only: &
             CENTIMETERS_PER_METER, &
             FEET_PER_METER, &
             INCHES_PER_METER, &
             MICROINCHES_PER_METER, &
             MICROMETERS_PER_METER
-    use quaff_Utilities_m, only: &
+    use quaff_utilities_m, only: &
             operator(.safeEq.), &
-            equalWithinAbsolute_ => equalWithinAbsolute, &
-            equalWithinRelative_ => equalWithinRelative, &
-            parseSpace, &
+            equal_within_absolute_ => equal_within_absolute, &
+            equal_within_relative_ => equal_within_relative, &
+            parse_space, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
     use strff, only: join, to_string
@@ -403,7 +403,7 @@ contains
         class(Length_t), intent(in) :: within
         logical :: equalWithinAbsolute
 
-        equalWithinAbsolute = equalWithinAbsolute_( &
+        equalWithinAbsolute = equal_within_absolute_( &
                 lhs%meters, rhs%meters, within%meters)
     end function equalWithinAbsolute
 
@@ -413,7 +413,7 @@ contains
         double precision, intent(in) :: within
         logical :: equalWithinRelative
 
-        equalWithinRelative = equalWithinRelative_( &
+        equalWithinRelative = equal_within_relative_( &
                 lhs%meters, rhs%meters, within)
     end function equalWithinRelative
 
@@ -500,7 +500,7 @@ contains
             type(parser_output_t) :: result_
 
             result_ = then_drop( &
-                    then_drop(parse_rational, parseSpace, state_), &
+                    then_drop(parse_rational, parse_space, state_), &
                     parseUnit)
         end function theParser
 
