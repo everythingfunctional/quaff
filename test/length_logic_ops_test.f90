@@ -3,16 +3,16 @@ module length_logic_ops_test
     use iso_varying_string, only: operator(//)
     use quaff, only: &
             Length_t, operator(.unit.), METERS
-    use Vegetables_m, only: &
-            DoublePrecisionInput_t, &
-            Input_t, &
-            Result_t, &
-            TestItem_t, &
-            assertNot, &
-            assertThat, &
-            Describe, &
+    use vegetables, only: &
+            double_precision_input_t, &
+            input_t, &
+            result_t, &
+            test_item_t, &
+            assert_not, &
+            assert_that, &
+            describe, &
             fail, &
-            It
+            it
 
     implicit none
     private
@@ -27,9 +27,9 @@ module length_logic_ops_test
             test_less_than_operator
 contains
     function test_equal_operator() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(2)
+        type(test_item_t) :: individual_tests(2)
 
         individual_tests(1) = it( &
                 "is equal for the same length", &
@@ -43,9 +43,9 @@ contains
     end function test_equal_operator
 
     function test_not_equal_operator() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(2)
+        type(test_item_t) :: individual_tests(2)
 
         individual_tests(1) = it( &
                 "is equal for the same length", &
@@ -59,9 +59,9 @@ contains
     end function test_not_equal_operator
 
     function test_equal_within() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(3)
 
         individual_tests(1) = it( &
                 "is equal for the same length even for tiny tolerance", &
@@ -79,9 +79,9 @@ contains
     end function test_equal_within
 
     function test_greater_than_or_equal_operator() result(tests)
-        type(TestItem_t) ::  tests
+        type(test_item_t) ::  tests
 
-        type(TestItem_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(3)
 
         individual_tests(1) = it( &
                 "is true if the lhs is greater than the rhs",&
@@ -100,9 +100,9 @@ contains
     end function test_greater_than_or_equal_operator
 
     function test_less_than_or_equal_operator() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(3)
 
         individual_tests(1) = it( &
                 "is true if the lhs is less than the rhs",&
@@ -121,9 +121,9 @@ contains
     end function test_less_than_or_equal_operator
 
     function test_greater_than_operator() result(tests)
-        type(TestItem_t) ::  tests
+        type(test_item_t) ::  tests
 
-        type(TestItem_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(3)
 
         individual_tests(1) = it( &
                 "is true if the lhs is greater than the rhs",&
@@ -142,9 +142,9 @@ contains
     end function test_greater_than_operator
 
     function test_less_than_operator() result(tests)
-        type(TestItem_t) ::  tests
+        type(test_item_t) ::  tests
 
-        type(TestItem_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(3)
 
         individual_tests(1) = it( &
                 "is true if the lhs is less than the rhs",&
@@ -163,369 +163,369 @@ contains
     end function test_less_than_operator
 
     pure function checkEqualWithSameNumber(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: the_length
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            the_length = number%value_.unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            the_length = number%input().unit.METERS
+            result_ = assert_that( &
                     the_length == the_length, &
                     the_length%toString() // " == " // the_length%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkEqualWithSameNumber
 
     pure function checkEqualWithDifferentNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (1.0d0 + number%value_).unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (1.0d0 + number%input()).unit.METERS
+            result_ = assert_not( &
                     length1 == length2, &
                     length1%toString() // " == " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkEqualWithDifferentNumbers
 
     pure function checkNotEqualWithSameNumber(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: the_length
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            the_length = number%value_.unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            the_length = number%input().unit.METERS
+            result_ = assert_not( &
                     the_length /= the_length, &
                     the_length%toString() // " /= " // the_length%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkNotEqualWithSameNumber
 
     pure function checkNotEqualWithDifferentNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (1.0d0 + number%value_).unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (1.0d0 + number%input()).unit.METERS
+            result_ = assert_that( &
                     length1 /= length2, &
                     length1%toString() // " /= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkNotEqualWithDifferentNumbers
 
     pure function checkEqualWithinWithSameNumber(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: the_length
         type(Length_t) :: tolerance
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            the_length = number%value_.unit.METERS
+        type is (double_precision_input_t)
+            the_length = number%input().unit.METERS
             tolerance = TINY(1.0d0).unit.METERS
-            result_ = assertThat( &
+            result_ = assert_that( &
                     the_length%equal(the_length, within = tolerance), &
                     "(" // the_length%toString() // ")%equal(" &
                         // the_length%toString() // ", within = " &
                         // tolerance%toString() // ")")
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkEqualWithinWithSameNumber
 
     pure function checkEqualWithinWithCloseNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
         type(Length_t) :: tolerance
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (number%value_ + 0.05d0).unit.METERS
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (number%input() + 0.05d0).unit.METERS
             tolerance = 0.1d0.unit.METERS
-            result_ = assertThat( &
+            result_ = assert_that( &
                     length1%equal(length2, within = tolerance), &
                     "(" // length1%toString() // ")%equal(" &
                         // length2%toString() // ", within = " &
                         // tolerance%toString() // ")")
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkEqualWithinWithCloseNumbers
 
     pure function checkEqualWithinWithDifferentNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
         type(Length_t) :: tolerance
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (number%value_ + 0.2d0).unit.METERS
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (number%input() + 0.2d0).unit.METERS
             tolerance = 0.1d0.unit.METERS
-            result_ = assertNot( &
+            result_ = assert_not( &
                     length1%equal(length2, within = tolerance), &
                     "(" // length1%toString() // ")%equal(" &
                     // length2%toString() // ", within = " &
                     // tolerance%toString() // ")")
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkEqualWithinWithDifferentNumbers
 
     pure function checkGreaterThanOrEqualWithGreaterNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit. METERS
-            length2 = (number%value_ - 1.0d0).unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit. METERS
+            length2 = (number%input() - 1.0d0).unit.METERS
+            result_ = assert_that( &
                     length1 >= length2, &
                     length1%toString() // " >= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkGreaterThanOrEqualWithGreaterNumbers
 
     pure function checkGreaterThanOrEqualWithSameNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = number%value_.unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = number%input().unit.METERS
+            result_ = assert_that( &
                     length1 >= length2, &
                     length1%toString() // " >= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkGreaterThanOrEqualWithSameNumbers
 
     pure function checkGreaterThanOrEqualWithLesserNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (1.0d0 + number%value_).unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (1.0d0 + number%input()).unit.METERS
+            result_ = assert_not( &
                     length1 >= length2, &
                     length1%toString() // " >= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkGreaterThanOrEqualWithLesserNumbers
 
     pure function checklessThanOrEqualWithLesserNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (1.0d0 + number%value_).unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (1.0d0 + number%input()).unit.METERS
+            result_ = assert_that( &
                     length1 <= length2, &
                     length1%toString() // " <= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checklessThanOrEqualWithLesserNumbers
 
     pure function checkLessThanOrEqualWithSameNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = number%value_.unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = number%input().unit.METERS
+            result_ = assert_that( &
                     length1 <= length2, &
                     length1%toString() // " <= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkLessThanOrEqualWithSameNumbers
 
     pure function checkLessThanOrEqualWithGreaterNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (number%value_ - 1.0d0).unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (number%input() - 1.0d0).unit.METERS
+            result_ = assert_not( &
                     length1 <= length2, &
                     length1%toString() // " <= " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkLessThanOrEqualWithGreaterNumbers
 
     pure function checkGreaterThanWithGreaterNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (number%value_ - 1.0d0).unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (number%input() - 1.0d0).unit.METERS
+            result_ = assert_that( &
                     length1 > length2, &
                     length1%toString() // " > " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkGreaterThanWithGreaterNumbers
 
     pure function checkGreaterThanWithSameNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = number%value_.unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = number%input().unit.METERS
+            result_ = assert_not( &
                     length1 > length2, &
                     length1%toString() // " > " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkGreaterThanWithSameNumbers
 
     pure function checkGreaterThanWithLesserNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (1.0d0 + number%value_).unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (1.0d0 + number%input()).unit.METERS
+            result_ = assert_not( &
                     length1 > length2, &
                     length1%toString() // " > " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkGreaterThanWithLesserNumbers
 
     pure function checkLessThanWithLesserNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (1.0d0 + number%value_).unit.METERS
-            result_ = assertThat( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (1.0d0 + number%input()).unit.METERS
+            result_ = assert_that( &
                     length1 < length2, &
                     length1%toString() // " < " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkLessThanWithLesserNumbers
 
     pure function checkLessThanWithSameNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = number%value_.unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = number%input().unit.METERS
+            result_ = assert_not( &
                     length1 < length2, &
                     length1%toString() // " < " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkLessThanWithSameNumbers
 
     pure function checkLessThanWithGreaterNumbers(number) result(result_)
-        class(Input_t), intent(in) :: number
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: number
+        type(result_t) :: result_
 
         type(Length_t) :: length1
         type(Length_t) :: length2
 
         select type (number)
-        type is (DoublePrecisionInput_t)
-            length1 = number%value_.unit.METERS
-            length2 = (number%value_ - 1.0d0).unit.METERS
-            result_ = assertNot( &
+        type is (double_precision_input_t)
+            length1 = number%input().unit.METERS
+            length2 = (number%input() - 1.0d0).unit.METERS
+            result_ = assert_not( &
                     length1 < length2, &
                     length1%toString() // " < " // length2%toString())
         class default
-            result_ = fail("Expected to get a DoublePrecisionInput_t")
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function checkLessThanWithGreaterNumbers
 end module length_logic_ops_test

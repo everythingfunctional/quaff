@@ -11,12 +11,12 @@ module length_math_ops_test
             Length_t, operator(.unit.), METERS
     use quaff_asserts_m, only: &
             assertEquals, assertEqualsWithinRelative
-    use Vegetables_m, only: &
-            DoublePrecisionInput_t, &
+    use vegetables, only: &
+            double_precision_input_t, &
             Input_t, &
             Result_t, &
-            TestItem_t, &
-            assertEquals, &
+            test_item_t, &
+            assert_equals, &
             Describe, &
             fail, &
             It
@@ -29,9 +29,9 @@ module length_math_ops_test
             test_multiplication_division_operator
 contains
     function test_addition_subtraction_operators() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(3)
 
         individual_tests(1) = It( &
                 "Adding zero returns the original length", &
@@ -49,9 +49,9 @@ contains
     end function test_addition_subtraction_operators
 
     function test_multiplication_division_operator() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(6)
+        type(test_item_t) :: individual_tests(6)
 
         individual_tests(1) = It( &
                 "A length multiplied by 1 equals itself", &
@@ -88,12 +88,12 @@ contains
         type(Length_t) :: zero
 
         select type(input)
-        type is (DoublePrecisionInput_t)
-            length = input%value_.unit.METERS
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
             result_ = assertEquals(length, length + zero)
         class default
-            result_ = fail("Expected a DoublePrecisionInput_t")
+            result_ = fail("Expected a double_precision_input_t")
         end select
     end function checkAddZero
 
@@ -105,12 +105,12 @@ contains
         type(Length_t) :: zero
 
         select type(input)
-        type is (DoublePrecisionInput_t)
-            length = input%value_.unit.METERS
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
             result_ = assertEquals(length, length - zero)
         class default
-            result_ = fail("Expected a DoublePrecisionInput_t")
+            result_ = fail("Expected a double_precision_input_t")
         end select
     end function checkSubtractZero
 
@@ -143,11 +143,11 @@ contains
         type(Length_t) :: length
 
         select type(input)
-        type is (DoublePrecisionInput_t)
-            length = input%value_.unit.METERS
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
             result_ = assertEquals(length, length * 1.0d0)
         class default
-            result_ = fail("Expected a DoublePrecisionInput_t")
+            result_ = fail("Expected a double_precision_input_t")
         end select
     end function checkMultiplyByOne
 
@@ -159,12 +159,12 @@ contains
         type(Length_t) :: zero
 
         select type(input)
-        type is (DoublePrecisionInput_t)
-            length = input%value_.unit.METERS
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
             result_ = assertEquals(zero, length * 0.0d0)
         class default
-            result_ = fail("Expected a DoublePrecisionInput_t")
+            result_ = fail("Expected a double_precision_input_t")
         end select
     end function checkMultiplyByZero
 
@@ -175,11 +175,11 @@ contains
         type(Length_t) :: length
 
         select type(input)
-        type is (DoublePrecisionInput_t)
-            length = input%value_.unit.METERS
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
             result_ = assertEquals(length, length / 1.0d0)
         class default
-            result_ = fail("Expected a DoublePrecisionInput_t")
+            result_ = fail("Expected a double_precision_input_t")
         end select
     end function checkDivideByOne
 
@@ -190,11 +190,11 @@ contains
         type(Length_t) :: length
 
         select type(input)
-        type is (DoublePrecisionInput_t)
-            length = input%value_.unit.METERS
-            result_ = assertEquals(1.0d0, length / length)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            result_ = assert_equals(1.0d0, length / length)
         class default
-            result_ = fail("Expected a DoublePrecisionInput_t")
+            result_ = fail("Expected a double_precision_input_t")
         end select
     end function checkDivideBySelf
 

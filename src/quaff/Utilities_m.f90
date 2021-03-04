@@ -1,7 +1,6 @@
 module quaff_Utilities_m
-    use iso_varying_string, only: VARYING_STRING, operator(//), var_str
-    use Message_m, only: MessageType_t
-    use parff, only: ParserOutput_t, State_t, parseChar, parseString
+    use erloff, only: message_type_t
+    use parff, only: parser_output_t, state_t, parse_char
 
     implicit none
     private
@@ -12,10 +11,10 @@ module quaff_Utilities_m
 
     double precision, parameter :: MACHINE_EPSILON = epsilon(1.0d0)
 
-    type(MessageType_t), parameter, public :: PARSE_ERROR = &
-            MessageType_t("Parse Error")
-    type(MessageType_t), parameter, public :: UNKNOWN_UNIT = &
-            MessageType_t("Unknown Unit")
+    type(message_type_t), parameter, public :: PARSE_ERROR = &
+            message_type_t("Parse Error")
+    type(message_type_t), parameter, public :: UNKNOWN_UNIT = &
+            message_type_t("Unknown Unit")
 
     public :: &
             effectivelyZero, &
@@ -51,11 +50,11 @@ contains
                 .or. (abs(a - b) / max(abs(a), abs(b))) < tolerance
     end function equalWithinRelative
 
-    pure function parseSpace(state_) result(result_)
-        type(State_t), intent(in) :: state_
-        type(ParserOutput_t) :: result_
+    function parseSpace(state_) result(result_)
+        type(state_t), intent(in) :: state_
+        type(parser_output_t) :: result_
 
-        result_ = parseChar(" ", state_)
+        result_ = parse_char(" ", state_)
     end function parseSpace
 
     elemental function safeEq(a, b)

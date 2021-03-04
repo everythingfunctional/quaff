@@ -1,7 +1,7 @@
 module Length_m
-    use erloff, only: ErrorList_t, Fatal, Module_, Procedure_
+    use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
-            VARYING_STRING, &
+            varying_string, &
             assignment(=), &
             operator(==), &
             operator(//), &
@@ -9,16 +9,14 @@ module Length_m
             split, &
             var_str
     use parff, only: &
-            ParsedRational_t, &
-            ParseResult_t, &
-            ParserOutput_t, &
-            State_t, &
-            dropThen, &
-            parseChar, &
-            parseRational, &
-            parseString, &
-            parseWith, &
-            thenDrop
+            parse_result_t, &
+            parsed_rational_t, &
+            parser_output_t, &
+            state_t, &
+            parse_rational, &
+            parse_string, &
+            parse_with, &
+            then_drop
     use quaff_Conversion_factors_m, only: &
             CENTIMETERS_PER_METER, &
             FEET_PER_METER, &
@@ -32,7 +30,7 @@ module Length_m
             parseSpace, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
-    use strff, only: join, toString
+    use strff, only: join, to_string
 
     implicit none
     private
@@ -108,23 +106,23 @@ module Length_m
 
     abstract interface
         elemental function justUnitToString(self) result(string)
-            import LengthUnit_t, VARYING_STRING
+            import LengthUnit_t, varying_string
             class(LengthUnit_t), intent(in) :: self
-            type(VARYING_STRING) :: string
+            type(varying_string) :: string
         end function justUnitToString
 
         pure function unitWithValueToString(self, value_) result(string)
-            import LengthUnit_t, VARYING_STRING
+            import LengthUnit_t, varying_string
             class(LengthUnit_t), intent(in) :: self
-            type(VARYING_STRING), intent(in) :: value_
-            type(VARYING_STRING) :: string
+            type(varying_string), intent(in) :: value_
+            type(varying_string) :: string
         end function unitWithValueToString
 
-        pure subroutine parseAsI(self, string, errors, length)
-            import ErrorList_t, Length_t, LengthUnit_t, VARYING_STRING
+        subroutine parseAsI(self, string, errors, length)
+            import error_list_t, Length_t, LengthUnit_t, varying_string
             class(LengthUnit_t), intent(in) :: self
-            type(VARYING_STRING), intent(in) :: string
-            type(ErrorList_t), intent(out) :: errors
+            type(varying_string), intent(in) :: string
+            type(error_list_t), intent(out) :: errors
             type(Length_t), intent(out) :: length
         end subroutine parseAsI
     end interface
@@ -180,70 +178,70 @@ module Length_m
 
     public :: operator(.unit.), fromString, selectUnit, sum
 contains
-    pure subroutine fromStringBasicC(string, errors, length)
+    subroutine fromStringBasicC(string, errors, length)
         character(len=*), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
 
         call fromString( &
                 var_str(string), PROVIDED_UNITS, errors_, length)
-        call errors%appendErrors( &
+        errors = error_list_t( &
                 errors_, &
-                Module_("Length_m"), &
-                Procedure_("fromStringBasicC"))
+                module_t("Length_m"), &
+                procedure_t("fromStringBasicC"))
     end subroutine fromStringBasicC
 
-    pure subroutine fromStringBasicS(string, errors, length)
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
+    subroutine fromStringBasicS(string, errors, length)
+        type(varying_string), intent(in) :: string
+        type(error_list_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
 
         call fromString( &
                 string, PROVIDED_UNITS, errors_, length)
-        call errors%appendErrors( &
+        errors = error_list_t( &
                 errors_, &
-                Module_("Length_m"), &
-                Procedure_("fromStringBasicS"))
+                module_t("Length_m"), &
+                procedure_t("fromStringBasicS"))
     end subroutine fromStringBasicS
 
-    pure subroutine fromStringWithUnitsC(string, units, errors, length)
+    subroutine fromStringWithUnitsC(string, units, errors, length)
         character(len=*), intent(in) :: string
         class(LengthUnit_t), intent(in) :: units(:)
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
 
         call fromString( &
                 var_str(string), units, errors_, length)
-        call errors%appendErrors( &
+        errors = error_list_t( &
                 errors_, &
-                Module_("Length_m"), &
-                Procedure_("fromStringWithUnitsC"))
+                module_t("Length_m"), &
+                procedure_t("fromStringWithUnitsC"))
     end subroutine fromStringWithUnitsC
 
-    pure subroutine fromStringWithUnitsS(string, units, errors, length)
-        type(VARYING_STRING), intent(in) :: string
+    subroutine fromStringWithUnitsS(string, units, errors, length)
+        type(varying_string), intent(in) :: string
         class(LengthUnit_t), intent(in) :: units(:)
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
-        type(ErrorList_t) :: all_errors(size(units))
+        type(error_list_t) :: all_errors(size(units))
         integer :: i
 
         do i = 1, size(units)
             call units(i)%parseAs(string, all_errors(i), length)
-            if (.not. all_errors(i)%hasAny()) return
+            if (.not. all_errors(i)%has_any()) return
         end do
         do i = 1, size(units)
-            call errors%appendErrors( &
+            errors = errors%with_errors_appended( &
                     all_errors(i), &
-                    Module_("Length_m"), &
-                    Procedure_("fromStringWithUnitsS"))
+                    module_t("Length_m"), &
+                    procedure_t("fromStringWithUnitsS"))
         end do
     end subroutine fromStringWithUnitsS
 
@@ -429,7 +427,7 @@ contains
 
     elemental function toStringFullPrecision(self) result(string)
         class(Length_t), intent(in) :: self
-        type(VARYING_STRING) :: string
+        type(varying_string) :: string
 
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS)
     end function toStringFullPrecision
@@ -437,7 +435,7 @@ contains
     elemental function toStringWithPrecision(self, significant_digits) result(string)
         class(Length_t), intent(in) :: self
         integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
+        type(varying_string) :: string
 
         string = self%toStringIn(DEFAULT_OUTPUT_UNITS, significant_digits)
     end function toStringWithPrecision
@@ -445,9 +443,9 @@ contains
     elemental function toStringInFullPrecision(self, units) result(string)
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
-        type(VARYING_STRING) :: string
+        type(varying_string) :: string
 
-        string = units%toString(toString(self.in.units))
+        string = units%toString(to_string(self.in.units))
     end function toStringInFullPrecision
 
     elemental function toStringInWithPrecision( &
@@ -455,136 +453,136 @@ contains
         class(Length_t), intent(in) :: self
         class(LengthUnit_t), intent(in) :: units
         integer, intent(in) :: significant_digits
-        type(VARYING_STRING) :: string
+        type(varying_string) :: string
 
-        string = units%toString(toString(self.in.units, significant_digits))
+        string = units%toString(to_string(self.in.units, significant_digits))
     end function toStringInWithPrecision
 
     elemental function simpleUnitToString(self) result(string)
         class(LengthSimpleUnit_t), intent(in) :: self
-        type(VARYING_STRING) :: string
+        type(varying_string) :: string
 
         string = trim(self%symbol)
     end function simpleUnitToString
 
     pure function simpleValueToString(self, value_) result(string)
         class(LengthSimpleUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: value_
-        type(VARYING_STRING) :: string
+        type(varying_string), intent(in) :: value_
+        type(varying_string) :: string
 
         string = value_ // " " // self%toString()
     end function simpleValueToString
 
-    pure subroutine simpleParseAs(self, string, errors, length)
+    subroutine simpleParseAs(self, string, errors, length)
         class(LengthSimpleUnit_t), intent(in) :: self
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
+        type(varying_string), intent(in) :: string
+        type(error_list_t), intent(out) :: errors
         type(Length_t), intent(out) :: length
 
-        type(ParseResult_t) :: parse_result
+        type(parse_result_t) :: parse_result
 
-        parse_result = parseWith(theParser, string)
-        if (parse_result%ok) then
-            select type (the_number => parse_result%parsed)
-            type is (ParsedRational_t)
-                length = the_number%value_.unit.self
+        parse_result = parse_with(theParser, string)
+        if (parse_result%ok()) then
+            select type (the_number => parse_result%parsed())
+            type is (parsed_rational_t)
+                length = the_number%value_().unit.self
             end select
         else
-            call errors%appendError(Fatal( &
+            errors = error_list_t(fatal_t( &
                     PARSE_ERROR, &
-                    Module_("Length_m"), &
-                    Procedure_("simpleParseAs"), &
-                    parse_result%message))
+                    module_t("Length_m"), &
+                    procedure_t("simpleParseAs"), &
+                    parse_result%message()))
         end if
     contains
-        pure function theParser(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
+        function theParser(state_) result(result_)
+            type(state_t), intent(in) :: state_
+            type(parser_output_t) :: result_
 
-            result_ = thenDrop( &
-                    thenDrop(parseRational, parseSpace, state_), &
+            result_ = then_drop( &
+                    then_drop(parse_rational, parseSpace, state_), &
                     parseUnit)
         end function theParser
 
-        pure function parseUnit(state_) result(result_)
-            type(State_t), intent(in) :: state_
-            type(ParserOutput_t) :: result_
+        function parseUnit(state_) result(result_)
+            type(state_t), intent(in) :: state_
+            type(parser_output_t) :: result_
 
-            result_ = parseString(trim(self%symbol), state_)
+            result_ = parse_string(trim(self%symbol), state_)
         end function parseUnit
     end subroutine simpleParseAs
 
-    pure subroutine simpleUnitFromStringC(string, errors, unit)
+    subroutine simpleUnitFromStringC(string, errors, unit)
         character(len=*), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         type(LengthSimpleUnit_t), intent(out) :: unit
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
 
         call fromString(var_str(string), PROVIDED_UNITS, errors_, unit)
-        call errors%appendErrors( &
+        errors = error_list_t( &
                 errors_, &
-                Module_("Length_m"), &
-                Procedure_("simpleUnitFromStringC"))
+                module_t("Length_m"), &
+                procedure_t("simpleUnitFromStringC"))
     end subroutine simpleUnitFromStringC
 
-    pure subroutine simpleUnitFromStringS(string, errors, unit)
-        type(VARYING_STRING), intent(in) :: string
-        type(ErrorList_t), intent(out) :: errors
+    subroutine simpleUnitFromStringS(string, errors, unit)
+        type(varying_string), intent(in) :: string
+        type(error_list_t), intent(out) :: errors
         type(LengthSimpleUnit_t), intent(out) :: unit
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
 
         call fromString(string, PROVIDED_UNITS, errors_, unit)
-        call errors%appendErrors( &
+        errors = error_list_t( &
                 errors_, &
-                Module_("Length_m"), &
-                Procedure_("simpleUnitFromStringS"))
+                module_t("Length_m"), &
+                procedure_t("simpleUnitFromStringS"))
     end subroutine simpleUnitFromStringS
 
-    pure subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
+    subroutine simpleUnitFromStringWithUnitsC(string, units, errors, unit)
         character(len=*), intent(in) :: string
         type(LengthSimpleUnit_t), intent(in) :: units(:)
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         type(LengthSimpleUnit_t), intent(out) :: unit
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
 
         call fromString(var_str(string), units, errors_, unit)
-        call errors%appendErrors( &
+        errors = error_list_t( &
                 errors_, &
-                Module_("Length_m"), &
-                Procedure_("simpleUnitFromStringWithUnitsC"))
+                module_t("Length_m"), &
+                procedure_t("simpleUnitFromStringWithUnitsC"))
     end subroutine simpleUnitFromStringWithUnitsC
 
-    pure subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
-        type(VARYING_STRING), intent(in) :: string
+    subroutine simpleUnitFromStringWithUnitsS(string, units, errors, unit)
+        type(varying_string), intent(in) :: string
         type(LengthSimpleUnit_t), intent(in) :: units(:)
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         type(LengthSimpleUnit_t), intent(out) :: unit
 
-        type(ErrorList_t) :: errors_
+        type(error_list_t) :: errors_
         integer :: which_unit
 
         call selectUnit(string, units, errors, which_unit)
-        if (errors_%hasAny()) then
-            call errors%appendErrors( &
+        if (errors_%has_any()) then
+            errors = error_list_t( &
                     errors_, &
-                    Module_("Length_m"), &
-                    Procedure_("simpleUnitFromStringWithUnitsS"))
+                    module_t("Length_m"), &
+                    procedure_t("simpleUnitFromStringWithUnitsS"))
         else
             unit = units(which_unit)
         end if
     end subroutine simpleUnitFromStringWithUnitsS
 
-    pure subroutine selectUnit(string, units, errors, index)
-        type(VARYING_STRING), intent(in) :: string
+    subroutine selectUnit(string, units, errors, index)
+        type(varying_string), intent(in) :: string
         class(LengthUnit_t), intent(in) :: units(:)
-        type(ErrorList_t), intent(out) :: errors
+        type(error_list_t), intent(out) :: errors
         integer, intent(out) :: index
 
         integer :: i
-        type(VARYING_STRING) :: unit_strings(size(units))
+        type(varying_string) :: unit_strings(size(units))
 
         do i = 1, size(units)
             if (string == units(i)%toString()) then
@@ -595,10 +593,10 @@ contains
         do i = 1, size(units)
             unit_strings(i) = units(i)%toString()
         end do
-        call errors%appendError(Fatal( &
+        errors = error_list_t(fatal_t( &
                 UNKNOWN_UNIT, &
-                Module_("Length_m"), &
-                Procedure_("selectUnit"), &
+                module_t("Length_m"), &
+                procedure_t("selectUnit"), &
                 '"' // string // '", known units: [' // join(unit_strings, ', ') // ']'))
     end subroutine selectUnit
 end module Length_m

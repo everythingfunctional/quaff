@@ -1,6 +1,6 @@
 module length_type_test
     use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-    use erloff, only: ErrorList_t
+    use erloff, only: error_list_t
     use iso_varying_string, only: operator(//)
     use quaff, only: &
             Length_t, &
@@ -12,45 +12,44 @@ module length_type_test
             METERS
     use quaff_asserts_m, only: assertEquals
     use quaff_Utilities_m, only: PARSE_ERROR
-    use Vegetables_m, only: &
-            DoublePrecisionInput_t, &
-            Example_t, &
-            Input_t, &
-            Result_t, &
-            TestItem_t, &
-            TestResultItem_t, &
-            assertEqualsWithinRelative, &
-            assertNot, &
-            assertThat, &
+    use vegetables, only: &
+            double_precision_input_t, &
+            example_t, &
+            input_t, &
+            result_t, &
+            test_item_t, &
+            test_result_item_t, &
+            assert_equals_within_relative, &
+            assert_not, &
+            assert_that, &
             Describe, &
-            Example, &
             fail, &
             It
 
     implicit none
     private
 
-    type, public, extends(Input_t) :: UnitsInput_t
+    type, public, extends(input_t) :: UnitsInput_t
         class(LengthUnit_t), allocatable :: unit
     end type UnitsInput_t
 
-    type, public, extends(Input_t) :: UnitsPairInput_t
+    type, public, extends(input_t) :: UnitsPairInput_t
         class(LengthUnit_t), allocatable :: first
         class(LengthUnit_t), allocatable :: second
     end type UnitsPairInput_t
 
     type, public :: UnitsExamples_t
-        type(Example_t), allocatable :: units(:)
-        type(Example_t), allocatable :: pairs(:)
+        type(example_t), allocatable :: units(:)
+        type(example_t), allocatable :: pairs(:)
     end type UnitsExamples_t
 
     public :: test_length
 contains
     function test_length() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
         type(UnitsExamples_t) :: examples
-        type(TestItem_t) :: individual_tests(7)
+        type(test_item_t) :: individual_tests(7)
 
         examples = makeUnitsExamples(PROVIDED_LENGTH_UNITS)
         individual_tests(1) = it( &
@@ -79,8 +78,8 @@ contains
     end function test_length
 
     function checkRoundTrip(units) result(result_)
-        class(Input_t), intent(in) :: units
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: units
+        type(result_t) :: result_
 
         select type (units)
         type is (UnitsInput_t)
@@ -91,8 +90,8 @@ contains
     end function checkRoundTrip
 
     pure function checkConversionFactorsInverse(pair) result(result_)
-        class(Input_t), intent(in) :: pair
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: pair
+        type(result_t) :: result_
 
         select type (pair)
         type is (UnitsPairInput_t)
@@ -103,8 +102,8 @@ contains
     end function checkConversionFactorsInverse
 
     function checkToAndFromString(units) result(result_)
-        class(Input_t), intent(in) :: units
-        type(Result_t) :: result_
+        class(input_t), intent(in) :: units
+        type(result_t) :: result_
 
         select type (units)
         type is (UnitsInput_t)
@@ -114,39 +113,39 @@ contains
         end select
     end function checkToAndFromString
 
-    pure function checkBadString() result(result_)
-        type(Result_t) :: result_
+    function checkBadString() result(result_)
+        type(result_t) :: result_
 
-        type(ErrorList_t) :: errors
+        type(error_list_t) :: errors
         type(Length_t) :: length
 
         call fromString("bad", errors, length)
-        result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
+        result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function checkBadString
 
-    pure function checkBadUnit() result(result_)
-        type(Result_t) :: result_
+    function checkBadUnit() result(result_)
+        type(result_t) :: result_
 
-        type(ErrorList_t) :: errors
+        type(error_list_t) :: errors
         type(Length_t) :: length
 
         call fromString( &
                 "1.0 bad", [METERS], errors, length)
-        result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
+        result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function checkBadUnit
 
-    pure function checkBadNumber() result(result_)
-        type(Result_t) :: result_
+    function checkBadNumber() result(result_)
+        type(result_t) :: result_
 
-        type(ErrorList_t) :: errors
+        type(error_list_t) :: errors
         type(Length_t) :: length
 
         call fromString("bad m", errors, length)
-        result_ = assertThat(errors.hasType.PARSE_ERROR, errors%toString())
+        result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function checkBadNumber
 
     pure function checkSum() result(result_)
-        type(Result_t) :: result_
+        type(result_t) :: result_
 
         double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
 
@@ -155,7 +154,7 @@ contains
                 sum(numbers.unit.METERS))
     end function checkSum
 
-    pure function makeUnitsExamples(units) result(examples)
+    function makeUnitsExamples(units) result(examples)
         class(LengthUnit_t), intent(in) :: units(:)
         type(UnitsExamples_t) :: examples
 
@@ -171,7 +170,7 @@ contains
         allocate(examples%units(num_units))
         do i = 1, num_units
             allocate(input%unit, source = units(i))
-            examples%units(i) = Example(input)
+            examples%units(i) = example_t(input)
             deallocate(input%unit)
         end do
 
@@ -182,7 +181,7 @@ contains
             allocate(pair%first, source = units(i))
             do j = i + 1, num_units
                 allocate(pair%second, source = units(j))
-                examples%pairs(pair_index) = Example(pair)
+                examples%pairs(pair_index) = example_t(pair)
                 pair_index = pair_index + 1
                 deallocate(pair%second)
             end do
@@ -203,30 +202,30 @@ contains
 
     function checkRoundTripIn(units) result(result_)
         class(LengthUnit_t), intent(in) :: units
-        type(Result_t) :: result_
+        type(result_t) :: result_
 
-        type(TestItem_t) :: the_test
-        type(TestResultItem_t) :: the_result
+        type(test_item_t) :: the_test
+        type(test_result_item_t) :: the_result
 
         the_test = It(units%toString(), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
         the_result = the_test%run()
-        result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
+        result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
     contains
         pure function checkRoundTrip_(input) result(result__)
-            class(Input_t), intent(in) :: input
-            type(Result_t) :: result__
+            class(input_t), intent(in) :: input
+            type(result_t) :: result__
 
             type(Length_t) :: intermediate
 
             select type (input)
-            type is (DoublePrecisionInput_t)
-                intermediate = input%value_.unit.units
-                result__ = assertEqualsWithinRelative( &
-                        input%value_, &
+            type is (double_precision_input_t)
+                intermediate = input%input().unit.units
+                result__ = assert_equals_within_relative( &
+                        input%input(), &
                         intermediate.in.units, &
                         1.0d-12)
             class default
-                result__ = fail("Expected to get a DoublePrecisionInput_t")
+                result__ = fail("Expected to get a double_precision_input_t")
             end select
         end function checkRoundTrip_
     end function checkRoundTripIn
@@ -235,14 +234,14 @@ contains
             from, to) result(result_)
         class(LengthUnit_t), intent(in) :: to
         class(LengthUnit_t), intent(in) :: from
-        type(Result_t) :: result_
+        type(result_t) :: result_
 
         double precision :: factor1
         double precision :: factor2
 
         factor1 = (1.0d0.unit.from).in.to
         factor2 = (1.0d0.unit.to).in.from
-        result_ = assertEqualsWithinRelative( &
+        result_ = assert_equals_within_relative( &
                 factor1, &
                 1.0d0 / factor2, &
                 1.0d-12, &
@@ -251,26 +250,26 @@ contains
 
     function checkStringTrip(units) result(result_)
         class(LengthUnit_t), intent(in) :: units
-        type(Result_t) :: result_
+        type(result_t) :: result_
 
-        type(TestItem_t) :: the_test
-        type(TestResultItem_t) :: the_result
+        type(test_item_t) :: the_test
+        type(test_result_item_t) :: the_result
 
         the_test = It(units%toString(), DOUBLE_PRECISION_GENERATOR, doCheck)
         the_result = the_test%run()
-        result_ = assertThat(the_result%passed(), the_result%verboseDescription(.false.))
+        result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
     contains
-        pure function doCheck(input) result(result__)
-            class(Input_t), intent(in) :: input
-            type(Result_t) :: result__
+        function doCheck(input) result(result__)
+            class(input_t), intent(in) :: input
+            type(result_t) :: result__
 
-            type(ErrorList_t) :: errors
+            type(error_list_t) :: errors
             type(Length_t) :: original_length
             type(Length_t) :: new_length
 
             select type (input)
-            type is (DoublePrecisionInput_t)
-                original_length = input%value_.unit.units
+            type is (double_precision_input_t)
+                original_length = input%input().unit.units
                 call fromString( &
                         original_length%toStringIn(units), &
                         errors, &
@@ -279,9 +278,9 @@ contains
                         assertEquals( &
                                 original_length, &
                                 new_length) &
-                        .and.assertNot(errors%hasAny(), errors%toString())
+                        .and.assert_not(errors%has_any(), errors%to_string())
             class default
-                result__ = fail("Expected to get a DoublePrecisionInput_t")
+                result__ = fail("Expected to get a double_precision_input_t")
             end select
         end function doCheck
     end function checkStringTrip

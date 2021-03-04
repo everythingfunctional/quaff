@@ -1,16 +1,16 @@
 module Length_asserts_m
-    use iso_varying_string, only: VARYING_STRING, operator(//), var_str
+    use iso_varying_string, only: varying_string, operator(//), var_str
     use quaff, only: Length_t
-    use strff, only: toString
-    use Vegetables_m, only: &
-            Result_t, &
+    use strff, only: to_string
+    use vegetables, only: &
+            result_t, &
             fail, &
-            makeEqualsFailureMessage, &
-            makeEqualsSuccessMessage, &
-            makeWithinFailureMessage, &
-            makeWithinSuccessMessage, &
+            make_equals_failure_message, &
+            make_equals_success_message, &
+            make_within_failure_message, &
+            make_within_success_message, &
             succeed, &
-            withUserMessage
+            with_user_message
 
     implicit none
     private
@@ -50,7 +50,7 @@ contains
     pure function assertEqualsBasic(expected, actual) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEquals(expected, actual, var_str(""), var_str(""))
     end function assertEqualsBasic
@@ -60,7 +60,7 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         character(len=*), intent(in) :: message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEquals( &
                 expected, actual, var_str(message), var_str(message))
@@ -70,8 +70,8 @@ contains
             expected, actual, message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
-        type(VARYING_STRING), intent(in) :: message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: message
+        type(result_t) :: result__
 
         result__ = assertEquals( &
                 expected, actual, message, message)
@@ -83,7 +83,7 @@ contains
         class(Length_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEquals( &
                 expected, &
@@ -97,8 +97,8 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
-        type(VARYING_STRING), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: failure_message
+        type(result_t) :: result__
 
         result__ = assertEquals( &
                 expected, &
@@ -111,9 +111,9 @@ contains
             expected, actual, success_message, failure_message) result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
-        type(VARYING_STRING), intent(in) :: success_message
+        type(varying_string), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEquals( &
                 expected, &
@@ -130,18 +130,18 @@ contains
             result(result__)
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
-        type(VARYING_STRING), intent(in) :: success_message
-        type(VARYING_STRING), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: success_message
+        type(varying_string), intent(in) :: failure_message
+        type(result_t) :: result__
 
         if (expected == actual) then
-            result__ = succeed(withUserMessage( &
-                    makeEqualsSuccessMessage( &
+            result__ = succeed(with_user_message( &
+                    make_equals_success_message( &
                             expected%toString()), &
                     success_message))
         else
-            result__ = fail(withUserMessage( &
-                    makeEqualsFailureMessage( &
+            result__ = fail(with_user_message( &
+                    make_equals_failure_message( &
                             expected%toString(), &
                             actual%toString()), &
                     failure_message))
@@ -153,7 +153,7 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         class(Length_t), intent(in) :: tolerance
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
                 expected, actual, tolerance, var_str(""), var_str(""))
@@ -165,7 +165,7 @@ contains
         class(Length_t), intent(in) :: actual
         class(Length_t), intent(in) :: tolerance
         character(len=*), intent(in) :: message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
                 expected, actual, tolerance, var_str(message), var_str(message))
@@ -176,8 +176,8 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         class(Length_t), intent(in) :: tolerance
-        type(VARYING_STRING), intent(in) :: message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: message
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
                 expected, actual, tolerance, message, message)
@@ -195,7 +195,7 @@ contains
         class(Length_t), intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
                 expected, &
@@ -216,8 +216,8 @@ contains
         class(Length_t), intent(in) :: actual
         class(Length_t), intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
-        type(VARYING_STRING), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: failure_message
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
                 expected, &
@@ -237,9 +237,9 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         class(Length_t), intent(in) :: tolerance
-        type(VARYING_STRING), intent(in) :: success_message
+        type(varying_string), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinAbsolute( &
                 expected, &
@@ -259,20 +259,20 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         class(Length_t), intent(in) :: tolerance
-        type(VARYING_STRING), intent(in) :: success_message
-        type(VARYING_STRING), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: success_message
+        type(varying_string), intent(in) :: failure_message
+        type(result_t) :: result__
 
         if (expected%equal(actual, within = tolerance)) then
-            result__ =  succeed(withUserMessage( &
-                    makeWithinSuccessMessage( &
+            result__ =  succeed(with_user_message( &
+                    make_within_success_message( &
                             expected%toString(), &
                             actual%toString(), &
                             tolerance%toString()), &
                     success_message))
         else
-            result__ = fail(withUserMessage( &
-                    makeWithinFailureMessage( &
+            result__ = fail(with_user_message( &
+                    make_within_failure_message( &
                             expected%toString(), &
                             actual%toString(), &
                             tolerance%toString()), &
@@ -285,7 +285,7 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinRelative( &
                 expected, actual, tolerance, var_str(""), var_str(""))
@@ -297,7 +297,7 @@ contains
         class(Length_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinRelative( &
                 expected, actual, tolerance, var_str(message), var_str(message))
@@ -308,8 +308,8 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
-        type(VARYING_STRING), intent(in) :: message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: message
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinRelative( &
                 expected, actual, tolerance, message, message)
@@ -327,7 +327,7 @@ contains
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinRelative( &
                 expected, &
@@ -348,8 +348,8 @@ contains
         class(Length_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
-        type(VARYING_STRING), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: failure_message
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinRelative( &
                 expected, &
@@ -369,9 +369,9 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
-        type(VARYING_STRING), intent(in) :: success_message
+        type(varying_string), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(result_t) :: result__
 
         result__ = assertEqualsWithinRelative( &
                 expected, &
@@ -391,23 +391,23 @@ contains
         class(Length_t), intent(in) :: expected
         class(Length_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
-        type(VARYING_STRING), intent(in) :: success_message
-        type(VARYING_STRING), intent(in) :: failure_message
-        type(Result_t) :: result__
+        type(varying_string), intent(in) :: success_message
+        type(varying_string), intent(in) :: failure_message
+        type(result_t) :: result__
 
         if (expected%equal(actual, within = tolerance)) then
-            result__ =  succeed(withUserMessage( &
-                    makeWithinSuccessMessage( &
+            result__ =  succeed(with_user_message( &
+                    make_within_success_message( &
                             expected%toString(), &
                             actual%toString(), &
-                            toString(tolerance * 100.0d0) // "%"), &
+                            to_string(tolerance * 100.0d0) // "%"), &
                     success_message))
         else
-            result__ = fail(withUserMessage( &
-                    makeWithinFailureMessage( &
+            result__ = fail(with_user_message( &
+                    make_within_failure_message( &
                             expected%toString(), &
                             actual%toString(), &
-                            toString(tolerance * 100.0d0) // "%"), &
+                            to_string(tolerance * 100.0d0) // "%"), &
                     failure_message))
         end if
     end function assertEqualsWithinRelativeWithMessagesSS
