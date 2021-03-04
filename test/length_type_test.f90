@@ -10,7 +10,7 @@ module length_type_test
             sum, &
             PROVIDED_LENGTH_UNITS, &
             METERS
-    use quaff_asserts_m, only: assertEquals
+    use quaff_asserts_m, only: assert_equals
     use quaff_Utilities_m, only: PARSE_ERROR
     use vegetables, only: &
             double_precision_input_t, &
@@ -149,7 +149,7 @@ contains
 
         double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 sum(numbers).unit.METERS, &
                 sum(numbers.unit.METERS))
     end function checkSum
@@ -275,7 +275,7 @@ contains
                         errors, &
                         new_length)
                 result__ = &
-                        assertEquals( &
+                        assert_equals( &
                                 original_length, &
                                 new_length) &
                         .and.assert_not(errors%has_any(), errors%to_string())

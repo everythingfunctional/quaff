@@ -10,7 +10,7 @@ module length_math_ops_test
     use quaff, only: &
             Length_t, operator(.unit.), METERS
     use quaff_asserts_m, only: &
-            assertEquals, assertEqualsWithinRelative
+            assert_equals, assert_equals_within_relative
     use vegetables, only: &
             double_precision_input_t, &
             Input_t, &
@@ -91,7 +91,7 @@ contains
         type is (double_precision_input_t)
             length = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
-            result_ = assertEquals(length, length + zero)
+            result_ = assert_equals(length, length + zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -108,7 +108,7 @@ contains
         type is (double_precision_input_t)
             length = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
-            result_ = assertEquals(length, length - zero)
+            result_ = assert_equals(length, length - zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -125,7 +125,7 @@ contains
         type is (DoublePrecisionPairInput_t)
             length1 = input%first.unit.METERS
             length2 = input%second.unit.METERS
-            result_ = assertEqualsWithinRelative( &
+            result_ = assert_equals_within_relative( &
                     length1, &
                     (length1 + length2) - length2, &
                     1.0d-8, &
@@ -145,7 +145,7 @@ contains
         select type(input)
         type is (double_precision_input_t)
             length = input%input().unit.METERS
-            result_ = assertEquals(length, length * 1.0d0)
+            result_ = assert_equals(length, length * 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -162,7 +162,7 @@ contains
         type is (double_precision_input_t)
             length = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
-            result_ = assertEquals(zero, length * 0.0d0)
+            result_ = assert_equals(zero, length * 0.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -177,7 +177,7 @@ contains
         select type(input)
         type is (double_precision_input_t)
             length = input%input().unit.METERS
-            result_ = assertEquals(length, length / 1.0d0)
+            result_ = assert_equals(length, length / 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -207,7 +207,7 @@ contains
         select type (input)
         type is (DoublePrecisionPairInput_t)
             length = input%first.unit.METERS
-            result_ = assertEquals(length, length * input%second / input%second)
+            result_ = assert_equals(length, length * input%second / input%second)
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
         end select
@@ -222,7 +222,7 @@ contains
         select type (input)
         type is (DoublePrecisionPairInput_t)
             length = input%first.unit.METERS
-            result_ = assertEquals(length, length / input%second * input%second)
+            result_ = assert_equals(length, length / input%second * input%second)
         class default
             result_ = fail("Expected a DoublePrecisionPairInput_t")
         end select
