@@ -1,4 +1,4 @@
-module length_type_test
+module length_test
     use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: error_list_t
     use iso_varying_string, only: operator(//)
@@ -26,9 +26,9 @@ module length_type_test
             assert_equals_within_relative, &
             assert_not, &
             assert_that, &
-            Describe, &
+            describe, &
             fail, &
-            It
+            it
 
     implicit none
     private
@@ -38,71 +38,72 @@ contains
         type(test_item_t) :: tests
 
         type(units_examples_t) :: examples
-        type(test_item_t) :: individual_tests(7)
 
         examples = make_units_examples(PROVIDED_LENGTH_UNITS)
-        individual_tests(1) = it( &
-                "gets the same value given the same units", &
-                examples%units(), &
-                checkRoundTrip)
-        individual_tests(2) = it( &
-                "the conversion factors between 2 units are inverses", &
-                examples%pairs(), &
-                checkConversionFactorsInverse)
-        individual_tests(3) = it( &
-                "can be converted to and from a string", &
-                examples%units(), &
-                checkToAndFromString)
-        individual_tests(4) = it( &
-                "Trying to parse a bad string is an error", &
-                checkBadString)
-        individual_tests(5) = it( &
-                "Trying to parse with an unknown unit is an error", &
-                checkBadUnit)
-        individual_tests(6) = it( &
-                "Trying to parse a bad number is an error", &
-                checkBadNumber)
-        individual_tests(7) = it("Can be summed", checkSum)
-        tests = describe("length_t", individual_tests)
+        tests = describe( &
+                "length_t", &
+                [ it( &
+                        "returns the same value given the same units", &
+                        examples%units(), &
+                        check_round_trip) &
+                , it( &
+                        "the conversion factors between 2 units are inverses", &
+                        examples%pairs(), &
+                        check_conversion_factors_inverse) &
+                , it( &
+                        "preserves its value converting to and from a string", &
+                        examples%units(), &
+                        check_to_and_from_string) &
+                , it( &
+                        "returns an error trying to parse a bad string", &
+                        check_bad_string) &
+                , it( &
+                        "returns an error trying to parse an unknown unit", &
+                        check_bad_unit) &
+                , it( &
+                        "returns an error trying to parse a bad number", &
+                        check_bad_number) &
+                , it("arrays can be summed", check_sum) &
+                ])
     end function test_length
 
-    function checkRoundTrip(units) result(result_)
-        class(input_t), intent(in) :: units
+    function check_round_trip(input) result(result_)
+        class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        select type (units)
+        select type (input)
         type is (units_input_t)
-            result_ = checkRoundTripIn(units%unit())
+            result_ = check_round_trip_in(input%unit())
         class default
-            result_ = fail("Expected to get an units_input_t")
+            result_ = fail("Expected to get a units_input_t")
         end select
-    end function checkRoundTrip
+    end function
 
-    function checkConversionFactorsInverse(pair) result(result_)
-        class(input_t), intent(in) :: pair
+    function check_conversion_factors_inverse(input) result(result_)
+        class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        select type (pair)
+        select type (input)
         type is (units_pair_input_t)
-            result_ = checkConversionFactorsAreInverse(pair%first(), pair%second_())
+            result_ = check_conversion_factors_are_inverse(input%first(), input%second_())
         class default
             result_ = fail("Expected to get a units_pair_input_t")
         end select
-    end function checkConversionFactorsInverse
+    end function
 
-    function checkToAndFromString(units) result(result_)
-        class(input_t), intent(in) :: units
+    function check_to_and_from_string(input) result(result_)
+        class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        select type (units)
+        select type (input)
         type is (units_input_t)
-            result_ = checkStringTrip(units%unit())
+            result_ = check_string_trip(input%unit())
         class default
             result_ = fail("Expected to get an units_input_t")
         end select
-    end function checkToAndFromString
+    end function
 
-    function checkBadString() result(result_)
+    function check_bad_string() result(result_)
         type(result_t) :: result_
 
         type(error_list_t) :: errors
@@ -111,9 +112,9 @@ contains
         maybe_length = parse_length("bad")
         errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
-    end function checkBadString
+    end function
 
-    function checkBadUnit() result(result_)
+    function check_bad_unit() result(result_)
         type(result_t) :: result_
 
         type(error_list_t) :: errors
@@ -122,9 +123,9 @@ contains
         maybe_length = parse_length("1.0 bad", [METERS])
         errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
-    end function checkBadUnit
+    end function
 
-    function checkBadNumber() result(result_)
+    function check_bad_number() result(result_)
         type(result_t) :: result_
 
         type(error_list_t) :: errors
@@ -133,9 +134,9 @@ contains
         maybe_length = parse_length("bad m")
         errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
-    end function checkBadNumber
+    end function
 
-    pure function checkSum() result(result_)
+    pure function check_sum() result(result_)
         type(result_t) :: result_
 
         double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
@@ -143,20 +144,20 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.METERS, &
                 sum(numbers.unit.METERS))
-    end function checkSum
+    end function
 
-    function checkRoundTripIn(units) result(result_)
+    function check_round_trip_in(units) result(result_)
         class(length_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
         type(test_result_item_t) :: the_result
 
-        the_test = It(units%to_string(), DOUBLE_PRECISION_GENERATOR, checkRoundTrip_)
+        the_test = it(units%to_string(), DOUBLE_PRECISION_GENERATOR, check_round_trip_)
         the_result = the_test%run()
         result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
     contains
-        pure function checkRoundTrip_(input) result(result__)
+        pure function check_round_trip_(input) result(result__)
             class(input_t), intent(in) :: input
             type(result_t) :: result__
 
@@ -172,10 +173,10 @@ contains
             class default
                 result__ = fail("Expected to get a double_precision_input_t")
             end select
-        end function checkRoundTrip_
-    end function checkRoundTripIn
+        end function
+    end function
 
-    pure function checkConversionFactorsAreInverse( &
+    pure function check_conversion_factors_are_inverse( &
             from, to) result(result_)
         class(length_unit_t), intent(in) :: to
         class(length_unit_t), intent(in) :: from
@@ -191,20 +192,20 @@ contains
                 1.0d0 / factor2, &
                 1.0d-12, &
                 from%to_string() // " to " // to%to_string())
-    end function checkConversionFactorsAreInverse
+    end function
 
-    function checkStringTrip(units) result(result_)
+    function check_string_trip(units) result(result_)
         class(length_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
         type(test_result_item_t) :: the_result
 
-        the_test = It(units%to_string(), DOUBLE_PRECISION_GENERATOR, doCheck)
+        the_test = it(units%to_string(), DOUBLE_PRECISION_GENERATOR, do_check)
         the_result = the_test%run()
         result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
     contains
-        function doCheck(input) result(result__)
+        function do_check(input) result(result__)
             class(input_t), intent(in) :: input
             type(result_t) :: result__
 
@@ -228,6 +229,6 @@ contains
             class default
                 result__ = fail("Expected to get a double_precision_input_t")
             end select
-        end function doCheck
-    end function checkStringTrip
-end module length_type_test
+        end function
+    end function
+end module

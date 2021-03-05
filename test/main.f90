@@ -16,8 +16,8 @@ contains
         use length_math_ops_test, only: &
                 length_math_ops_addition_subtraction_operators => test_addition_subtraction_operators, &
                 length_math_ops_multiplication_division_operator => test_multiplication_division_operator
-        use length_type_test, only: &
-                length_type_length => test_length
+        use length_test, only: &
+                length_length => test_length
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
@@ -32,7 +32,7 @@ contains
         individual_tests(7) = length_logic_ops_less_than_operator()
         individual_tests(8) = length_math_ops_addition_subtraction_operators()
         individual_tests(9) = length_math_ops_multiplication_division_operator()
-        individual_tests(10) = length_type_length()
+        individual_tests(10) = length_length()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
