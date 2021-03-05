@@ -65,7 +65,7 @@ contains
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
                 ])
-    end function test_length
+    end function
 
     function check_round_trip(input) result(result_)
         class(input_t), intent(in) :: input
@@ -77,6 +77,36 @@ contains
         class default
             result_ = fail("Expected to get a units_input_t")
         end select
+    end function
+
+    function check_round_trip_in(units) result(result_)
+        class(length_unit_t), intent(in) :: units
+        type(result_t) :: result_
+
+        type(test_item_t) :: the_test
+        type(test_result_item_t) :: the_result
+
+        the_test = it(units%to_string(), DOUBLE_PRECISION_GENERATOR, check_round_trip_)
+        the_result = the_test%run()
+        result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
+    contains
+        pure function check_round_trip_(input) result(result__)
+            class(input_t), intent(in) :: input
+            type(result_t) :: result__
+
+            type(length_t) :: intermediate
+
+            select type (input)
+            type is (double_precision_input_t)
+                intermediate = input%input().unit.units
+                result__ = assert_equals_within_relative( &
+                        input%input(), &
+                        intermediate.in.units, &
+                        1.0d-12)
+            class default
+                result__ = fail("Expected to get a double_precision_input_t")
+            end select
+        end function
     end function
 
     function check_conversion_factors_inverse(input) result(result_)
@@ -91,6 +121,24 @@ contains
         end select
     end function
 
+    pure function check_conversion_factors_are_inverse( &
+            from, to) result(result_)
+        class(length_unit_t), intent(in) :: to
+        class(length_unit_t), intent(in) :: from
+        type(result_t) :: result_
+
+        double precision :: factor1
+        double precision :: factor2
+
+        factor1 = (1.0d0.unit.from).in.to
+        factor2 = (1.0d0.unit.to).in.from
+        result_ = assert_equals_within_relative( &
+                factor1, &
+                1.0d0 / factor2, &
+                1.0d-12, &
+                from%to_string() // " to " // to%to_string())
+    end function
+
     function check_to_and_from_string(input) result(result_)
         class(input_t), intent(in) :: input
         type(result_t) :: result_
@@ -101,6 +149,44 @@ contains
         class default
             result_ = fail("Expected to get an units_input_t")
         end select
+    end function
+
+    function check_string_trip(units) result(result_)
+        class(length_unit_t), intent(in) :: units
+        type(result_t) :: result_
+
+        type(test_item_t) :: the_test
+        type(test_result_item_t) :: the_result
+
+        the_test = it(units%to_string(), DOUBLE_PRECISION_GENERATOR, do_check)
+        the_result = the_test%run()
+        result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
+    contains
+        function do_check(input) result(result__)
+            class(input_t), intent(in) :: input
+            type(result_t) :: result__
+
+            type(error_list_t) :: errors
+            type(length_t) :: original_length
+            type(fallible_length_t) :: maybe_length
+            type(length_t) :: new_length
+
+            select type (input)
+            type is (double_precision_input_t)
+                original_length = input%input().unit.units
+                maybe_length = parse_length( &
+                        original_length%to_string_in(units))
+                new_length = maybe_length%length()
+                errors = maybe_length%errors()
+                result__ = &
+                        assert_equals( &
+                                original_length, &
+                                new_length) &
+                        .and.assert_not(errors%has_any(), errors%to_string())
+            class default
+                result__ = fail("Expected to get a double_precision_input_t")
+            end select
+        end function
     end function
 
     function check_bad_string() result(result_)
@@ -144,91 +230,5 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.METERS, &
                 sum(numbers.unit.METERS))
-    end function
-
-    function check_round_trip_in(units) result(result_)
-        class(length_unit_t), intent(in) :: units
-        type(result_t) :: result_
-
-        type(test_item_t) :: the_test
-        type(test_result_item_t) :: the_result
-
-        the_test = it(units%to_string(), DOUBLE_PRECISION_GENERATOR, check_round_trip_)
-        the_result = the_test%run()
-        result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
-    contains
-        pure function check_round_trip_(input) result(result__)
-            class(input_t), intent(in) :: input
-            type(result_t) :: result__
-
-            type(length_t) :: intermediate
-
-            select type (input)
-            type is (double_precision_input_t)
-                intermediate = input%input().unit.units
-                result__ = assert_equals_within_relative( &
-                        input%input(), &
-                        intermediate.in.units, &
-                        1.0d-12)
-            class default
-                result__ = fail("Expected to get a double_precision_input_t")
-            end select
-        end function
-    end function
-
-    pure function check_conversion_factors_are_inverse( &
-            from, to) result(result_)
-        class(length_unit_t), intent(in) :: to
-        class(length_unit_t), intent(in) :: from
-        type(result_t) :: result_
-
-        double precision :: factor1
-        double precision :: factor2
-
-        factor1 = (1.0d0.unit.from).in.to
-        factor2 = (1.0d0.unit.to).in.from
-        result_ = assert_equals_within_relative( &
-                factor1, &
-                1.0d0 / factor2, &
-                1.0d-12, &
-                from%to_string() // " to " // to%to_string())
-    end function
-
-    function check_string_trip(units) result(result_)
-        class(length_unit_t), intent(in) :: units
-        type(result_t) :: result_
-
-        type(test_item_t) :: the_test
-        type(test_result_item_t) :: the_result
-
-        the_test = it(units%to_string(), DOUBLE_PRECISION_GENERATOR, do_check)
-        the_result = the_test%run()
-        result_ = assert_that(the_result%passed(), the_result%verbose_description(.false.))
-    contains
-        function do_check(input) result(result__)
-            class(input_t), intent(in) :: input
-            type(result_t) :: result__
-
-            type(error_list_t) :: errors
-            type(length_t) :: original_length
-            type(fallible_length_t) :: maybe_length
-            type(length_t) :: new_length
-
-            select type (input)
-            type is (double_precision_input_t)
-                original_length = input%input().unit.units
-                maybe_length = parse_length( &
-                        original_length%to_string_in(units))
-                new_length = maybe_length%length()
-                errors = maybe_length%errors()
-                result__ = &
-                        assert_equals( &
-                                original_length, &
-                                new_length) &
-                        .and.assert_not(errors%has_any(), errors%to_string())
-            class default
-                result__ = fail("Expected to get a double_precision_input_t")
-            end select
-        end function
     end function
 end module
