@@ -1,4 +1,4 @@
-module NonZeroDoublePrecisionGenerator_m
+module non_zero_double_precision_generator_m
     use vegetables, only: &
             double_precision_input_t, &
             generated_t, &
@@ -12,24 +12,24 @@ module NonZeroDoublePrecisionGenerator_m
     implicit none
     private
 
-    type, public, extends(generator_t) :: NonZeroDoublePrecisiongenerator_t
+    type, public, extends(generator_t) :: non_zero_double_precision_generator_t
     contains
         private
         procedure, public :: generate
         procedure, public, nopass :: shrink
-    end type NonZeroDoublePrecisiongenerator_t
+    end type
 
-    type(NonZeroDoublePrecisiongenerator_t), public :: &
+    type(non_zero_double_precision_generator_t), public :: &
             NON_ZERO_DOUBLE_PRECISION_GENERATOR = &
-                    NonZeroDoublePrecisiongenerator_t()
+                    non_zero_double_precision_generator_t()
 contains
     function generate(self) result(random_double)
-        class(NonZeroDoublePrecisiongenerator_t), intent(in) :: self
+        class(non_zero_double_precision_generator_t), intent(in) :: self
         type(generated_t) :: random_double
 
         double precision :: value_
 
-        associate(a => self)
+        associate(unused => self)
         end associate
 
         do
@@ -37,7 +37,7 @@ contains
             if (abs(value_) >= 1.0d0) exit
         end do
         random_double = generated_t(double_precision_input_t(value_))
-    end function generate
+    end function
 
     function shrink(input) result(shrunk)
         class(input_t), intent(in) :: input
@@ -51,5 +51,5 @@ contains
                 shrunk = shrunk_value(double_precision_input_t(input%input() / 2.0d0))
             end if
         end select
-    end function shrink
-end module NonZeroDoublePrecisionGenerator_m
+    end function
+end module

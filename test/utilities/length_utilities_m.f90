@@ -19,11 +19,11 @@ module length_utilities_m
     type, extends(input_t) :: units_pair_input_t
         private
         class(length_unit_t), allocatable :: first_
-        class(length_unit_t), allocatable :: second_
+        class(length_unit_t), allocatable :: second__
     contains
         private
         procedure, public :: first
-        procedure, public :: second
+        procedure, public :: second_
     end type
 
     interface units_input_t
@@ -48,13 +48,13 @@ contains
         allocate(unit, source = self%unit_)
     end function
 
-    function units_pair_input_constructor(first, second) result(units_pair_input)
+    function units_pair_input_constructor(first, second_) result(units_pair_input)
         class(length_unit_t), intent(in) :: first
-        class(length_unit_t), intent(in) :: second
+        class(length_unit_t), intent(in) :: second_
         type(units_pair_input_t) :: units_pair_input
 
         allocate(units_pair_input%first_, source = first)
-        allocate(units_pair_input%second_, source = second)
+        allocate(units_pair_input%second__, source = second_)
     end function
 
     function first(self)
@@ -64,11 +64,11 @@ contains
         allocate(first, source = self%first_)
     end function
 
-    function second(self)
+    function second_(self)
         class(units_pair_input_t), intent(in) :: self
-        class(length_unit_t), allocatable :: second
+        class(length_unit_t), allocatable :: second_
 
-        allocate(second, source = self%second_)
+        allocate(second_, source = self%second__)
     end function
 
     function make_units_examples(units) result(units_examples)

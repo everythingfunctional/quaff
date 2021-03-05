@@ -5,6 +5,7 @@ module quaff_utilities_m
     implicit none
     private
     public :: &
+            effectively_zero, &
             equal_within_absolute, &
             equal_within_relative, &
             operator(.safeEq.), &

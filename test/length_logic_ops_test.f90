@@ -1,5 +1,5 @@
 module length_logic_ops_test
-    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+    use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
     use iso_varying_string, only: operator(//)
     use quaff, only: &
             Length_t, operator(.unit.), METERS

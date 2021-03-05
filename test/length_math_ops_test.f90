@@ -1,11 +1,12 @@
 module length_math_ops_test
-    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
-    use DoublePrecisionPairGenerator_m, only: &
-            DoublePrecisionPairInput_t, DOUBLE_PRECISION_PAIR_GENERATOR
+    use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
+    use double_precision_pair_generator_m, only: &
+            DOUBLE_PRECISION_PAIR_GENERATOR
+    use double_precision_pair_input_m, only: double_precision_pair_input_t
     use iso_varying_string, only: operator(//)
-    use NonZeroDoublePrecisionGenerator_m, only: &
+    use non_zero_double_precision_generator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_GENERATOR
-    use NonZeroDoublePrecisionPairGenerator_m, only: &
+    use non_zero_double_precision_pair_generator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
     use quaff, only: &
             Length_t, operator(.unit.), METERS
@@ -122,9 +123,9 @@ contains
         type(Length_t) :: length2
 
         select type(input)
-        type is (DoublePrecisionPairInput_t)
-            length1 = input%first.unit.METERS
-            length2 = input%second.unit.METERS
+        type is (double_precision_pair_input_t)
+            length1 = input%first().unit.METERS
+            length2 = input%second_().unit.METERS
             result_ = assert_equals_within_relative( &
                     length1, &
                     (length1 + length2) - length2, &
@@ -132,7 +133,7 @@ contains
                     "length1 = " // length1%to_string() &
                     // ", length2 = " // length2%to_string())
         class default
-            result_ = fail("Expected a DoublePrecisionPairInput_t")
+            result_ = fail("Expected a double_precision_pair_input_t")
         end select
     end function checkAddSubtract
 
@@ -205,11 +206,11 @@ contains
         type(Length_t) :: length
 
         select type (input)
-        type is (DoublePrecisionPairInput_t)
-            length = input%first.unit.METERS
-            result_ = assert_equals(length, length * input%second / input%second)
+        type is (double_precision_pair_input_t)
+            length = input%first().unit.METERS
+            result_ = assert_equals(length, length * input%second_() / input%second_())
         class default
-            result_ = fail("Expected a DoublePrecisionPairInput_t")
+            result_ = fail("Expected a double_precision_pair_input_t")
         end select
     end function checkMultiplyDivide
 
@@ -220,11 +221,11 @@ contains
         type(Length_t) :: length
 
         select type (input)
-        type is (DoublePrecisionPairInput_t)
-            length = input%first.unit.METERS
-            result_ = assert_equals(length, length / input%second * input%second)
+        type is (double_precision_pair_input_t)
+            length = input%first().unit.METERS
+            result_ = assert_equals(length, length / input%second_() * input%second_())
         class default
-            result_ = fail("Expected a DoublePrecisionPairInput_t")
+            result_ = fail("Expected a double_precision_pair_input_t")
         end select
     end function checkDivideMultiply
 end module length_math_ops_test

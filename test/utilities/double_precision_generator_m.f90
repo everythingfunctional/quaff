@@ -1,4 +1,5 @@
-module DoublePrecisionGenerator_m
+module double_precision_generator_m
+    use quaff_utilities_m, only: effectively_zero
     use vegetables, only: &
             double_precision_input_t, &
             generated_t, &
@@ -11,27 +12,28 @@ module DoublePrecisionGenerator_m
 
     implicit none
     private
+    public :: double_precision_generator_t, DOUBLE_PRECISION_GENERATOR
 
-    type, public, extends(generator_t) :: DoublePrecisionGenerator_t
+    type, extends(generator_t) :: double_precision_generator_t
     contains
         private
         procedure, public :: generate
         procedure, public, nopass :: shrink
-    end type DoublePrecisionGenerator_t
+    end type
 
-    type(DoublePrecisionGenerator_t), public :: DOUBLE_PRECISION_GENERATOR = &
-            DoublePrecisionGenerator_t()
+    type(double_precision_generator_t) :: DOUBLE_PRECISION_GENERATOR = &
+            double_precision_generator_t()
 contains
     function generate(self) result(random_double)
-        class(DoublePrecisionGenerator_t), intent(in) :: self
+        class(double_precision_generator_t), intent(in) :: self
         type(generated_t) :: random_double
 
-        associate(a => self)
+        associate(unused => self)
         end associate
 
         random_double = generated_t(double_precision_input_t( &
                 get_random_double_precision_with_magnitude(1.0d12)))
-    end function generate
+    end function
 
     function shrink(input) result(shrunk)
         class(input_t), intent(in) :: input
@@ -39,18 +41,11 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            if (effectivelyZero(input%input())) then
+            if (effectively_zero(input%input())) then
                 shrunk = simplest_value(double_precision_input_t(0.0d0))
             else
                 shrunk = shrunk_value(double_precision_input_t(input%input() / 2.0d0))
             end if
         end select
-    end function shrink
-
-    pure function effectivelyZero(value_)
-        double precision, intent(in) :: value_
-        logical :: effectivelyZero
-
-        effectivelyZero = abs(value_) < epsilon(value_)
-    end function effectivelyZero
-end module DoublePrecisionGenerator_m
+    end function
+end module

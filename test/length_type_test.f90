@@ -1,5 +1,5 @@
 module length_type_test
-    use DoublePrecisionGenerator_m, only: DOUBLE_PRECISION_GENERATOR
+    use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
     use erloff, only: error_list_t
     use iso_varying_string, only: operator(//)
     use quaff, only: &
@@ -84,7 +84,7 @@ contains
 
         select type (pair)
         type is (units_pair_input_t)
-            result_ = checkConversionFactorsAreInverse(pair%first(), pair%second())
+            result_ = checkConversionFactorsAreInverse(pair%first(), pair%second_())
         class default
             result_ = fail("Expected to get a units_pair_input_t")
         end select
