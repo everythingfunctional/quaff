@@ -12,7 +12,10 @@ module length_type_test
             PROVIDED_LENGTH_UNITS, &
             METERS
     use quaff_asserts_m, only: assert_equals
-    use quaff_Utilities_m, only: PARSE_ERROR
+    use quaff_utilities_m, only: PARSE_ERROR
+    use length_utilities_m, only: &
+            units_input_t, units_pair_input_t, make_units_examples
+    use units_examples_m, only: units_examples_t
     use vegetables, only: &
             double_precision_input_t, &
             example_t, &
@@ -29,41 +32,26 @@ module length_type_test
 
     implicit none
     private
-
-    type, public, extends(input_t) :: UnitsInput_t
-        class(length_unit_t), allocatable :: unit
-    end type UnitsInput_t
-
-    type, public, extends(input_t) :: UnitsPairInput_t
-        class(length_unit_t), allocatable :: first
-        class(length_unit_t), allocatable :: second
-    end type UnitsPairInput_t
-
-    type, public :: UnitsExamples_t
-        type(example_t), allocatable :: units(:)
-        type(example_t), allocatable :: pairs(:)
-    end type UnitsExamples_t
-
     public :: test_length
 contains
     function test_length() result(tests)
         type(test_item_t) :: tests
 
-        type(UnitsExamples_t) :: examples
+        type(units_examples_t) :: examples
         type(test_item_t) :: individual_tests(7)
 
-        examples = makeUnitsExamples(PROVIDED_LENGTH_UNITS)
+        examples = make_units_examples(PROVIDED_LENGTH_UNITS)
         individual_tests(1) = it( &
                 "gets the same value given the same units", &
-                examples%units, &
+                examples%units(), &
                 checkRoundTrip)
         individual_tests(2) = it( &
                 "the conversion factors between 2 units are inverses", &
-                examples%pairs, &
+                examples%pairs(), &
                 checkConversionFactorsInverse)
         individual_tests(3) = it( &
                 "can be converted to and from a string", &
-                examples%units, &
+                examples%units(), &
                 checkToAndFromString)
         individual_tests(4) = it( &
                 "Trying to parse a bad string is an error", &
@@ -83,22 +71,22 @@ contains
         type(result_t) :: result_
 
         select type (units)
-        type is (UnitsInput_t)
-            result_ = checkRoundTripIn(units%unit)
+        type is (units_input_t)
+            result_ = checkRoundTripIn(units%unit())
         class default
-            result_ = fail("Expected to get an UnitsInput_t")
+            result_ = fail("Expected to get an units_input_t")
         end select
     end function checkRoundTrip
 
-    pure function checkConversionFactorsInverse(pair) result(result_)
+    function checkConversionFactorsInverse(pair) result(result_)
         class(input_t), intent(in) :: pair
         type(result_t) :: result_
 
         select type (pair)
-        type is (UnitsPairInput_t)
-            result_ = checkConversionFactorsAreInverse(pair%first, pair%second)
+        type is (units_pair_input_t)
+            result_ = checkConversionFactorsAreInverse(pair%first(), pair%second())
         class default
-            result_ = fail("Expected to get a UnitsPairInput_t")
+            result_ = fail("Expected to get a units_pair_input_t")
         end select
     end function checkConversionFactorsInverse
 
@@ -107,10 +95,10 @@ contains
         type(result_t) :: result_
 
         select type (units)
-        type is (UnitsInput_t)
-            result_ = checkStringTrip(units%unit)
+        type is (units_input_t)
+            result_ = checkStringTrip(units%unit())
         class default
-            result_ = fail("Expected to get an UnitsInput_t")
+            result_ = fail("Expected to get an units_input_t")
         end select
     end function checkToAndFromString
 
@@ -156,52 +144,6 @@ contains
                 sum(numbers).unit.METERS, &
                 sum(numbers.unit.METERS))
     end function checkSum
-
-    function makeUnitsExamples(units) result(examples)
-        class(length_unit_t), intent(in) :: units(:)
-        type(UnitsExamples_t) :: examples
-
-        integer :: i
-        integer :: j
-        integer :: num_pairs
-        integer :: num_units
-        type(UnitsPairInput_t) :: pair
-        integer :: pair_index
-        type(UnitsInput_t) :: input
-
-        num_units = size(units)
-        allocate(examples%units(num_units))
-        do i = 1, num_units
-            allocate(input%unit, source = units(i))
-            examples%units(i) = example_t(input)
-            deallocate(input%unit)
-        end do
-
-        num_pairs = combinations(num_units)
-        allocate(examples%pairs(num_pairs))
-        pair_index = 1
-        do i = 1, num_units - 1
-            allocate(pair%first, source = units(i))
-            do j = i + 1, num_units
-                allocate(pair%second, source = units(j))
-                examples%pairs(pair_index) = example_t(pair)
-                pair_index = pair_index + 1
-                deallocate(pair%second)
-            end do
-            deallocate(pair%first)
-        end do
-    contains
-        pure recursive function combinations(num_items) result(num_combinations)
-            integer, intent(in) :: num_items
-            integer :: num_combinations
-
-            if (num_items <= 1) then
-                num_combinations = 0
-            else
-                num_combinations = num_items - 1 + combinations(num_items - 1)
-            end if
-        end function combinations
-    end function makeUnitsExamples
 
     function checkRoundTripIn(units) result(result_)
         class(length_unit_t), intent(in) :: units
