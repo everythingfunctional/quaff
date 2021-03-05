@@ -25,8 +25,8 @@ module length_m
             MICROMETERS_PER_METER
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
-            equal_within_absolute_ => equal_within_absolute, &
-            equal_within_relative_ => equal_within_relative, &
+            equal_within_absolute, &
+            equal_within_relative, &
             parse_space, &
             PARSE_ERROR, &
             UNKNOWN_UNIT
@@ -81,10 +81,10 @@ module length_m
         generic, public :: operator(<=) => less_than_or_equal
         procedure :: equal_
         generic, public :: operator(==) => equal_
-        procedure :: equal_within_absolute
-        procedure :: equal_within_relative
+        procedure :: equal_within_absolute_
+        procedure :: equal_within_relative_
         generic, public :: equal => &
-                equal_, equal_within_absolute, equal_within_relative
+                equal_, equal_within_absolute_, equal_within_relative_
         procedure :: not_equal
         generic, public :: operator(/=) => not_equal
         procedure :: to_string_full_precision
@@ -437,23 +437,23 @@ contains
         equal_ = lhs%meters .safeEq. rhs%meters
     end function
 
-    elemental function equal_within_absolute(lhs, rhs, within)
+    elemental function equal_within_absolute_(lhs, rhs, within)
         class(length_t), intent(in) :: lhs
         type(length_t), intent(in) :: rhs
         type(length_t), intent(in) :: within
-        logical :: equal_within_absolute
+        logical :: equal_within_absolute_
 
-        equal_within_absolute = equal_within_absolute_( &
+        equal_within_absolute_ = equal_within_absolute( &
                 lhs%meters, rhs%meters, within%meters)
     end function
 
-    elemental function equal_within_relative(lhs, rhs, within)
+    elemental function equal_within_relative_(lhs, rhs, within)
         class(length_t), intent(in) :: lhs
         type(length_t), intent(in) :: rhs
         double precision, intent(in) :: within
-        logical :: equal_within_relative
+        logical :: equal_within_relative_
 
-        equal_within_relative = equal_within_relative_( &
+        equal_within_relative_ = equal_within_relative( &
                 lhs%meters, rhs%meters, within)
     end function
 
