@@ -13,15 +13,12 @@ contains
                 length_logic_ops_less_than_or_equal_operator => test_less_than_or_equal_operator, &
                 length_logic_ops_greater_than_operator => test_greater_than_operator, &
                 length_logic_ops_less_than_operator => test_less_than_operator
-        use length_math_ops_test, only: &
-                length_math_ops_addition_subtraction_operators => test_addition_subtraction_operators, &
-                length_math_ops_multiplication_division_operator => test_multiplication_division_operator
         use length_test, only: &
                 length_length => test_length
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(10)
+        type(test_item_t) :: individual_tests(8)
 
         individual_tests(1) = length_logic_ops_equal_operator()
         individual_tests(2) = length_logic_ops_not_equal_operator()
@@ -30,9 +27,7 @@ contains
         individual_tests(5) = length_logic_ops_less_than_or_equal_operator()
         individual_tests(6) = length_logic_ops_greater_than_operator()
         individual_tests(7) = length_logic_ops_less_than_operator()
-        individual_tests(8) = length_math_ops_addition_subtraction_operators()
-        individual_tests(9) = length_math_ops_multiplication_division_operator()
-        individual_tests(10) = length_length()
+        individual_tests(8) = length_length()
         tests = test_that(individual_tests)
 
         call run_tests(tests)

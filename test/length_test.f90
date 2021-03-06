@@ -1,7 +1,13 @@
 module length_test
     use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
+    use double_precision_pair_generator_m, only: DOUBLE_PRECISION_PAIR_GENERATOR
+    use double_precision_pair_input_m, only: double_precision_pair_input_t
     use erloff, only: error_list_t
     use iso_varying_string, only: operator(//)
+    use non_zero_double_precision_generator_m, only: &
+            NON_ZERO_DOUBLE_PRECISION_GENERATOR
+    use non_zero_double_precision_pair_generator_m, only: &
+            NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
     use quaff, only: &
             length_t, &
             fallible_length_t, &
@@ -11,7 +17,7 @@ module length_test
             sum, &
             PROVIDED_LENGTH_UNITS, &
             METERS
-    use quaff_asserts_m, only: assert_equals
+    use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
     use quaff_utilities_m, only: PARSE_ERROR
     use length_utilities_m, only: &
             units_input_t, units_pair_input_t, make_units_examples
@@ -23,6 +29,7 @@ module length_test
             result_t, &
             test_item_t, &
             test_result_item_t, &
+            assert_equals, &
             assert_equals_within_relative, &
             assert_not, &
             assert_that, &
@@ -47,7 +54,7 @@ contains
                         examples%units(), &
                         check_round_trip) &
                 , it( &
-                        "the conversion factors between 2 units are inverses", &
+                        "the conversion factors between two units are inverses", &
                         examples%pairs(), &
                         check_conversion_factors_inverse) &
                 , it( &
@@ -64,6 +71,38 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it( &
+                        "adding zero returns the original length", &
+                        DOUBLE_PRECISION_GENERATOR, &
+                        check_add_zero) &
+                , it( &
+                        "subtracting zero returns the original length", &
+                        DOUBLE_PRECISION_GENERATOR, &
+                        check_subtract_zero) &
+                , it( &
+                        "adding and subtracting the same length returns the original length", &
+                        DOUBLE_PRECISION_PAIR_GENERATOR, &
+                        check_add_subtract) &
+                , it( &
+                        "multiplying by one returns the original length", &
+                        DOUBLE_PRECISION_GENERATOR, &
+                        check_multiply_by_one) &
+                , it( &
+                        "multiplying by zero returns zero length", &
+                        DOUBLE_PRECISION_GENERATOR, &
+                        check_multiply_by_zero) &
+                , it( &
+                        "dividing by one returns the original length", &
+                        DOUBLE_PRECISION_GENERATOR, &
+                        check_divide_by_one) &
+                , it( &
+                        "dividing by itself returns one", &
+                        NON_ZERO_DOUBLE_PRECISION_GENERATOR, &
+                        check_divide_by_self) &
+                , it( &
+                        "multiplying and dividing by the same number returns the original length", &
+                        NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
+                        check_multiply_divide) &
                 ])
     end function
 
@@ -230,5 +269,138 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.METERS, &
                 sum(numbers.unit.METERS))
+    end function
+
+    pure function check_add_zero(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+        type(length_t) :: zero
+
+        select type(input)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            zero = 0.0d0.unit.METERS
+            result_ = assert_equals(length, length + zero)
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_subtract_zero(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+        type(length_t) :: zero
+
+        select type(input)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            zero = 0.0d0.unit.METERS
+            result_ = assert_equals(length, length - zero)
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_add_subtract(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length1
+        type(length_t) :: length2
+
+        select type(input)
+        type is (double_precision_pair_input_t)
+            length1 = input%first().unit.METERS
+            length2 = input%second_().unit.METERS
+            result_ = assert_equals_within_relative( &
+                    length1, &
+                    (length1 + length2) - length2, &
+                    1.0d-8, &
+                    "length1 = " // length1%to_string() &
+                    // ", length2 = " // length2%to_string())
+        class default
+            result_ = fail("Expected a double_precision_pair_input_t")
+        end select
+    end function
+
+    pure function check_multiply_by_one(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+
+        select type(input)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            result_ = assert_equals(length, length * 1.0d0)
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_multiply_by_zero(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+        type(length_t) :: zero
+
+        select type(input)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            zero = 0.0d0.unit.METERS
+            result_ = assert_equals(zero, length * 0.0d0)
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_divide_by_one(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+
+        select type(input)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            result_ = assert_equals(length, length / 1.0d0)
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_divide_by_self(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+
+        select type(input)
+        type is (double_precision_input_t)
+            length = input%input().unit.METERS
+            result_ = assert_equals(1.0d0, length / length)
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_multiply_divide(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length
+
+        select type (input)
+        type is (double_precision_pair_input_t)
+            length = input%first().unit.METERS
+            result_ = assert_equals(length, (length * input%second_()) / input%second_())
+        class default
+            result_ = fail("Expected a double_precision_pair_input_t")
+        end select
     end function
 end module
