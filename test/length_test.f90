@@ -103,6 +103,103 @@ contains
                         "multiplying and dividing by the same number returns the original length", &
                         NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_multiply_divide) &
+                , describe( &
+                        "operator(==)", &
+                        [ it( &
+                                "is true for the same length", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_equal_with_same_number) &
+                        , it( &
+                                "is false for different lengths", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_equal_with_different_numbers) &
+                        ]) &
+                , describe( &
+                        "operator(/=)", &
+                        [ it( &
+                                "is false for the same length", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_not_equal_with_same_number) &
+                        , it( &
+                                "is true for different lengths", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_not_equal_with_different_numbers) &
+                        ]) &
+                , describe( &
+                        "%equal(length, within)", &
+                        [ it( &
+                                "is true for the same length even for tiny tolerance", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_equal_within_with_same_number) &
+                        , it( &
+                                "is true for sufficiently close values", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_equal_within_with_close_numbers) &
+                        , it( &
+                                "is false for sufficiently different numbers", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_equal_within_with_different_numbers) &
+                        ]) &
+                , describe( &
+                        "operator(>=)", &
+                        [ it( &
+                                "is true if the lhs is greater than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_greater_than_or_equal_with_greater_number) &
+                        , it( &
+                                "is true if the lhs is equal to the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_greater_than_or_equal_with_same_numbers) &
+                        , it( &
+                                "is false if the lhs is less than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_greater_than_or_equal_with_lesser_number) &
+                        ]) &
+                , describe( &
+                        "operator(<=)", &
+                        [ it( &
+                                "is true if the lhs is less than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_less_than_or_equal_with_less_number) &
+                        , it( &
+                                "is true if the lhs is equal to the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_less_than_or_equal_with_same_numbers) &
+                        , it( &
+                                "is false if the lhs is greater than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_less_than_or_equal_with_greater_number) &
+                        ]) &
+                , describe( &
+                        "operator(>)", &
+                        [ it( &
+                                "is true if the lhs is greater than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_greater_than_with_greater_number) &
+                        , it( &
+                                "is false if the lhs is equal to the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_greater_than_with_same_numbers) &
+                        , it( &
+                                "is false if the lhs is less than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_greater_than_with_lesser_number) &
+                        ]) &
+                , describe( &
+                        "operator(<)", &
+                        [ it( &
+                                "is true if the lhs is less than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_less_than_with_less_number) &
+                        , it( &
+                                "is false if the lhs is equal to the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_less_than_with_same_numbers) &
+                        , it( &
+                                "is false if the lhs is greater than the rhs", &
+                                DOUBLE_PRECISION_GENERATOR, &
+                                check_less_than_with_greater_number) &
+                        ]) &
                 ])
     end function
 
@@ -401,6 +498,373 @@ contains
             result_ = assert_equals(length, (length * input%second_()) / input%second_())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
+        end select
+    end function
+
+    pure function check_equal_with_same_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: the_length
+
+        select type (input)
+        type is (double_precision_input_t)
+            the_length = input%input().unit.METERS
+            result_ = assert_that( &
+                    the_length == the_length, &
+                    the_length%to_string() // " == " // the_length%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_equal_with_different_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length1
+        type(length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() + 1.0d0).unit.METERS
+            result_ = assert_not( &
+                    length1 == length2, &
+                    length1%to_string() // " == " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_not_equal_with_same_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: the_length
+
+        select type (input)
+        type is (double_precision_input_t)
+            the_length = input%input().unit.METERS
+            result_ = assert_not( &
+                    the_length /= the_length, &
+                    the_length%to_string() // " /= " // the_length%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_not_equal_with_different_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length1
+        type(length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() + 1.0d0).unit.METERS
+            result_ = assert_that( &
+                    length1 /= length2, &
+                    length1%to_string() // " /= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_equal_within_with_same_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: the_length
+        type(length_t) :: tolerance
+
+        select type (input)
+        type is (double_precision_input_t)
+            the_length = input%input().unit.METERS
+            tolerance = tiny(1.0d0).unit.METERS
+            result_ = assert_that( &
+                    the_length%equal(the_length, within = tolerance), &
+                    "(" // the_length%to_string() // ")%equal(" &
+                        // the_length%to_string() // ", within = " &
+                        // tolerance%to_string() // ")")
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_equal_within_with_close_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length1
+        type(length_t) :: length2
+        type(length_t) :: tolerance
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() + 0.05d0).unit.METERS
+            tolerance = 0.1d0.unit.METERS
+            result_ = assert_that( &
+                    length1%equal(length2, within = tolerance), &
+                    "(" // length1%to_string() // ")%equal(" &
+                        // length2%to_string() // ", within = " &
+                        // tolerance%to_string() // ")")
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_equal_within_with_different_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(length_t) :: length1
+        type(length_t) :: length2
+        type(length_t) :: tolerance
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() + 0.2d0).unit.METERS
+            tolerance = 0.1d0.unit.METERS
+            result_ = assert_not( &
+                    length1%equal(length2, within = tolerance), &
+                    "(" // length1%to_string() // ")%equal(" &
+                    // length2%to_string() // ", within = " &
+                    // tolerance%to_string() // ")")
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_greater_than_or_equal_with_greater_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit. METERS
+            length2 = (input%input() - 1.0d0).unit.METERS
+            result_ = assert_that( &
+                    length1 >= length2, &
+                    length1%to_string() // " >= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_greater_than_or_equal_with_same_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = input%input().unit.METERS
+            result_ = assert_that( &
+                    length1 >= length2, &
+                    length1%to_string() // " >= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_greater_than_or_equal_with_lesser_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() + 1.0d0).unit.METERS
+            result_ = assert_not( &
+                    length1 >= length2, &
+                    length1%to_string() // " >= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_less_than_or_equal_with_less_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit. METERS
+            length2 = (input%input() + 1.0d0).unit.METERS
+            result_ = assert_that( &
+                    length1 <= length2, &
+                    length1%to_string() // " <= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_less_than_or_equal_with_same_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = input%input().unit.METERS
+            result_ = assert_that( &
+                    length1 <= length2, &
+                    length1%to_string() // " <= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_less_than_or_equal_with_greater_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() - 1.0d0).unit.METERS
+            result_ = assert_not( &
+                    length1 <= length2, &
+                    length1%to_string() // " <= " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_greater_than_with_greater_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit. METERS
+            length2 = (input%input() - 1.0d0).unit.METERS
+            result_ = assert_that( &
+                    length1 > length2, &
+                    length1%to_string() // " > " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_greater_than_with_same_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = input%input().unit.METERS
+            result_ = assert_not( &
+                    length1 > length2, &
+                    length1%to_string() // " > " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_greater_than_with_lesser_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() + 1.0d0).unit.METERS
+            result_ = assert_not( &
+                    length1 > length2, &
+                    length1%to_string() // " > " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_less_than_with_less_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit. METERS
+            length2 = (input%input() + 1.0d0).unit.METERS
+            result_ = assert_that( &
+                    length1 < length2, &
+                    length1%to_string() // " < " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_less_than_with_same_numbers(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = input%input().unit.METERS
+            result_ = assert_not( &
+                    length1 < length2, &
+                    length1%to_string() // " <=" // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
+        end select
+    end function
+
+    pure function check_less_than_with_greater_number(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        type(Length_t) :: length1
+        type(Length_t) :: length2
+
+        select type (input)
+        type is (double_precision_input_t)
+            length1 = input%input().unit.METERS
+            length2 = (input%input() - 1.0d0).unit.METERS
+            result_ = assert_not( &
+                    length1 < length2, &
+                    length1%to_string() // " < " // length2%to_string())
+        class default
+            result_ = fail("Expected to get a double_precision_input_t")
         end select
     end function
 end module
