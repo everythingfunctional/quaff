@@ -1,4 +1,18 @@
 module quaff
+    use acceleration_m, only: &
+            acceleration_t, &
+            fallible_acceleration_t, &
+            acceleration_unit_t, &
+            fallible_acceleration_unit_t, &
+            operator(.unit.), &
+            parse_acceleration, &
+            parse_acceleration_unit, &
+            sum, &
+            DEFAULT_ACCELERATION_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ACCELERATION_UNITS => PROVIDED_UNITS, &
+            CENTIMETERS_PER_SQUARE_SECOND, &
+            FEET_PER_SQUARE_SECOND, &
+            METERS_PER_SQUARE_SECOND
     use angle_m, only: &
             angle_t, &
             fallible_angle_t, &

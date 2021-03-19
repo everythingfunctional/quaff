@@ -5,6 +5,8 @@ program main
     call run()
 contains
     subroutine run()
+        use acceleration_test, only: &
+                acceleration_acceleration => test_acceleration
         use angle_test, only: &
                 angle_angle => test_angle
         use length_test, only: &
@@ -16,12 +18,13 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(4)
+        type(test_item_t) :: individual_tests(5)
 
-        individual_tests(1) = angle_angle()
-        individual_tests(2) = length_length()
-        individual_tests(3) = temperature_temperature()
-        individual_tests(4) = time_time()
+        individual_tests(1) = acceleration_acceleration()
+        individual_tests(2) = angle_angle()
+        individual_tests(3) = length_length()
+        individual_tests(4) = temperature_temperature()
+        individual_tests(5) = time_time()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
