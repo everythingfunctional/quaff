@@ -74,6 +74,19 @@ module quaff
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
             WATT_SECONDS_PER_KILOGRAM
+    use density_m, only: &
+            density_t, &
+            fallible_density_t, &
+            density_unit_t, &
+            fallible_density_unit_t, &
+            operator(.unit.), &
+            parse_density, &
+            parse_density_unit, &
+            sum, &
+            DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
+            GRAMS_PER_CUBIC_METER, &
+            KILOGRAMS_PER_CUBIC_METER
     use length_m, only: &
             length_t, &
             fallible_length_t, &
