@@ -1,4 +1,24 @@
 module quaff
+    use angle_m, only: &
+            angle_t, &
+            fallible_angle_t, &
+            angle_unit_t, &
+            fallible_angle_unit_t, &
+            operator(.unit.), &
+            parse_angle, &
+            parse_angle_unit, &
+            sum, &
+            sin, &
+            cos, &
+            tan, &
+            asin_, &
+            acos_, &
+            atan_, &
+            atan2_, &
+            DEFAULT_ANGLE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ANGLE_UNITS => PROVIDED_UNITS, &
+            DEGREES, &
+            RADIANS
     use length_m, only: &
             length_t, &
             fallible_length_t, &
