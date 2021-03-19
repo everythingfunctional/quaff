@@ -13,6 +13,19 @@ module quaff
             CENTIMETERS_PER_SQUARE_SECOND, &
             FEET_PER_SQUARE_SECOND, &
             METERS_PER_SQUARE_SECOND
+    use amount_m, only: &
+            amount_t, &
+            fallible_amount_t, &
+            amount_unit_t, &
+            fallible_amount_unit_t, &
+            operator(.unit.), &
+            parse_amount, &
+            parse_amount_unit, &
+            sum, &
+            DEFAULT_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_UNITS => PROVIDED_UNITS, &
+            MOLS, &
+            PARTICLES
     use angle_m, only: &
             angle_t, &
             fallible_angle_t, &
