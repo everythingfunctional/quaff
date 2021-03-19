@@ -46,6 +46,21 @@ module quaff
             PROVIDED_ANGLE_UNITS => PROVIDED_UNITS, &
             DEGREES, &
             RADIANS
+    use area_m, only: &
+            area_t, &
+            fallible_area_t, &
+            area_unit_t, &
+            fallible_area_unit_t, &
+            operator(.unit.), &
+            parse_area, &
+            parse_area_unit, &
+            sum, &
+            DEFAULT_AREA_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AREA_UNITS => PROVIDED_UNITS, &
+            SQUARE_CENTIMETERS, &
+            SQUARE_FEET, &
+            SQUARE_INCHES, &
+            SQUARE_METERS
     use length_m, only: &
             length_t, &
             fallible_length_t, &
