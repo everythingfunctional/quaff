@@ -1,4 +1,4 @@
-module length_test
+module quantity_test
     use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
     use double_precision_pair_generator_m, only: DOUBLE_PRECISION_PAIR_GENERATOR
     use double_precision_pair_input_m, only: double_precision_pair_input_t
@@ -9,17 +9,17 @@ module length_test
     use non_zero_double_precision_pair_generator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
     use quaff, only: &
-            length_t, &
-            fallible_length_t, &
-            length_unit_t, &
+            quantity_t, &
+            fallible_quantity_t, &
+            quantity_unit_t, &
             operator(.unit.), &
-            parse_length, &
+            parse_quantity, &
             sum, &
-            PROVIDED_LENGTH_UNITS, &
+            PROVIDED_QUANTITY_UNITS, &
             METERS
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
     use quaff_utilities_m, only: PARSE_ERROR
-    use length_utilities_m, only: &
+    use quantity_utilities_m, only: &
             units_input_t, units_pair_input_t, make_units_examples
     use units_examples_m, only: units_examples_t
     use vegetables, only: &
@@ -39,16 +39,16 @@ module length_test
 
     implicit none
     private
-    public :: test_length
+    public :: test_quantity
 contains
-    function test_length() result(tests)
+    function test_quantity() result(tests)
         type(test_item_t) :: tests
 
         type(units_examples_t) :: examples
 
-        examples = make_units_examples(PROVIDED_LENGTH_UNITS)
+        examples = make_units_examples(PROVIDED_QUANTITY_UNITS)
         tests = describe( &
-                "length_t", &
+                "quantity_t", &
                 [ it( &
                         "returns the same value given the same units", &
                         examples%units(), &
@@ -72,27 +72,27 @@ contains
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
                 , it( &
-                        "adding zero returns the original length", &
+                        "adding zero returns the original quantity", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_add_zero) &
                 , it( &
-                        "subtracting zero returns the original length", &
+                        "subtracting zero returns the original quantity", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_subtract_zero) &
                 , it( &
-                        "adding and subtracting the same length returns the original length", &
+                        "adding and subtracting the same quantity returns the original quantity", &
                         DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_add_subtract) &
                 , it( &
-                        "multiplying by one returns the original length", &
+                        "multiplying by one returns the original quantity", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_multiply_by_one) &
                 , it( &
-                        "multiplying by zero returns zero length", &
+                        "multiplying by zero returns zero quantity", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_multiply_by_zero) &
                 , it( &
-                        "dividing by one returns the original length", &
+                        "dividing by one returns the original quantity", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_divide_by_one) &
                 , it( &
@@ -100,35 +100,35 @@ contains
                         NON_ZERO_DOUBLE_PRECISION_GENERATOR, &
                         check_divide_by_self) &
                 , it( &
-                        "multiplying and dividing by the same number returns the original length", &
+                        "multiplying and dividing by the same number returns the original quantity", &
                         NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_multiply_divide) &
                 , describe( &
                         "operator(==)", &
                         [ it( &
-                                "is true for the same length", &
+                                "is true for the same quantity", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_with_same_number) &
                         , it( &
-                                "is false for different lengths", &
+                                "is false for different quantitys", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_with_different_numbers) &
                         ]) &
                 , describe( &
                         "operator(/=)", &
                         [ it( &
-                                "is false for the same length", &
+                                "is false for the same quantity", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_not_equal_with_same_number) &
                         , it( &
-                                "is true for different lengths", &
+                                "is true for different quantitys", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_not_equal_with_different_numbers) &
                         ]) &
                 , describe( &
-                        "%equal(length, within)", &
+                        "%equal(quantity, within)", &
                         [ it( &
-                                "is true for the same length even for tiny tolerance", &
+                                "is true for the same quantity even for tiny tolerance", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_within_with_same_number) &
                         , it( &
@@ -216,7 +216,7 @@ contains
     end function
 
     function check_round_trip_in(units) result(result_)
-        class(length_unit_t), intent(in) :: units
+        class(quantity_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
@@ -230,7 +230,7 @@ contains
             class(input_t), intent(in) :: input
             type(result_t) :: result__
 
-            type(length_t) :: intermediate
+            type(quantity_t) :: intermediate
 
             select type (input)
             type is (double_precision_input_t)
@@ -259,8 +259,8 @@ contains
 
     pure function check_conversion_factors_are_inverse( &
             from, to) result(result_)
-        class(length_unit_t), intent(in) :: to
-        class(length_unit_t), intent(in) :: from
+        class(quantity_unit_t), intent(in) :: to
+        class(quantity_unit_t), intent(in) :: from
         type(result_t) :: result_
 
         double precision :: factor1
@@ -288,7 +288,7 @@ contains
     end function
 
     function check_string_trip(units) result(result_)
-        class(length_unit_t), intent(in) :: units
+        class(quantity_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
@@ -303,21 +303,21 @@ contains
             type(result_t) :: result__
 
             type(error_list_t) :: errors
-            type(length_t) :: original_length
-            type(fallible_length_t) :: maybe_length
-            type(length_t) :: new_length
+            type(quantity_t) :: original_quantity
+            type(fallible_quantity_t) :: maybe_quantity
+            type(quantity_t) :: new_quantity
 
             select type (input)
             type is (double_precision_input_t)
-                original_length = input%input().unit.units
-                maybe_length = parse_length( &
-                        original_length%to_string_in(units))
-                new_length = maybe_length%length()
-                errors = maybe_length%errors()
+                original_quantity = input%input().unit.units
+                maybe_quantity = parse_quantity( &
+                        original_quantity%to_string_in(units))
+                new_quantity = maybe_quantity%quantity()
+                errors = maybe_quantity%errors()
                 result__ = &
                         assert_equals( &
-                                original_length, &
-                                new_length) &
+                                original_quantity, &
+                                new_quantity) &
                         .and.assert_not(errors%has_any(), errors%to_string())
             class default
                 result__ = fail("Expected to get a double_precision_input_t")
@@ -329,10 +329,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_length_t) :: maybe_length
+        type(fallible_quantity_t) :: maybe_quantity
 
-        maybe_length = parse_length("bad")
-        errors = maybe_length%errors()
+        maybe_quantity = parse_quantity("bad")
+        errors = maybe_quantity%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -340,10 +340,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_length_t) :: maybe_length
+        type(fallible_quantity_t) :: maybe_quantity
 
-        maybe_length = parse_length("1.0 bad", [METERS])
-        errors = maybe_length%errors()
+        maybe_quantity = parse_quantity("1.0 bad", [METERS])
+        errors = maybe_quantity%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -351,10 +351,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_length_t) :: maybe_length
+        type(fallible_quantity_t) :: maybe_quantity
 
-        maybe_length = parse_length("bad m")
-        errors = maybe_length%errors()
+        maybe_quantity = parse_quantity("bad SYM")
+        errors = maybe_quantity%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -372,14 +372,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
-        type(length_t) :: zero
+        type(quantity_t) :: quantity
+        type(quantity_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            length = input%input().unit.METERS
+            quantity = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
-            result_ = assert_equals(length, length + zero)
+            result_ = assert_equals(quantity, quantity + zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -389,14 +389,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
-        type(length_t) :: zero
+        type(quantity_t) :: quantity
+        type(quantity_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            length = input%input().unit.METERS
+            quantity = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
-            result_ = assert_equals(length, length - zero)
+            result_ = assert_equals(quantity, quantity - zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -406,19 +406,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type(input)
         type is (double_precision_pair_input_t)
-            length1 = input%first().unit.METERS
-            length2 = input%second_().unit.METERS
+            quantity1 = input%first().unit.METERS
+            quantity2 = input%second_().unit.METERS
             result_ = assert_equals_within_relative( &
-                    length1, &
-                    (length1 + length2) - length2, &
+                    quantity1, &
+                    (quantity1 + quantity2) - quantity2, &
                     1.0d-8, &
-                    "length1 = " // length1%to_string() &
-                    // ", length2 = " // length2%to_string())
+                    "quantity1 = " // quantity1%to_string() &
+                    // ", quantity2 = " // quantity2%to_string())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
@@ -428,12 +428,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
+        type(quantity_t) :: quantity
 
         select type(input)
         type is (double_precision_input_t)
-            length = input%input().unit.METERS
-            result_ = assert_equals(length, length * 1.0d0)
+            quantity = input%input().unit.METERS
+            result_ = assert_equals(quantity, quantity * 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -443,14 +443,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
-        type(length_t) :: zero
+        type(quantity_t) :: quantity
+        type(quantity_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            length = input%input().unit.METERS
+            quantity = input%input().unit.METERS
             zero = 0.0d0.unit.METERS
-            result_ = assert_equals(zero, length * 0.0d0)
+            result_ = assert_equals(zero, quantity * 0.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -460,12 +460,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
+        type(quantity_t) :: quantity
 
         select type(input)
         type is (double_precision_input_t)
-            length = input%input().unit.METERS
-            result_ = assert_equals(length, length / 1.0d0)
+            quantity = input%input().unit.METERS
+            result_ = assert_equals(quantity, quantity / 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -475,12 +475,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
+        type(quantity_t) :: quantity
 
         select type(input)
         type is (double_precision_input_t)
-            length = input%input().unit.METERS
-            result_ = assert_equals(1.0d0, length / length)
+            quantity = input%input().unit.METERS
+            result_ = assert_equals(1.0d0, quantity / quantity)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -490,12 +490,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length
+        type(quantity_t) :: quantity
 
         select type (input)
         type is (double_precision_pair_input_t)
-            length = input%first().unit.METERS
-            result_ = assert_equals(length, (length * input%second_()) / input%second_())
+            quantity = input%first().unit.METERS
+            result_ = assert_equals(quantity, (quantity * input%second_()) / input%second_())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
@@ -505,14 +505,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: the_length
+        type(quantity_t) :: the_quantity
 
         select type (input)
         type is (double_precision_input_t)
-            the_length = input%input().unit.METERS
+            the_quantity = input%input().unit.METERS
             result_ = assert_that( &
-                    the_length == the_length, &
-                    the_length%to_string() // " == " // the_length%to_string())
+                    the_quantity == the_quantity, &
+                    the_quantity%to_string() // " == " // the_quantity%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -522,16 +522,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() + 1.0d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() + 1.0d0).unit.METERS
             result_ = assert_not( &
-                    length1 == length2, &
-                    length1%to_string() // " == " // length2%to_string())
+                    quantity1 == quantity2, &
+                    quantity1%to_string() // " == " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -541,14 +541,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: the_length
+        type(quantity_t) :: the_quantity
 
         select type (input)
         type is (double_precision_input_t)
-            the_length = input%input().unit.METERS
+            the_quantity = input%input().unit.METERS
             result_ = assert_not( &
-                    the_length /= the_length, &
-                    the_length%to_string() // " /= " // the_length%to_string())
+                    the_quantity /= the_quantity, &
+                    the_quantity%to_string() // " /= " // the_quantity%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -558,16 +558,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() + 1.0d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() + 1.0d0).unit.METERS
             result_ = assert_that( &
-                    length1 /= length2, &
-                    length1%to_string() // " /= " // length2%to_string())
+                    quantity1 /= quantity2, &
+                    quantity1%to_string() // " /= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -577,17 +577,17 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: the_length
-        type(length_t) :: tolerance
+        type(quantity_t) :: the_quantity
+        type(quantity_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            the_length = input%input().unit.METERS
+            the_quantity = input%input().unit.METERS
             tolerance = tiny(1.0d0).unit.METERS
             result_ = assert_that( &
-                    the_length%equal(the_length, within = tolerance), &
-                    "(" // the_length%to_string() // ")%equal(" &
-                        // the_length%to_string() // ", within = " &
+                    the_quantity%equal(the_quantity, within = tolerance), &
+                    "(" // the_quantity%to_string() // ")%equal(" &
+                        // the_quantity%to_string() // ", within = " &
                         // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -598,19 +598,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
-        type(length_t) :: tolerance
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
+        type(quantity_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() + 0.05d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() + 0.05d0).unit.METERS
             tolerance = 0.1d0.unit.METERS
             result_ = assert_that( &
-                    length1%equal(length2, within = tolerance), &
-                    "(" // length1%to_string() // ")%equal(" &
-                        // length2%to_string() // ", within = " &
+                    quantity1%equal(quantity2, within = tolerance), &
+                    "(" // quantity1%to_string() // ")%equal(" &
+                        // quantity2%to_string() // ", within = " &
                         // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -621,19 +621,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
-        type(length_t) :: tolerance
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
+        type(quantity_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() + 0.2d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() + 0.2d0).unit.METERS
             tolerance = 0.1d0.unit.METERS
             result_ = assert_not( &
-                    length1%equal(length2, within = tolerance), &
-                    "(" // length1%to_string() // ")%equal(" &
-                    // length2%to_string() // ", within = " &
+                    quantity1%equal(quantity2, within = tolerance), &
+                    "(" // quantity1%to_string() // ")%equal(" &
+                    // quantity2%to_string() // ", within = " &
                     // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -644,16 +644,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit. METERS
-            length2 = (input%input() - 1.0d0).unit.METERS
+            quantity1 = input%input().unit. METERS
+            quantity2 = (input%input() - 1.0d0).unit.METERS
             result_ = assert_that( &
-                    length1 >= length2, &
-                    length1%to_string() // " >= " // length2%to_string())
+                    quantity1 >= quantity2, &
+                    quantity1%to_string() // " >= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -663,16 +663,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = input%input().unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = input%input().unit.METERS
             result_ = assert_that( &
-                    length1 >= length2, &
-                    length1%to_string() // " >= " // length2%to_string())
+                    quantity1 >= quantity2, &
+                    quantity1%to_string() // " >= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -682,16 +682,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() + 1.0d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() + 1.0d0).unit.METERS
             result_ = assert_not( &
-                    length1 >= length2, &
-                    length1%to_string() // " >= " // length2%to_string())
+                    quantity1 >= quantity2, &
+                    quantity1%to_string() // " >= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -701,16 +701,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit. METERS
-            length2 = (input%input() + 1.0d0).unit.METERS
+            quantity1 = input%input().unit. METERS
+            quantity2 = (input%input() + 1.0d0).unit.METERS
             result_ = assert_that( &
-                    length1 <= length2, &
-                    length1%to_string() // " <= " // length2%to_string())
+                    quantity1 <= quantity2, &
+                    quantity1%to_string() // " <= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -720,16 +720,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = input%input().unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = input%input().unit.METERS
             result_ = assert_that( &
-                    length1 <= length2, &
-                    length1%to_string() // " <= " // length2%to_string())
+                    quantity1 <= quantity2, &
+                    quantity1%to_string() // " <= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -739,16 +739,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() - 1.0d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() - 1.0d0).unit.METERS
             result_ = assert_not( &
-                    length1 <= length2, &
-                    length1%to_string() // " <= " // length2%to_string())
+                    quantity1 <= quantity2, &
+                    quantity1%to_string() // " <= " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -758,16 +758,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit. METERS
-            length2 = (input%input() - 1.0d0).unit.METERS
+            quantity1 = input%input().unit. METERS
+            quantity2 = (input%input() - 1.0d0).unit.METERS
             result_ = assert_that( &
-                    length1 > length2, &
-                    length1%to_string() // " > " // length2%to_string())
+                    quantity1 > quantity2, &
+                    quantity1%to_string() // " > " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -777,16 +777,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = input%input().unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = input%input().unit.METERS
             result_ = assert_not( &
-                    length1 > length2, &
-                    length1%to_string() // " > " // length2%to_string())
+                    quantity1 > quantity2, &
+                    quantity1%to_string() // " > " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -796,16 +796,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() + 1.0d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() + 1.0d0).unit.METERS
             result_ = assert_not( &
-                    length1 > length2, &
-                    length1%to_string() // " > " // length2%to_string())
+                    quantity1 > quantity2, &
+                    quantity1%to_string() // " > " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -815,16 +815,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit. METERS
-            length2 = (input%input() + 1.0d0).unit.METERS
+            quantity1 = input%input().unit. METERS
+            quantity2 = (input%input() + 1.0d0).unit.METERS
             result_ = assert_that( &
-                    length1 < length2, &
-                    length1%to_string() // " < " // length2%to_string())
+                    quantity1 < quantity2, &
+                    quantity1%to_string() // " < " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -834,16 +834,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = input%input().unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = input%input().unit.METERS
             result_ = assert_not( &
-                    length1 < length2, &
-                    length1%to_string() // " <=" // length2%to_string())
+                    quantity1 < quantity2, &
+                    quantity1%to_string() // " <=" // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -853,16 +853,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(length_t) :: length1
-        type(length_t) :: length2
+        type(quantity_t) :: quantity1
+        type(quantity_t) :: quantity2
 
         select type (input)
         type is (double_precision_input_t)
-            length1 = input%input().unit.METERS
-            length2 = (input%input() - 1.0d0).unit.METERS
+            quantity1 = input%input().unit.METERS
+            quantity2 = (input%input() - 1.0d0).unit.METERS
             result_ = assert_not( &
-                    length1 < length2, &
-                    length1%to_string() // " < " // length2%to_string())
+                    quantity1 < quantity2, &
+                    quantity1%to_string() // " < " // quantity2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
