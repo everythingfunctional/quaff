@@ -61,6 +61,19 @@ module quaff
             SQUARE_FEET, &
             SQUARE_INCHES, &
             SQUARE_METERS
+    use burnup_m, only: &
+            burnup_t, &
+            fallible_burnup_t, &
+            burnup_unit_t, &
+            fallible_burnup_unit_t, &
+            operator(.unit.), &
+            parse_burnup, &
+            parse_burnup_unit, &
+            sum, &
+            DEFAULT_BURNUP_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
+            MEGAWATT_DAYS_PER_TON, &
+            WATT_SECONDS_PER_KILOGRAM
     use length_m, only: &
             length_t, &
             fallible_length_t, &
