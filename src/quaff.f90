@@ -36,6 +36,21 @@ module quaff
             METERS, &
             MICROINCHES, &
             MICROMETERS
+    use temperature_m, only: &
+            temperature_t, &
+            fallible_temperature_t, &
+            temperature_unit_t, &
+            fallible_temperature_unit_t, &
+            operator(.unit.), &
+            parse_temperature, &
+            parse_temperature_unit, &
+            sum, &
+            DEFAULT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_TEMPERATURE_UNITS => PROVIDED_UNITS, &
+            CELSIUS, &
+            FAHRENHEIT, &
+            KELVIN, &
+            RANKINE
     use time_m, only: &
             time_t, &
             fallible_time_t, &

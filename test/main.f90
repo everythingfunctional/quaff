@@ -9,16 +9,19 @@ contains
                 angle_angle => test_angle
         use length_test, only: &
                 length_length => test_length
+        use temperature_test, only: &
+                temperature_temperature => test_temperature
         use time_test, only: &
                 time_time => test_time
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(3)
+        type(test_item_t) :: individual_tests(4)
 
         individual_tests(1) = angle_angle()
         individual_tests(2) = length_length()
-        individual_tests(3) = time_time()
+        individual_tests(3) = temperature_temperature()
+        individual_tests(4) = time_time()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
