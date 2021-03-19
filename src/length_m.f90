@@ -43,7 +43,15 @@ module length_m
             operator(.unit.), &
             parse_length, &
             parse_length_unit, &
-            sum
+            sum, &
+            DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_UNITS, &
+            CENTIMETERS, &
+            FEET, &
+            INCHES, &
+            METERS, &
+            MICROINCHES, &
+            MICROMETERS
 
     type :: length_t
         double precision :: meters
@@ -201,34 +209,34 @@ module length_m
         module procedure sum_length
     end interface
 
-    type(length_simple_unit_t), parameter, public :: CENTIMETERS = &
+    type(length_simple_unit_t), parameter :: CENTIMETERS = &
             length_simple_unit_t( &
                     conversion_factor = CENTIMETERS_PER_METER, &
                     symbol = "cm")
-    type(length_simple_unit_t), parameter, public :: FEET = &
+    type(length_simple_unit_t), parameter :: FEET = &
             length_simple_unit_t( &
                     conversion_factor = FEET_PER_METER, &
                     symbol = "ft")
-    type(length_simple_unit_t), parameter, public :: INCHES = &
+    type(length_simple_unit_t), parameter :: INCHES = &
             length_simple_unit_t( &
                     conversion_factor = INCHES_PER_METER, &
                     symbol = "in")
-    type(length_simple_unit_t), parameter, public :: METERS = &
+    type(length_simple_unit_t), parameter :: METERS = &
             length_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m")
-    type(length_simple_unit_t), parameter, public :: MICROINCHES = &
+    type(length_simple_unit_t), parameter :: MICROINCHES = &
             length_simple_unit_t( &
                     conversion_factor = MICROINCHES_PER_METER, &
                     symbol = "uin")
-    type(length_simple_unit_t), parameter, public :: MICROMETERS = &
+    type(length_simple_unit_t), parameter :: MICROMETERS = &
             length_simple_unit_t( &
                     conversion_factor = MICROMETERS_PER_METER, &
                     symbol = "um")
 
-    type(length_simple_unit_t), public :: DEFAULT_OUTPUT_UNITS = METERS
+    type(length_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = METERS
 
-    type(length_simple_unit_t), parameter, public :: PROVIDED_UNITS(*) = &
+    type(length_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
 
     character(len=*), parameter :: MODULE_NAME = "length_m"
