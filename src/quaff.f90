@@ -100,6 +100,23 @@ module quaff
             PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
             PASCAL_SECONDS
+    use energy_m, only: &
+            energy_t, &
+            fallible_energy_t, &
+            energy_unit_t, &
+            fallible_energy_unit_t, &
+            operator(.unit.), &
+            parse_energy, &
+            parse_energy_unit, &
+            sum, &
+            DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
+            BTU, &
+            CALORIES, &
+            JOULES, &
+            KILOJOULES, &
+            MEGABTU, &
+            MEGAWATT_DAYS
     use length_m, only: &
             length_t, &
             fallible_length_t, &
