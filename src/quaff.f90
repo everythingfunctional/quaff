@@ -117,6 +117,19 @@ module quaff
             KILOJOULES, &
             MEGABTU, &
             MEGAWATT_DAYS
+    use energy_per_amount_m, only: &
+            energy_per_amount_t, &
+            fallible_energy_per_amount_t, &
+            energy_per_amount_unit_t, &
+            fallible_energy_per_amount_unit_t, &
+            operator(.unit.), &
+            parse_energy_per_amount, &
+            parse_energy_per_amount_unit, &
+            sum, &
+            DEFAULT_ENERGY_PER_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_MOL, &
+            KILOJOULES_PER_MOL
     use length_m, only: &
             length_t, &
             fallible_length_t, &
