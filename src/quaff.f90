@@ -87,6 +87,19 @@ module quaff
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_CUBIC_METER
+    use dynamic_viscosity_m, only: &
+            dynamic_viscosity_t, &
+            fallible_dynamic_viscosity_t, &
+            dynamic_viscosity_unit_t, &
+            fallible_dynamic_viscosity_unit_t, &
+            operator(.unit.), &
+            parse_dynamic_viscosity, &
+            parse_dynamic_viscosity_unit, &
+            sum, &
+            DEFAULT_DYNAMIC_VISCOSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
+            MEGAPASCAL_SECONDS, &
+            PASCAL_SECONDS
     use length_m, only: &
             length_t, &
             fallible_length_t, &
