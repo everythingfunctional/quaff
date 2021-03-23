@@ -156,6 +156,22 @@ module quaff
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM, &
             KILOJOULES_PER_KILOGRAM
+    use force_m, only: &
+            force_t, &
+            fallible_force_t, &
+            force_unit_t, &
+            fallible_force_unit_t, &
+            operator(.unit.), &
+            parse_force, &
+            parse_force_unit, &
+            sum, &
+            DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
+            DYNES, &
+            KILOPONDS, &
+            MILLINEWTONS, &
+            NEWTONS, &
+            POUNDS_FORCE
     use length_m, only: &
             length_t, &
             fallible_length_t, &
