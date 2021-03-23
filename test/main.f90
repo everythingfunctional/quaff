@@ -37,6 +37,8 @@ contains
                 molar_mass_molar_mass => test_molar_mass
         use power_test, only: &
                 power_power => test_power
+        use pressure_test, only: &
+                pressure_pressure => test_pressure
         use temperature_test, only: &
                 temperature_temperature => test_temperature
         use time_test, only: &
@@ -44,7 +46,7 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(18)
+        type(test_item_t) :: individual_tests(19)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
@@ -62,8 +64,9 @@ contains
         individual_tests(14) = mass_mass()
         individual_tests(15) = molar_mass_molar_mass()
         individual_tests(16) = power_power()
-        individual_tests(17) = temperature_temperature()
-        individual_tests(18) = time_time()
+        individual_tests(17) = pressure_pressure()
+        individual_tests(18) = temperature_temperature()
+        individual_tests(19) = time_time()
         tests = test_that(individual_tests)
 
         call run_tests(tests)

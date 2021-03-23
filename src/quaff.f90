@@ -233,6 +233,25 @@ module quaff
             MEGABTU_PER_HOUR, &
             MEGAWATTS, &
             WATTS
+    use pressure_m, only: &
+            pressure_t, &
+            fallible_pressure_t, &
+            pressure_unit_t, &
+            fallible_pressure_unit_t, &
+            operator(.unit.), &
+            parse_pressure, &
+            parse_pressure_unit, &
+            sum, &
+            DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
+            ATMOSPHERES, &
+            BAR, &
+            DYNES_PER_SQUARE_CENTIMETER, &
+            KILOPASCALS, &
+            KILOPONDS_PER_SQUARE_CENTIMETER, &
+            MEGAPASCALS, &
+            PASCALS, &
+            POUNDS_PER_SQUARE_INCH
     use temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
