@@ -324,4 +324,5 @@ module quaff
             CUBIC_CENTIMETERS, &
             CUBIC_METERS
     use quaff_physical_constants
+    use quaff_interquantity_operators_m, only: operator(*), operator(/), as_burnup
 end module

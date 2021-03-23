@@ -29,6 +29,8 @@ contains
                 enthalpy_enthalpy => test_enthalpy
         use force_test, only: &
                 force_force => test_force
+        use interquantity_test, only: &
+                interquantity_interquantity_operators => test_interquantity_operators
         use length_test, only: &
                 length_length => test_length
         use mass_test, only: &
@@ -52,7 +54,7 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(22)
+        type(test_item_t) :: individual_tests(23)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
@@ -66,16 +68,17 @@ contains
         individual_tests(10) = energy_energy()
         individual_tests(11) = enthalpy_enthalpy()
         individual_tests(12) = force_force()
-        individual_tests(13) = length_length()
-        individual_tests(14) = mass_mass()
-        individual_tests(15) = molar_mass_molar_mass()
-        individual_tests(16) = power_power()
-        individual_tests(17) = pressure_pressure()
-        individual_tests(18) = speed_speed()
-        individual_tests(19) = temperature_temperature()
-        individual_tests(20) = thermal_conductivity_thermal_conductivity()
-        individual_tests(21) = time_time()
-        individual_tests(22) = volume_volume()
+        individual_tests(13) = interquantity_interquantity_operators()
+        individual_tests(14) = length_length()
+        individual_tests(15) = mass_mass()
+        individual_tests(16) = molar_mass_molar_mass()
+        individual_tests(17) = power_power()
+        individual_tests(18) = pressure_pressure()
+        individual_tests(19) = speed_speed()
+        individual_tests(20) = temperature_temperature()
+        individual_tests(21) = thermal_conductivity_thermal_conductivity()
+        individual_tests(22) = time_time()
+        individual_tests(23) = volume_volume()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
