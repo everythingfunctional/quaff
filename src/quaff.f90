@@ -204,6 +204,19 @@ module quaff
             KILOGRAMS, &
             POUNDS_MASS, &
             TONS
+    use molar_mass_m, only: &
+            molar_mass_t, &
+            fallible_molar_mass_t, &
+            molar_mass_unit_t, &
+            fallible_molar_mass_unit_t, &
+            operator(.unit.), &
+            parse_molar_mass, &
+            parse_molar_mass_unit, &
+            sum, &
+            DEFAULT_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
+            GRAMS_PER_MOL, &
+            KILOGRAMS_PER_MOL
     use temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
