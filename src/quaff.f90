@@ -310,4 +310,17 @@ module quaff
             HOURS, &
             MINUTES, &
             SECONDS
+    use volume_m, only: &
+            volume_t, &
+            fallible_volume_t, &
+            volume_unit_t, &
+            fallible_volume_unit_t, &
+            operator(.unit.), &
+            parse_volume, &
+            parse_volume_unit, &
+            sum, &
+            DEFAULT_VOLUME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
+            CUBIC_CENTIMETERS, &
+            CUBIC_METERS
 end module
