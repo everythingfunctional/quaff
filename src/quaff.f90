@@ -323,4 +323,5 @@ module quaff
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
             CUBIC_METERS
+    use quaff_physical_constants
 end module
