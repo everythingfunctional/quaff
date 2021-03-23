@@ -31,6 +31,8 @@ contains
                 force_force => test_force
         use length_test, only: &
                 length_length => test_length
+        use mass_test, only: &
+                mass_mass => test_mass
         use temperature_test, only: &
                 temperature_temperature => test_temperature
         use time_test, only: &
@@ -38,7 +40,7 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(15)
+        type(test_item_t) :: individual_tests(16)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
@@ -53,8 +55,9 @@ contains
         individual_tests(11) = enthalpy_enthalpy()
         individual_tests(12) = force_force()
         individual_tests(13) = length_length()
-        individual_tests(14) = temperature_temperature()
-        individual_tests(15) = time_time()
+        individual_tests(14) = mass_mass()
+        individual_tests(15) = temperature_temperature()
+        individual_tests(16) = time_time()
         tests = test_that(individual_tests)
 
         call run_tests(tests)

@@ -189,6 +189,21 @@ module quaff
             METERS, &
             MICROINCHES, &
             MICROMETERS
+    use mass_m, only: &
+            mass_t, &
+            fallible_mass_t, &
+            mass_unit_t, &
+            fallible_mass_unit_t, &
+            operator(.unit.), &
+            parse_mass, &
+            parse_mass_unit, &
+            sum, &
+            DEFAULT_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
+            GRAMS, &
+            KILOGRAMS, &
+            POUNDS_MASS, &
+            TONS
     use temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
