@@ -217,6 +217,22 @@ module quaff
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
             KILOGRAMS_PER_MOL
+    use power_m, only: &
+            power_t, &
+            fallible_power_t, &
+            power_unit_t, &
+            fallible_power_unit_t, &
+            operator(.unit.), &
+            parse_power, &
+            parse_power_unit, &
+            sum, &
+            DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
+            BTU_PER_HOUR, &
+            CALORIES_PER_SECOND, &
+            MEGABTU_PER_HOUR, &
+            MEGAWATTS, &
+            WATTS
     use temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
