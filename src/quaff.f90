@@ -143,6 +143,19 @@ module quaff
             PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KELVIN_MOL, &
             KILOJOULES_PER_KELVIN_MOL
+    use enthalpy_m, only: &
+            enthalpy_t, &
+            fallible_enthalpy_t, &
+            enthalpy_unit_t, &
+            fallible_enthalpy_unit_t, &
+            operator(.unit.), &
+            parse_enthalpy, &
+            parse_enthalpy_unit, &
+            sum, &
+            DEFAULT_ENTHALPY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_KILOGRAM, &
+            KILOJOULES_PER_KILOGRAM
     use length_m, only: &
             length_t, &
             fallible_length_t, &
