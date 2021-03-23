@@ -252,6 +252,20 @@ module quaff
             MEGAPASCALS, &
             PASCALS, &
             POUNDS_PER_SQUARE_INCH
+    use speed_m, only: &
+            speed_t, &
+            fallible_speed_t, &
+            speed_unit_t, &
+            fallible_speed_unit_t, &
+            operator(.unit.), &
+            parse_speed, &
+            parse_speed_unit, &
+            sum, &
+            DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
+            CENTIMETERS_PER_SECOND, &
+            FEET_PER_SECOND, &
+            METERS_PER_SECOND
     use temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
