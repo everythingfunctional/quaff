@@ -1,7 +1,7 @@
 quaff
 =====
 
-[![pipeline status](https://gitlab.com/everythingfunctional/quaff/badges/master/pipeline.svg)](https://gitlab.com/everythingfunctional/quaff/commits/master)
+[![pipeline status](https://gitlab.com/everythingfunctional/quaff/badges/main/pipeline.svg)](https://gitlab.com/everythingfunctional/quaff/commits/main)
 
 Quantities for Fortran. Make math with units more convenient.
 
