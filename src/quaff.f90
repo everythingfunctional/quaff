@@ -1,30 +1,39 @@
 module quaff
-    use Acceleration_m, only: &
-            Acceleration_t, &
-            AccelerationUnit_t, &
+    use acceleration_m, only: &
+            acceleration_t, &
+            fallible_acceleration_t, &
+            acceleration_unit_t, &
+            fallible_acceleration_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_acceleration, &
+            parse_acceleration_unit, &
             sum, &
             DEFAULT_ACCELERATION_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ACCELERATION_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SQUARE_SECOND, &
             FEET_PER_SQUARE_SECOND, &
             METERS_PER_SQUARE_SECOND
-    use Amount_m, only: &
-            Amount_t, &
-            AmountUnit_t, &
+    use amount_m, only: &
+            amount_t, &
+            fallible_amount_t, &
+            amount_unit_t, &
+            fallible_amount_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_amount, &
+            parse_amount_unit, &
             sum, &
             DEFAULT_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_UNITS => PROVIDED_UNITS, &
             MOLS, &
             PARTICLES
-    use Angle_m, only: &
-            Angle_t, &
-            AngleUnit_t, &
+    use angle_m, only: &
+            angle_t, &
+            fallible_angle_t, &
+            angle_unit_t, &
+            fallible_angle_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_angle, &
+            parse_angle_unit, &
             sum, &
             sin, &
             cos, &
@@ -37,11 +46,14 @@ module quaff
             PROVIDED_ANGLE_UNITS => PROVIDED_UNITS, &
             DEGREES, &
             RADIANS
-    use Area_m, only: &
-            Area_t, &
-            AreaUnit_t, &
+    use area_m, only: &
+            area_t, &
+            fallible_area_t, &
+            area_unit_t, &
+            fallible_area_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_area, &
+            parse_area_unit, &
             sum, &
             DEFAULT_AREA_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AREA_UNITS => PROVIDED_UNITS, &
@@ -49,41 +61,53 @@ module quaff
             SQUARE_FEET, &
             SQUARE_INCHES, &
             SQUARE_METERS
-    use Burnup_m, only: &
-            Burnup_t, &
-            BurnupUnit_t, &
+    use burnup_m, only: &
+            burnup_t, &
+            fallible_burnup_t, &
+            burnup_unit_t, &
+            fallible_burnup_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_burnup, &
+            parse_burnup_unit, &
             sum, &
             DEFAULT_BURNUP_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
             WATT_SECONDS_PER_KILOGRAM
-    use Density_m, only: &
-            Density_t, &
-            DensityUnit_t, &
+    use density_m, only: &
+            density_t, &
+            fallible_density_t, &
+            density_unit_t, &
+            fallible_density_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_density, &
+            parse_density_unit, &
             sum, &
             DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_CUBIC_METER
-    use Dynamic_viscosity_m, only: &
-            DynamicViscosity_t, &
-            DynamicViscosityUnit_t, &
+    use dynamic_viscosity_m, only: &
+            dynamic_viscosity_t, &
+            fallible_dynamic_viscosity_t, &
+            dynamic_viscosity_unit_t, &
+            fallible_dynamic_viscosity_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_dynamic_viscosity, &
+            parse_dynamic_viscosity_unit, &
             sum, &
             DEFAULT_DYNAMIC_VISCOSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
             PASCAL_SECONDS
-    use Energy_m, only: &
-            Energy_t, &
-            EnergyUnit_t, &
+    use energy_m, only: &
+            energy_t, &
+            fallible_energy_t, &
+            energy_unit_t, &
+            fallible_energy_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_energy, &
+            parse_energy_unit, &
             sum, &
             DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
@@ -93,41 +117,53 @@ module quaff
             KILOJOULES, &
             MEGABTU, &
             MEGAWATT_DAYS
-    use Energy_per_amount_m, only: &
-            EnergyPerAmount_t, &
-            EnergyPerAmountUnit_t, &
+    use energy_per_amount_m, only: &
+            energy_per_amount_t, &
+            fallible_energy_per_amount_t, &
+            energy_per_amount_unit_t, &
+            fallible_energy_per_amount_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_energy_per_amount, &
+            parse_energy_per_amount_unit, &
             sum, &
-            DEFAULT_ENERGY_PER_AMOUNT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            DEFAULT_ENERGY_PER_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_MOL, &
             KILOJOULES_PER_MOL
-    use Energy_per_temperature_amount_m, only: &
-            EnergyPerTemperatureAmount_t, &
-            EnergyPerTemperatureAmountUnit_t, &
+    use energy_per_temperature_amount_m, only: &
+            energy_per_temperature_amount_t, &
+            fallible_energy_per_temperature_amount_t, &
+            energy_per_temperature_amount_unit_t, &
+            fallible_energy_per_temperature_amount_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_energy_per_temperature_amount, &
+            parse_energy_per_temperature_amount_unit, &
             sum, &
-            DEFAULT_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            DEFAULT_ENERGY_PER_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KELVIN_MOL, &
             KILOJOULES_PER_KELVIN_MOL
-    use Enthalpy_m, only: &
-            Enthalpy_t, &
-            EnthalpyUnit_t, &
+    use enthalpy_m, only: &
+            enthalpy_t, &
+            fallible_enthalpy_t, &
+            enthalpy_unit_t, &
+            fallible_enthalpy_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_enthalpy, &
+            parse_enthalpy_unit, &
             sum, &
             DEFAULT_ENTHALPY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
-            KILOJOULES_PER_KILOGRAM, &
-            JOULES_PER_KILOGRAM
-    use Force_m, only: &
-            Force_t, &
-            ForceUnit_t, &
+            JOULES_PER_KILOGRAM, &
+            KILOJOULES_PER_KILOGRAM
+    use force_m, only: &
+            force_t, &
+            fallible_force_t, &
+            force_unit_t, &
+            fallible_force_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_force, &
+            parse_force_unit, &
             sum, &
             DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
@@ -136,11 +172,14 @@ module quaff
             MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
-    use Length_m, only: &
-            Length_t, &
-            LengthUnit_t, &
+    use length_m, only: &
+            length_t, &
+            fallible_length_t, &
+            length_unit_t, &
+            fallible_length_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_length, &
+            parse_length_unit, &
             sum, &
             DEFAULT_LENGTH_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_LENGTH_UNITS => PROVIDED_UNITS, &
@@ -150,11 +189,14 @@ module quaff
             METERS, &
             MICROINCHES, &
             MICROMETERS
-    use Mass_m, only: &
-            Mass_t, &
-            MassUnit_t, &
+    use mass_m, only: &
+            mass_t, &
+            fallible_mass_t, &
+            mass_unit_t, &
+            fallible_mass_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_mass, &
+            parse_mass_unit, &
             sum, &
             DEFAULT_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
@@ -162,21 +204,27 @@ module quaff
             KILOGRAMS, &
             POUNDS_MASS, &
             TONS
-    use Molar_mass_m, only: &
-            MolarMass_t, &
-            MolarMassUnit_t, &
+    use molar_mass_m, only: &
+            molar_mass_t, &
+            fallible_molar_mass_t, &
+            molar_mass_unit_t, &
+            fallible_molar_mass_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_molar_mass, &
+            parse_molar_mass_unit, &
             sum, &
             DEFAULT_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
             KILOGRAMS_PER_MOL
-    use Power_m, only: &
-            Power_t, &
-            PowerUnit_t, &
+    use power_m, only: &
+            power_t, &
+            fallible_power_t, &
+            power_unit_t, &
+            fallible_power_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_power, &
+            parse_power_unit, &
             sum, &
             DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
@@ -185,11 +233,14 @@ module quaff
             MEGABTU_PER_HOUR, &
             MEGAWATTS, &
             WATTS
-    use Pressure_m, only: &
-            Pressure_t, &
-            PressureUnit_t, &
+    use pressure_m, only: &
+            pressure_t, &
+            fallible_pressure_t, &
+            pressure_unit_t, &
+            fallible_pressure_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_pressure, &
+            parse_pressure_unit, &
             sum, &
             DEFAULT_PRESSURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_PRESSURE_UNITS => PROVIDED_UNITS, &
@@ -201,34 +252,28 @@ module quaff
             MEGAPASCALS, &
             PASCALS, &
             POUNDS_PER_SQUARE_INCH
-    use quaff_Interquantity_operators_m, only: operator(*), operator(/), asBurnup
-    use quaff_physical_constants
-    use Quantity_module_m, only: &
-            QuantityCamel_t, &
-            QuantityCamelUnit_t, &
+    use speed_m, only: &
+            speed_t, &
+            fallible_speed_t, &
+            speed_unit_t, &
+            fallible_speed_unit_t, &
             operator(.unit.), &
-            fromString, &
-            sum, &
-            DEFAULT_QUANTITY_CAPITAL_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_QUANTITY_CAPITAL_UNITS => PROVIDED_UNITS, &
-            UNITS_CAPITAL, &
-            UNITS_CAPITAL2
-    use Speed_m, only: &
-            Speed_t, &
-            SpeedUnit_t, &
-            operator(.unit.), &
-            fromString, &
+            parse_speed, &
+            parse_speed_unit, &
             sum, &
             DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
             FEET_PER_SECOND, &
             METERS_PER_SECOND
-    use Temperature_m, only: &
-            Temperature_t, &
-            TemperatureUnit_t, &
+    use temperature_m, only: &
+            temperature_t, &
+            fallible_temperature_t, &
+            temperature_unit_t, &
+            fallible_temperature_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_temperature, &
+            parse_temperature_unit, &
             sum, &
             DEFAULT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TEMPERATURE_UNITS => PROVIDED_UNITS, &
@@ -236,22 +281,28 @@ module quaff
             FAHRENHEIT, &
             KELVIN, &
             RANKINE
-    use Thermal_conductivity_m, only: &
-            ThermalConductivity_t, &
-            ThermalConductivityUnit_t, &
+    use thermal_conductivity_m, only: &
+            thermal_conductivity_t, &
+            fallible_thermal_conductivity_t, &
+            thermal_conductivity_unit_t, &
+            fallible_thermal_conductivity_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_thermal_conductivity, &
+            parse_thermal_conductivity_unit, &
             sum, &
             DEFAULT_THERMAL_CONDUCTIVITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_CONDUCTIVITY_UNITS => PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
             WATTS_PER_CENTIMETER_KELVIN, &
             WATTS_PER_METER_KELVIN
-    use Time_m, only: &
-            Time_t, &
-            TimeUnit_t, &
+    use time_m, only: &
+            time_t, &
+            fallible_time_t, &
+            time_unit_t, &
+            fallible_time_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_time, &
+            parse_time_unit, &
             sum, &
             DEFAULT_TIME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TIME_UNITS => PROVIDED_UNITS, &
@@ -259,14 +310,19 @@ module quaff
             HOURS, &
             MINUTES, &
             SECONDS
-    use Volume_m, only: &
-            Volume_t, &
-            VolumeUnit_t, &
+    use volume_m, only: &
+            volume_t, &
+            fallible_volume_t, &
+            volume_unit_t, &
+            fallible_volume_unit_t, &
             operator(.unit.), &
-            fromString, &
+            parse_volume, &
+            parse_volume_unit, &
             sum, &
             DEFAULT_VOLUME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
             CUBIC_METERS
-end module quaff
+    use quaff_physical_constants
+    use quaff_interquantity_operators_m, only: operator(*), operator(/), as_burnup
+end module

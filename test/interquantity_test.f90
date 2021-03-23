@@ -3,7 +3,7 @@ module interquantity_test
             operator(*), &
             operator(/), &
             operator(.unit.), &
-            asBurnup, &
+            as_burnup, &
             CUBIC_METERS, &
             JOULES, &
             JOULES_PER_KELVIN_MOL, &
@@ -24,569 +24,568 @@ module interquantity_test
             SQUARE_METERS, &
             WATT_SECONDS_PER_KILOGRAM, &
             WATTS
-    use quaff_asserts_m, only: assertEquals
-    use Vegetables_m, only: Result_t, TestItem_t, Describe, It
+    use quaff_asserts_m, only: assert_equals
+    use vegetables, only: result_t, test_item_t, describe, it
 
     implicit none
     private
-
     public :: test_interquantity_operators
 contains
     function test_interquantity_operators() result(tests)
-        type(TestItem_t) :: tests
+        type(test_item_t) :: tests
 
-        type(TestItem_t) :: individual_tests(55)
-
-        individual_tests(1) = It( &
-                "2 m * 3 m = 6 m^2", checkLengthTimesLength)
-        individual_tests(2) = It( &
-                "6 m^2 / 3 m = 2 m", checkAreaDividedByLength)
-        individual_tests(3) = It( &
-                "2 m^2 * 3 m = 6 m^3", checkAreaTimesLength)
-        individual_tests(4) = It( &
-                "2 m * 3 m^2 = 6 m^3", checkLengthTimesArea)
-        individual_tests(5) = It( &
-                "6 m^3 / 3 m^2 = 2 m", checkVolumeDividedByArea)
-        individual_tests(6) = It( &
-                "6 m^3 / 3 m = 2 m^2", checkVolumeDividedByLength)
-        individual_tests(7) = It( &
-                "6 kg / 3 m^3 = 2 kg/m^3", checkMassDividedByVolume)
-        individual_tests(8) = It( &
-                "2 kg/m^3 * 3 m^3 = 6 kg", checkDensityTimesVolume)
-        individual_tests(9) = It( &
-                "2 m^3 * 3 kg/m^3 = 6 kg", checkVolumeTimesDensity)
-        individual_tests(10) = It( &
-                "6 kg / 3 kg/m^3 = 2 m^3", checkMassDividedByDensity)
-        individual_tests(11) = It( &
-                "6 m / 3 s = 2 m/s", checkLengthDividedByTime)
-        individual_tests(12) = It( &
-                "2 m/s * 3 s = 6 m", checkSpeedTimesTime)
-        individual_tests(13) = It( &
-                "2 s * 3 m/s = 6 m", checkTimeTimesSpeed)
-        individual_tests(14) = It( &
-                "6 m / 3 m/s = 2 s", checkLengthDividedBySpeed)
-        individual_tests(15) = It( &
-                "6 m/s / 3 s = 2 m/s^2", checkSpeedDividedByTime)
-        individual_tests(16) = It( &
-                "2 m/s^2 * 3 s = 6 m/s", checkAccelerationTimesTime)
-        individual_tests(17) = It( &
-                "2 s * 3 m/s^2 = 6 m/s", checkTimeTimesAcceleration)
-        individual_tests(18) = It( &
-                "6 m/s / 3 m/s^2 = 2 s", checkSpeedDividedByAcceleration)
-        individual_tests(19) = It( &
-                "2 kg * 3 m/s^2 = 6 N", checkMassTimesAcceleration)
-        individual_tests(20) = It( &
-                "2 m/s^2 * 3 kg = 6 N", checkAccelerationTimesMass)
-        individual_tests(21) = It( &
-                "6 N / 3 m/s^2 = 2 kg", checkForceDividedByAcceleration)
-        individual_tests(22) = It( &
-                "6 N / 3 kg = 2 m/s^2", checkForceDividedByMass)
-        individual_tests(23) = It( &
-                "6 N / 3 m^2 = 2 Pa", checkForceDividedByArea)
-        individual_tests(24) = It( &
-                "2 Pa * 3 m^2 = 6 N", checkPressureTimesArea)
-        individual_tests(25) = It( &
-                "2 m^2 * 3 Pa = 6 N", checkAreaTimesPressure)
-        individual_tests(26) = It( &
-                "6 N / 3 Pa = 2 m^2", checkForceDividedByPressure)
-        individual_tests(27) = It( &
-                "2 N * 3 m = 6 J", checkForceTimesLength)
-        individual_tests(28) = It( &
-                "2 m * 3 N = 6 J", checkLengthTimesForce)
-        individual_tests(29) = It( &
-                "6 J / 3 N = 2 m", checkEnergyDividedByForce)
-        individual_tests(30) = It( &
-                "6 J / 3 m = 2 N", checkEnergyDividedByLength)
-        individual_tests(31) = It( &
-                "6 J / 3 s = 2 W", checkEnergyDividedByTime)
-        individual_tests(32) = It( &
-                "2 W * 3 s = 6 J", checkPowerTimesTime)
-        individual_tests(33) = It( &
-                "2 s * 3 W = 6 J", checkTimeTimesPower)
-        individual_tests(34) = It( &
-                "6 J / 3 W = 2 s", checkEnergyDividedByPower)
-        individual_tests(35) = It( &
-                "2 Pa * 3 s = 6 Pa s", checkPressureTimesTime)
-        individual_tests(36) = It( &
-                "2 s * 3 Pa = 6 Pa s", checkTimeTimesPressure)
-        individual_tests(37) = It( &
-                "6 Pa s / 3 s = 2 Pa", checkDynamicViscosityDividedByTime)
-        individual_tests(38) = It( &
-                "6 Pa s / 3 Pa = 2 s", checkDynamicViscosityDividedByPressure)
-        individual_tests(39) = It( &
-                "6 J / 3 kg = 2 J/kg", checkEnergyDividedByMass)
-        individual_tests(40) = It( &
-                "2 J/kg * 3 kg = 6 J", checkEnthalpyTimesMass)
-        individual_tests(41) = It( &
-                "2 kg * 3 J/kg = 6 J", checkMassTimesEnthalpy)
-        individual_tests(42) = It( &
-                "6 J / 3 J/kg = 2 kg", checkEnergyDividedByEnthalpy)
-        individual_tests(43) = It( &
-                "6 kg / 3 mol = 2 kg/mol", checkMassDividedByAmount)
-        individual_tests(44) = It( &
-                "2 kg/mol * 3 mol = 6 kg", checkMolarMassTimesAmount)
-        individual_tests(45) = It( &
-                "2 mol * 3 kg/mol = 6 kg", checkAmountTimesMolarMass)
-        individual_tests(46) = It( &
-                "6 kg / 3 kg/mol = 2 mol", checkMassDividedByMolarMass)
-        individual_tests(47) = It( &
-                "2 (W s)/kg * 3 kg = 6 J", checkBurnupTimesMass)
-        individual_tests(48) = It( &
-                "2 kg * 3 (W s)/kg = 6 J", checkMassTimesBurnup)
-        individual_tests(49) = It( &
-                "6 J / 3 (W s)/kg = 2 kg", checkEnergyDividedByBurnup)
-        individual_tests(50) = It( &
-                "2 J/kg = 2 (W s)/kg", checkEnthalpyToBurnup)
-        individual_tests(51) = It( &
-                "2 Pa * 3 m^3 = 6 J", checkPressureTimesVolume)
-        individual_tests(52) = It( &
-                "2 m^3 * 3 Pa = 6 J", checkVolumeTimesPressure)
-        individual_tests(53) = It( &
-                "2 J/(K mol) * 3 K = 6 J/mol", checkEnergyPerTemperatureAmountTimesTemperature)
-        individual_tests(54) = It( &
-                "2 K * 3 J/(K mol) = 6 J/mol", checkTemperatureTimesEnergyPerTemperatureAmount)
-        individual_tests(55) = It( &
-                "6 J / 3 J/mol = 2 mol", checkEnergyDividedByEnergyPerAmount)
-        tests = Describe("Interquantity operations", individual_tests)
+        tests = describe( &
+                "multiplying or dividing different quantities", &
+                [ it( &
+                        "2 m * 3 m = 6 m^2", check_length_times_length) &
+                , it( &
+                        "6 m^2 / 3 m = 2 m", check_area_divided_by_length) &
+                , it( &
+                        "2 m^2 * 3 m = 6 m^3", check_area_times_length) &
+                , it( &
+                        "2 m * 3 m^2 = 6 m^3", check_length_times_area) &
+                , it( &
+                        "6 m^3 / 3 m^2 = 2 m", check_volume_divided_by_area) &
+                , it( &
+                        "6 m^3 / 3 m = 2 m^2", check_volume_divided_by_length) &
+                , it( &
+                        "6 kg / 3 m^3 = 2 kg/m^3", check_mass_divided_by_volume) &
+                , it( &
+                        "2 kg/m^3 * 3 m^3 = 6 kg", check_density_times_volume) &
+                , it( &
+                        "2 m^3 * 3 kg/m^3 = 6 kg", check_volume_times_density) &
+                , it( &
+                        "6 kg / 3 kg/m^3 = 2 m^3", check_mass_divided_by_density) &
+                , it( &
+                        "6 m / 3 s = 2 m/s", check_length_divided_by_time) &
+                , it( &
+                        "2 m/s * 3 s = 6 m", check_speed_times_time) &
+                , it( &
+                        "2 s * 3 m/s = 6 m", check_time_times_speed) &
+                , it( &
+                        "6 m / 3 m/s = 2 s", check_length_divided_by_speed) &
+                , it( &
+                        "6 m/s / 3 s = 2 m/s^2", check_speed_divided_by_time) &
+                , it( &
+                        "2 m/s^2 * 3 s = 6 m/s", check_acceleration_times_time) &
+                , it( &
+                        "2 s * 3 m/s^2 = 6 m/s", check_time_times_acceleration) &
+                , it( &
+                        "6 m/s / 3 m/s^2 = 2 s", check_speed_divided_by_acceleration) &
+                , it( &
+                        "2 kg * 3 m/s^2 = 6 N", check_mass_times_acceleration) &
+                , it( &
+                        "2 m/s^2 * 3 kg = 6 N", check_acceleration_times_mass) &
+                , it( &
+                        "6 N / 3 m/s^2 = 2 kg", check_force_divided_by_acceleration) &
+                , it( &
+                        "6 N / 3 kg = 2 m/s^2", check_force_divided_by_mass) &
+                , it( &
+                        "6 N / 3 m^2 = 2 Pa", check_force_divided_by_area) &
+                , it( &
+                        "2 Pa * 3 m^2 = 6 N", check_pressure_times_area) &
+                , it( &
+                        "2 m^2 * 3 Pa = 6 N", check_area_times_pressure) &
+                , it( &
+                        "6 N / 3 Pa = 2 m^2", check_force_divided_by_pressure) &
+                , it( &
+                        "2 N * 3 m = 6 J", check_force_times_length) &
+                , it( &
+                        "2 m * 3 N = 6 J", check_length_times_force) &
+                , it( &
+                        "6 J / 3 N = 2 m", check_energy_divided_by_force) &
+                , it( &
+                        "6 J / 3 m = 2 N", check_energy_divided_by_length) &
+                , it( &
+                        "6 J / 3 s = 2 W", check_energy_divided_by_time) &
+                , it( &
+                        "2 W * 3 s = 6 J", check_power_times_time) &
+                , it( &
+                        "2 s * 3 W = 6 J", check_time_times_power) &
+                , it( &
+                        "6 J / 3 W = 2 s", check_energy_divided_by_power) &
+                , it( &
+                        "2 Pa * 3 s = 6 Pa s", check_pressure_times_time) &
+                , it( &
+                        "2 s * 3 Pa = 6 Pa s", check_time_times_pressure) &
+                , it( &
+                        "6 Pa s / 3 s = 2 Pa", check_dynamic_viscosity_divided_by_time) &
+                , it( &
+                        "6 Pa s / 3 Pa = 2 s", check_dynamic_viscosity_divided_by_pressure) &
+                , it( &
+                        "6 J / 3 kg = 2 J/kg", check_energy_divided_by_mass) &
+                , it( &
+                        "2 J/kg * 3 kg = 6 J", check_enthalpy_times_mass) &
+                , it( &
+                        "2 kg * 3 J/kg = 6 J", check_mass_times_enthalpy) &
+                , it( &
+                        "6 J / 3 J/kg = 2 kg", check_energy_divided_by_enthalpy) &
+                , it( &
+                        "6 kg / 3 mol = 2 kg/mol", check_mass_divided_by_amount) &
+                , it( &
+                        "2 kg/mol * 3 mol = 6 kg", check_molar_mass_times_amount) &
+                , it( &
+                        "2 mol * 3 kg/mol = 6 kg", check_amount_times_molar_mass) &
+                , it( &
+                        "6 kg / 3 kg/mol = 2 mol", check_mass_divided_by_molar_mass) &
+                , it( &
+                        "2 (W s)/kg * 3 kg = 6 J", check_burnup_times_mass) &
+                , it( &
+                        "2 kg * 3 (W s)/kg = 6 J", check_mass_times_burnup) &
+                , it( &
+                        "6 J / 3 (W s)/kg = 2 kg", check_energy_divided_by_burnup) &
+                , it( &
+                        "2 J/kg = 2 (W s)/kg", check_enthalpy_to_burnup) &
+                , it( &
+                        "2 Pa * 3 m^3 = 6 J", check_pressure_times_volume) &
+                , it( &
+                        "2 m^3 * 3 Pa = 6 J", check_volume_times_pressure) &
+                , it( &
+                        "2 J/(K mol) * 3 K = 6 J/mol", check_energy_per_temperature_amount_times_temperature) &
+                , it( &
+                        "2 K * 3 J/(K mol) = 6 J/mol", check_temperature_times_energy_per_temperature_amount) &
+                , it( &
+                        "6 J / 3 J/mol = 2 mol", check_energy_divided_by_energy_per_amount) &
+                ])
     end function test_interquantity_operators
 
-    pure function checkLengthTimesLength() result(result_)
-        type(Result_t) :: result_
+    pure function check_length_times_length() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.SQUARE_METERS, &
                 (2.0d0.unit.METERS) * (3.0d0.unit.METERS))
-    end function checkLengthTimesLength
+    end function
 
-    pure function checkAreaDividedByLength() result(result_)
-        type(Result_t) :: result_
+    pure function check_area_divided_by_length() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.METERS, &
                 (6.0d0.unit.SQUARE_METERS) / (3.0d0.unit.METERS))
-    end function checkAreaDividedByLength
+    end function
 
-    pure function checkAreaTimesLength() result(result_)
-        type(Result_t) :: result_
+    pure function check_area_times_length() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.CUBIC_METERS, &
                 (2.0d0.unit.SQUARE_METERS) * (3.0d0.unit.METERS))
-    end function checkAreaTimesLength
+    end function
 
-    pure function checkLengthTimesArea() result(result_)
-        type(Result_t) :: result_
+    pure function check_length_times_area() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.CUBIC_METERS, &
                 (2.0d0.unit.METERS) * (3.0d0.unit.SQUARE_METERS))
-    end function checkLengthTimesArea
+    end function
 
-    pure function checkVolumeDividedByArea() result(result_)
-        type(Result_t) :: result_
+    pure function check_volume_divided_by_area() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.METERS, &
                 (6.0d0.unit.CUBIC_METERS) / (3.0d0.unit.SQUARE_METERS))
-    end function checkVolumeDividedByArea
+    end function
 
-    pure function checkVolumeDividedByLength() result(result_)
-        type(Result_t) :: result_
+    pure function check_volume_divided_by_length() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.SQUARE_METERS, &
                 (6.0d0.unit.CUBIC_METERS) / (3.0d0.unit.METERS))
-    end function checkVolumeDividedByLength
+    end function
 
-    pure function checkMassDividedByVolume() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_divided_by_volume() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.KILOGRAMS_PER_CUBIC_METER, &
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.CUBIC_METERS))
-    end function checkMassDividedByVolume
+    end function
 
-    pure function checkDensityTimesVolume() result(result_)
-        type(Result_t) :: result_
+    pure function check_density_times_volume() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.KILOGRAMS, &
                 (2.0d0.unit.KILOGRAMS_PER_CUBIC_METER) * (3.0d0.unit.CUBIC_METERS))
-    end function checkDensityTimesVolume
+    end function
 
-    pure function checkVolumeTimesDensity() result(result_)
-        type(Result_t) :: result_
+    pure function check_volume_times_density() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.KILOGRAMS, &
                 (2.0d0.unit.CUBIC_METERS) * (3.0d0.unit.KILOGRAMS_PER_CUBIC_METER))
-    end function checkVolumeTimesDensity
+    end function
 
-    pure function checkMassDividedByDensity() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_divided_by_density() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.CUBIC_METERS, &
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.KILOGRAMS_PER_CUBIC_METER))
-    end function checkMassDividedByDensity
+    end function
 
-    pure function checkLengthDividedByTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_length_divided_by_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.METERS_PER_SECOND, &
                 (6.0d0.unit.METERS) / (3.0d0.unit.SECONDS))
-    end function checkLengthDividedByTime
+    end function
 
-    pure function checkSpeedTimesTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_speed_times_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.METERS, &
                 (2.0d0.unit.METERS_PER_SECOND) * (3.0d0.unit.SECONDS))
-    end function checkSpeedTimesTime
+    end function
 
-    pure function checkTimeTimesSpeed() result(result_)
-        type(Result_t) :: result_
+    pure function check_time_times_speed() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.METERS, &
                 (2.0d0.unit.SECONDS) * (3.0d0.unit.METERS_PER_SECOND))
     end function
 
-    pure function checkLengthDividedBySpeed() result(result_)
-        type(Result_t) :: result_
+    pure function check_length_divided_by_speed() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.METERS) / (3.0d0.unit.METERS_PER_SECOND))
-    end function checkLengthDividedBySpeed
+    end function
 
-    pure function checkSpeedDividedByTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_speed_divided_by_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.METERS_PER_SQUARE_SECOND, &
                 (6.0d0.unit.METERS_PER_SECOND) / (3.0d0.unit.SECONDS))
-    end function checkSpeedDividedByTime
+    end function
 
-    pure function checkAccelerationTimesTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_acceleration_times_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.METERS_PER_SECOND, &
                 (2.0d0.unit.METERS_PER_SQUARE_SECOND) * (3.0d0.unit.SECONDS))
-    end function checkAccelerationTimesTime
+    end function
 
-    pure function checkTimeTimesAcceleration() result(result_)
-        type(Result_t) :: result_
+    pure function check_time_times_acceleration() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.METERS_PER_SECOND, &
                 (2.0d0.unit.SECONDS) * (3.0d0.unit.METERS_PER_SQUARE_SECOND))
-    end function checkTimeTimesAcceleration
+    end function
 
-    pure function checkSpeedDividedByAcceleration() result(result_)
-        type(Result_t) :: result_
+    pure function check_speed_divided_by_acceleration() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.METERS_PER_SECOND) / (3.0d0.unit.METERS_PER_SQUARE_SECOND))
-    end function checkSpeedDividedByAcceleration
+    end function
 
-    pure function checkMassTimesAcceleration() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_times_acceleration() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.NEWTONS, &
                 (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.METERS_PER_SQUARE_SECOND))
-    end function checkMassTimesAcceleration
+    end function
 
-    pure function checkAccelerationTimesMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_acceleration_times_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.NEWTONS, &
                 (2.0d0.unit.METERS_PER_SQUARE_SECOND) * (3.0d0.unit.KILOGRAMS))
-    end function checkAccelerationTimesMass
+    end function
 
-    pure function checkForceDividedByAcceleration() result(result_)
-        type(Result_t) :: result_
+    pure function check_force_divided_by_acceleration() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.KILOGRAMS, &
                 (6.0d0.unit.NEWTONS) / (3.0d0.unit.METERS_PER_SQUARE_SECOND))
-    end function checkForceDividedByAcceleration
+    end function
 
-    pure function checkForceDividedByMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_force_divided_by_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.METERS_PER_SQUARE_SECOND, &
                 (6.0d0.unit.NEWTONS) / (3.0d0.unit.KILOGRAMS))
-    end function checkForceDividedByMass
+    end function
 
-    pure function checkForceDividedByArea() result(result_)
-        type(Result_t) :: result_
+    pure function check_force_divided_by_area() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.PASCALS, &
                 (6.0d0.unit.NEWTONS) / (3.0d0.unit.SQUARE_METERS))
-    end function checkForceDividedByArea
+    end function
 
-    pure function checkPressureTimesArea() result(result_)
-        type(Result_t) :: result_
+    pure function check_pressure_times_area() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.NEWTONS, &
                 (2.0d0.unit.PASCALS) * (3.0d0.unit.SQUARE_METERS))
-    end function checkPressureTimesArea
+    end function
 
-    pure function checkAreaTimesPressure() result(result_)
-        type(Result_t) :: result_
+    pure function check_area_times_pressure() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.NEWTONS, &
                 (2.0d0.unit.SQUARE_METERS) * (3.0d0.unit.PASCALS))
-    end function checkAreaTimesPressure
+    end function
 
-    pure function checkForceDividedByPressure() result(result_)
-        type(Result_t) :: result_
+    pure function check_force_divided_by_pressure() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.SQUARE_METERS, &
                 (6.0d0.unit.NEWTONS) / (3.0d0.unit.PASCALS))
-    end function checkForceDividedByPressure
+    end function
 
-    pure function checkForceTimesLength() result(result_)
-        type(Result_t) :: result_
+    pure function check_force_times_length() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.NEWTONS) * (3.0d0.unit.METERS))
-    end function checkForceTimesLength
+    end function
 
-    pure function checkLengthTimesForce() result(result_)
-        type(Result_t) :: result_
+    pure function check_length_times_force() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.METERS) * (3.0d0.unit.NEWTONS))
-    end function checkLengthTimesForce
+    end function
 
-    pure function checkEnergyDividedByForce() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_force() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.METERS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.NEWTONS))
-    end function checkEnergyDividedByForce
+    end function
 
-    pure function checkEnergyDividedByLength() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_length() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.NEWTONS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.METERS))
-    end function checkEnergyDividedByLength
+    end function
 
-    pure function checkEnergyDividedByTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.WATTS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.SECONDS))
-    end function checkEnergyDividedByTime
+    end function
 
-    pure function checkPowerTimesTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_power_times_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.WATTS) * (3.0d0.unit.SECONDS))
-    end function checkPowerTimesTime
+    end function
 
-    pure function checkTimeTimesPower() result(result_)
-        type(Result_t) :: result_
+    pure function check_time_times_power() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.SECONDS) * (3.0d0.unit.WATTS))
-    end function checkTimeTimesPower
+    end function
 
-    pure function checkEnergyDividedByPower() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_power() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.WATTS))
-    end function checkEnergyDividedByPower
+    end function
 
-    pure function checkPressureTimesTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_pressure_times_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.PASCAL_SECONDS, &
                 (2.0d0.unit.PASCALS) * (3.0d0.unit.SECONDS))
-    end function checkPressureTimesTime
+    end function
 
-    pure function checkTimeTimesPressure() result(result_)
-        type(Result_t) :: result_
+    pure function check_time_times_pressure() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.PASCAL_SECONDS, &
                 (2.0d0.unit.SECONDS) * (3.0d0.unit.PASCALS))
-    end function checkTimeTimesPressure
+    end function
 
-    pure function checkDynamicViscosityDividedByTime() result(result_)
-        type(Result_t) :: result_
+    pure function check_dynamic_viscosity_divided_by_time() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.PASCALS, &
                 (6.0d0.unit.PASCAL_SECONDS) / (3.0d0.unit.SECONDS))
-    end function checkDynamicViscosityDividedByTime
+    end function
 
-    pure function checkDynamicViscosityDividedByPressure() result(result_)
-        type(Result_t) :: result_
+    pure function check_dynamic_viscosity_divided_by_pressure() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.SECONDS, &
                 (6.0d0.unit.PASCAL_SECONDS) / (3.0d0.unit.PASCALS))
-    end function checkDynamicViscosityDividedByPressure
+    end function
 
-    pure function checkEnergyDividedByMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.JOULES_PER_KILOGRAM, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.KILOGRAMS))
-    end function checkEnergyDividedByMass
+    end function
 
-    pure function checkEnthalpyTimesMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_enthalpy_times_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.JOULES_PER_KILOGRAM) * (3.0d0.unit.KILOGRAMS))
-    end function checkEnthalpyTimesMass
+    end function
 
-    pure function checkMassTimesEnthalpy() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_times_enthalpy() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.JOULES_PER_KILOGRAM))
-    end function checkMassTimesEnthalpy
+    end function
 
-    pure function checkEnergyDividedByEnthalpy() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_enthalpy() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.KILOGRAMS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_KILOGRAM))
-    end function checkEnergyDividedByEnthalpy
+    end function
 
-    pure function checkMassDividedByAmount() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_divided_by_amount() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.KILOGRAMS_PER_MOL, &
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.MOLS))
-    end function checkMassDividedByAmount
+    end function
 
-    pure function checkMolarMassTimesAmount() result(result_)
-        type(Result_t) :: result_
+    pure function check_molar_mass_times_amount() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.KILOGRAMS, &
                 (2.0d0.unit.KILOGRAMS_PER_MOL) * (3.0d0.unit.MOLS))
-    end function checkMolarMassTimesAmount
+    end function
 
-    pure function checkAmountTimesMolarMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_amount_times_molar_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.KILOGRAMS, &
                 (2.0d0.unit.MOLS) * (3.0d0.unit.KILOGRAMS_PER_MOL))
-    end function checkAmountTimesMolarMass
+    end function
 
-    pure function checkMassDividedByMolarMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_divided_by_molar_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.MOLS, &
                 (6.0d0.unit.KILOGRAMS) / (3.0d0.unit.KILOGRAMS_PER_MOL))
-    end function checkMassDividedByMolarMass
+    end function
 
-    pure function checkBurnupTimesMass() result(result_)
-        type(Result_t) :: result_
+    pure function check_burnup_times_mass() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.WATT_SECONDS_PER_KILOGRAM) * (3.0d0.unit.KILOGRAMS))
-    end function checkBurnupTimesMass
+    end function
 
-    pure function checkMassTimesBurnup() result(result_)
-        type(Result_t) :: result_
+    pure function check_mass_times_burnup() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.KILOGRAMS) * (3.0d0.unit.WATT_SECONDS_PER_KILOGRAM))
-    end function checkMassTimesBurnup
+    end function
 
-    pure function checkEnergyDividedByBurnup() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_burnup() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.KILOGRAMS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.WATT_SECONDS_PER_KILOGRAM))
-    end function checkEnergyDividedByBurnup
+    end function
 
-    pure function checkEnthalpyToBurnup() result(result_)
-        type(Result_t) :: result_
+    pure function check_enthalpy_to_burnup() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.WATT_SECONDS_PER_KILOGRAM, &
-                asBurnup(2.0d0.unit.JOULES_PER_KILOGRAM))
-    end function checkEnthalpyToBurnup
+                as_burnup(2.0d0.unit.JOULES_PER_KILOGRAM))
+    end function
 
-    pure function checkPressureTimesVolume() result(result_)
-        type(Result_t) :: result_
+    pure function check_pressure_times_volume() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.PASCALS) * (3.0d0.unit.CUBIC_METERS))
-    end function checkPressureTimesVolume
+    end function
 
-    pure function checkVolumeTimesPressure() result(result_)
-        type(Result_t) :: result_
+    pure function check_volume_times_pressure() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES, &
                 (2.0d0.unit.CUBIC_METERS) * (3.0d0.unit.PASCALS))
-    end function checkVolumeTimesPressure
+    end function
 
-    pure function checkEnergyPerTemperatureAmountTimesTemperature() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_per_temperature_amount_times_temperature() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES_PER_MOL, &
                 (2.0d0.unit.JOULES_PER_KELVIN_MOL) * (3.0d0.unit.KELVIN))
-    end function checkEnergyPerTemperatureAmountTimesTemperature
+    end function
 
-    pure function checkTemperatureTimesEnergyPerTemperatureAmount() result(result_)
-        type(Result_t) :: result_
+    pure function check_temperature_times_energy_per_temperature_amount() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 6.0d0.unit.JOULES_PER_MOL, &
                 (2.0d0.unit.KELVIN) * (3.0d0.unit.JOULES_PER_KELVIN_MOL))
-    end function checkTemperatureTimesEnergyPerTemperatureAmount
+    end function
 
-    pure function checkEnergyDividedByEnergyPerAmount() result(result_)
-        type(Result_t) :: result_
+    pure function check_energy_divided_by_energy_per_amount() result(result_)
+        type(result_t) :: result_
 
-        result_ = assertEquals( &
+        result_ = assert_equals( &
                 2.0d0.unit.MOLS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_MOL))
-    end function checkEnergyDividedByEnergyPerAmount
-end module interquantity_test
+    end function
+end module

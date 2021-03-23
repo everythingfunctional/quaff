@@ -1,94 +1,90 @@
 module quaff_asserts_m
-    use Acceleration_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Amount_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Angle_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Area_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Burnup_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Density_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Dynamic_viscosity_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Energy_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Energy_per_amount_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Energy_per_temperature_amount_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Enthalpy_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Force_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Length_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Mass_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Molar_mass_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Power_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Pressure_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Quantity_module_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Speed_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Temperature_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Thermal_conductivity_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Time_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-    use Volume_asserts_m, only: &
-            assertEquals, &
-            assertEqualsWithinAbsolute, &
-            assertEqualsWithinRelative
-end module quaff_asserts_m
+    use acceleration_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use amount_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use angle_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use area_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use burnup_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use density_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use dynamic_viscosity_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use energy_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use energy_per_amount_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use energy_per_temperature_amount_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use enthalpy_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use force_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use length_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use mass_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use molar_mass_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use power_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use pressure_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use speed_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use temperature_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use thermal_conductivity_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use time_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use volume_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+end module

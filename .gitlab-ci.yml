@@ -6,4 +6,3 @@ variables:
 test:
   script:
     - fpm test
-    - valgrind --leak-check=full --error-exitcode=1 build/gfortran_debug/test/runTests

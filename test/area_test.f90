@@ -1,4 +1,4 @@
-module speed_test
+module area_test
     use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
     use double_precision_pair_generator_m, only: DOUBLE_PRECISION_PAIR_GENERATOR
     use double_precision_pair_input_m, only: double_precision_pair_input_t
@@ -9,17 +9,17 @@ module speed_test
     use non_zero_double_precision_pair_generator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
     use quaff, only: &
-            speed_t, &
-            fallible_speed_t, &
-            speed_unit_t, &
+            area_t, &
+            fallible_area_t, &
+            area_unit_t, &
             operator(.unit.), &
-            parse_speed, &
+            parse_area, &
             sum, &
-            PROVIDED_SPEED_UNITS, &
-            METERS_PER_SECOND
+            PROVIDED_AREA_UNITS, &
+            SQUARE_METERS
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
     use quaff_utilities_m, only: PARSE_ERROR
-    use speed_utilities_m, only: &
+    use area_utilities_m, only: &
             units_input_t, units_pair_input_t, make_units_examples
     use units_examples_m, only: units_examples_t
     use vegetables, only: &
@@ -39,16 +39,16 @@ module speed_test
 
     implicit none
     private
-    public :: test_speed
+    public :: test_area
 contains
-    function test_speed() result(tests)
+    function test_area() result(tests)
         type(test_item_t) :: tests
 
         type(units_examples_t) :: examples
 
-        examples = make_units_examples(PROVIDED_SPEED_UNITS)
+        examples = make_units_examples(PROVIDED_AREA_UNITS)
         tests = describe( &
-                "speed_t", &
+                "area_t", &
                 [ it( &
                         "returns the same value given the same units", &
                         examples%units(), &
@@ -72,27 +72,27 @@ contains
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
                 , it( &
-                        "adding zero returns the original speed", &
+                        "adding zero returns the original area", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_add_zero) &
                 , it( &
-                        "subtracting zero returns the original speed", &
+                        "subtracting zero returns the original area", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_subtract_zero) &
                 , it( &
-                        "adding and subtracting the same speed returns the original speed", &
+                        "adding and subtracting the same area returns the original area", &
                         DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_add_subtract) &
                 , it( &
-                        "multiplying by one returns the original speed", &
+                        "multiplying by one returns the original area", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_multiply_by_one) &
                 , it( &
-                        "multiplying by zero returns zero speed", &
+                        "multiplying by zero returns zero area", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_multiply_by_zero) &
                 , it( &
-                        "dividing by one returns the original speed", &
+                        "dividing by one returns the original area", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_divide_by_one) &
                 , it( &
@@ -100,35 +100,35 @@ contains
                         NON_ZERO_DOUBLE_PRECISION_GENERATOR, &
                         check_divide_by_self) &
                 , it( &
-                        "multiplying and dividing by the same number returns the original speed", &
+                        "multiplying and dividing by the same number returns the original area", &
                         NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_multiply_divide) &
                 , describe( &
                         "operator(==)", &
                         [ it( &
-                                "is true for the same speed", &
+                                "is true for the same area", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_with_same_number) &
                         , it( &
-                                "is false for different speeds", &
+                                "is false for different areas", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_with_different_numbers) &
                         ]) &
                 , describe( &
                         "operator(/=)", &
                         [ it( &
-                                "is false for the same speed", &
+                                "is false for the same area", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_not_equal_with_same_number) &
                         , it( &
-                                "is true for different speeds", &
+                                "is true for different areas", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_not_equal_with_different_numbers) &
                         ]) &
                 , describe( &
-                        "%equal(speed, within)", &
+                        "%equal(area, within)", &
                         [ it( &
-                                "is true for the same speed even for tiny tolerance", &
+                                "is true for the same area even for tiny tolerance", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_within_with_same_number) &
                         , it( &
@@ -216,7 +216,7 @@ contains
     end function
 
     function check_round_trip_in(units) result(result_)
-        class(speed_unit_t), intent(in) :: units
+        class(area_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
@@ -230,7 +230,7 @@ contains
             class(input_t), intent(in) :: input
             type(result_t) :: result__
 
-            type(speed_t) :: intermediate
+            type(area_t) :: intermediate
 
             select type (input)
             type is (double_precision_input_t)
@@ -259,8 +259,8 @@ contains
 
     pure function check_conversion_factors_are_inverse( &
             from, to) result(result_)
-        class(speed_unit_t), intent(in) :: to
-        class(speed_unit_t), intent(in) :: from
+        class(area_unit_t), intent(in) :: to
+        class(area_unit_t), intent(in) :: from
         type(result_t) :: result_
 
         double precision :: factor1
@@ -288,7 +288,7 @@ contains
     end function
 
     function check_string_trip(units) result(result_)
-        class(speed_unit_t), intent(in) :: units
+        class(area_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
@@ -303,21 +303,21 @@ contains
             type(result_t) :: result__
 
             type(error_list_t) :: errors
-            type(speed_t) :: original_speed
-            type(fallible_speed_t) :: maybe_speed
-            type(speed_t) :: new_speed
+            type(area_t) :: original_area
+            type(fallible_area_t) :: maybe_area
+            type(area_t) :: new_area
 
             select type (input)
             type is (double_precision_input_t)
-                original_speed = input%input().unit.units
-                maybe_speed = parse_speed( &
-                        original_speed%to_string_in(units))
-                new_speed = maybe_speed%speed()
-                errors = maybe_speed%errors()
+                original_area = input%input().unit.units
+                maybe_area = parse_area( &
+                        original_area%to_string_in(units))
+                new_area = maybe_area%area()
+                errors = maybe_area%errors()
                 result__ = &
                         assert_equals( &
-                                original_speed, &
-                                new_speed) &
+                                original_area, &
+                                new_area) &
                         .and.assert_not(errors%has_any(), errors%to_string())
             class default
                 result__ = fail("Expected to get a double_precision_input_t")
@@ -329,10 +329,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_speed_t) :: maybe_speed
+        type(fallible_area_t) :: maybe_area
 
-        maybe_speed = parse_speed("bad")
-        errors = maybe_speed%errors()
+        maybe_area = parse_area("bad")
+        errors = maybe_area%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -340,10 +340,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_speed_t) :: maybe_speed
+        type(fallible_area_t) :: maybe_area
 
-        maybe_speed = parse_speed("1.0 bad", [METERS_PER_SECOND])
-        errors = maybe_speed%errors()
+        maybe_area = parse_area("1.0 bad", [SQUARE_METERS])
+        errors = maybe_area%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -351,10 +351,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_speed_t) :: maybe_speed
+        type(fallible_area_t) :: maybe_area
 
-        maybe_speed = parse_speed("bad m/s")
-        errors = maybe_speed%errors()
+        maybe_area = parse_area("bad m^2")
+        errors = maybe_area%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -364,22 +364,22 @@ contains
         double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
 
         result_ = assert_equals( &
-                sum(numbers).unit.METERS_PER_SECOND, &
-                sum(numbers.unit.METERS_PER_SECOND))
+                sum(numbers).unit.SQUARE_METERS, &
+                sum(numbers.unit.SQUARE_METERS))
     end function
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
-        type(speed_t) :: zero
+        type(area_t) :: area
+        type(area_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            speed = input%input().unit.METERS_PER_SECOND
-            zero = 0.0d0.unit.METERS_PER_SECOND
-            result_ = assert_equals(speed, speed + zero)
+            area = input%input().unit.SQUARE_METERS
+            zero = 0.0d0.unit.SQUARE_METERS
+            result_ = assert_equals(area, area + zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -389,14 +389,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
-        type(speed_t) :: zero
+        type(area_t) :: area
+        type(area_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            speed = input%input().unit.METERS_PER_SECOND
-            zero = 0.0d0.unit.METERS_PER_SECOND
-            result_ = assert_equals(speed, speed - zero)
+            area = input%input().unit.SQUARE_METERS
+            zero = 0.0d0.unit.SQUARE_METERS
+            result_ = assert_equals(area, area - zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -406,19 +406,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type(input)
         type is (double_precision_pair_input_t)
-            speed1 = input%first().unit.METERS_PER_SECOND
-            speed2 = input%second_().unit.METERS_PER_SECOND
+            area1 = input%first().unit.SQUARE_METERS
+            area2 = input%second_().unit.SQUARE_METERS
             result_ = assert_equals_within_relative( &
-                    speed1, &
-                    (speed1 + speed2) - speed2, &
+                    area1, &
+                    (area1 + area2) - area2, &
                     1.0d-8, &
-                    "speed1 = " // speed1%to_string() &
-                    // ", speed2 = " // speed2%to_string())
+                    "area1 = " // area1%to_string() &
+                    // ", area2 = " // area2%to_string())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
@@ -428,12 +428,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
+        type(area_t) :: area
 
         select type(input)
         type is (double_precision_input_t)
-            speed = input%input().unit.METERS_PER_SECOND
-            result_ = assert_equals(speed, speed * 1.0d0)
+            area = input%input().unit.SQUARE_METERS
+            result_ = assert_equals(area, area * 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -443,14 +443,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
-        type(speed_t) :: zero
+        type(area_t) :: area
+        type(area_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            speed = input%input().unit.METERS_PER_SECOND
-            zero = 0.0d0.unit.METERS_PER_SECOND
-            result_ = assert_equals(zero, speed * 0.0d0)
+            area = input%input().unit.SQUARE_METERS
+            zero = 0.0d0.unit.SQUARE_METERS
+            result_ = assert_equals(zero, area * 0.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -460,12 +460,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
+        type(area_t) :: area
 
         select type(input)
         type is (double_precision_input_t)
-            speed = input%input().unit.METERS_PER_SECOND
-            result_ = assert_equals(speed, speed / 1.0d0)
+            area = input%input().unit.SQUARE_METERS
+            result_ = assert_equals(area, area / 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -475,12 +475,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
+        type(area_t) :: area
 
         select type(input)
         type is (double_precision_input_t)
-            speed = input%input().unit.METERS_PER_SECOND
-            result_ = assert_equals(1.0d0, speed / speed)
+            area = input%input().unit.SQUARE_METERS
+            result_ = assert_equals(1.0d0, area / area)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -490,12 +490,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed
+        type(area_t) :: area
 
         select type (input)
         type is (double_precision_pair_input_t)
-            speed = input%first().unit.METERS_PER_SECOND
-            result_ = assert_equals(speed, (speed * input%second_()) / input%second_())
+            area = input%first().unit.SQUARE_METERS
+            result_ = assert_equals(area, (area * input%second_()) / input%second_())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
@@ -505,14 +505,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: the_speed
+        type(area_t) :: the_area
 
         select type (input)
         type is (double_precision_input_t)
-            the_speed = input%input().unit.METERS_PER_SECOND
+            the_area = input%input().unit.SQUARE_METERS
             result_ = assert_that( &
-                    the_speed == the_speed, &
-                    the_speed%to_string() // " == " // the_speed%to_string())
+                    the_area == the_area, &
+                    the_area%to_string() // " == " // the_area%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -522,16 +522,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() + 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() + 1.0d0).unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 == speed2, &
-                    speed1%to_string() // " == " // speed2%to_string())
+                    area1 == area2, &
+                    area1%to_string() // " == " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -541,14 +541,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: the_speed
+        type(area_t) :: the_area
 
         select type (input)
         type is (double_precision_input_t)
-            the_speed = input%input().unit.METERS_PER_SECOND
+            the_area = input%input().unit.SQUARE_METERS
             result_ = assert_not( &
-                    the_speed /= the_speed, &
-                    the_speed%to_string() // " /= " // the_speed%to_string())
+                    the_area /= the_area, &
+                    the_area%to_string() // " /= " // the_area%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -558,16 +558,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() + 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() + 1.0d0).unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 /= speed2, &
-                    speed1%to_string() // " /= " // speed2%to_string())
+                    area1 /= area2, &
+                    area1%to_string() // " /= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -577,17 +577,17 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: the_speed
-        type(speed_t) :: tolerance
+        type(area_t) :: the_area
+        type(area_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            the_speed = input%input().unit.METERS_PER_SECOND
-            tolerance = tiny(1.0d0).unit.METERS_PER_SECOND
+            the_area = input%input().unit.SQUARE_METERS
+            tolerance = tiny(1.0d0).unit.SQUARE_METERS
             result_ = assert_that( &
-                    the_speed%equal(the_speed, within = tolerance), &
-                    "(" // the_speed%to_string() // ")%equal(" &
-                        // the_speed%to_string() // ", within = " &
+                    the_area%equal(the_area, within = tolerance), &
+                    "(" // the_area%to_string() // ")%equal(" &
+                        // the_area%to_string() // ", within = " &
                         // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -598,19 +598,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
-        type(speed_t) :: tolerance
+        type(area_t) :: area1
+        type(area_t) :: area2
+        type(area_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() + 0.05d0).unit.METERS_PER_SECOND
-            tolerance = 0.1d0.unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() + 0.05d0).unit.SQUARE_METERS
+            tolerance = 0.1d0.unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1%equal(speed2, within = tolerance), &
-                    "(" // speed1%to_string() // ")%equal(" &
-                        // speed2%to_string() // ", within = " &
+                    area1%equal(area2, within = tolerance), &
+                    "(" // area1%to_string() // ")%equal(" &
+                        // area2%to_string() // ", within = " &
                         // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -621,19 +621,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
-        type(speed_t) :: tolerance
+        type(area_t) :: area1
+        type(area_t) :: area2
+        type(area_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() + 0.2d0).unit.METERS_PER_SECOND
-            tolerance = 0.1d0.unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() + 0.2d0).unit.SQUARE_METERS
+            tolerance = 0.1d0.unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1%equal(speed2, within = tolerance), &
-                    "(" // speed1%to_string() // ")%equal(" &
-                    // speed2%to_string() // ", within = " &
+                    area1%equal(area2, within = tolerance), &
+                    "(" // area1%to_string() // ")%equal(" &
+                    // area2%to_string() // ", within = " &
                     // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -644,16 +644,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit. METERS_PER_SECOND
-            speed2 = (input%input() - 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit. SQUARE_METERS
+            area2 = (input%input() - 1.0d0).unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 >= speed2, &
-                    speed1%to_string() // " >= " // speed2%to_string())
+                    area1 >= area2, &
+                    area1%to_string() // " >= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -663,16 +663,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = input%input().unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = input%input().unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 >= speed2, &
-                    speed1%to_string() // " >= " // speed2%to_string())
+                    area1 >= area2, &
+                    area1%to_string() // " >= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -682,16 +682,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() + 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() + 1.0d0).unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 >= speed2, &
-                    speed1%to_string() // " >= " // speed2%to_string())
+                    area1 >= area2, &
+                    area1%to_string() // " >= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -701,16 +701,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit. METERS_PER_SECOND
-            speed2 = (input%input() + 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit. SQUARE_METERS
+            area2 = (input%input() + 1.0d0).unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 <= speed2, &
-                    speed1%to_string() // " <= " // speed2%to_string())
+                    area1 <= area2, &
+                    area1%to_string() // " <= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -720,16 +720,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = input%input().unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = input%input().unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 <= speed2, &
-                    speed1%to_string() // " <= " // speed2%to_string())
+                    area1 <= area2, &
+                    area1%to_string() // " <= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -739,16 +739,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() - 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() - 1.0d0).unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 <= speed2, &
-                    speed1%to_string() // " <= " // speed2%to_string())
+                    area1 <= area2, &
+                    area1%to_string() // " <= " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -758,16 +758,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit. METERS_PER_SECOND
-            speed2 = (input%input() - 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit. SQUARE_METERS
+            area2 = (input%input() - 1.0d0).unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 > speed2, &
-                    speed1%to_string() // " > " // speed2%to_string())
+                    area1 > area2, &
+                    area1%to_string() // " > " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -777,16 +777,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = input%input().unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = input%input().unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 > speed2, &
-                    speed1%to_string() // " > " // speed2%to_string())
+                    area1 > area2, &
+                    area1%to_string() // " > " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -796,16 +796,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() + 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() + 1.0d0).unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 > speed2, &
-                    speed1%to_string() // " > " // speed2%to_string())
+                    area1 > area2, &
+                    area1%to_string() // " > " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -815,16 +815,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit. METERS_PER_SECOND
-            speed2 = (input%input() + 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit. SQUARE_METERS
+            area2 = (input%input() + 1.0d0).unit.SQUARE_METERS
             result_ = assert_that( &
-                    speed1 < speed2, &
-                    speed1%to_string() // " < " // speed2%to_string())
+                    area1 < area2, &
+                    area1%to_string() // " < " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -834,16 +834,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = input%input().unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = input%input().unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 < speed2, &
-                    speed1%to_string() // " <=" // speed2%to_string())
+                    area1 < area2, &
+                    area1%to_string() // " <=" // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -853,16 +853,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(speed_t) :: speed1
-        type(speed_t) :: speed2
+        type(area_t) :: area1
+        type(area_t) :: area2
 
         select type (input)
         type is (double_precision_input_t)
-            speed1 = input%input().unit.METERS_PER_SECOND
-            speed2 = (input%input() - 1.0d0).unit.METERS_PER_SECOND
+            area1 = input%input().unit.SQUARE_METERS
+            area2 = (input%input() - 1.0d0).unit.SQUARE_METERS
             result_ = assert_not( &
-                    speed1 < speed2, &
-                    speed1%to_string() // " < " // speed2%to_string())
+                    area1 < area2, &
+                    area1%to_string() // " < " // area2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
