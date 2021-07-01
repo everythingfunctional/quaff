@@ -12,6 +12,9 @@ compile time safety that you don't mix them up in your argument lists, and you
 don't have to worry about doing unit conversions or remembering what units you've
 stored things in when you start doing math with them.
 
+The following gives a basic overview of how you use quaff,
+but for more detailed information consult the [developer documentation](https://everythingfunctional.gitlab.io/quaff).
+
 Turning a number into a quantity is as easy as defining what units that number
 is in, like `1.0d0.unit.METERS`. And, if you need the number back out, just say
 what units you want the value in like `time.in.SECONDS`.
@@ -24,9 +27,10 @@ just work: `speed = length / time`.
 A variety of `to_string` functions are also provided, so converting to strings
 in a variety of formats is easy too. `to_string` will use SI units, and
 `to_string_in` allows you to specify the units you'd like. There are also
-[quaff_gnuplot_units] and [quaff_latex_units] projects for units that provide formats for
-those. You can also specify the number of significant digits you'd like for any
-of them.
+[quaff_gnuplot_units](https://gitlab.com/everythingfunctional/quaff_gnuplot_units)
+and [quaff_latex_units](https://gitlab.com/everythingfunctional/quaff_latex_units)
+projects for units that provide formats for those.
+You can also specify the number of significant digits you'd like for any of them.
 
 There are `parse_quantity` functions provided for getting a quantity from its
 string representation as well. These routines return a `fallible_quantity`

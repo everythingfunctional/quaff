@@ -1,8 +1,33 @@
-image: registry.gitlab.com/everythingfunctional/dockerfpm
-
-variables:
-    GIT_SUBMODULE_STRATEGY: normal
+stages:
+  - test
+  - documentation
+  - pages
 
 test:
+  stage: test
+  image: registry.gitlab.com/everythingfunctional/dockerfpm
   script:
-    - fpm test
+    - fpm test # TODO: run with valgrind once gfortran memory leaks have been fixed, i.e.  --runner "valgrind --leak-check=full --error-exitcode=1"
+
+documentation:
+  stage: documentation
+  image: python:2.7
+  script:
+    - pip install ford
+    - apt update && apt install -y graphviz
+    - ford doc/front-matter.md
+  artifacts:
+    paths:
+      - public
+
+pages:
+  stage: pages
+  dependencies:
+    - documentation
+  script:
+    - echo "Deploying to pages"
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
