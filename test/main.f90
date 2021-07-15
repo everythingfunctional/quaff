@@ -43,6 +43,8 @@ contains
                 power_power => test_power
         use pressure_test, only: &
                 pressure_pressure => test_pressure
+        use specific_heat_test, only: &
+                specific_heat_specific_heat => test_specific_heat
         use speed_test, only: &
                 speed_speed => test_speed
         use temperature_test, only: &
@@ -56,7 +58,7 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(24)
+        type(test_item_t) :: individual_tests(25)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
@@ -77,11 +79,12 @@ contains
         individual_tests(17) = performance_performance()
         individual_tests(18) = power_power()
         individual_tests(19) = pressure_pressure()
-        individual_tests(20) = speed_speed()
-        individual_tests(21) = temperature_temperature()
-        individual_tests(22) = thermal_conductivity_thermal_conductivity()
-        individual_tests(23) = time_time()
-        individual_tests(24) = volume_volume()
+        individual_tests(20) = specific_heat_specific_heat()
+        individual_tests(21) = speed_speed()
+        individual_tests(22) = temperature_temperature()
+        individual_tests(23) = thermal_conductivity_thermal_conductivity()
+        individual_tests(24) = time_time()
+        individual_tests(25) = volume_volume()
         tests = test_that(individual_tests)
 
         call run_tests(tests)

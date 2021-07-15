@@ -252,6 +252,19 @@ module quaff
             MEGAPASCALS, &
             PASCALS, &
             POUNDS_PER_SQUARE_INCH
+    use specific_heat_m, only: &
+            specific_heat_t, &
+            fallible_specific_heat_t, &
+            specific_heat_unit_t, &
+            fallible_specific_heat_unit_t, &
+            operator(.unit.), &
+            parse_specific_heat, &
+            parse_specific_heat_unit, &
+            sum, &
+            DEFAULT_SPECIFIC_HEAT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_SPECIFIC_HEAT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_KILOGRAM_KELVIN, &
+            BTU_PER_POUNDS_RANKINE
     use speed_m, only: &
             speed_t, &
             fallible_speed_t, &
