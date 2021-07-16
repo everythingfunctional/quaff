@@ -136,8 +136,12 @@ module quaff_conversion_factors_m
     ! Energy Per Temperature Amount
     double precision, parameter :: KILOJOULES_PER_KELVIN_MOL_PER_JOULES_PER_KELVIN_MOL = &
             KILO_PER_BASE
-            
+
     ! Specific Heat
     double precision, parameter :: BTU_PER_POUNDS_RANKINE_PER_JOULES_PER_KILOGRAM_KELVIN = &
             BTU_PER_JOULE / POUNDS_PER_KILOGRAM / RANKINE_PER_KELVIN
+
+    ! convective heat transfer
+    double precision, parameter :: BTU_PER_HR_SQ_FT_RANKINE_PER_WATTS_PER_SQUARE_METER_KELVIN = &
+            BTU_PER_HOUR_PER_WATT / SQUARE_FEET_PER_SQUARE_METER / RANKINE_PER_KELVIN
 end module

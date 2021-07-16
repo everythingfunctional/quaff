@@ -15,6 +15,8 @@ contains
                 area_area => test_area
         use burnup_test, only: &
                 burnup_burnup => test_burnup
+        use convective_heat_transfer_test, only: &
+                convective_heat_transfer_convective_heat_transfer => test_convective_heat_transfer
         use density_test, only: &
                 density_density => test_density
         use dynamic_viscosity_test, only: &
@@ -58,33 +60,34 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(25)
+        type(test_item_t) :: individual_tests(26)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
         individual_tests(3) = angle_angle()
         individual_tests(4) = area_area()
         individual_tests(5) = burnup_burnup()
-        individual_tests(6) = density_density()
-        individual_tests(7) = dynamic_viscosity_dynamic_viscosity()
-        individual_tests(8) = energy_per_amount_energy_per_amount()
-        individual_tests(9) = energy_per_temperature_amount_energy_per_temperature_amount()
-        individual_tests(10) = energy_energy()
-        individual_tests(11) = enthalpy_enthalpy()
-        individual_tests(12) = force_force()
-        individual_tests(13) = interquantity_interquantity_operators()
-        individual_tests(14) = length_length()
-        individual_tests(15) = mass_mass()
-        individual_tests(16) = molar_mass_molar_mass()
-        individual_tests(17) = performance_performance()
-        individual_tests(18) = power_power()
-        individual_tests(19) = pressure_pressure()
-        individual_tests(20) = specific_heat_specific_heat()
-        individual_tests(21) = speed_speed()
-        individual_tests(22) = temperature_temperature()
-        individual_tests(23) = thermal_conductivity_thermal_conductivity()
-        individual_tests(24) = time_time()
-        individual_tests(25) = volume_volume()
+        individual_tests(6) = convective_heat_transfer_convective_heat_transfer()
+        individual_tests(7) = density_density()
+        individual_tests(8) = dynamic_viscosity_dynamic_viscosity()
+        individual_tests(9) = energy_per_amount_energy_per_amount()
+        individual_tests(10) = energy_per_temperature_amount_energy_per_temperature_amount()
+        individual_tests(11) = energy_energy()
+        individual_tests(12) = enthalpy_enthalpy()
+        individual_tests(13) = force_force()
+        individual_tests(14) = interquantity_interquantity_operators()
+        individual_tests(15) = length_length()
+        individual_tests(16) = mass_mass()
+        individual_tests(17) = molar_mass_molar_mass()
+        individual_tests(18) = performance_performance()
+        individual_tests(19) = power_power()
+        individual_tests(20) = pressure_pressure()
+        individual_tests(21) = specific_heat_specific_heat()
+        individual_tests(22) = speed_speed()
+        individual_tests(23) = temperature_temperature()
+        individual_tests(24) = thermal_conductivity_thermal_conductivity()
+        individual_tests(25) = time_time()
+        individual_tests(26) = volume_volume()
         tests = test_that(individual_tests)
 
         call run_tests(tests)

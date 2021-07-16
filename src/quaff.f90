@@ -74,6 +74,19 @@ module quaff
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
             WATT_SECONDS_PER_KILOGRAM
+    use convective_heat_transfer_m, only: &
+            convective_heat_transfer_t, &
+            fallible_convective_heat_transfer_t, &
+            convective_heat_transfer_unit_t, &
+            fallible_convective_heat_transfer_unit_t, &
+            operator(.unit.), &
+            parse_convective_heat_transfer, &
+            parse_convective_heat_transfer_unit, &
+            sum, &
+            DEFAULT_CONVECTIVE_HEAT_TRANSFER_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_CONVECTIVE_HEAT_TRANSFER_UNITS => PROVIDED_UNITS, &
+            BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
+            WATTS_PER_SQUARE_METER_KELVIN
     use density_m, only: &
             density_t, &
             fallible_density_t, &
