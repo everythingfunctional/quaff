@@ -80,7 +80,8 @@ contains
                         DOUBLE_PRECISION_GENERATOR, &
                         check_subtract_zero) &
                 , it( &
-                        "adding and subtracting the same thermal_expansion_coeffecient returns the original thermal_expansion_coeffecient", &
+                        "adding and subtracting the same thermal_expansion_coeffecient returns &
+                        &the original thermal_expansion_coeffecient", &
                         DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_add_subtract) &
                 , it( &
@@ -100,7 +101,8 @@ contains
                         NON_ZERO_DOUBLE_PRECISION_GENERATOR, &
                         check_divide_by_self) &
                 , it( &
-                        "multiplying and dividing by the same number returns the original thermal_expansion_coeffecient", &
+                        "multiplying and dividing by the same number returns the original &
+                        &thermal_expansion_coeffecient", &
                         NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_multiply_divide) &
                 , describe( &
