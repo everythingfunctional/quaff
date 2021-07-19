@@ -17,6 +17,8 @@ module thermal_expansion_coeffecient_m
             parse_string, &
             parse_with, &
             then_drop
+    use quaff_conversion_factors_m, only: &
+            PER_RANKINE_PER_KELVIN
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -41,7 +43,7 @@ module thermal_expansion_coeffecient_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             PER_KELVIN, &
-            PER_KELVIN2
+            PER_RANKINE
 
     type :: thermal_expansion_coeffecient_t
         double precision :: per_kelvin
@@ -60,15 +62,15 @@ module thermal_expansion_coeffecient_m
                 thermal_expansion_coeffecient_times_integer
         procedure :: thermal_expansion_coeffecient_divided_by_double
         procedure :: thermal_expansion_coeffecient_divided_by_integer
-        procedure :: thermal_expansion_coeffecient_divided_by_thermal_expansion_coeffecient
+        procedure :: therm_exp_coeff_divided_by_therm_exp_coefft
         generic, public :: operator(/) => &
                 thermal_expansion_coeffecient_divided_by_double, &
                 thermal_expansion_coeffecient_divided_by_integer, &
-                thermal_expansion_coeffecient_divided_by_thermal_expansion_coeffecient
-        procedure :: thermal_expansion_coeffecient_plus_thermal_expansion_coeffecient
-        generic, public :: operator(+) => thermal_expansion_coeffecient_plus_thermal_expansion_coeffecient
-        procedure :: thermal_expansion_coeffecient_minus_thermal_expansion_coeffecient
-        generic, public :: operator(-) => thermal_expansion_coeffecient_minus_thermal_expansion_coeffecient
+                therm_exp_coeff_divided_by_therm_exp_coefft
+        procedure :: therm_exp_coeff_plus_therm_exp_coeff
+        generic, public :: operator(+) => therm_exp_coeff_plus_therm_exp_coeff
+        procedure :: therm_exp_coeff_minus_therm_exp_coeff
+        generic, public :: operator(-) => therm_exp_coeff_minus_therm_exp_coeff
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -102,7 +104,7 @@ module thermal_expansion_coeffecient_m
     contains
         private
         procedure, public :: failed => fallible_thermal_expansion_coeffecient_failed
-        procedure, public :: thermal_expansion_coeffecient => fallible_thermal_expansion_coeffecient_thermal_expansion_coeffecient
+        procedure, public :: thermal_expansion_coeffecient => fallible_therm_exp_coeff_therm_exp_coeff
         procedure, public :: errors => fallible_thermal_expansion_coeffecient_errors
     end type
 
@@ -170,15 +172,15 @@ module thermal_expansion_coeffecient_m
     end interface
 
     interface fallible_thermal_expansion_coeffecient_t
-        module procedure fallible_thermal_expansion_coeffecient_from_thermal_expansion_coeffecient
+        module procedure fallible_therm_exp_coeff_from_therm_exp_coeff
         module procedure fallible_thermal_expansion_coeffecient_from_errors
-        module procedure fallible_thermal_expansion_coeffecient_from_fallible_thermal_expansion_coeffecient
+        module procedure fallible_therm_exp_coeff_from_fallible_therm_exp_coeff
     end interface
 
     interface fallible_thermal_expansion_coeffecient_unit_t
         module procedure fallible_thermal_expansion_coeffecient_unit_from_unit
         module procedure fallible_thermal_expansion_coeffecient_unit_from_errors
-        module procedure fallible_thermal_expansion_coeffecient_unit_from_fallible_thermal_expansion_coeffecient_unit
+        module procedure fallible_therm_exp_co_unit_from_fallible_therm_exp_co_unit
     end interface
 
     interface parse_thermal_expansion_coeffecient
@@ -203,15 +205,15 @@ module thermal_expansion_coeffecient_m
             thermal_expansion_coeffecient_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "1/K")
-    type(thermal_expansion_coeffecient_simple_unit_t), parameter :: PER_KELVIN2 = &
+    type(thermal_expansion_coeffecient_simple_unit_t), parameter :: PER_RANKINE = &
             thermal_expansion_coeffecient_simple_unit_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "1/K")
+                    conversion_factor = PER_RANKINE_PER_KELVIN, &
+                    symbol = "1/R")
 
     type(thermal_expansion_coeffecient_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = PER_KELVIN
 
     type(thermal_expansion_coeffecient_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [PER_KELVIN, PER_KELVIN2]
+            [PER_KELVIN, PER_RANKINE]
 
     character(len=*), parameter :: MODULE_NAME = "thermal_expansion_coeffecient_m"
 contains
@@ -345,7 +347,7 @@ contains
                 thermal_expansion_coeffecient%per_kelvin / dble(divisor)
     end function
 
-    elemental function thermal_expansion_coeffecient_divided_by_thermal_expansion_coeffecient( &
+    elemental function therm_exp_coeff_divided_by_therm_exp_coefft( &
             numerator, denomenator) result(ratio)
         class(thermal_expansion_coeffecient_t), intent(in) :: numerator
         type(thermal_expansion_coeffecient_t), intent(in) :: denomenator
@@ -354,7 +356,7 @@ contains
         ratio = numerator%per_kelvin / denomenator%per_kelvin
     end function
 
-    elemental function thermal_expansion_coeffecient_plus_thermal_expansion_coeffecient( &
+    elemental function therm_exp_coeff_plus_therm_exp_coeff( &
             lhs, rhs) result(sum_)
         class(thermal_expansion_coeffecient_t), intent(in) :: lhs
         type(thermal_expansion_coeffecient_t), intent(in) :: rhs
@@ -363,7 +365,7 @@ contains
         sum_%per_kelvin = lhs%per_kelvin + rhs%per_kelvin
     end function
 
-    elemental function thermal_expansion_coeffecient_minus_thermal_expansion_coeffecient( &
+    elemental function therm_exp_coeff_minus_therm_exp_coeff( &
             lhs, rhs) result(difference)
         class(thermal_expansion_coeffecient_t), intent(in) :: lhs
         type(thermal_expansion_coeffecient_t), intent(in) :: rhs
@@ -480,7 +482,7 @@ contains
         string = units%to_string(to_string(self.in.units, significant_digits))
     end function
 
-    function fallible_thermal_expansion_coeffecient_from_thermal_expansion_coeffecient( &
+    function fallible_therm_exp_coeff_from_therm_exp_coeff( &
             thermal_expansion_coeffecient) result(fallible_thermal_expansion_coeffecient)
         type(thermal_expansion_coeffecient_t), intent(in) :: thermal_expansion_coeffecient
         type(fallible_thermal_expansion_coeffecient_t) :: fallible_thermal_expansion_coeffecient
@@ -496,7 +498,7 @@ contains
         fallible_thermal_expansion_coeffecient%errors_ = errors
     end function
 
-    function fallible_thermal_expansion_coeffecient_from_fallible_thermal_expansion_coeffecient( &
+    function fallible_therm_exp_coeff_from_fallible_therm_exp_coeff( &
             fallible_thermal_expansion_coeffecient, &
             module_, &
             procedure_) &
@@ -510,7 +512,8 @@ contains
             new_fallible_thermal_expansion_coeffecient%errors_ = error_list_t( &
                     fallible_thermal_expansion_coeffecient%errors_, module_, procedure_)
         else
-            new_fallible_thermal_expansion_coeffecient%thermal_expansion_coeffecient_ = fallible_thermal_expansion_coeffecient%thermal_expansion_coeffecient_
+            new_fallible_thermal_expansion_coeffecient%thermal_expansion_coeffecient_ = &
+              fallible_thermal_expansion_coeffecient%thermal_expansion_coeffecient_
         end if
     end function
 
@@ -522,7 +525,7 @@ contains
         failed = self%errors_%has_any()
     end function
 
-    elemental function fallible_thermal_expansion_coeffecient_thermal_expansion_coeffecient( &
+    elemental function fallible_therm_exp_coeff_therm_exp_coeff( &
             self) result(thermal_expansion_coeffecient)
         class(fallible_thermal_expansion_coeffecient_t), intent(in) :: self
         type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
@@ -554,7 +557,7 @@ contains
         fallible_thermal_expansion_coeffecient_unit%errors_ = errors
     end function
 
-    function fallible_thermal_expansion_coeffecient_unit_from_fallible_thermal_expansion_coeffecient_unit( &
+    function fallible_therm_exp_co_unit_from_fallible_therm_exp_co_unit( &
             fallible_thermal_expansion_coeffecient_unit, &
             module_, &
             procedure_) &

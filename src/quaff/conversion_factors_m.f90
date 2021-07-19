@@ -144,4 +144,10 @@ module quaff_conversion_factors_m
     ! convective heat transfer
     double precision, parameter :: BTU_PER_HR_SQ_FT_RANKINE_PER_WATTS_PER_SQUARE_METER_KELVIN = &
             BTU_PER_HOUR_PER_WATT / SQUARE_FEET_PER_SQUARE_METER / RANKINE_PER_KELVIN
+
+    ! thermal expansion coeffecient
+    double precision, parameter ::  PER_RANKINE_PER_KELVIN = &
+            1 / RANKINE_PER_KELVIN
+
+
 end module

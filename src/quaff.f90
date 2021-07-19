@@ -321,6 +321,19 @@ module quaff
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
             WATTS_PER_CENTIMETER_KELVIN, &
             WATTS_PER_METER_KELVIN
+    use thermal_expansion_coeffecient_m, only: &
+            thermal_expansion_coeffecient_t, &
+            fallible_thermal_expansion_coeffecient_t, &
+            thermal_expansion_coeffecient_unit_t, &
+            fallible_thermal_expansion_coeffecient_unit_t, &
+            operator(.unit.), &
+            parse_thermal_expansion_coeffecient, &
+            parse_thermal_expansion_coeffecient_unit, &
+            sum, &
+            DEFAULT_THERMAL_EXPANSION_COEFFECIENT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS => PROVIDED_UNITS, &
+            PER_KELVIN, &
+            PER_RANKINE
     use time_m, only: &
             time_t, &
             fallible_time_t, &

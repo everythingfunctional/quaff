@@ -53,6 +53,8 @@ contains
                 temperature_temperature => test_temperature
         use thermal_conductivity_test, only: &
                 thermal_conductivity_thermal_conductivity => test_thermal_conductivity
+        use thermal_expansion_coeffecient_test, only: &
+                thermal_expansion_coeffecient_thermal_expansion_coeffecient => test_thermal_expansion_coeffecient
         use time_test, only: &
                 time_time => test_time
         use volume_test, only: &
@@ -60,7 +62,7 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(26)
+        type(test_item_t) :: individual_tests(27)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
@@ -86,8 +88,9 @@ contains
         individual_tests(22) = speed_speed()
         individual_tests(23) = temperature_temperature()
         individual_tests(24) = thermal_conductivity_thermal_conductivity()
-        individual_tests(25) = time_time()
-        individual_tests(26) = volume_volume()
+        individual_tests(25) = thermal_expansion_coeffecient_thermal_expansion_coeffecient()
+        individual_tests(26) = time_time()
+        individual_tests(27) = volume_volume()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
