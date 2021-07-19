@@ -148,6 +148,4 @@ module quaff_conversion_factors_m
     ! thermal expansion coeffecient
     double precision, parameter ::  PER_RANKINE_PER_KELVIN = &
             1 / RANKINE_PER_KELVIN
-
-
 end module
