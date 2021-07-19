@@ -497,8 +497,8 @@ contains
         select type (input)
         type is (double_precision_pair_input_t)
             thermal_expansion_coeffecient = input%first().unit.PER_KELVIN
-            result_ = assert_equals( &
-                    thermal_expansion_coeffecient, (thermal_expansion_coeffecient * input%second_()) / input%second_())
+            result_ = &
+              assert_equals(thermal_expansion_coeffecient, ((thermal_expansion_coeffecient * input%second_()) / input%second_()))
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
