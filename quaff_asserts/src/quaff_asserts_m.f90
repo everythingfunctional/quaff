@@ -22,7 +22,7 @@ module quaff_asserts_m
     use convective_heat_transfer_asserts_m, only: &
             assert_equals, &
             assert_equals_within_absolute, &
-            assert_equals_within_relative      
+            assert_equals_within_relative
     use density_asserts_m, only: &
             assert_equals, &
             assert_equals_within_absolute, &
@@ -84,6 +84,10 @@ module quaff_asserts_m
             assert_equals_within_absolute, &
             assert_equals_within_relative
     use thermal_conductivity_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use thermal_expansion_coeffecient_asserts_m, only: &
             assert_equals, &
             assert_equals_within_absolute, &
             assert_equals_within_relative
