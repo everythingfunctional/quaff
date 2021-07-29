@@ -46,7 +46,7 @@ module fluence_m
             PARTICLES_PER_SQUARE_CENTIMETER
 
     type :: fluence_t
-        double precision :: particles_per_square_meter, particles_per_square_centimeter
+        double precision :: particles_per_square_meter
     contains
         private
         procedure :: to_units
