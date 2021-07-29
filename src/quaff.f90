@@ -178,8 +178,8 @@ module quaff
             parse_fluence, &
             parse_fluence_unit, &
             sum, &
-            DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_UNITS, &
+            DEFAULT_FLUENCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_FLUENCE_UNITS => PROVIDED_UNITS, &
             PARTICLES_PER_SQUARE_METER, &
             PARTICLES_PER_SQUARE_CENTIMETER
     use force_m, only: &
