@@ -169,6 +169,19 @@ module quaff
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM, &
             KILOJOULES_PER_KILOGRAM
+    use fluence_m, only: &
+            fluence_t, &
+            fallible_fluence_t, &
+            fluence_unit_t, &
+            fallible_fluence_unit_t, &
+            operator(.unit.), &
+            parse_fluence, &
+            parse_fluence_unit, &
+            sum, &
+            DEFAULT_FLUENCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_FLUENCE_UNITS => PROVIDED_UNITS, &
+            PARTICLES_PER_SQUARE_METER, &
+            PARTICLES_PER_SQUARE_CENTIMETER
     use force_m, only: &
             force_t, &
             fallible_force_t, &

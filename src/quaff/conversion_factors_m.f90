@@ -148,4 +148,8 @@ module quaff_conversion_factors_m
     ! thermal expansion coeffecient
     double precision, parameter ::  PER_RANKINE_PER_KELVIN = &
             1 / RANKINE_PER_KELVIN
+
+    ! fluence
+    double precision, parameter ::  PARTICLES_PER_SQUARE_CENTIMETER_PER_PARTICLES_PER_SQUARE_METER = &
+            1 / SQUARE_CENTIMETERS_PER_SQUARE_METER
 end module
