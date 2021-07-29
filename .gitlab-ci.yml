@@ -11,7 +11,7 @@ test:
 
 documentation:
   stage: documentation
-  image: python:2.7
+  image: python
   script:
     - pip install ford
     - apt update && apt install -y graphviz
