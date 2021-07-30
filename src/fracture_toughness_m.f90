@@ -206,7 +206,7 @@ module fracture_toughness_m
     type(fracture_toughness_simple_unit_t), parameter :: KSI_ROOT_INCH = &
             fracture_toughness_simple_unit_t( &
                     conversion_factor = KSI_ROOT_INCH_PER_PASCAL_ROOT_METER, &
-                    symbol = "KSI in^0.5")
+                    symbol = "ksi in^0.5")
     type(fracture_toughness_simple_unit_t), parameter :: MEGAPASCAL_ROOT_METER = &
             fracture_toughness_simple_unit_t( &
                     conversion_factor = MEGAPASCAL_ROOT_METER_PER_PASCAL_ROOT_METER, &
