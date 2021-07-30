@@ -152,4 +152,10 @@ module quaff_conversion_factors_m
     ! fluence
     double precision, parameter ::  PARTICLES_PER_SQUARE_CENTIMETER_PER_PARTICLES_PER_SQUARE_METER = &
             1 / SQUARE_CENTIMETERS_PER_SQUARE_METER
+    ! fluence
+    double precision, parameter ::  MEGAPASCAL_ROOT_METER_PER_PASCAL_ROOT_METER = &
+            MEGA_PER_BASE
+    double precision, parameter :: KSI_ROOT_INCH_PER_PASCAL_ROOT_METER = &
+            KILO_PER_BASE * POUNDS_PER_SQUARE_INCH_PER_PASCAL / sqrt(INCHES_PER_METER)
+
 end module

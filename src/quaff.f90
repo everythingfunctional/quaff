@@ -198,6 +198,20 @@ module quaff
             MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
+    use fracture_toughness_m, only: &
+            fracture_toughness_t, &
+            fallible_fracture_toughness_t, &
+            fracture_toughness_unit_t, &
+            fallible_fracture_toughness_unit_t, &
+            operator(.unit.), &
+            parse_fracture_toughness, &
+            parse_fracture_toughness_unit, &
+            sum, &
+            DEFAULT_FRACTURE_TOUGHNESS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_FRACTURE_TOUGHNESS_UNITS => PROVIDED_UNITS, &
+            PASCAL_ROOT_METER, &
+            MEGAPASCAL_ROOT_METER, &
+            KSI_ROOT_INCH
     use length_m, only: &
             length_t, &
             fallible_length_t, &
