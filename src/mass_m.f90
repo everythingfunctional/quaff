@@ -140,34 +140,6 @@ module mass_m
         procedure :: parse_as => simple_parse_as
     end type
 
-    type, abstract :: mass_fraction_t
-        double precision :: conversion_factor
-    contains
-        procedure(fraction_to_string_i), deferred :: fraction_to_string
-        procedure(value_to_string_i), deferred :: value_to_string
-        generic :: to_string => fraction_to_string, value_to_string
-        procedure(parse_as_i), deferred :: parse_as
-    end type
-
-    type :: fallible_mass_fraction_t
-        private
-        class(mass_fraction_t), allocatable :: fraction_
-        type(error_list_t) :: errors_
-    contains
-        private
-        procedure, public :: failed => fallible_mass_fraction_failed
-        procedure, public :: unit => fallible_mass_fraction_fraction
-        procedure, public :: errors => fallible_mass_fraction_errors
-    end type
-
-    type, extends(mass_fraction_t) :: mass_simple_fraction_t
-        character(len=20) :: symbol
-    contains
-        procedure :: unit_to_string => simple_unit_to_string
-        procedure :: value_to_string => simple_value_to_string
-        procedure :: parse_as => simple_parse_as
-    end type
-
     abstract interface
         elemental function unit_to_string_i(self) result(string)
             import :: mass_unit_t, varying_string
@@ -215,19 +187,11 @@ module mass_m
         module procedure fallible_mass_unit_from_fallible_mass_unit
     end interface
 
-    interface fallible_mass_fraction_t
-        module procedure fallible_mass_fraction_from_fraction
-        module procedure fallible_mass_fraction_from_errors
-        module procedure fallible_mass_fraction_from_fallible_mass_fraction
-    end interface
-
     interface parse_mass
         module procedure parse_mass_c
         module procedure parse_mass_s
         module procedure parse_mass_with_units_c
         module procedure parse_mass_with_units_s
-        module procedure parse_mass_with_fraction_c
-        module procedure parse_mass_with_fraction_s
     end interface
 
     interface parse_mass_unit
@@ -235,13 +199,6 @@ module mass_m
         module procedure parse_mass_unit_s
         module procedure parse_mass_unit_with_units_c
         module procedure parse_mass_unit_with_units_s
-    end interface
-
-    interface parse_mass_fraction
-        module procedure parse_mass_fraction_c
-        module procedure parse_mass_fraction_s
-        module procedure parse_mass_fraction_with_fraction_c
-        module procedure parse_mass_fraction_with_fraction_s
     end interface
 
     interface sum
@@ -269,18 +226,6 @@ module mass_m
 
     type(mass_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS, POUNDS_MASS, TONS]
-
-    type(mass_simple_fraction_t), parameter :: WEIGHT_PERCENT = &
-            mass_simple_fraction_t( &
-                    conversion_factor = 1.0d0, &
-                    symbol = "wt%")
-    type(mass_simple_fraction_t), parameter :: PPM = &
-            mass_simple_fraction_t( &
-                    conversion_factor = PPM_PER_WEIGHT_PERCENT, &
-                    symbol = "ppm")
-
-    type(mass_simple_fraction_t), parameter :: PROVIDED_UNITS(*) = &
-            [WEIGHT_PERCENT, PPM_PER_WEIGHT_PERCENT]
 
     character(len=*), parameter :: MODULE_NAME = "mass_m"
 contains
