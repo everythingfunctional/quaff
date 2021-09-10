@@ -114,6 +114,8 @@ module quaff_conversion_factors_m
     double precision, parameter :: BAR_PER_PASCAL = 1.0d0 / PASCALS_PER_BAR
     double precision, parameter :: PASCALS_PER_ATMOSPHERE = 101325.0d0
     double precision, parameter :: ATMOSPHERES_PER_PASCAL = 1.0d0 / PASCALS_PER_ATMOSPHERE
+    double precision, parameter :: KILOPOUNDS_PER_SQUARE_INCH_PER_PASCAL = &
+            POUNDS_PER_SQUARE_INCH_PER_PASCAL / 1000.0d0
 
     ! Dynamic Viscosity
     double precision, parameter :: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND = MEGA_PER_BASE

@@ -292,7 +292,8 @@ module quaff
             KILOPONDS_PER_SQUARE_CENTIMETER, &
             MEGAPASCALS, &
             PASCALS, &
-            POUNDS_PER_SQUARE_INCH
+            POUNDS_PER_SQUARE_INCH, &
+            KILOPOUNDS_PER_SQUARE_INCH
     use specific_heat_m, only: &
             specific_heat_t, &
             fallible_specific_heat_t, &
@@ -364,7 +365,8 @@ module quaff
             DEFAULT_THERMAL_EXPANSION_COEFFECIENT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS => PROVIDED_UNITS, &
             PER_KELVIN, &
-            PER_RANKINE
+            PER_RANKINE, &
+            PER_FAHRENHEIT
     use time_m, only: &
             time_t, &
             fallible_time_t, &

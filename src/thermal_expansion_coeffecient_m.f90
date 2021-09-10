@@ -43,7 +43,8 @@ module thermal_expansion_coeffecient_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             PER_KELVIN, &
-            PER_RANKINE
+            PER_RANKINE, &
+            PER_FAHRENHEIT
 
     type :: thermal_expansion_coeffecient_t
         double precision :: per_kelvin
@@ -209,11 +210,15 @@ module thermal_expansion_coeffecient_m
             thermal_expansion_coeffecient_simple_unit_t( &
                     conversion_factor = PER_RANKINE_PER_KELVIN, &
                     symbol = "1/R")
+    type(thermal_expansion_coeffecient_simple_unit_t), parameter :: PER_FAHRENHEIT = &
+            thermal_expansion_coeffecient_simple_unit_t( &
+                    conversion_factor = PER_RANKINE_PER_KELVIN, &
+                    symbol = "1/F")
 
     type(thermal_expansion_coeffecient_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = PER_KELVIN
 
     type(thermal_expansion_coeffecient_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [PER_KELVIN, PER_RANKINE]
+            [PER_KELVIN, PER_RANKINE, PER_FAHRENHEIT]
 
     character(len=*), parameter :: MODULE_NAME = "thermal_expansion_coeffecient_m"
 contains
