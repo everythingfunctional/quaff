@@ -86,6 +86,7 @@ module quaff
             DEFAULT_CONVECTIVE_HEAT_TRANSFER_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_CONVECTIVE_HEAT_TRANSFER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
+            BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT, &
             WATTS_PER_SQUARE_METER_KELVIN
     use density_m, only: &
             density_t, &

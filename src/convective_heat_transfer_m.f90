@@ -43,6 +43,7 @@ module convective_heat_transfer_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
+            BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT, &
             WATTS_PER_SQUARE_METER_KELVIN
 
     type :: convective_heat_transfer_t
@@ -205,6 +206,10 @@ module convective_heat_transfer_m
             convective_heat_transfer_simple_unit_t( &
                     conversion_factor = BTU_PER_HR_SQ_FT_RANKINE_PER_WATTS_PER_SQUARE_METER_KELVIN, &
                     symbol = "BTU/(hr ft^2 R)")
+    type(convective_heat_transfer_simple_unit_t), parameter :: BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT = &
+            convective_heat_transfer_simple_unit_t( &
+                    conversion_factor = BTU_PER_HR_SQ_FT_RANKINE_PER_WATTS_PER_SQUARE_METER_KELVIN, &
+                    symbol = "BTU/(hr ft^2 F)")
     type(convective_heat_transfer_simple_unit_t), parameter :: WATTS_PER_SQUARE_METER_KELVIN = &
             convective_heat_transfer_simple_unit_t( &
                     conversion_factor = 1.0d0, &
@@ -213,7 +218,10 @@ module convective_heat_transfer_m
     type(convective_heat_transfer_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = WATTS_PER_SQUARE_METER_KELVIN
 
     type(convective_heat_transfer_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [BTU_PER_HOUR_SQUARE_FEET_RANKINE, WATTS_PER_SQUARE_METER_KELVIN]
+            [BTU_PER_HOUR_SQUARE_FEET_RANKINE &
+            , WATTS_PER_SQUARE_METER_KELVIN &
+            , BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT &
+            ]
 
     character(len=*), parameter :: MODULE_NAME = "convective_heat_transfer_m"
 contains
