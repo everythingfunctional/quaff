@@ -43,6 +43,7 @@ module specific_heat_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             BTU_PER_POUNDS_RANKINE, &
+            BTU_PER_POUNDS_FAHRENHEIT, &
             JOULES_PER_KILOGRAM_KELVIN
 
     type :: specific_heat_t
@@ -209,11 +210,18 @@ module specific_heat_m
             specific_heat_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "J/(kg K)")
+    type(specific_heat_simple_unit_t), parameter :: BTU_PER_POUNDS_FAHRENHEIT = &
+            specific_heat_simple_unit_t( &
+                    conversion_factor = BTU_PER_POUNDS_RANKINE_PER_JOULES_PER_KILOGRAM_KELVIN, &
+                    symbol = "BTU/(lbm F)")
 
     type(specific_heat_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = JOULES_PER_KILOGRAM_KELVIN
 
     type(specific_heat_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [BTU_PER_POUNDS_RANKINE, JOULES_PER_KILOGRAM_KELVIN]
+            [BTU_PER_POUNDS_RANKINE &
+            , JOULES_PER_KILOGRAM_KELVIN &
+            , BTU_PER_POUNDS_FAHRENHEIT &
+            ]
 
     character(len=*), parameter :: MODULE_NAME = "specific_heat_m"
 contains
