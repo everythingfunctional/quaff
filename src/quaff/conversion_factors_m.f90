@@ -63,6 +63,8 @@ module quaff_conversion_factors_m
 
     ! Density
     double precision, parameter :: GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER = GRAMS_PER_KILOGRAM
+    double precision, parameter :: POUNDS_PER_CUBIC_FOOT_PER_KILOGRAMS_PER_CUBIC_METER = &
+                POUNDS_PER_KILOGRAM / FEET_PER_METER**3
 
     ! Molar Mass
     double precision, parameter :: GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL = BASE_PER_KILO
@@ -112,6 +114,8 @@ module quaff_conversion_factors_m
     double precision, parameter :: BAR_PER_PASCAL = 1.0d0 / PASCALS_PER_BAR
     double precision, parameter :: PASCALS_PER_ATMOSPHERE = 101325.0d0
     double precision, parameter :: ATMOSPHERES_PER_PASCAL = 1.0d0 / PASCALS_PER_ATMOSPHERE
+    double precision, parameter :: KILOPOUNDS_PER_SQUARE_INCH_PER_PASCAL = &
+            POUNDS_PER_SQUARE_INCH_PER_PASCAL / 1000.0d0
 
     ! Dynamic Viscosity
     double precision, parameter :: MEGAPASCAL_SECONDS_PER_PASCAL_SECOND = MEGA_PER_BASE
@@ -128,6 +132,8 @@ module quaff_conversion_factors_m
             CALORIES_PER_SECOND_PER_WATT / CENTIMETERS_PER_METER
     double precision, parameter :: WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN = &
             METERS_PER_CENTIMETER
+    double precision, parameter :: BTU_PER_HOUR_FEET_RANKINE_PER_WATTS_PER_METER_KELVIN = &
+            BTU_PER_HOUR_PER_WATT  / (FEET_PER_METER * RANKINE_PER_KELVIN)
 
     ! Energy Per Amount
     double precision, parameter :: KILOJOULES_PER_MOL_PER_JOULES_PER_MOL = &

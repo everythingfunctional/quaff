@@ -24,7 +24,8 @@ module pressure_m
             KILOPASCALS_PER_PASCAL, &
             KILOPONDS_PER_SQUARE_CENTIMETER_PER_PASCAL, &
             MEGAPASCALS_PER_PASCAL, &
-            POUNDS_PER_SQUARE_INCH_PER_PASCAL
+            POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
+            KILOPOUNDS_PER_SQUARE_INCH_PER_PASCAL
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -55,7 +56,8 @@ module pressure_m
             KILOPONDS_PER_SQUARE_CENTIMETER, &
             MEGAPASCALS, &
             PASCALS, &
-            POUNDS_PER_SQUARE_INCH
+            POUNDS_PER_SQUARE_INCH, &
+            KILOPOUNDS_PER_SQUARE_INCH
 
     type :: pressure_t
         double precision :: pascals
@@ -245,6 +247,10 @@ module pressure_m
             pressure_simple_unit_t( &
                     conversion_factor = POUNDS_PER_SQUARE_INCH_PER_PASCAL, &
                     symbol = "psi")
+    type(pressure_simple_unit_t), parameter :: KILOPOUNDS_PER_SQUARE_INCH = &
+            pressure_simple_unit_t( &
+                    conversion_factor = KILOPOUNDS_PER_SQUARE_INCH_PER_PASCAL, &
+                    symbol = "ksi")
 
     type(pressure_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = PASCALS
 
@@ -257,6 +263,7 @@ module pressure_m
             , MEGAPASCALS &
             , PASCALS &
             , POUNDS_PER_SQUARE_INCH &
+            , KILOPOUNDS_PER_SQUARE_INCH &
             ]
 
     character(len=*), parameter :: MODULE_NAME = "pressure_m"

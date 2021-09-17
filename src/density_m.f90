@@ -18,7 +18,8 @@ module density_m
             parse_with, &
             then_drop
     use quaff_conversion_factors_m, only: &
-            GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER
+            GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER, &
+            POUNDS_PER_CUBIC_FOOT_PER_KILOGRAMS_PER_CUBIC_METER
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -43,7 +44,8 @@ module density_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
-            KILOGRAMS_PER_CUBIC_METER
+            KILOGRAMS_PER_CUBIC_METER, &
+            POUNDS_PER_CUBIC_FOOT
 
     type :: density_t
         double precision :: kilograms_per_cubic_meter
@@ -209,11 +211,18 @@ module density_m
             density_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "kg/m^3")
+    type(density_simple_unit_t), parameter :: POUNDS_PER_CUBIC_FOOT = &
+            density_simple_unit_t( &
+                    conversion_factor = POUNDS_PER_CUBIC_FOOT_PER_KILOGRAMS_PER_CUBIC_METER, &
+                    symbol = "lbm/ft^3")
 
     type(density_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = KILOGRAMS_PER_CUBIC_METER
 
     type(density_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [GRAMS_PER_CUBIC_METER, KILOGRAMS_PER_CUBIC_METER]
+            [GRAMS_PER_CUBIC_METER &
+            , KILOGRAMS_PER_CUBIC_METER &
+            , POUNDS_PER_CUBIC_FOOT &
+            ]
 
     character(len=*), parameter :: MODULE_NAME = "density_m"
 contains

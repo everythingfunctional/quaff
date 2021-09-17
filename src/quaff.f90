@@ -86,6 +86,7 @@ module quaff
             DEFAULT_CONVECTIVE_HEAT_TRANSFER_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_CONVECTIVE_HEAT_TRANSFER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
+            BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT, &
             WATTS_PER_SQUARE_METER_KELVIN
     use density_m, only: &
             density_t, &
@@ -99,7 +100,8 @@ module quaff
             DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
-            KILOGRAMS_PER_CUBIC_METER
+            KILOGRAMS_PER_CUBIC_METER, &
+            POUNDS_PER_CUBIC_FOOT
     use dynamic_viscosity_m, only: &
             dynamic_viscosity_t, &
             fallible_dynamic_viscosity_t, &
@@ -291,7 +293,8 @@ module quaff
             KILOPONDS_PER_SQUARE_CENTIMETER, &
             MEGAPASCALS, &
             PASCALS, &
-            POUNDS_PER_SQUARE_INCH
+            POUNDS_PER_SQUARE_INCH, &
+            KILOPOUNDS_PER_SQUARE_INCH
     use specific_heat_m, only: &
             specific_heat_t, &
             fallible_specific_heat_t, &
@@ -304,7 +307,8 @@ module quaff
             DEFAULT_SPECIFIC_HEAT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPECIFIC_HEAT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM_KELVIN, &
-            BTU_PER_POUNDS_RANKINE
+            BTU_PER_POUNDS_RANKINE, &
+            BTU_PER_POUNDS_FAHRENHEIT
     use speed_m, only: &
             speed_t, &
             fallible_speed_t, &
@@ -347,7 +351,9 @@ module quaff
             PROVIDED_THERMAL_CONDUCTIVITY_UNITS => PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
             WATTS_PER_CENTIMETER_KELVIN, &
-            WATTS_PER_METER_KELVIN
+            WATTS_PER_METER_KELVIN, &
+            BTU_PER_HOUR_FEET_FAHRENHEIT, &
+            BTU_PER_HOUR_FEET_RANKINE
     use thermal_expansion_coeffecient_m, only: &
             thermal_expansion_coeffecient_t, &
             fallible_thermal_expansion_coeffecient_t, &
@@ -360,7 +366,8 @@ module quaff
             DEFAULT_THERMAL_EXPANSION_COEFFECIENT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS => PROVIDED_UNITS, &
             PER_KELVIN, &
-            PER_RANKINE
+            PER_RANKINE, &
+            PER_FAHRENHEIT
     use time_m, only: &
             time_t, &
             fallible_time_t, &

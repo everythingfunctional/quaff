@@ -19,7 +19,8 @@ module thermal_conductivity_m
             then_drop
     use quaff_conversion_factors_m, only: &
             CAL_PER_SEC_CM_K_PER_WATTS_PER_METER_KELVIN, &
-            WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN
+            WATTS_PER_CENTIMETER_KELVIN_PER_WATTS_PER_METER_KELVIN, &
+            BTU_PER_HOUR_FEET_RANKINE_PER_WATTS_PER_METER_KELVIN
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -45,7 +46,9 @@ module thermal_conductivity_m
             PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
             WATTS_PER_CENTIMETER_KELVIN, &
-            WATTS_PER_METER_KELVIN
+            WATTS_PER_METER_KELVIN, &
+            BTU_PER_HOUR_FEET_FAHRENHEIT, &
+            BTU_PER_HOUR_FEET_RANKINE
 
     type :: thermal_conductivity_t
         double precision :: watts_per_meter_kelvin
@@ -215,6 +218,14 @@ module thermal_conductivity_m
             thermal_conductivity_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "W/(m K)")
+    type(thermal_conductivity_simple_unit_t), parameter :: BTU_PER_HOUR_FEET_FAHRENHEIT = &
+            thermal_conductivity_simple_unit_t( &
+                    conversion_factor = BTU_PER_HOUR_FEET_RANKINE_PER_WATTS_PER_METER_KELVIN, &
+                    symbol = "BTU/(h ft F)")
+    type(thermal_conductivity_simple_unit_t), parameter :: BTU_PER_HOUR_FEET_RANKINE = &
+            thermal_conductivity_simple_unit_t( &
+                    conversion_factor = BTU_PER_HOUR_FEET_RANKINE_PER_WATTS_PER_METER_KELVIN, &
+                    symbol = "BTU/(h ft R)")
 
     type(thermal_conductivity_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = WATTS_PER_METER_KELVIN
 
@@ -222,6 +233,8 @@ module thermal_conductivity_m
             [ CALORIES_PER_SECOND_CENTIMETER_KELVIN &
             , WATTS_PER_CENTIMETER_KELVIN &
             , WATTS_PER_METER_KELVIN &
+            , BTU_PER_HOUR_FEET_RANKINE &
+            , BTU_PER_HOUR_FEET_FAHRENHEIT &
             ]
 
     character(len=*), parameter :: MODULE_NAME = "thermal_conductivity_m"
