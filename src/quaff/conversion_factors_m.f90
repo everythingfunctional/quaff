@@ -63,7 +63,7 @@ module quaff_conversion_factors_m
 
     ! Density
     double precision, parameter :: GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER = GRAMS_PER_KILOGRAM
-    double precision, parameter :: POUNDS_PER_CUBIC_FEET_PER_KILOGRAMS_PER_CUBIC_METER = &
+    double precision, parameter :: POUNDS_PER_CUBIC_FOOT_PER_KILOGRAMS_PER_CUBIC_METER = &
                 POUNDS_PER_KILOGRAM / FEET_PER_METER**3
 
     ! Molar Mass

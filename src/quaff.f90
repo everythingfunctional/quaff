@@ -101,7 +101,7 @@ module quaff
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_CUBIC_METER, &
-            POUNDS_PER_CUBIC_FEET
+            POUNDS_PER_CUBIC_FOOT
     use dynamic_viscosity_m, only: &
             dynamic_viscosity_t, &
             fallible_dynamic_viscosity_t, &
