@@ -107,4 +107,8 @@ module quaff_asserts_m
             assert_equals, &
             assert_equals_within_absolute, &
             assert_equals_within_relative
+    use frequency_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
 end module

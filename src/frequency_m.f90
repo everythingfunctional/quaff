@@ -17,6 +17,8 @@ module frequency_m
             parse_string, &
             parse_with, &
             then_drop
+    use quaff_conversion_factors_m, only: &
+            SECONDS_PER_MINUTE
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -41,7 +43,8 @@ module frequency_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             HERTZ, &
-            HERTZ2
+            PER_SECOND, &
+            PER_MINUTE
 
     type :: frequency_t
         double precision :: hertz
@@ -203,15 +206,19 @@ module frequency_m
             frequency_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "Hz")
-    type(frequency_simple_unit_t), parameter :: HERTZ2 = &
+    type(frequency_simple_unit_t), parameter :: PER_SECOND = &
             frequency_simple_unit_t( &
                     conversion_factor = 1.0d0, &
-                    symbol = "Hz")
+                    symbol = "1/s")
+    type(frequency_simple_unit_t), parameter :: PER_MINUTE = &
+            frequency_simple_unit_t( &
+                    conversion_factor = SECONDS_PER_MINUTE, &
+                    symbol = "1/m")
 
     type(frequency_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = HERTZ
 
     type(frequency_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [HERTZ, HERTZ2]
+            [HERTZ, PER_SECOND, PER_MINUTE]
 
     character(len=*), parameter :: MODULE_NAME = "frequency_m"
 contains
