@@ -39,12 +39,11 @@ contains
                 interquantity_interquantity_operators => test_interquantity_operators
         use length_test, only: &
                 length_length => test_length
+
         use mass_test, only: &
                 mass_mass => test_mass
         use molar_mass_test, only: &
                 molar_mass_molar_mass => test_molar_mass
-        use performance_test, only: &
-                performance_performance => test_performance
         use power_test, only: &
                 power_power => test_power
         use pressure_test, only: &
@@ -66,7 +65,7 @@ contains
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(29)
+        type(test_item_t) :: individual_tests(28)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_amount()
@@ -87,16 +86,15 @@ contains
         individual_tests(17) = length_length()
         individual_tests(18) = mass_mass()
         individual_tests(19) = molar_mass_molar_mass()
-        individual_tests(20) = performance_performance()
-        individual_tests(21) = power_power()
-        individual_tests(22) = pressure_pressure()
-        individual_tests(23) = specific_heat_specific_heat()
-        individual_tests(24) = speed_speed()
-        individual_tests(25) = temperature_temperature()
-        individual_tests(26) = thermal_conductivity_thermal_conductivity()
-        individual_tests(27) = thermal_expansion_coeffecient_thermal_expansion_coeffecient()
-        individual_tests(28) = time_time()
-        individual_tests(29) = volume_volume()
+        individual_tests(20) = power_power()
+        individual_tests(21) = pressure_pressure()
+        individual_tests(22) = specific_heat_specific_heat()
+        individual_tests(23) = speed_speed()
+        individual_tests(24) = temperature_temperature()
+        individual_tests(25) = thermal_conductivity_thermal_conductivity()
+        individual_tests(26) = thermal_expansion_coeffecient_thermal_expansion_coeffecient()
+        individual_tests(27) = time_time()
+        individual_tests(28) = volume_volume()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
