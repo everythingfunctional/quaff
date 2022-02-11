@@ -18,7 +18,7 @@ module frequency_m
             parse_with, &
             then_drop
     use quaff_conversion_factors_m, only: &
-            SECONDS_PER_MINUTE
+            SECONDS_PER_MINUTE, &
             SECONDS_PER_YEAR
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
