@@ -19,6 +19,7 @@ module frequency_m
             then_drop
     use quaff_conversion_factors_m, only: &
             SECONDS_PER_MINUTE
+            SECONDS_PER_YEAR
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -44,7 +45,8 @@ module frequency_m
             PROVIDED_UNITS, &
             HERTZ, &
             PER_SECOND, &
-            PER_MINUTE
+            PER_MINUTE, &
+            PER_YEAR
 
     type :: frequency_t
         double precision :: hertz
@@ -214,11 +216,15 @@ module frequency_m
             frequency_simple_unit_t( &
                     conversion_factor = SECONDS_PER_MINUTE, &
                     symbol = "1/m")
+    type(frequency_simple_unit_t), parameter :: PER_YEAR = &
+            frequency_simple_unit_t( &
+                    conversion_factor = SECONDS_PER_YEAR, &
+                    symbol = "1/yr")
 
     type(frequency_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = HERTZ
 
     type(frequency_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [HERTZ, PER_SECOND, PER_MINUTE]
+            [HERTZ, PER_SECOND, PER_MINUTE, PER_YEAR]
 
     character(len=*), parameter :: MODULE_NAME = "frequency_m"
 contains
