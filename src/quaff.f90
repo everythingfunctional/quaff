@@ -131,7 +131,8 @@ module quaff
             JOULES, &
             KILOJOULES, &
             MEGABTU, &
-            MEGAWATT_DAYS
+            MEGAWATT_DAYS, &
+            POUNDS_FORCE_FEET
     use energy_per_amount_m, only: &
             energy_per_amount_t, &
             fallible_energy_per_amount_t, &

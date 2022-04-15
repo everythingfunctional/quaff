@@ -22,7 +22,8 @@ module energy_m
             CALORIES_PER_JOULE, &
             KILOJOULES_PER_JOULE, &
             MEGABTU_PER_JOULE, &
-            MEGAWATT_DAYS_PER_JOULE
+            MEGAWATT_DAYS_PER_JOULE, &
+            POUNDS_FORCE_FEET_PER_NEWTON_METER
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -51,7 +52,8 @@ module energy_m
             JOULES, &
             KILOJOULES, &
             MEGABTU, &
-            MEGAWATT_DAYS
+            MEGAWATT_DAYS, &
+            POUNDS_FORCE_FEET
 
     type :: energy_t
         double precision :: joules
@@ -233,11 +235,15 @@ module energy_m
             energy_simple_unit_t( &
                     conversion_factor = MEGAWATT_DAYS_PER_JOULE, &
                     symbol = "MW d")
+    type(energy_simple_unit_t), parameter :: POUNDS_FORCE_FEET = &
+            energy_simple_unit_t( &
+                    conversion_factor = POUNDS_FORCE_FEET_PER_NEWTON_METER, &
+                    symbol = "lbf ft")
 
     type(energy_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = JOULES
 
     type(energy_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS]
+            [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS, POUNDS_FORCE_FEET]
 
     character(len=*), parameter :: MODULE_NAME = "energy_m"
 contains
