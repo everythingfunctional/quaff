@@ -23,7 +23,7 @@ module energy_m
             KILOJOULES_PER_JOULE, &
             MEGABTU_PER_JOULE, &
             MEGAWATT_DAYS_PER_JOULE, &
-            POUNDS_FORCE_FEET_PER_NEWTON_METER
+            POUNDS_FORCE_FOOT_PER_NEWTON_METER
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -237,7 +237,7 @@ module energy_m
                     symbol = "MW d")
     type(energy_simple_unit_t), parameter :: POUNDS_FORCE_FEET = &
             energy_simple_unit_t( &
-                    conversion_factor = POUNDS_FORCE_FEET_PER_NEWTON_METER, &
+                    conversion_factor = POUNDS_FORCE_FOOT_PER_NEWTON_METER, &
                     symbol = "lbf ft")
 
     type(energy_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = JOULES

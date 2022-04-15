@@ -96,7 +96,7 @@ module quaff_conversion_factors_m
     double precision, parameter :: KILOJOULES_PER_JOULE = KILO_PER_BASE
     double precision, parameter :: MEGABTU_PER_JOULE = MEGA_PER_BASE * BTU_PER_JOULE
     double precision, parameter :: MEGAWATT_DAYS_PER_JOULE = MEGA_PER_BASE * DAYS_PER_SECOND
-    double precision, parameter :: POUNDS_FORCE_FEET_PER_NEWTON_METER = POUNDS_PER_NEWTON * FEET_PER_METER
+    double precision, parameter :: POUNDS_FORCE_FOOT_PER_NEWTON_METER = POUNDS_PER_NEWTON * FEET_PER_METER
 
     ! Power
     ! Note: 1 W = 1 J/s
