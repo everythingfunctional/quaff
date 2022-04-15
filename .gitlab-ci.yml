@@ -14,7 +14,7 @@ documentation:
   image: python
   script:
     - pip install ford
-    - apt update && apt install -y graphviz
+    - apt update && apt install -y graphviz gfortran
     - ford doc/front-matter.md
   artifacts:
     paths:
