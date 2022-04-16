@@ -1,5 +1,5 @@
 module units_examples_m
-    use vegetables, only: example_t
+    use veggies, only: example_t
 
     implicit none
     private

@@ -2,7 +2,7 @@ module power_asserts_m
     use iso_varying_string, only: varying_string, operator(//), var_str
     use quaff, only: power_t
     use strff, only: to_string
-    use vegetables, only: &
+    use veggies, only: &
             result_t, &
             fail, &
             make_equals_failure_message, &

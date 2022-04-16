@@ -22,7 +22,7 @@ module temperature_test
     use temperature_utilities_m, only: &
             units_input_t, units_pair_input_t, make_units_examples
     use units_examples_m, only: units_examples_t
-    use vegetables, only: &
+    use veggies, only: &
             double_precision_input_t, &
             example_t, &
             input_t, &

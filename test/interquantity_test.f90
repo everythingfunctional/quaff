@@ -25,7 +25,7 @@ module interquantity_test
             WATT_SECONDS_PER_KILOGRAM, &
             WATTS
     use quaff_asserts_m, only: assert_equals
-    use vegetables, only: result_t, test_item_t, describe, it
+    use veggies, only: result_t, test_item_t, describe, it
 
     implicit none
     private

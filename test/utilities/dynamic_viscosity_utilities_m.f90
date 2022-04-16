@@ -2,7 +2,7 @@ module dynamic_viscosity_utilities_m
     use quaff, only: dynamic_viscosity_unit_t
     use test_utilities_m, only: combinations
     use units_examples_m, only: units_examples_t
-    use vegetables, only: example_t, input_t
+    use veggies, only: example_t, input_t
 
     implicit none
     private

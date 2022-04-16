@@ -1,7 +1,7 @@
 module double_precision_pair_generator_m
     use double_precision_pair_input_m, only: double_precision_pair_input_t
     use quaff_utilities_m, only: effectively_zero
-    use vegetables, only: &
+    use veggies, only: &
             generated_t, &
             generator_t, &
             input_t, &

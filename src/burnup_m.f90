@@ -622,17 +622,17 @@ contains
         type(parse_result_t) :: parse_result
 
         parse_result = parse_with(the_parser, string)
-        if (parse_result%ok()) then
-            select type (the_number => parse_result%parsed())
+        if (parse_result%ok) then
+            select type (the_number => parse_result%parsed)
             type is (parsed_rational_t)
-                fallible_burnup = fallible_burnup_t(the_number%value_().unit.self)
+                fallible_burnup = fallible_burnup_t(the_number%value_.unit.self)
             end select
         else
             fallible_burnup = fallible_burnup_t(error_list_t(fatal_t( &
                     PARSE_ERROR, &
                     module_t(MODULE_NAME), &
                     procedure_t("simple_parse_as"), &
-                    parse_result%message())))
+                    parse_result%message)))
         end if
     contains
         function the_parser(state_) result(result_)

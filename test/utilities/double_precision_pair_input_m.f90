@@ -1,5 +1,5 @@
 module double_precision_pair_input_m
-    use vegetables, only: input_t
+    use veggies, only: input_t
 
     implicit none
     private

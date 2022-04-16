@@ -1,6 +1,6 @@
 module double_precision_generator_m
     use quaff_utilities_m, only: effectively_zero
-    use vegetables, only: &
+    use veggies, only: &
             double_precision_input_t, &
             generated_t, &
             generator_t, &

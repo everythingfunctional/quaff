@@ -1,6 +1,6 @@
 module non_zero_double_precision_pair_generator_m
     use double_precision_pair_input_m, only: double_precision_pair_input_t
-    use vegetables, only: &
+    use veggies, only: &
             double_precision_input_t, &
             generated_t, &
             generator_t, &
