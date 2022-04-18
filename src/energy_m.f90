@@ -5,8 +5,6 @@ module energy_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -109,7 +107,7 @@ module energy_m
 
     type :: fallible_energy_t
         private
-        type(energy_t) :: energy_
+        type(energy_t) :: energy_ = energy_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

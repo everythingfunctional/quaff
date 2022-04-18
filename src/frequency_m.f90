@@ -5,8 +5,6 @@ module frequency_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -102,7 +100,7 @@ module frequency_m
 
     type :: fallible_frequency_t
         private
-        type(frequency_t) :: frequency_
+        type(frequency_t) :: frequency_ = frequency_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

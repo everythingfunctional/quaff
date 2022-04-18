@@ -5,8 +5,6 @@ module convective_heat_transfer_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -100,7 +98,7 @@ module convective_heat_transfer_m
 
     type :: fallible_convective_heat_transfer_t
         private
-        type(convective_heat_transfer_t) :: convective_heat_transfer_
+        type(convective_heat_transfer_t) :: convective_heat_transfer_ = convective_heat_transfer_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

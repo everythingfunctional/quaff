@@ -24,7 +24,6 @@ module quantity_test
     use units_examples_m, only: units_examples_t
     use veggies, only: &
             double_precision_input_t, &
-            example_t, &
             input_t, &
             result_t, &
             test_item_t, &

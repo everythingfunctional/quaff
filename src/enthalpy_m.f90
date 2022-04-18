@@ -5,8 +5,6 @@ module enthalpy_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -99,7 +97,7 @@ module enthalpy_m
 
     type :: fallible_enthalpy_t
         private
-        type(enthalpy_t) :: enthalpy_
+        type(enthalpy_t) :: enthalpy_ = enthalpy_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

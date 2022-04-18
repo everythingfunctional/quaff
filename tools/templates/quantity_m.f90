@@ -5,8 +5,6 @@ module quantity_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -97,7 +95,7 @@ module quantity_m
 
     type :: fallible_quantity_t
         private
-        type(quantity_t) :: quantity_
+        type(quantity_t) :: quantity_ = quantity_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

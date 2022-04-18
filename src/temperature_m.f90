@@ -5,8 +5,6 @@ module temperature_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -103,7 +101,7 @@ module temperature_m
 
     type :: fallible_temperature_t
         private
-        type(temperature_t) :: temperature_
+        type(temperature_t) :: temperature_ = temperature_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

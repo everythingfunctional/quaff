@@ -5,8 +5,6 @@ module force_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -105,7 +103,7 @@ module force_m
 
     type :: fallible_force_t
         private
-        type(force_t) :: force_
+        type(force_t) :: force_ = force_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

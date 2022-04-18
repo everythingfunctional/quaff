@@ -5,8 +5,6 @@ module fluence_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -99,7 +97,7 @@ module fluence_m
 
     type :: fallible_fluence_t
         private
-        type(fluence_t) :: fluence_
+        type(fluence_t) :: fluence_ = fluence_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

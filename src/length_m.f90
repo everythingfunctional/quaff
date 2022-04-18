@@ -5,8 +5,6 @@ module length_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -107,7 +105,7 @@ module length_m
 
     type :: fallible_length_t
         private
-        type(length_t) :: length_
+        type(length_t) :: length_ = length_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

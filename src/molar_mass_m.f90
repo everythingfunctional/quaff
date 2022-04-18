@@ -5,8 +5,6 @@ module molar_mass_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -98,7 +96,7 @@ module molar_mass_m
 
     type :: fallible_molar_mass_t
         private
-        type(molar_mass_t) :: molar_mass_
+        type(molar_mass_t) :: molar_mass_ = molar_mass_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

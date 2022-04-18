@@ -5,8 +5,6 @@ module speed_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -101,7 +99,7 @@ module speed_m
 
     type :: fallible_speed_t
         private
-        type(speed_t) :: speed_
+        type(speed_t) :: speed_ = speed_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

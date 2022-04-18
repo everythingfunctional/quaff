@@ -5,8 +5,6 @@ module fracture_toughness_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -101,7 +99,7 @@ module fracture_toughness_m
 
     type :: fallible_fracture_toughness_t
         private
-        type(fracture_toughness_t) :: fracture_toughness_
+        type(fracture_toughness_t) :: fracture_toughness_ = fracture_toughness_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

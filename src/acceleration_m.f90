@@ -5,8 +5,6 @@ module acceleration_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -101,7 +99,7 @@ module acceleration_m
 
     type :: fallible_acceleration_t
         private
-        type(acceleration_t) :: acceleration_
+        type(acceleration_t) :: acceleration_ = acceleration_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

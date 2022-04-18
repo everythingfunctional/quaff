@@ -5,8 +5,6 @@ module thermal_conductivity_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -104,7 +102,7 @@ module thermal_conductivity_m
 
     type :: fallible_thermal_conductivity_t
         private
-        type(thermal_conductivity_t) :: thermal_conductivity_
+        type(thermal_conductivity_t) :: thermal_conductivity_ = thermal_conductivity_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

@@ -5,8 +5,6 @@ module pressure_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -113,7 +111,7 @@ module pressure_m
 
     type :: fallible_pressure_t
         private
-        type(pressure_t) :: pressure_
+        type(pressure_t) :: pressure_ = pressure_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

@@ -5,8 +5,6 @@ module area_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -103,7 +101,7 @@ module area_m
 
     type :: fallible_area_t
         private
-        type(area_t) :: area_
+        type(area_t) :: area_ = area_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

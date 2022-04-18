@@ -5,8 +5,6 @@ module dynamic_viscosity_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -98,7 +96,7 @@ module dynamic_viscosity_m
 
     type :: fallible_dynamic_viscosity_t
         private
-        type(dynamic_viscosity_t) :: dynamic_viscosity_
+        type(dynamic_viscosity_t) :: dynamic_viscosity_ = dynamic_viscosity_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

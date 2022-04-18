@@ -5,8 +5,6 @@ module amount_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -98,7 +96,7 @@ module amount_m
 
     type :: fallible_amount_t
         private
-        type(amount_t) :: amount_
+        type(amount_t) :: amount_ = amount_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

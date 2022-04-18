@@ -5,8 +5,6 @@ module specific_heat_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -100,7 +98,7 @@ module specific_heat_m
 
     type :: fallible_specific_heat_t
         private
-        type(specific_heat_t) :: specific_heat_
+        type(specific_heat_t) :: specific_heat_ = specific_heat_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

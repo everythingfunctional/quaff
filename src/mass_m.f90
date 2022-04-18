@@ -5,8 +5,6 @@ module mass_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -103,7 +101,7 @@ module mass_m
 
     type :: fallible_mass_t
         private
-        type(mass_t) :: mass_
+        type(mass_t) :: mass_ = mass_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private

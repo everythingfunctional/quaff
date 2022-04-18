@@ -5,8 +5,6 @@ module thermal_expansion_coeffecient_m
             assignment(=), &
             operator(==), &
             operator(//), &
-            len, &
-            split, &
             var_str
     use parff, only: &
             parse_result_t, &
@@ -100,7 +98,7 @@ module thermal_expansion_coeffecient_m
 
     type :: fallible_thermal_expansion_coeffecient_t
         private
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient_
+        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient_ = thermal_expansion_coeffecient_t(0.0d0)
         type(error_list_t) :: errors_
     contains
         private
