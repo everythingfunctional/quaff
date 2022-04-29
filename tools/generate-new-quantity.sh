@@ -12,7 +12,7 @@ if [[ $# -ne 5 ]]; then
     exit
 fi
 
-new_module_name="src/quaff/quaff_${quantity_lower}_m.f90"
+new_module_name="src/quaff/${quantity_lower}_m.f90"
 new_test_name="test/${quantity_lower}_test.f90"
 new_utilities_name="test/utilities/${quantity_lower}_utilities_m.f90"
 new_asserts_name="quaff_asserts/src/${quantity_lower}_asserts_m.f90"
