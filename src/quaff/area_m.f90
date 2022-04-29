@@ -71,8 +71,8 @@ module quaff_area_m
                 area_divided_by_area
         procedure :: area_plus_area
         generic, public :: operator(+) => area_plus_area
-        procedure :: quaff_area_minus_area
-        generic, public :: operator(-) => quaff_area_minus_area
+        procedure :: area_minus_area
+        generic, public :: operator(-) => area_minus_area
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
