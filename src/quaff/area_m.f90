@@ -379,7 +379,7 @@ contains
         sum_%square_meters = lhs%square_meters + rhs%square_meters
     end function
 
-    elemental function quaff_area_minus_area( &
+    elemental function area_minus_area( &
             lhs, rhs) result(difference)
         class(area_t), intent(in) :: lhs
         type(area_t), intent(in) :: rhs
