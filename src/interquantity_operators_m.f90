@@ -1,4 +1,4 @@
-module interquantity_operators_m
+module quaff_interquantity_operators_m
     use quaff_acceleration_m, only: acceleration_t
     use quaff_amount_m, only: amount_t
     use quaff_area_m, only: area_t
