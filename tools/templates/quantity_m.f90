@@ -1,4 +1,4 @@
-module quantity_m
+module quaff_quantity_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -211,7 +211,7 @@ module quantity_m
     type(quantity_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [METERS, METERS2]
 
-    character(len=*), parameter :: MODULE_NAME = "quantity_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_quantity_m"
 contains
     function parse_quantity_c(string) result(fallible_quantity)
         character(len=*), intent(in) :: string
