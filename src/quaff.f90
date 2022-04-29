@@ -426,5 +426,5 @@ module quaff
             PER_SECOND, &
             PER_MINUTE
     use quaff_physical_constants
-    use interquantity_operators_m, only: operator(*), operator(/), as_burnup
+    use quaff_interquantity_operators_m, only: operator(*), operator(/), as_burnup
 end module
