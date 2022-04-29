@@ -1,4 +1,4 @@
-module energy_m
+module quaff_energy_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -243,7 +243,7 @@ module energy_m
     type(energy_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [BTU, CALORIES, JOULES, KILOJOULES, MEGABTU, MEGAWATT_DAYS, POUNDS_FORCE_FEET]
 
-    character(len=*), parameter :: MODULE_NAME = "energy_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_energy_m"
 contains
     function parse_energy_c(string) result(fallible_energy)
         character(len=*), intent(in) :: string

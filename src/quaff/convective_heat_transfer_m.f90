@@ -1,4 +1,4 @@
-module convective_heat_transfer_m
+module quaff_convective_heat_transfer_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -221,7 +221,7 @@ module convective_heat_transfer_m
             , BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "convective_heat_transfer_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_convective_heat_transfer_m"
 contains
     function parse_convective_heat_transfer_c(string) result(fallible_convective_heat_transfer)
         character(len=*), intent(in) :: string

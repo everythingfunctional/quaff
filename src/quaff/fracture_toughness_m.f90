@@ -1,4 +1,4 @@
-module fracture_toughness_m
+module quaff_fracture_toughness_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -219,7 +219,7 @@ module fracture_toughness_m
     type(fracture_toughness_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [KSI_ROOT_INCH, MEGAPASCAL_ROOT_METER, PASCAL_ROOT_METER]
 
-    character(len=*), parameter :: MODULE_NAME = "fracture_toughness_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_fracture_toughness_m"
 contains
     function parse_fracture_toughness_c(string) result(fallible_fracture_toughness)
         character(len=*), intent(in) :: string

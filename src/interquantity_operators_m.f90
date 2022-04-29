@@ -1,24 +1,24 @@
-module quaff_interquantity_operators_m
-    use acceleration_m, only: acceleration_t
-    use amount_m, only: amount_t
-    use area_m, only: area_t
-    use burnup_m, only: burnup_t
-    use density_m, only: density_t
-    use dynamic_viscosity_m, only: dynamic_viscosity_t
-    use energy_m, only: energy_t
-    use energy_per_amount_m, only: energy_per_amount_t
-    use energy_per_temperature_amount_m, only: energy_per_temperature_amount_t
-    use enthalpy_m, only: enthalpy_t
-    use force_m, only: force_t
-    use length_m, only: length_t
-    use mass_m, only: mass_t
-    use molar_mass_m, only: molar_mass_t
-    use power_m, only: power_t
-    use pressure_m, only: pressure_t
-    use speed_m, only: speed_t
-    use temperature_m, only: temperature_t
-    use time_m, only: time_t
-    use volume_m, only: volume_t
+module interquantity_operators_m
+    use quaff_acceleration_m, only: acceleration_t
+    use quaff_amount_m, only: amount_t
+    use quaff_area_m, only: area_t
+    use quaff_burnup_m, only: burnup_t
+    use quaff_density_m, only: density_t
+    use quaff_dynamic_viscosity_m, only: dynamic_viscosity_t
+    use quaff_energy_m, only: energy_t
+    use quaff_energy_per_amount_m, only: energy_per_amount_t
+    use quaff_energy_per_temperature_amount_m, only: energy_per_temperature_amount_t
+    use quaff_enthalpy_m, only: enthalpy_t
+    use quaff_force_m, only: force_t
+    use quaff_length_m, only: length_t
+    use quaff_mass_m, only: mass_t
+    use quaff_molar_mass_m, only: molar_mass_t
+    use quaff_power_m, only: power_t
+    use quaff_pressure_m, only: pressure_t
+    use quaff_speed_m, only: speed_t
+    use quaff_temperature_m, only: temperature_t
+    use quaff_time_m, only: time_t
+    use quaff_volume_m, only: volume_t
 
     implicit none
     private

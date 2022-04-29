@@ -1,4 +1,4 @@
-module enthalpy_m
+module quaff_enthalpy_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -213,7 +213,7 @@ module enthalpy_m
     type(enthalpy_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [JOULES_PER_KILOGRAM, KILOJOULES_PER_KILOGRAM]
 
-    character(len=*), parameter :: MODULE_NAME = "enthalpy_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_enthalpy_m"
 contains
     function parse_enthalpy_c(string) result(fallible_enthalpy)
         character(len=*), intent(in) :: string

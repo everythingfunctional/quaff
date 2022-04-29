@@ -1,4 +1,4 @@
-module density_m
+module quaff_density_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -222,7 +222,7 @@ module density_m
             , POUNDS_PER_CUBIC_FOOT &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "density_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_density_m"
 contains
     function parse_density_c(string) result(fallible_density)
         character(len=*), intent(in) :: string

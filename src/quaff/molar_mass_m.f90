@@ -1,4 +1,4 @@
-module molar_mass_m
+module quaff_molar_mass_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -212,7 +212,7 @@ module molar_mass_m
     type(molar_mass_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [GRAMS_PER_MOL, KILOGRAMS_PER_MOL]
 
-    character(len=*), parameter :: MODULE_NAME = "molar_mass_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_molar_mass_m"
 contains
     function parse_molar_mass_c(string) result(fallible_molar_mass)
         character(len=*), intent(in) :: string

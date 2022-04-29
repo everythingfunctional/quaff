@@ -1,4 +1,4 @@
-module length_m
+module quaff_length_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -237,7 +237,7 @@ module length_m
     type(length_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
 
-    character(len=*), parameter :: MODULE_NAME = "length_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_length_m"
 contains
     function parse_length_c(string) result(fallible_length)
         character(len=*), intent(in) :: string

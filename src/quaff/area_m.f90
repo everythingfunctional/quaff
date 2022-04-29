@@ -1,4 +1,4 @@
-module area_m
+module quaff_area_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -71,8 +71,8 @@ module area_m
                 area_divided_by_area
         procedure :: area_plus_area
         generic, public :: operator(+) => area_plus_area
-        procedure :: area_minus_area
-        generic, public :: operator(-) => area_minus_area
+        procedure :: quaff_area_minus_area
+        generic, public :: operator(-) => quaff_area_minus_area
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -229,7 +229,7 @@ module area_m
             , SQUARE_METERS &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "area_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_area_m"
 contains
     function parse_area_c(string) result(fallible_area)
         character(len=*), intent(in) :: string
@@ -379,7 +379,7 @@ contains
         sum_%square_meters = lhs%square_meters + rhs%square_meters
     end function
 
-    elemental function area_minus_area( &
+    elemental function quaff_area_minus_area( &
             lhs, rhs) result(difference)
         class(area_t), intent(in) :: lhs
         type(area_t), intent(in) :: rhs

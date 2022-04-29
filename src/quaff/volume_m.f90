@@ -1,4 +1,4 @@
-module volume_m
+module quaff_volume_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -212,7 +212,7 @@ module volume_m
     type(volume_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [CUBIC_CENTIMETERS, CUBIC_METERS]
 
-    character(len=*), parameter :: MODULE_NAME = "volume_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_volume_m"
 contains
     function parse_volume_c(string) result(fallible_volume)
         character(len=*), intent(in) :: string

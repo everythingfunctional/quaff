@@ -1,4 +1,4 @@
-module pressure_m
+module quaff_pressure_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -264,7 +264,7 @@ module pressure_m
             , KILOPOUNDS_PER_SQUARE_INCH &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "pressure_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_pressure_m"
 contains
     function parse_pressure_c(string) result(fallible_pressure)
         character(len=*), intent(in) :: string

@@ -1,7 +1,7 @@
 module quaff_physical_constants
-    use acceleration_m, only: acceleration_t
-    use energy_per_temperature_amount_m, only: energy_per_temperature_amount_t
-    use pressure_m, only: pressure_t
+    use quaff_acceleration_m, only: acceleration_t
+    use quaff_energy_per_temperature_amount_m, only: energy_per_temperature_amount_t
+    use quaff_pressure_m, only: pressure_t
     use quaff_conversion_factors_m, only: &
             GRAVITY_ => GRAVITY, &
             PASCALS_PER_ATMOSPHERE

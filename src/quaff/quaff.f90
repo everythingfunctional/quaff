@@ -1,5 +1,5 @@
 module quaff
-    use acceleration_m, only: &
+    use quaff_acceleration_m, only: &
             acceleration_t, &
             fallible_acceleration_t, &
             acceleration_unit_t, &
@@ -13,7 +13,7 @@ module quaff
             CENTIMETERS_PER_SQUARE_SECOND, &
             FEET_PER_SQUARE_SECOND, &
             METERS_PER_SQUARE_SECOND
-    use amount_m, only: &
+    use quaff_amount_m, only: &
             amount_t, &
             fallible_amount_t, &
             amount_unit_t, &
@@ -26,7 +26,7 @@ module quaff
             PROVIDED_AMOUNT_UNITS => PROVIDED_UNITS, &
             MOLS, &
             PARTICLES
-    use angle_m, only: &
+    use quaff_angle_m, only: &
             angle_t, &
             fallible_angle_t, &
             angle_unit_t, &
@@ -46,7 +46,7 @@ module quaff
             PROVIDED_ANGLE_UNITS => PROVIDED_UNITS, &
             DEGREES, &
             RADIANS
-    use area_m, only: &
+    use quaff_area_m, only: &
             area_t, &
             fallible_area_t, &
             area_unit_t, &
@@ -61,7 +61,7 @@ module quaff
             SQUARE_FEET, &
             SQUARE_INCHES, &
             SQUARE_METERS
-    use burnup_m, only: &
+    use quaff_burnup_m, only: &
             burnup_t, &
             fallible_burnup_t, &
             burnup_unit_t, &
@@ -74,7 +74,7 @@ module quaff
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
             WATT_SECONDS_PER_KILOGRAM
-    use convective_heat_transfer_m, only: &
+    use quaff_convective_heat_transfer_m, only: &
             convective_heat_transfer_t, &
             fallible_convective_heat_transfer_t, &
             convective_heat_transfer_unit_t, &
@@ -88,7 +88,7 @@ module quaff
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
             BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT, &
             WATTS_PER_SQUARE_METER_KELVIN
-    use density_m, only: &
+    use quaff_density_m, only: &
             density_t, &
             fallible_density_t, &
             density_unit_t, &
@@ -102,7 +102,7 @@ module quaff
             GRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_CUBIC_METER, &
             POUNDS_PER_CUBIC_FOOT
-    use dynamic_viscosity_m, only: &
+    use quaff_dynamic_viscosity_m, only: &
             dynamic_viscosity_t, &
             fallible_dynamic_viscosity_t, &
             dynamic_viscosity_unit_t, &
@@ -115,7 +115,7 @@ module quaff
             PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
             PASCAL_SECONDS
-    use energy_m, only: &
+    use quaff_energy_m, only: &
             energy_t, &
             fallible_energy_t, &
             energy_unit_t, &
@@ -133,7 +133,7 @@ module quaff
             MEGABTU, &
             MEGAWATT_DAYS, &
             POUNDS_FORCE_FEET
-    use energy_per_amount_m, only: &
+    use quaff_energy_per_amount_m, only: &
             energy_per_amount_t, &
             fallible_energy_per_amount_t, &
             energy_per_amount_unit_t, &
@@ -146,7 +146,7 @@ module quaff
             PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_MOL, &
             KILOJOULES_PER_MOL
-    use energy_per_temperature_amount_m, only: &
+    use quaff_energy_per_temperature_amount_m, only: &
             energy_per_temperature_amount_t, &
             fallible_energy_per_temperature_amount_t, &
             energy_per_temperature_amount_unit_t, &
@@ -159,7 +159,7 @@ module quaff
             PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KELVIN_MOL, &
             KILOJOULES_PER_KELVIN_MOL
-    use enthalpy_m, only: &
+    use quaff_enthalpy_m, only: &
             enthalpy_t, &
             fallible_enthalpy_t, &
             enthalpy_unit_t, &
@@ -172,7 +172,7 @@ module quaff
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM, &
             KILOJOULES_PER_KILOGRAM
-    use fluence_m, only: &
+    use quaff_fluence_m, only: &
             fluence_t, &
             fallible_fluence_t, &
             fluence_unit_t, &
@@ -185,7 +185,7 @@ module quaff
             PROVIDED_FLUENCE_UNITS => PROVIDED_UNITS, &
             PARTICLES_PER_SQUARE_METER, &
             PARTICLES_PER_SQUARE_CENTIMETER
-    use force_m, only: &
+    use quaff_force_m, only: &
             force_t, &
             fallible_force_t, &
             force_unit_t, &
@@ -201,7 +201,7 @@ module quaff
             MILLINEWTONS, &
             NEWTONS, &
             POUNDS_FORCE
-    use fracture_toughness_m, only: &
+    use quaff_fracture_toughness_m, only: &
             fracture_toughness_t, &
             fallible_fracture_toughness_t, &
             fracture_toughness_unit_t, &
@@ -215,7 +215,7 @@ module quaff
             PASCAL_ROOT_METER, &
             MEGAPASCAL_ROOT_METER, &
             KSI_ROOT_INCH
-    use length_m, only: &
+    use quaff_length_m, only: &
             length_t, &
             fallible_length_t, &
             length_unit_t, &
@@ -232,7 +232,7 @@ module quaff
             METERS, &
             MICROINCHES, &
             MICROMETERS
-    use mass_m, only: &
+    use quaff_mass_m, only: &
             mass_t, &
             fallible_mass_t, &
             mass_unit_t, &
@@ -247,7 +247,7 @@ module quaff
             KILOGRAMS, &
             POUNDS_MASS, &
             TONS
-    use molar_mass_m, only: &
+    use quaff_molar_mass_m, only: &
             molar_mass_t, &
             fallible_molar_mass_t, &
             molar_mass_unit_t, &
@@ -260,7 +260,7 @@ module quaff
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
             KILOGRAMS_PER_MOL
-    use power_m, only: &
+    use quaff_power_m, only: &
             power_t, &
             fallible_power_t, &
             power_unit_t, &
@@ -276,7 +276,7 @@ module quaff
             MEGABTU_PER_HOUR, &
             MEGAWATTS, &
             WATTS
-    use pressure_m, only: &
+    use quaff_pressure_m, only: &
             pressure_t, &
             fallible_pressure_t, &
             pressure_unit_t, &
@@ -296,7 +296,7 @@ module quaff
             PASCALS, &
             POUNDS_PER_SQUARE_INCH, &
             KILOPOUNDS_PER_SQUARE_INCH
-    use specific_heat_m, only: &
+    use quaff_specific_heat_m, only: &
             specific_heat_t, &
             fallible_specific_heat_t, &
             specific_heat_unit_t, &
@@ -310,7 +310,7 @@ module quaff
             JOULES_PER_KILOGRAM_KELVIN, &
             BTU_PER_POUNDS_RANKINE, &
             BTU_PER_POUNDS_FAHRENHEIT
-    use speed_m, only: &
+    use quaff_speed_m, only: &
             speed_t, &
             fallible_speed_t, &
             speed_unit_t, &
@@ -324,7 +324,7 @@ module quaff
             CENTIMETERS_PER_SECOND, &
             FEET_PER_SECOND, &
             METERS_PER_SECOND
-    use stress_intensity_factor_m, only: &
+    use quaff_stress_intensity_factor_m, only: &
             stress_intensity_factor_t, &
             fallible_stress_intensity_factor_t, &
             stress_intensity_factor_unit_t, &
@@ -338,7 +338,7 @@ module quaff
             STRESS_INTENSITY_FACTOR_PASCAL_ROOT_METER => PASCAL_ROOT_METER, &
             STRESS_INTENSITY_FACTOR_MEGAPASCAL_ROOT_METER => MEGAPASCAL_ROOT_METER, &
             STRESS_INTENSITY_FACTOR_KSI_ROOT_INCH => KSI_ROOT_INCH
-    use temperature_m, only: &
+    use quaff_temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
             temperature_unit_t, &
@@ -353,7 +353,7 @@ module quaff
             FAHRENHEIT, &
             KELVIN, &
             RANKINE
-    use thermal_conductivity_m, only: &
+    use quaff_thermal_conductivity_m, only: &
             thermal_conductivity_t, &
             fallible_thermal_conductivity_t, &
             thermal_conductivity_unit_t, &
@@ -369,7 +369,7 @@ module quaff
             WATTS_PER_METER_KELVIN, &
             BTU_PER_HOUR_FEET_FAHRENHEIT, &
             BTU_PER_HOUR_FEET_RANKINE
-    use thermal_expansion_coeffecient_m, only: &
+    use quaff_thermal_expansion_coeffecient_m, only: &
             thermal_expansion_coeffecient_t, &
             fallible_thermal_expansion_coeffecient_t, &
             thermal_expansion_coeffecient_unit_t, &
@@ -383,7 +383,7 @@ module quaff
             PER_KELVIN, &
             PER_RANKINE, &
             PER_FAHRENHEIT
-    use time_m, only: &
+    use quaff_time_m, only: &
             time_t, &
             fallible_time_t, &
             time_unit_t, &
@@ -398,7 +398,7 @@ module quaff
             HOURS, &
             MINUTES, &
             SECONDS
-    use volume_m, only: &
+    use quaff_volume_m, only: &
             volume_t, &
             fallible_volume_t, &
             volume_unit_t, &
@@ -411,7 +411,7 @@ module quaff
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
             CUBIC_METERS
-    use frequency_m, only: &
+    use quaff_frequency_m, only: &
             frequency_t, &
             fallible_frequency_t, &
             frequency_unit_t, &
@@ -426,5 +426,5 @@ module quaff
             PER_SECOND, &
             PER_MINUTE
     use quaff_physical_constants
-    use quaff_interquantity_operators_m, only: operator(*), operator(/), as_burnup
+    use interquantity_operators_m, only: operator(*), operator(/), as_burnup
 end module

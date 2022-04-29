@@ -1,4 +1,4 @@
-module force_m
+module quaff_force_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -231,7 +231,7 @@ module force_m
     type(force_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [DYNES, KILOPONDS, MILLINEWTONS, NEWTONS, POUNDS_FORCE]
 
-    character(len=*), parameter :: MODULE_NAME = "force_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_force_m"
 contains
     function parse_force_c(string) result(fallible_force)
         character(len=*), intent(in) :: string
