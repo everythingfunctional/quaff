@@ -1,4 +1,4 @@
-module frequency_m
+module quaff_frequency_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -224,7 +224,7 @@ module frequency_m
     type(frequency_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [HERTZ, PER_SECOND, PER_MINUTE, PER_YEAR]
 
-    character(len=*), parameter :: MODULE_NAME = "frequency_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_frequency_m"
 contains
     function parse_frequency_c(string) result(fallible_frequency)
         character(len=*), intent(in) :: string

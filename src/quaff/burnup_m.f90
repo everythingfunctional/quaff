@@ -1,4 +1,4 @@
-module burnup_m
+module quaff_burnup_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -213,7 +213,7 @@ module burnup_m
     type(burnup_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [MEGAWATT_DAYS_PER_TON, WATT_SECONDS_PER_KILOGRAM]
 
-    character(len=*), parameter :: MODULE_NAME = "burnup_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_burnup_m"
 contains
     function parse_burnup_c(string) result(fallible_burnup)
         character(len=*), intent(in) :: string

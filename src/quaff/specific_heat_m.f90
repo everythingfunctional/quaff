@@ -1,4 +1,4 @@
-module specific_heat_m
+module quaff_specific_heat_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -221,7 +221,7 @@ module specific_heat_m
             , BTU_PER_POUNDS_FAHRENHEIT &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "specific_heat_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_specific_heat_m"
 contains
     function parse_specific_heat_c(string) result(fallible_specific_heat)
         character(len=*), intent(in) :: string

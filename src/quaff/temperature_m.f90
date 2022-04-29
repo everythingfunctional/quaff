@@ -1,4 +1,4 @@
-module temperature_m
+module quaff_temperature_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -230,7 +230,7 @@ module temperature_m
     type(temperature_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [CELSIUS, FAHRENHEIT, KELVIN, RANKINE]
 
-    character(len=*), parameter :: MODULE_NAME = "temperature_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_temperature_m"
 contains
     function parse_temperature_c(string) result(fallible_temperature)
         character(len=*), intent(in) :: string

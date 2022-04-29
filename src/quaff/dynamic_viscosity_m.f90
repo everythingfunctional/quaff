@@ -1,4 +1,4 @@
-module dynamic_viscosity_m
+module quaff_dynamic_viscosity_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -212,7 +212,7 @@ module dynamic_viscosity_m
     type(dynamic_viscosity_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
     [MEGAPASCAL_SECONDS, PASCAL_SECONDS]
 
-    character(len=*), parameter :: MODULE_NAME = "dynamic_viscosity_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_dynamic_viscosity_m"
 contains
     function parse_dynamic_viscosity_c(string) result(fallible_dynamic_viscosity)
         character(len=*), intent(in) :: string

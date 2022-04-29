@@ -1,4 +1,4 @@
-module angle_m
+module quaff_angle_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -231,7 +231,7 @@ module angle_m
     type(angle_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [DEGREES, RADIANS]
 
-    character(len=*), parameter :: MODULE_NAME = "angle_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_angle_m"
 contains
     function parse_angle_c(string) result(fallible_angle)
         character(len=*), intent(in) :: string

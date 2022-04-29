@@ -1,4 +1,4 @@
-module mass_m
+module quaff_mass_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -225,7 +225,7 @@ module mass_m
     type(mass_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [GRAMS, KILOGRAMS, POUNDS_MASS, TONS]
 
-    character(len=*), parameter :: MODULE_NAME = "mass_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_mass_m"
 contains
     function parse_mass_c(string) result(fallible_mass)
         character(len=*), intent(in) :: string

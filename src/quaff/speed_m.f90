@@ -1,4 +1,4 @@
-module speed_m
+module quaff_speed_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -219,7 +219,7 @@ module speed_m
     type(speed_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND]
 
-    character(len=*), parameter :: MODULE_NAME = "speed_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_speed_m"
 contains
     function parse_speed_c(string) result(fallible_speed)
         character(len=*), intent(in) :: string

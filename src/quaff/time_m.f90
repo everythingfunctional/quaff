@@ -1,4 +1,4 @@
-module time_m
+module quaff_time_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -225,7 +225,7 @@ module time_m
     type(time_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [DAYS, HOURS, MINUTES, SECONDS]
 
-    character(len=*), parameter :: MODULE_NAME = "time_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_time_m"
 contains
     function parse_time_c(string) result(fallible_time)
         character(len=*), intent(in) :: string

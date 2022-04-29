@@ -1,4 +1,4 @@
-module area_m
+module quaff_area_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -229,7 +229,7 @@ module area_m
             , SQUARE_METERS &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "area_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_area_m"
 contains
     function parse_area_c(string) result(fallible_area)
         character(len=*), intent(in) :: string

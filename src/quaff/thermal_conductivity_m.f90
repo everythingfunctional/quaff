@@ -1,4 +1,4 @@
-module thermal_conductivity_m
+module quaff_thermal_conductivity_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -235,7 +235,7 @@ module thermal_conductivity_m
             , BTU_PER_HOUR_FEET_FAHRENHEIT &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "thermal_conductivity_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_thermal_conductivity_m"
 contains
     function parse_thermal_conductivity_c(string) result(fallible_thermal_conductivity)
         character(len=*), intent(in) :: string

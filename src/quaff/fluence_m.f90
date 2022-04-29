@@ -1,4 +1,4 @@
-module fluence_m
+module quaff_fluence_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -213,7 +213,7 @@ module fluence_m
     type(fluence_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [PARTICLES_PER_SQUARE_CENTIMETER, PARTICLES_PER_SQUARE_METER]
 
-    character(len=*), parameter :: MODULE_NAME = "fluence_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_fluence_m"
 contains
     function parse_fluence_c(string) result(fallible_fluence)
         character(len=*), intent(in) :: string

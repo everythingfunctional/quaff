@@ -1,4 +1,4 @@
-module energy_per_temperature_amount_m
+module quaff_energy_per_temperature_amount_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -213,7 +213,7 @@ module energy_per_temperature_amount_m
     type(energy_per_temperature_amount_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [JOULES_PER_KELVIN_MOL, KILOJOULES_PER_KELVIN_MOL]
 
-    character(len=*), parameter :: MODULE_NAME = "energy_per_temperature_amount_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_energy_per_temperature_amount_m"
 contains
     function parse_energy_per_temperature_amount_c(string) result(fallible_energy_per_temperature_amount)
         character(len=*), intent(in) :: string

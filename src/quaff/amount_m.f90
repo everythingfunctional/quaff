@@ -1,4 +1,4 @@
-module amount_m
+module quaff_amount_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -212,7 +212,7 @@ module amount_m
     type(amount_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [MOLS, PARTICLES]
 
-    character(len=*), parameter :: MODULE_NAME = "amount_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_amount_m"
 contains
     function parse_amount_c(string) result(fallible_amount)
         character(len=*), intent(in) :: string

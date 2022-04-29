@@ -1,4 +1,4 @@
-module power_m
+module quaff_power_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -236,7 +236,7 @@ module power_m
             , WATTS &
             ]
 
-    character(len=*), parameter :: MODULE_NAME = "power_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_power_m"
 contains
     function parse_power_c(string) result(fallible_power)
         character(len=*), intent(in) :: string

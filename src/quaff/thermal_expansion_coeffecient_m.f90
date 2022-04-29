@@ -1,4 +1,4 @@
-module thermal_expansion_coeffecient_m
+module quaff_thermal_expansion_coeffecient_m
     use erloff, only: error_list_t, fatal_t, module_t, procedure_t
     use iso_varying_string, only: &
             varying_string, &
@@ -218,7 +218,7 @@ module thermal_expansion_coeffecient_m
     type(thermal_expansion_coeffecient_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
             [PER_KELVIN, PER_RANKINE, PER_FAHRENHEIT]
 
-    character(len=*), parameter :: MODULE_NAME = "thermal_expansion_coeffecient_m"
+    character(len=*), parameter :: MODULE_NAME = "quaff_thermal_expansion_coeffecient_m"
 contains
     function parse_thermal_expansion_coeffecient_c(string) result(fallible_thermal_expansion_coeffecient)
         character(len=*), intent(in) :: string
