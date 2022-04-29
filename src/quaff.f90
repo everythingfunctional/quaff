@@ -324,6 +324,20 @@ module quaff
             CENTIMETERS_PER_SECOND, &
             FEET_PER_SECOND, &
             METERS_PER_SECOND
+    use stress_intensity_factor_m, only: &
+            stress_intensity_factor_t, &
+            fallible_stress_intensity_factor_t, &
+            stress_intensity_factor_unit_t, &
+            fallible_stress_intensity_factor_unit_t, &
+            operator(.unit.), &
+            parse_stress_intensity_factor, &
+            parse_stress_intensity_factor_unit, &
+            sum, &
+            DEFAULT_STRESS_INTENSITY_FACTOR_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_STRESS_INTENSITY_FACTOR_UNITS => PROVIDED_UNITS, &
+            STRESS_INTENSITY_FACTOR_PASCAL_ROOT_METER => PASCAL_ROOT_METER, &
+            STRESS_INTENSITY_FACTOR_MEGAPASCAL_ROOT_METER => MEGAPASCAL_ROOT_METER, &
+            STRESS_INTENSITY_FACTOR_KSI_ROOT_INCH => KSI_ROOT_INCH
     use temperature_m, only: &
             temperature_t, &
             fallible_temperature_t, &
