@@ -215,6 +215,20 @@ module quaff
             PASCAL_ROOT_METER, &
             MEGAPASCAL_ROOT_METER, &
             KSI_ROOT_INCH
+    use quaff_frequency_m, only: &
+            frequency_t, &
+            fallible_frequency_t, &
+            frequency_unit_t, &
+            fallible_frequency_unit_t, &
+            operator(.unit.), &
+            parse_frequency, &
+            parse_frequency_unit, &
+            sum, &
+            DEFAULT_FREQUENCY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_FREQUENCY_UNITS => PROVIDED_UNITS, &
+            HERTZ, &
+            PER_SECOND, &
+            PER_MINUTE
     use quaff_length_m, only: &
             length_t, &
             fallible_length_t, &
@@ -411,20 +425,9 @@ module quaff
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
             CUBIC_METERS
-    use quaff_frequency_m, only: &
-            frequency_t, &
-            fallible_frequency_t, &
-            frequency_unit_t, &
-            fallible_frequency_unit_t, &
-            operator(.unit.), &
-            parse_frequency, &
-            parse_frequency_unit, &
-            sum, &
-            DEFAULT_FREQUENCY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_FREQUENCY_UNITS => PROVIDED_UNITS, &
-            HERTZ, &
-            PER_SECOND, &
-            PER_MINUTE
-    use quaff_physical_constants
+    use quaff_physical_constants, only: &
+            ATMOSPHERIC_PRESSURE, &
+            GRAVITY, &
+            UNIVERSAL_GAS_CONSTANT
     use quaff_interquantity_operators_m, only: operator(*), operator(/), as_burnup
 end module

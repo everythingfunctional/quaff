@@ -46,9 +46,12 @@ contains
         double precision, intent(in) :: tolerance
         logical :: equal_within_relative
 
-        equal_within_relative = &
-                (effectively_zero(a) .and. effectively_zero(b)) &
-                .or. (abs(a - b) / max(abs(a), abs(b))) < tolerance
+        if (effectively_zero(a) .and. effectively_zero(b)) then
+            equal_within_relative = .true.
+        else
+            equal_within_relative = &
+                    (abs(a - b) / max(abs(a), abs(b))) < tolerance
+        end if
     end function
 
     function parse_space(state_) result(result_)
