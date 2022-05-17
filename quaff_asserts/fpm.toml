@@ -7,6 +7,6 @@ copyright = "2020 Brad Richardson"
 
 [dependencies]
 quaff = { git = "https://gitlab.com/everythingfunctional/quaff.git" }
-iso_varying_string = { git = "https://gitlab.com/everythingfunctional/iso_varying_string.git", tag = "v3.0.1" }
-strff = { git = "https://gitlab.com/everythingfunctional/strff.git", tag = "v3.0.3" }
-veggies = { git = "https://gitlab.com/everythingfunctional/veggies", tag = "v1.0.1" }
+iso_varying_string = { git = "https://gitlab.com/everythingfunctional/iso_varying_string.git", tag = "v3.0.2" }
+strff = { git = "https://gitlab.com/everythingfunctional/strff.git", tag = "v3.0.4" }
+veggies = { git = "https://gitlab.com/everythingfunctional/veggies", tag = "v1.0.2" }
