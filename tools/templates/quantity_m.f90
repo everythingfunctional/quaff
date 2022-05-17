@@ -11,8 +11,11 @@ module quaff_quantity_m
             parsed_rational_t, &
             parser_output_t, &
             state_t, &
+            either, &
+            parse_end_of_input, &
             parse_rational, &
             parse_string, &
+            parse_whitespace, &
             parse_with, &
             then_drop
     use quaff_utilities_m, only: &
@@ -644,7 +647,16 @@ contains
             type(state_t), intent(in) :: state_
             type(parser_output_t) :: result_
 
-            result_ = parse_string(trim(self%symbol), state_)
+            result_ = then_drop( &
+                    parse_string(trim(self%symbol), state_), &
+                    parse_end)
+        end function
+
+        function parse_end(state_) result(result_)
+            type(state_t), intent(in) :: state_
+            type(parser_output_t) :: result_
+
+            result_ = either(parse_end_of_input, parse_whitespace, state_)
         end function
     end function
 
