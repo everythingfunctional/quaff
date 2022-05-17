@@ -254,20 +254,18 @@ contains
         class(quantity_unit_t), intent(in) :: units(:)
         type(fallible_quantity_t) :: fallible_quantity
 
-        type(fallible_quantity_t) :: all_attempts(size(units))
         integer :: i
 
         do i = 1, size(units)
-            all_attempts(i) = units(i)%parse_as(string)
-            if (.not. all_attempts(i)%failed()) then
-                fallible_quantity = all_attempts(i)
-                return
-            end if
+            fallible_quantity = units(i)%parse_as(string)
+            if (.not. fallible_quantity%failed()) return
         end do
-        fallible_quantity = fallible_quantity_t(error_list_t( &
-                all_attempts%errors(), &
+        fallible_quantity = fallible_quantity_t(error_list_t(fatal_t( &
+                PARSE_ERROR, &
                 module_t(MODULE_NAME), &
-                procedure_t("parse_quantity_with_units_s")))
+                procedure_t("parse_quantity_with_units_s"), &
+                "Unable to parse '" // string // "' as a quantity_t. Tried with units: " &
+                // join(units%to_string(), ", "))))
     end function
 
     elemental function from_units(value_, units) result(quantity)
