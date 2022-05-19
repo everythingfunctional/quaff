@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_length_t) :: maybe_length
 
-        maybe_length = parse_length("1.0 bad", [METERS])
+        maybe_length = parse_length("1.0 mbad", [METERS])
         errors = maybe_length%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

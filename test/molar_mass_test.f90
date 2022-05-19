@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_molar_mass_t) :: maybe_molar_mass
 
-        maybe_molar_mass = parse_molar_mass("1.0 bad", [KILOGRAMS_PER_MOL])
+        maybe_molar_mass = parse_molar_mass("1.0 kg/molbad", [KILOGRAMS_PER_MOL])
         errors = maybe_molar_mass%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

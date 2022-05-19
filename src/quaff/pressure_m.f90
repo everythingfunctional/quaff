@@ -11,8 +11,11 @@ module quaff_pressure_m
             parsed_rational_t, &
             parser_output_t, &
             state_t, &
+            either, &
+            parse_end_of_input, &
             parse_rational, &
             parse_string, &
+            parse_whitespace, &
             parse_with, &
             then_drop
     use quaff_conversion_factors_m, only: &
@@ -304,20 +307,18 @@ contains
         class(pressure_unit_t), intent(in) :: units(:)
         type(fallible_pressure_t) :: fallible_pressure
 
-        type(fallible_pressure_t) :: all_attempts(size(units))
         integer :: i
 
         do i = 1, size(units)
-            all_attempts(i) = units(i)%parse_as(string)
-            if (.not. all_attempts(i)%failed()) then
-                fallible_pressure = all_attempts(i)
-                return
-            end if
+            fallible_pressure = units(i)%parse_as(string)
+            if (.not. fallible_pressure%failed()) return
         end do
-        fallible_pressure = fallible_pressure_t(error_list_t( &
-                all_attempts%errors(), &
+        fallible_pressure = fallible_pressure_t(error_list_t(fatal_t( &
+                PARSE_ERROR, &
                 module_t(MODULE_NAME), &
-                procedure_t("parse_pressure_with_units_s")))
+                procedure_t("parse_pressure_with_units_s"), &
+                "Unable to parse '" // string // "' as a pressure_t. Tried with units: " &
+                // join(units%to_string(), ", "))))
     end function
 
     elemental function from_units(value_, units) result(pressure)
@@ -697,7 +698,16 @@ contains
             type(state_t), intent(in) :: state_
             type(parser_output_t) :: result_
 
-            result_ = parse_string(trim(self%symbol), state_)
+            result_ = then_drop( &
+                    parse_string(trim(self%symbol), state_), &
+                    parse_end)
+        end function
+
+        function parse_end(state_) result(result_)
+            type(state_t), intent(in) :: state_
+            type(parser_output_t) :: result_
+
+            result_ = either(parse_end_of_input, parse_whitespace, state_)
         end function
     end function
 

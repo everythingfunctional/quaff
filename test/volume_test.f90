@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_volume_t) :: maybe_volume
 
-        maybe_volume = parse_volume("1.0 bad", [CUBIC_METERS])
+        maybe_volume = parse_volume("1.0 m^3bad", [CUBIC_METERS])
         errors = maybe_volume%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

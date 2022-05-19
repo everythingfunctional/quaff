@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_acceleration_t) :: maybe_acceleration
 
-        maybe_acceleration = parse_acceleration("1.0 bad", [METERS_PER_SQUARE_SECOND])
+        maybe_acceleration = parse_acceleration("1.0 m/s^2bad", [METERS_PER_SQUARE_SECOND])
         errors = maybe_acceleration%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

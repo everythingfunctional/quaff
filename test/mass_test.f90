@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_mass_t) :: maybe_mass
 
-        maybe_mass = parse_mass("1.0 bad", [KILOGRAMS])
+        maybe_mass = parse_mass("1.0 kgbad", [KILOGRAMS])
         errors = maybe_mass%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

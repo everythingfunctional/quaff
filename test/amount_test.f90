@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_amount_t) :: maybe_amount
 
-        maybe_amount = parse_amount("1.0 bad", [MOLS])
+        maybe_amount = parse_amount("1.0 molbad", [MOLS])
         errors = maybe_amount%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

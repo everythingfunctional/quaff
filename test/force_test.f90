@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_force_t) :: maybe_force
 
-        maybe_force = parse_force("1.0 bad", [NEWTONS])
+        maybe_force = parse_force("1.0 Nbad", [NEWTONS])
         errors = maybe_force%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

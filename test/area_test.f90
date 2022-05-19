@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_area_t) :: maybe_area
 
-        maybe_area = parse_area("1.0 bad", [SQUARE_METERS])
+        maybe_area = parse_area("1.0 m^2bad", [SQUARE_METERS])
         errors = maybe_area%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

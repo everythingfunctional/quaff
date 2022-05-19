@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_specific_heat_t) :: maybe_specific_heat
 
-        maybe_specific_heat = parse_specific_heat("1.0 bad", [JOULES_PER_KILOGRAM_KELVIN])
+        maybe_specific_heat = parse_specific_heat("1.0 J/(kg K)bad", [JOULES_PER_KILOGRAM_KELVIN])
         errors = maybe_specific_heat%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

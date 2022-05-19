@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_dynamic_viscosity_t) :: maybe_dynamic_viscosity
 
-        maybe_dynamic_viscosity = parse_dynamic_viscosity("1.0 bad", [PASCAL_SECONDS])
+        maybe_dynamic_viscosity = parse_dynamic_viscosity("1.0 Pa sbad", [PASCAL_SECONDS])
         errors = maybe_dynamic_viscosity%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

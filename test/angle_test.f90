@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_angle_t) :: maybe_angle
 
-        maybe_angle = parse_angle("1.0 bad", [RADIANS])
+        maybe_angle = parse_angle("1.0 radbad", [RADIANS])
         errors = maybe_angle%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

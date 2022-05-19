@@ -307,7 +307,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_temperature_t) :: maybe_temperature
 
-        maybe_temperature = parse_temperature("1.0 bad", [KELVIN])
+        maybe_temperature = parse_temperature("1.0 Kbad", [KELVIN])
         errors = maybe_temperature%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

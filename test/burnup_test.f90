@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_burnup_t) :: maybe_burnup
 
-        maybe_burnup = parse_burnup("1.0 bad", [WATT_SECONDS_PER_KILOGRAM])
+        maybe_burnup = parse_burnup("1.0 (W s)/kgbad", [WATT_SECONDS_PER_KILOGRAM])
         errors = maybe_burnup%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

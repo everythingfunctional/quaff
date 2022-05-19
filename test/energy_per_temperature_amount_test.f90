@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_energy_per_temperature_amount_t) :: maybe_energy_per_temperature_amount
 
-        maybe_energy_per_temperature_amount = parse_energy_per_temperature_amount("1.0 bad", [JOULES_PER_KELVIN_MOL])
+        maybe_energy_per_temperature_amount = parse_energy_per_temperature_amount("1.0 J/(K mol)bad", [JOULES_PER_KELVIN_MOL])
         errors = maybe_energy_per_temperature_amount%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
