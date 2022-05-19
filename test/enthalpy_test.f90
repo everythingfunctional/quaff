@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_enthalpy_t) :: maybe_enthalpy
 
-        maybe_enthalpy = parse_enthalpy("1.0 bad", [JOULES_PER_KILOGRAM])
+        maybe_enthalpy = parse_enthalpy("1.0 J/kgbad", [JOULES_PER_KILOGRAM])
         errors = maybe_enthalpy%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

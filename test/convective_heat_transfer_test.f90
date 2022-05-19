@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_convective_heat_transfer_t) :: maybe_convective_heat_transfer
 
-        maybe_convective_heat_transfer = parse_convective_heat_transfer("1.0 bad", [WATTS_PER_SQUARE_METER_KELVIN])
+        maybe_convective_heat_transfer = parse_convective_heat_transfer("1.0 W/(m^2 K)bad", [WATTS_PER_SQUARE_METER_KELVIN])
         errors = maybe_convective_heat_transfer%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

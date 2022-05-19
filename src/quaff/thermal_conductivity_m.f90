@@ -11,8 +11,11 @@ module quaff_thermal_conductivity_m
             parsed_rational_t, &
             parser_output_t, &
             state_t, &
+            either, &
+            parse_end_of_input, &
             parse_rational, &
             parse_string, &
+            parse_whitespace, &
             parse_with, &
             then_drop
     use quaff_conversion_factors_m, only: &
@@ -275,20 +278,18 @@ contains
         class(thermal_conductivity_unit_t), intent(in) :: units(:)
         type(fallible_thermal_conductivity_t) :: fallible_thermal_conductivity
 
-        type(fallible_thermal_conductivity_t) :: all_attempts(size(units))
         integer :: i
 
         do i = 1, size(units)
-            all_attempts(i) = units(i)%parse_as(string)
-            if (.not. all_attempts(i)%failed()) then
-                fallible_thermal_conductivity = all_attempts(i)
-                return
-            end if
+            fallible_thermal_conductivity = units(i)%parse_as(string)
+            if (.not. fallible_thermal_conductivity%failed()) return
         end do
-        fallible_thermal_conductivity = fallible_thermal_conductivity_t(error_list_t( &
-                all_attempts%errors(), &
+        fallible_thermal_conductivity = fallible_thermal_conductivity_t(error_list_t(fatal_t( &
+                PARSE_ERROR, &
                 module_t(MODULE_NAME), &
-                procedure_t("parse_thermal_conductivity_with_units_s")))
+                procedure_t("parse_thermal_conductivity_with_units_s"), &
+                "Unable to parse '" // string // "' as a thermal_conductivity_t. Tried with units: " &
+                // join(units%to_string(), ", "))))
     end function
 
     elemental function from_units(value_, units) result(thermal_conductivity)
@@ -668,7 +669,16 @@ contains
             type(state_t), intent(in) :: state_
             type(parser_output_t) :: result_
 
-            result_ = parse_string(trim(self%symbol), state_)
+            result_ = then_drop( &
+                    parse_string(trim(self%symbol), state_), &
+                    parse_end)
+        end function
+
+        function parse_end(state_) result(result_)
+            type(state_t), intent(in) :: state_
+            type(parser_output_t) :: result_
+
+            result_ = either(parse_end_of_input, parse_whitespace, state_)
         end function
     end function
 

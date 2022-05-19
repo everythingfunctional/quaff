@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_thermal_conductivity_t) :: maybe_thermal_conductivity
 
-        maybe_thermal_conductivity = parse_thermal_conductivity("1.0 bad", [WATTS_PER_METER_KELVIN])
+        maybe_thermal_conductivity = parse_thermal_conductivity("1.0 W/(m K)bad", [WATTS_PER_METER_KELVIN])
         errors = maybe_thermal_conductivity%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

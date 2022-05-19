@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_frequency_t) :: maybe_frequency
 
-        maybe_frequency = parse_frequency("1.0 bad", [HERTZ])
+        maybe_frequency = parse_frequency("1.0 Hzbad", [HERTZ])
         errors = maybe_frequency%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

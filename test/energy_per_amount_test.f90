@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_energy_per_amount_t) :: maybe_energy_per_amount
 
-        maybe_energy_per_amount = parse_energy_per_amount("1.0 bad", [JOULES_PER_MOL])
+        maybe_energy_per_amount = parse_energy_per_amount("1.0 J/molbad", [JOULES_PER_MOL])
         errors = maybe_energy_per_amount%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

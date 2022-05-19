@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_stress_intensity_factor_t) :: maybe_stress_intensity_factor
 
-        maybe_stress_intensity_factor = parse_stress_intensity_factor("1.0 bad", [MEGAPASCAL_ROOT_METER])
+        maybe_stress_intensity_factor = parse_stress_intensity_factor("1.0 MPa*sqrt(m)bad", [MEGAPASCAL_ROOT_METER])
         errors = maybe_stress_intensity_factor%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

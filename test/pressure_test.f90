@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_pressure_t) :: maybe_pressure
 
-        maybe_pressure = parse_pressure("1.0 bad", [PASCALS])
+        maybe_pressure = parse_pressure("1.0 Pabad", [PASCALS])
         errors = maybe_pressure%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

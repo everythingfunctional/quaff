@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_density_t) :: maybe_density
 
-        maybe_density = parse_density("1.0 bad", [KILOGRAMS_PER_CUBIC_METER])
+        maybe_density = parse_density("1.0 kg/m^3bad", [KILOGRAMS_PER_CUBIC_METER])
         errors = maybe_density%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

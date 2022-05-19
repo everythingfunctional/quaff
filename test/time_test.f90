@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_time_t) :: maybe_time
 
-        maybe_time = parse_time("1.0 bad", [SECONDS])
+        maybe_time = parse_time("1.0 sbad", [SECONDS])
         errors = maybe_time%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

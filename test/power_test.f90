@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_power_t) :: maybe_power
 
-        maybe_power = parse_power("1.0 bad", [WATTS])
+        maybe_power = parse_power("1.0 Wbad", [WATTS])
         errors = maybe_power%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

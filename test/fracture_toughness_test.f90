@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_fracture_toughness_t) :: maybe_fracture_toughness
 
-        maybe_fracture_toughness = parse_fracture_toughness("1.0 bad", [PASCAL_ROOT_METER])
+        maybe_fracture_toughness = parse_fracture_toughness("1.0 Pa m^0.5bad", [PASCAL_ROOT_METER])
         errors = maybe_fracture_toughness%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

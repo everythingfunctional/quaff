@@ -343,7 +343,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_thermal_expansion_coeffecient_t) :: maybe_thermal_expansion_coeffecient
 
-        maybe_thermal_expansion_coeffecient = parse_thermal_expansion_coeffecient("1.0 bad", [PER_KELVIN])
+        maybe_thermal_expansion_coeffecient = parse_thermal_expansion_coeffecient("1.0 1/Kbad", [PER_KELVIN])
         errors = maybe_thermal_expansion_coeffecient%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function

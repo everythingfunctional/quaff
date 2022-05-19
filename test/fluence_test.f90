@@ -341,7 +341,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_fluence_t) :: maybe_fluence
 
-        maybe_fluence = parse_fluence("1.0 bad", [PARTICLES_PER_SQUARE_METER])
+        maybe_fluence = parse_fluence("1.0 particles/m^2bad", [PARTICLES_PER_SQUARE_METER])
         errors = maybe_fluence%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
