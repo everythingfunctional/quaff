@@ -21,7 +21,8 @@ module quaff_time_m
     use quaff_conversion_factors_m, only: &
             DAYS_PER_SECOND, &
             HOURS_PER_SECOND, &
-            MINUTES_PER_SECOND
+            MINUTES_PER_SECOND, &
+            YEARS_PER_SECOND
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -48,7 +49,8 @@ module quaff_time_m
             DAYS, &
             HOURS, &
             MINUTES, &
-            SECONDS
+            SECONDS, &
+            YEARS
 
     type :: time_t
         double precision :: seconds
@@ -206,6 +208,10 @@ module quaff_time_m
         module procedure sum_time
     end interface
 
+    type(time_simple_unit_t), parameter :: YEARS = &
+            time_simple_unit_t( &
+                conversion_factor = YEARS_PER_SECOND, &
+                symbol = "yr")
     type(time_simple_unit_t), parameter :: DAYS = &
             time_simple_unit_t( &
                     conversion_factor = DAYS_PER_SECOND, &
@@ -226,7 +232,7 @@ module quaff_time_m
     type(time_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = SECONDS
 
     type(time_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [DAYS, HOURS, MINUTES, SECONDS]
+            [YEARS, DAYS, HOURS, MINUTES, SECONDS]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_time_m"
 contains
