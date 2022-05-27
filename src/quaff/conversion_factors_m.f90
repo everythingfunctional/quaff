@@ -54,7 +54,8 @@ module quaff_conversion_factors_m
     double precision, parameter :: DAYS_PER_SECOND = DAYS_PER_HOUR * HOURS_PER_SECOND
     double precision, parameter :: DAYS_PER_YEAR = 365.25
     double precision, parameter :: SECONDS_PER_YEAR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY * DAYS_PER_YEAR
-    
+    double precision, parameter :: YEARS_PER_SECOND = 1.0d0 / SECONDS_PER_YEAR
+
     ! Area
     double precision, parameter :: SQUARE_CENTIMETERS_PER_SQUARE_METER = CENTIMETERS_PER_METER**2
     double precision, parameter :: SQUARE_INCHES_PER_SQUARE_METER = INCHES_PER_METER**2

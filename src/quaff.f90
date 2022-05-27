@@ -411,7 +411,8 @@ module quaff
             DAYS, &
             HOURS, &
             MINUTES, &
-            SECONDS
+            SECONDS, &
+            YEARS
     use quaff_volume_m, only: &
             volume_t, &
             fallible_volume_t, &
