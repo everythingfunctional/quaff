@@ -8,6 +8,9 @@ contains
         use acceleration_test, only: &
                 acceleration_acceleration => &
                     test_acceleration
+        use amount_temperature_test, only: &
+                amount_temperature_amount_temperature => &
+                    test_amount_temperature
         use amount_test, only: &
                 amount_amount => &
                     test_amount
@@ -105,39 +108,40 @@ contains
         logical :: passed
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(31)
+        type(test_item_t) :: individual_tests(32)
 
         individual_tests(1) = acceleration_acceleration()
-        individual_tests(2) = amount_amount()
-        individual_tests(3) = angle_angle()
-        individual_tests(4) = area_area()
-        individual_tests(5) = burnup_burnup()
-        individual_tests(6) = convective_heat_transfer_convective_heat_transfer()
-        individual_tests(7) = density_density()
-        individual_tests(8) = dynamic_viscosity_dynamic_viscosity()
-        individual_tests(9) = energy_per_amount_energy_per_amount()
-        individual_tests(10) = energy_per_temperature_amount_energy_per_temperature_amount()
-        individual_tests(11) = energy_energy()
-        individual_tests(12) = enthalpy_enthalpy()
-        individual_tests(13) = fluence_fluence()
-        individual_tests(14) = force_force()
-        individual_tests(15) = fracture_toughness_fracture_toughness()
-        individual_tests(16) = frequency_frequency()
-        individual_tests(17) = interquantity_interquantity_operators()
-        individual_tests(18) = length_length()
-        individual_tests(19) = mass_rate_mass_rate()
-        individual_tests(20) = mass_mass()
-        individual_tests(21) = molar_mass_molar_mass()
-        individual_tests(22) = power_power()
-        individual_tests(23) = pressure_pressure()
-        individual_tests(24) = specific_heat_specific_heat()
-        individual_tests(25) = speed_speed()
-        individual_tests(26) = stress_intensity_factor_stress_intensity_factor()
-        individual_tests(27) = temperature_temperature()
-        individual_tests(28) = thermal_conductivity_thermal_conductivity()
-        individual_tests(29) = thermal_expansion_coeffecient_thermal_expansion_coeffecient()
-        individual_tests(30) = time_time()
-        individual_tests(31) = volume_volume()
+        individual_tests(2) = amount_temperature_amount_temperature()
+        individual_tests(3) = amount_amount()
+        individual_tests(4) = angle_angle()
+        individual_tests(5) = area_area()
+        individual_tests(6) = burnup_burnup()
+        individual_tests(7) = convective_heat_transfer_convective_heat_transfer()
+        individual_tests(8) = density_density()
+        individual_tests(9) = dynamic_viscosity_dynamic_viscosity()
+        individual_tests(10) = energy_per_amount_energy_per_amount()
+        individual_tests(11) = energy_per_temperature_amount_energy_per_temperature_amount()
+        individual_tests(12) = energy_energy()
+        individual_tests(13) = enthalpy_enthalpy()
+        individual_tests(14) = fluence_fluence()
+        individual_tests(15) = force_force()
+        individual_tests(16) = fracture_toughness_fracture_toughness()
+        individual_tests(17) = frequency_frequency()
+        individual_tests(18) = interquantity_interquantity_operators()
+        individual_tests(19) = length_length()
+        individual_tests(20) = mass_rate_mass_rate()
+        individual_tests(21) = mass_mass()
+        individual_tests(22) = molar_mass_molar_mass()
+        individual_tests(23) = power_power()
+        individual_tests(24) = pressure_pressure()
+        individual_tests(25) = specific_heat_specific_heat()
+        individual_tests(26) = speed_speed()
+        individual_tests(27) = stress_intensity_factor_stress_intensity_factor()
+        individual_tests(28) = temperature_temperature()
+        individual_tests(29) = thermal_conductivity_thermal_conductivity()
+        individual_tests(30) = thermal_expansion_coeffecient_thermal_expansion_coeffecient()
+        individual_tests(31) = time_time()
+        individual_tests(32) = volume_volume()
         tests = test_that(individual_tests)
 
 

@@ -27,6 +27,19 @@ module quaff
             KILOMOLS, &
             MOLS, &
             PARTICLES
+    use quaff_amount_temperature_m, only: &
+            amount_temperature_t, &
+            fallible_amount_temperature_t, &
+            amount_temperature_unit_t, &
+            fallible_amount_temperature_unit_t, &
+            operator(.unit.), &
+            parse_amount_temperature, &
+            parse_amount_temperature_unit, &
+            sum, &
+            DEFAULT_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_TEMPERATURE_UNITS => PROVIDED_UNITS, &
+            KILOMOLS_KELVIN, &
+            MOLS_KELVIN
     use quaff_angle_m, only: &
             angle_t, &
             fallible_angle_t, &
