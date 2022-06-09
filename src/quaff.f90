@@ -24,6 +24,7 @@ module quaff
             sum, &
             DEFAULT_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_UNITS => PROVIDED_UNITS, &
+            KILOMOLS, &
             MOLS, &
             PARTICLES
     use quaff_angle_m, only: &
