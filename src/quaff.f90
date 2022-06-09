@@ -40,6 +40,19 @@ module quaff
             PROVIDED_AMOUNT_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_KELVIN, &
             MOLS_KELVIN
+    use quaff_amount_temperature_rate_m, only: &
+            amount_temperature_rate_t, &
+            fallible_amount_temperature_rate_t, &
+            amount_temperature_rate_unit_t, &
+            fallible_amount_temperature_rate_unit_t, &
+            operator(.unit.), &
+            parse_amount_temperature_rate, &
+            parse_amount_temperature_rate_unit, &
+            sum, &
+            DEFAULT_AMOUNT_TEMPERATURE_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_TEMPERATURE_RATE_UNITS => PROVIDED_UNITS, &
+            KILOMOLS_KELVIN_PER_SECOND, &
+            MOLS_KELVIN_PER_SECOND
     use quaff_angle_m, only: &
             angle_t, &
             fallible_angle_t, &
