@@ -1,5 +1,5 @@
 name = "quaff"
-version = "0.4.1"
+version = "0.4.2"
 license = "MIT"
 author = "Brad Richardson"
 maintainer = "everythingfunctional@protonmail.com"
@@ -13,7 +13,7 @@ strff = { git = "https://gitlab.com/everythingfunctional/strff.git", tag = "v3.0
 
 [dev-dependencies]
 quaff_asserts = { path = "quaff_asserts" }
-veggies = { git = "https://gitlab.com/everythingfunctional/veggies.git", tag = "v1.0.2" }
+veggies = { git = "https://gitlab.com/everythingfunctional/veggies.git", tag = "v1.0.3" }
 
 [[example]]
 name="speed_calculator"
