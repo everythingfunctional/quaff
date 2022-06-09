@@ -23,7 +23,8 @@ module quaff_length_m
             FEET_PER_METER, &
             INCHES_PER_METER, &
             MICROINCHES_PER_METER, &
-            MICROMETERS_PER_METER
+            MICROMETERS_PER_METER, &
+            MILLIMETERS_PER_METER
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -52,7 +53,8 @@ module quaff_length_m
             INCHES, &
             METERS, &
             MICROINCHES, &
-            MICROMETERS
+            MICROMETERS, &
+            MILLIMETERS
 
     type :: length_t
         double precision :: meters
@@ -234,11 +236,15 @@ module quaff_length_m
             length_simple_unit_t( &
                     conversion_factor = MICROMETERS_PER_METER, &
                     symbol = "um")
+    type(length_simple_unit_t), parameter :: MILLIMETERS = &
+            length_simple_unit_t( &
+                    conversion_factor = MILLIMETERS_PER_METER, &
+                    symbol = "mm")
 
     type(length_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = METERS
 
     type(length_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS]
+            [CENTIMETERS, FEET, INCHES, METERS, MICROINCHES, MICROMETERS, MILLIMETERS]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_length_m"
 contains

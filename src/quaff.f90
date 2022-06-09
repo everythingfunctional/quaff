@@ -285,7 +285,8 @@ module quaff
             INCHES, &
             METERS, &
             MICROINCHES, &
-            MICROMETERS
+            MICROMETERS, &
+            MILLIMETERS
     use quaff_mass_m, only: &
             mass_t, &
             fallible_mass_t, &
@@ -463,6 +464,8 @@ module quaff
             PROVIDED_TIME_UNITS => PROVIDED_UNITS, &
             DAYS, &
             HOURS, &
+            MICROSECONDS, &
+            MILLISECONDS, &
             MINUTES, &
             SECONDS, &
             YEARS
@@ -478,7 +481,9 @@ module quaff
             DEFAULT_VOLUME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
-            CUBIC_METERS
+            CUBIC_METERS, &
+            CUBIC_MILLIMETERS, &
+            LITERS
     use quaff_physical_constants, only: &
             ATMOSPHERIC_PRESSURE, &
             GRAVITY, &

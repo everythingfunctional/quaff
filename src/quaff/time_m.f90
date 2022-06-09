@@ -21,6 +21,8 @@ module quaff_time_m
     use quaff_conversion_factors_m, only: &
             DAYS_PER_SECOND, &
             HOURS_PER_SECOND, &
+            MICROSECONDS_PER_SECOND, &
+            MILLISECONDS_PER_SECOND, &
             MINUTES_PER_SECOND, &
             YEARS_PER_SECOND
     use quaff_utilities_m, only: &
@@ -48,6 +50,8 @@ module quaff_time_m
             PROVIDED_UNITS, &
             DAYS, &
             HOURS, &
+            MICROSECONDS, &
+            MILLISECONDS, &
             MINUTES, &
             SECONDS, &
             YEARS
@@ -220,6 +224,14 @@ module quaff_time_m
             time_simple_unit_t( &
                     conversion_factor = HOURS_PER_SECOND, &
                     symbol = "h")
+    type(time_simple_unit_t), parameter :: MICROSECONDS = &
+            time_simple_unit_t( &
+                    conversion_factor = MICROSECONDS_PER_SECOND, &
+                    symbol = "us")
+    type(time_simple_unit_t), parameter :: MILLISECONDS = &
+            time_simple_unit_t( &
+                    conversion_factor = MILLISECONDS_PER_SECOND, &
+                    symbol = "ms")
     type(time_simple_unit_t), parameter :: MINUTES = &
             time_simple_unit_t( &
                     conversion_factor = MINUTES_PER_SECOND, &
@@ -232,7 +244,7 @@ module quaff_time_m
     type(time_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = SECONDS
 
     type(time_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [YEARS, DAYS, HOURS, MINUTES, SECONDS]
+            [YEARS, DAYS, HOURS, MICROSECONDS, MILLISECONDS, MINUTES, SECONDS]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_time_m"
 contains

@@ -20,6 +20,7 @@ module quaff_conversion_factors_m
     double precision, parameter :: FEET_PER_METER = INCHES_PER_METER * FEET_PER_INCH
     double precision, parameter :: MICROINCHES_PER_METER = INCHES_PER_METER * MICRO_PER_BASE
     double precision, parameter :: MICROMETERS_PER_METER = MICRO_PER_BASE
+    double precision, parameter :: MILLIMETERS_PER_METER = MILLI_PER_BASE
 
     ! Mass
     double precision, parameter :: KILOGRAMS_PER_POUND = 0.45359237d0 ! Taken from NIST (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f22)
@@ -49,6 +50,8 @@ module quaff_conversion_factors_m
     double precision, parameter :: HOURS_PER_DAY = 24.0d0
     double precision, parameter :: DAYS_PER_HOUR = 1.0d0 / HOURS_PER_DAY
     double precision, parameter :: SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR
+    double precision, parameter :: MICROSECONDS_PER_SECOND = MICRO_PER_BASE
+    double precision, parameter :: MILLISECONDS_PER_SECOND = MILLI_PER_BASE
     double precision, parameter :: MINUTES_PER_SECOND = 1.0d0 / SECONDS_PER_MINUTE
     double precision, parameter :: HOURS_PER_SECOND = 1.0d0 / SECONDS_PER_HOUR
     double precision, parameter :: DAYS_PER_SECOND = DAYS_PER_HOUR * HOURS_PER_SECOND
@@ -63,6 +66,8 @@ module quaff_conversion_factors_m
 
     ! Volume
     double precision, parameter :: CUBIC_CENTIMETERS_PER_CUBIC_METER = CENTIMETERS_PER_METER**3
+    double precision, parameter :: CUBIC_MILLIMETERS_PER_CUBIC_METER = MILLIMETERS_PER_METER**3
+    double precision, parameter :: LITERS_PER_CUBIC_METER = 1.0d3
 
     ! Density
     double precision, parameter :: GRAMS_PER_CUBIC_METER_PER_KILOGRAMS_PER_CUBIC_METER = GRAMS_PER_KILOGRAM

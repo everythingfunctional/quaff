@@ -18,7 +18,10 @@ module quaff_volume_m
             parse_whitespace, &
             parse_with, &
             then_drop
-    use quaff_conversion_factors_m, only: CUBIC_CENTIMETERS_PER_CUBIC_METER
+    use quaff_conversion_factors_m, only: &
+            CUBIC_CENTIMETERS_PER_CUBIC_METER, &
+            CUBIC_MILLIMETERS_PER_CUBIC_METER, &
+            LITERS_PER_CUBIC_METER
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -43,7 +46,9 @@ module quaff_volume_m
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
-            CUBIC_METERS
+            CUBIC_METERS, &
+            CUBIC_MILLIMETERS, &
+            LITERS
 
     type :: volume_t
         double precision :: cubic_meters
@@ -209,11 +214,19 @@ module quaff_volume_m
             volume_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m^3")
+    type(volume_simple_unit_t), parameter :: CUBIC_MILLIMETERS = &
+            volume_simple_unit_t( &
+                    conversion_factor = CUBIC_MILLIMETERS_PER_CUBIC_METER, &
+                    symbol = "mm^3")
+    type(volume_simple_unit_t), parameter :: LITERS = &
+            volume_simple_unit_t( &
+                    conversion_factor = LITERS_PER_CUBIC_METER, &
+                    symbol = "L")
 
     type(volume_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = CUBIC_METERS
 
     type(volume_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [CUBIC_CENTIMETERS, CUBIC_METERS]
+            [CUBIC_CENTIMETERS, CUBIC_METERS, CUBIC_MILLIMETERS, LITERS]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_volume_m"
 contains
