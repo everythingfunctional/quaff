@@ -24,8 +24,48 @@ module quaff
             sum, &
             DEFAULT_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_UNITS => PROVIDED_UNITS, &
+            KILOMOLS, &
             MOLS, &
             PARTICLES
+    use quaff_amount_rate_m, only: &
+            amount_rate_t, &
+            fallible_amount_rate_t, &
+            amount_rate_unit_t, &
+            fallible_amount_rate_unit_t, &
+            operator(.unit.), &
+            parse_amount_rate, &
+            parse_amount_rate_unit, &
+            sum, &
+            DEFAULT_AMOUNT_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_RATE_UNITS => PROVIDED_UNITS, &
+            KILOMOLS_PER_SECOND, &
+            MOLS_PER_SECOND
+    use quaff_amount_temperature_m, only: &
+            amount_temperature_t, &
+            fallible_amount_temperature_t, &
+            amount_temperature_unit_t, &
+            fallible_amount_temperature_unit_t, &
+            operator(.unit.), &
+            parse_amount_temperature, &
+            parse_amount_temperature_unit, &
+            sum, &
+            DEFAULT_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_TEMPERATURE_UNITS => PROVIDED_UNITS, &
+            KILOMOLS_KELVIN, &
+            MOLS_KELVIN
+    use quaff_amount_temperature_rate_m, only: &
+            amount_temperature_rate_t, &
+            fallible_amount_temperature_rate_t, &
+            amount_temperature_rate_unit_t, &
+            fallible_amount_temperature_rate_unit_t, &
+            operator(.unit.), &
+            parse_amount_temperature_rate, &
+            parse_amount_temperature_rate_unit, &
+            sum, &
+            DEFAULT_AMOUNT_TEMPERATURE_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_TEMPERATURE_RATE_UNITS => PROVIDED_UNITS, &
+            KILOMOLS_KELVIN_PER_SECOND, &
+            MOLS_KELVIN_PER_SECOND
     use quaff_angle_m, only: &
             angle_t, &
             fallible_angle_t, &
@@ -261,6 +301,19 @@ module quaff
             KILOGRAMS, &
             POUNDS_MASS, &
             TONS
+    use quaff_mass_rate_m, only: &
+            mass_rate_t, &
+            fallible_mass_rate_t, &
+            mass_rate_unit_t, &
+            fallible_mass_rate_unit_t, &
+            operator(.unit.), &
+            parse_mass_rate, &
+            parse_mass_rate_unit, &
+            sum, &
+            DEFAULT_MASS_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_MASS_RATE_UNITS => PROVIDED_UNITS, &
+            GRAMS_PER_SECOND, &
+            KILOGRAMS_PER_SECOND
     use quaff_molar_mass_m, only: &
             molar_mass_t, &
             fallible_molar_mass_t, &

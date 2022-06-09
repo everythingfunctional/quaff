@@ -18,7 +18,7 @@ module quaff_amount_m
             parse_whitespace, &
             parse_with, &
             then_drop
-    use quaff_conversion_factors_m, only: AVOGADROS_NUMBER
+    use quaff_conversion_factors_m, only: AVOGADROS_NUMBER, KILO_PER_BASE
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -42,6 +42,7 @@ module quaff_amount_m
             sum, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
+            KILOMOLS, &
             MOLS, &
             PARTICLES
 
@@ -201,6 +202,10 @@ module quaff_amount_m
         module procedure sum_amount
     end interface
 
+    type(amount_simple_unit_t), parameter :: KILOMOLS = &
+            amount_simple_unit_t( &
+                    conversion_factor = KILO_PER_BASE, &
+                    symbol = "kmol")
     type(amount_simple_unit_t), parameter :: MOLS = &
             amount_simple_unit_t( &
                     conversion_factor = 1.0d0, &
@@ -213,7 +218,7 @@ module quaff_amount_m
     type(amount_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = MOLS
 
     type(amount_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [MOLS, PARTICLES]
+            [KILOMOLS, MOLS, PARTICLES]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_amount_m"
 contains
