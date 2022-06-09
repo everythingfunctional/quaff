@@ -261,6 +261,19 @@ module quaff
             KILOGRAMS, &
             POUNDS_MASS, &
             TONS
+    use quaff_mass_rate_m, only: &
+            mass_rate_t, &
+            fallible_mass_rate_t, &
+            mass_rate_unit_t, &
+            fallible_mass_rate_unit_t, &
+            operator(.unit.), &
+            parse_mass_rate, &
+            parse_mass_rate_unit, &
+            sum, &
+            DEFAULT_MASS_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_MASS_RATE_UNITS => PROVIDED_UNITS, &
+            GRAMS_PER_SECOND, &
+            KILOGRAMS_PER_SECOND
     use quaff_molar_mass_m, only: &
             molar_mass_t, &
             fallible_molar_mass_t, &
