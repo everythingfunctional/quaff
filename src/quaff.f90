@@ -27,6 +27,19 @@ module quaff
             KILOMOLS, &
             MOLS, &
             PARTICLES
+    use quaff_amount_rate_m, only: &
+            amount_rate_t, &
+            fallible_amount_rate_t, &
+            amount_rate_unit_t, &
+            fallible_amount_rate_unit_t, &
+            operator(.unit.), &
+            parse_amount_rate, &
+            parse_amount_rate_unit, &
+            sum, &
+            DEFAULT_AMOUNT_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_AMOUNT_RATE_UNITS => PROVIDED_UNITS, &
+            KILOMOLS_PER_SECOND, &
+            MOLS_PER_SECOND
     use quaff_amount_temperature_m, only: &
             amount_temperature_t, &
             fallible_amount_temperature_t, &
