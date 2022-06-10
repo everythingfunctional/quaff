@@ -72,10 +72,10 @@ module quaff_temperature_m
                 temperature_divided_by_double, &
                 temperature_divided_by_integer, &
                 temperature_divided_by_temperature
-        procedure :: temperature_plus_temperature
-        generic, public :: operator(+) => temperature_plus_temperature
-        procedure :: temperature_minus_temperature
-        generic, public :: operator(-) => temperature_minus_temperature
+        ! procedure :: temperature_plus_temperature
+        ! generic, public :: operator(+) => temperature_plus_temperature
+        ! procedure :: temperature_minus_temperature
+        ! generic, public :: operator(-) => temperature_minus_temperature
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -372,23 +372,23 @@ contains
         ratio = numerator%kelvin / denomenator%kelvin
     end function
 
-    elemental function temperature_plus_temperature( &
-            lhs, rhs) result(sum_)
-        class(temperature_t), intent(in) :: lhs
-        type(temperature_t), intent(in) :: rhs
-        type(temperature_t) :: sum_
+    ! elemental function temperature_plus_temperature( &
+    !         lhs, rhs) result(sum_)
+    !     class(temperature_t), intent(in) :: lhs
+    !     type(temperature_t), intent(in) :: rhs
+    !     type(temperature_t) :: sum_
 
-        sum_%kelvin = lhs%kelvin + rhs%kelvin
-    end function
+    !     sum_%kelvin = lhs%kelvin + rhs%kelvin
+    ! end function
 
-    elemental function temperature_minus_temperature( &
-            lhs, rhs) result(difference)
-        class(temperature_t), intent(in) :: lhs
-        type(temperature_t), intent(in) :: rhs
-        type(temperature_t) :: difference
+    ! elemental function temperature_minus_temperature( &
+    !         lhs, rhs) result(difference)
+    !     class(temperature_t), intent(in) :: lhs
+    !     type(temperature_t), intent(in) :: rhs
+    !     type(temperature_t) :: difference
 
-        difference%kelvin = lhs%kelvin - rhs%kelvin
-    end function
+    !     difference%kelvin = lhs%kelvin - rhs%kelvin
+    ! end function
 
     pure function sum_temperature(temperatures) result(sum_)
         type(temperature_t), intent(in) :: temperatures(:)
