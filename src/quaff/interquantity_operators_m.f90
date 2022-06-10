@@ -24,7 +24,7 @@ module quaff_interquantity_operators_m
 
     implicit none
     private
-    public :: operator(*), operator(/), operator(-), as_burnup
+    public :: operator(*), operator(/), operator(-), operator(+), as_burnup
 
     interface operator(*)
         module procedure acceleration_times_mass
@@ -89,6 +89,9 @@ module quaff_interquantity_operators_m
     interface operator (-)
           module procedure temperature_minus_temperature
     end interface
+    interface operator (+)
+      module procedure temperature_plus_delta_temperature
+    end interface 
 contains
     elemental function acceleration_times_mass(acceleration, mass) result(force)
         type(acceleration_t), intent(in) :: acceleration
@@ -547,5 +550,12 @@ contains
         type(delta_temperature_t) :: delta_temperature
 
         delta_temperature%delta_kelvin = lhs%kelvin - rhs%kelvin
+    end function
+    elemental function temperature_plus_delta_temperature(temperature, delta_temperature) result(new_temperature)
+        type(temperature_t), intent(in) :: temperature
+        type(delta_temperature_t), intent(in) :: delta_temperature
+        type(temperature_t) :: new_temperature
+
+        new_temperature%kelvin = temperature%kelvin + delta_temperature%delta_kelvin
     end function
 end module

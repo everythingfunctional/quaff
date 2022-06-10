@@ -3,6 +3,7 @@ module interquantity_test
             operator(*), &
             operator(/), &
             operator(-), &
+            operator(+), &
             operator(.unit.), &
             as_burnup, &
             CUBIC_METERS, &
@@ -153,6 +154,8 @@ contains
                         "3 /K * 2 K = 6.0", check_thermal_expansion_times_delta_temp) &
                 , it( &
                         "1 K - 1 k = 0 K", check_temp_diff_gives_delta_temperature) &
+                , it( &
+                        "1 K + 1 k = 2 K", check_temperature_plus_delta_temperature) &
                 ])
     end function test_interquantity_operators
 
@@ -611,5 +614,13 @@ contains
         result_ = assert_equals( &
                 0.d0.unit.DELTA_KELVIN, &
                 (1.0d0.unit.KELVIN) - (1.0d0.unit.KELVIN))
+    end function
+
+    pure function check_temperature_plus_delta_temperature() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.KELVIN, &
+                (1.0d0.unit.KELVIN) + (1.0d0.unit.DELTA_KELVIN))
     end function
 end module

@@ -429,7 +429,6 @@ module quaff
             operator(.unit.), &
             parse_temperature, &
             parse_temperature_unit, &
-            sum, &
             DEFAULT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             CELSIUS, &
@@ -503,5 +502,5 @@ module quaff
             ATMOSPHERIC_PRESSURE, &
             GRAVITY, &
             UNIVERSAL_GAS_CONSTANT
-    use quaff_interquantity_operators_m, only: operator(*), operator(/), operator(-), as_burnup
+    use quaff_interquantity_operators_m, only: operator(*), operator(/), operator(-), operator(+), as_burnup
 end module

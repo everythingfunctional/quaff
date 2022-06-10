@@ -65,7 +65,6 @@ contains
                 , it( &
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
-                , it("arrays can be summed", check_sum) &
                 , it( &
                         "multiplying by one returns the original temperature", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -311,15 +310,6 @@ contains
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
-    pure function check_sum() result(result_)
-        type(result_t) :: result_
-
-        double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
-
-        result_ = assert_equals( &
-                sum(numbers).unit.KELVIN, &
-                sum(numbers.unit.KELVIN))
-    end function
     pure function check_multiply_by_one(input) result(result_)
         class(input_t), intent(in) :: input
         type(result_t) :: result_
