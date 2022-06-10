@@ -18,6 +18,7 @@ module quaff_interquantity_operators_m
     use quaff_pressure_m, only: pressure_t
     use quaff_speed_m, only: speed_t
     use quaff_temperature_m, only: temperature_t
+    use quaff_thermal_expansion_coeffecient_m, only: thermal_expansion_coeffecient_t
     use quaff_time_m, only: time_t
     use quaff_volume_m, only: volume_t
 
@@ -49,6 +50,7 @@ module quaff_interquantity_operators_m
         module procedure pressure_times_volume
         module procedure speed_times_time
         module procedure temperature_times_energy_per_temperature_amount
+        module procedure thermal_expansion_coeffecient_times_delta_temperature
         module procedure time_times_acceleration
         module procedure time_times_power
         module procedure time_times_pressure
@@ -465,6 +467,15 @@ contains
 
         energy_per_amount%joules_per_mol = &
                 temperature%kelvin * energy_per_temperature_amount%joules_per_kelvin_mol
+    end function
+
+    elemental function thermal_expansion_coeffecient_times_delta_temperature ( &
+          thermal_expansion, delta_temperature) result(factor)
+      type(thermal_expansion_coeffecient_t), intent(in) :: thermal_expansion
+      type(delta_temperature_t), intent(in) :: delta_temperature
+      double precision :: factor
+
+      factor = thermal_expansion%per_kelvin * delta_temperature%delta_kelvin
     end function
 
     elemental function time_times_acceleration(time, acceleration) result(speed)

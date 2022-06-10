@@ -22,12 +22,13 @@ module interquantity_test
             NEWTONS, &
             PASCAL_SECONDS, &
             PASCALS, &
+            PER_KELVIN, &
             SECONDS, &
             SQUARE_METERS, &
             WATT_SECONDS_PER_KILOGRAM, &
             WATTS
     use quaff_asserts_m, only: assert_equals
-    use veggies, only: result_t, test_item_t, describe, it
+    use veggies, only: result_t, test_item_t, describe, it, assert_equals
 
     implicit none
     private
@@ -148,6 +149,8 @@ contains
                         "2 K * 3 J/(K mol) = 6 J/mol", check_temperature_times_energy_per_temperature_amount) &
                 , it( &
                         "6 J / 3 J/mol = 2 mol", check_energy_divided_by_energy_per_amount) &
+                , it( &
+                        "3 /K * 2 K = 6.0", check_thermal_expansion_times_delta_temp) &
                 , it( &
                         "1 K - 1 k = 0 K", check_temp_diff_gives_delta_temperature) &
                 ])
@@ -592,6 +595,16 @@ contains
                 2.0d0.unit.MOLS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_MOL))
     end function
+
+    pure function check_thermal_expansion_times_delta_temp() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.0d0, &
+                (3.0d0.unit.PER_KELVIN) * (2.0d0.unit.DELTA_KELVIN))
+    end function
+
+
     pure function check_temp_diff_gives_delta_temperature() result(result_)
         type(result_t) :: result_
 
