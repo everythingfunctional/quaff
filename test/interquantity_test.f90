@@ -577,7 +577,7 @@ contains
 
         result_ = assert_equals( &
                 6.0d0.unit.JOULES_PER_MOL, &
-                (2.0d0.unit.JOULES_PER_KELVIN_MOL) * (3.0d0.unit.KELVIN))
+                (2.0d0.unit.JOULES_PER_KELVIN_MOL) * (3.0d0.unit.DELTA_KELVIN))
     end function
 
     pure function check_temperature_times_energy_per_temperature_amount() result(result_)
@@ -585,7 +585,7 @@ contains
 
         result_ = assert_equals( &
                 6.0d0.unit.JOULES_PER_MOL, &
-                (2.0d0.unit.KELVIN) * (3.0d0.unit.JOULES_PER_KELVIN_MOL))
+                (2.0d0.unit.DELTA_KELVIN) * (3.0d0.unit.JOULES_PER_KELVIN_MOL))
     end function
 
     pure function check_energy_divided_by_energy_per_amount() result(result_)

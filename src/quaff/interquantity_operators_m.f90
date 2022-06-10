@@ -242,13 +242,13 @@ contains
     end function
 
     elemental function energy_per_temperature_amount_times_temperature( &
-            energy_per_temperature_amount, temperature) result(energy_per_amount)
+            energy_per_temperature_amount, delta_temperature) result(energy_per_amount)
         type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
-        type(temperature_t), intent(in) :: temperature
+        type(delta_temperature_t), intent(in) :: delta_temperature
         type(energy_per_amount_t) :: energy_per_amount
 
         energy_per_amount%joules_per_mol = &
-                energy_per_temperature_amount%joules_per_kelvin_mol * temperature%kelvin
+                energy_per_temperature_amount%joules_per_kelvin_mol * delta_temperature%delta_kelvin
     end function
 
     elemental function enthalpy_times_mass(enthalpy, mass) result(energy)
@@ -460,13 +460,13 @@ contains
     end function
 
     elemental function temperature_times_energy_per_temperature_amount( &
-            temperature, energy_per_temperature_amount) result(energy_per_amount)
-        type(temperature_t), intent(in) :: temperature
+            delta_temperature, energy_per_temperature_amount) result(energy_per_amount)
+        type(delta_temperature_t), intent(in) :: delta_temperature
         type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
         type(energy_per_amount_t) :: energy_per_amount
 
         energy_per_amount%joules_per_mol = &
-                temperature%kelvin * energy_per_temperature_amount%joules_per_kelvin_mol
+                delta_temperature%delta_kelvin * energy_per_temperature_amount%joules_per_kelvin_mol
     end function
 
     elemental function thermal_expansion_coeffecient_times_delta_temperature ( &
