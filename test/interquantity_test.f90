@@ -2,6 +2,7 @@ module interquantity_test
     use quaff, only: &
             operator(*), &
             operator(/), &
+            operator(-), &
             operator(.unit.), &
             as_burnup, &
             CUBIC_METERS, &
@@ -9,6 +10,7 @@ module interquantity_test
             JOULES_PER_KELVIN_MOL, &
             JOULES_PER_KILOGRAM, &
             JOULES_PER_MOL, &
+            DELTA_KELVIN, &
             KELVIN, &
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
@@ -35,7 +37,7 @@ contains
         type(test_item_t) :: tests
 
         tests = describe( &
-                "multiplying or dividing different quantities", &
+                "multiplying or dividing different quantities and subtracting temperatures", &
                 [ it( &
                         "2 m * 3 m = 6 m^2", check_length_times_length) &
                 , it( &
@@ -146,6 +148,8 @@ contains
                         "2 K * 3 J/(K mol) = 6 J/mol", check_temperature_times_energy_per_temperature_amount) &
                 , it( &
                         "6 J / 3 J/mol = 2 mol", check_energy_divided_by_energy_per_amount) &
+                , it( &
+                        "1 K - 1 k = 0 K", check_temp_diff_gives_delta_temperature) &
                 ])
     end function test_interquantity_operators
 
@@ -587,5 +591,12 @@ contains
         result_ = assert_equals( &
                 2.0d0.unit.MOLS, &
                 (6.0d0.unit.JOULES) / (3.0d0.unit.JOULES_PER_MOL))
+    end function
+    pure function check_temp_diff_gives_delta_temperature() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                0.d0.unit.DELTA_KELVIN, &
+                (1.0d0.unit.KELVIN) - (1.0d0.unit.KELVIN))
     end function
 end module
