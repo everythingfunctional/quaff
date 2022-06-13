@@ -298,6 +298,7 @@ module quaff
             parse_frequency, &
             parse_frequency_unit, &
             sum, &
+            abs, &
             DEFAULT_FREQUENCY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FREQUENCY_UNITS => PROVIDED_UNITS, &
             HERTZ, &
