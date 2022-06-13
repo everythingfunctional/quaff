@@ -40,6 +40,7 @@ module quaff_amount_temperature_rate_m
             parse_amount_temperature_rate, &
             parse_amount_temperature_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             KILOMOLS_KELVIN_PER_SECOND, &
@@ -195,6 +196,10 @@ module quaff_amount_temperature_rate_m
         module procedure parse_amount_temperature_rate_unit_s
         module procedure parse_amount_temperature_rate_unit_with_units_c
         module procedure parse_amount_temperature_rate_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_amount_temperature_rate
     end interface
 
     interface sum
@@ -370,6 +375,13 @@ contains
         type(amount_temperature_rate_t) :: difference
 
         difference%mols_kelvin_per_second = lhs%mols_kelvin_per_second - rhs%mols_kelvin_per_second
+    end function
+
+    elemental function abs_amount_temperature_rate(amount_temperature_rate) result(abs_)
+        class(amount_temperature_rate_t), intent(in) :: amount_temperature_rate
+        type(amount_temperature_rate_t) :: abs_
+
+        abs_%mols_kelvin_per_second = abs(amount_temperature_rate%mols_kelvin_per_second)
     end function
 
     pure function sum_amount_temperature_rate(amount_temperature_rates) result(sum_)

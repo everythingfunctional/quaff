@@ -66,6 +66,7 @@ module quaff
             parse_amount_temperature_rate, &
             parse_amount_temperature_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_AMOUNT_TEMPERATURE_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_TEMPERATURE_RATE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_KELVIN_PER_SECOND, &
