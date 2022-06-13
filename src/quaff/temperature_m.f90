@@ -42,7 +42,6 @@ module quaff_temperature_m
             operator(.unit.), &
             parse_temperature, &
             parse_temperature_unit, &
-            sum, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             CELSIUS, &
@@ -72,10 +71,6 @@ module quaff_temperature_m
                 temperature_divided_by_double, &
                 temperature_divided_by_integer, &
                 temperature_divided_by_temperature
-        procedure :: temperature_plus_temperature
-        generic, public :: operator(+) => temperature_plus_temperature
-        procedure :: temperature_minus_temperature
-        generic, public :: operator(-) => temperature_minus_temperature
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -203,9 +198,6 @@ module quaff_temperature_m
         module procedure parse_temperature_unit_with_units_s
     end interface
 
-    interface sum
-        module procedure sum_temperature
-    end interface
 
     type(temperature_simple_unit_t), parameter :: CELSIUS = &
             temperature_simple_unit_t( &
@@ -370,31 +362,6 @@ contains
         double precision :: ratio
 
         ratio = numerator%kelvin / denomenator%kelvin
-    end function
-
-    elemental function temperature_plus_temperature( &
-            lhs, rhs) result(sum_)
-        class(temperature_t), intent(in) :: lhs
-        type(temperature_t), intent(in) :: rhs
-        type(temperature_t) :: sum_
-
-        sum_%kelvin = lhs%kelvin + rhs%kelvin
-    end function
-
-    elemental function temperature_minus_temperature( &
-            lhs, rhs) result(difference)
-        class(temperature_t), intent(in) :: lhs
-        type(temperature_t), intent(in) :: rhs
-        type(temperature_t) :: difference
-
-        difference%kelvin = lhs%kelvin - rhs%kelvin
-    end function
-
-    pure function sum_temperature(temperatures) result(sum_)
-        type(temperature_t), intent(in) :: temperatures(:)
-        type(temperature_t) :: sum_
-
-        sum_%kelvin = sum(temperatures%kelvin)
     end function
 
     elemental function greater_than(lhs, rhs)

@@ -128,6 +128,21 @@ module quaff
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
             BTU_PER_HOUR_SQUARE_FEET_FAHRENHEIT, &
             WATTS_PER_SQUARE_METER_KELVIN
+    use quaff_delta_temperature_m, only: &
+            delta_temperature_t, &
+            fallible_delta_temperature_t, &
+            delta_temperature_unit_t, &
+            fallible_delta_temperature_unit_t, &
+            operator(.unit.), &
+            parse_delta_temperature, &
+            parse_delta_temperature_unit, &
+            sum, &
+            DEFAULT_DELTA_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_DELTA_TEMPERATURE_UNITS =>PROVIDED_UNITS, &
+            DELTA_CELSIUS, &
+            DELTA_FAHRENHEIT, &
+            DELTA_KELVIN, &
+            DELTA_RANKINE
     use quaff_density_m, only: &
             density_t, &
             fallible_density_t, &
@@ -414,7 +429,6 @@ module quaff
             operator(.unit.), &
             parse_temperature, &
             parse_temperature_unit, &
-            sum, &
             DEFAULT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             CELSIUS, &
@@ -488,5 +502,5 @@ module quaff
             ATMOSPHERIC_PRESSURE, &
             GRAVITY, &
             UNIVERSAL_GAS_CONSTANT
-    use quaff_interquantity_operators_m, only: operator(*), operator(/), as_burnup
+    use quaff_interquantity_operators_m, only: operator(*), operator(/), operator(-), operator(+), as_burnup
 end module
