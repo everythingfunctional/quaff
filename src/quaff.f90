@@ -473,6 +473,7 @@ module quaff
             parse_thermal_conductivity, &
             parse_thermal_conductivity_unit, &
             sum, &
+            abs, &
             DEFAULT_THERMAL_CONDUCTIVITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_CONDUCTIVITY_UNITS => PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
