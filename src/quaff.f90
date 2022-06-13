@@ -191,6 +191,7 @@ module quaff
             parse_energy, &
             parse_energy_unit, &
             sum, &
+            abs, &
             DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
             BTU, &

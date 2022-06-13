@@ -381,8 +381,6 @@ contains
                         abs((-1.0d0).unit.WATTS_PER_SQUARE_METER_KELVIN))
     end function
 
-
-
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input
         type(result_t) :: result_
