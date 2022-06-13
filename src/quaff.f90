@@ -332,6 +332,7 @@ module quaff
             parse_mass, &
             parse_mass_unit, &
             sum, &
+            abs, &
             DEFAULT_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS, &
