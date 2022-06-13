@@ -38,6 +38,7 @@ module quaff
             parse_amount_rate, &
             parse_amount_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_AMOUNT_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_RATE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_PER_SECOND, &
