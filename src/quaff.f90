@@ -283,6 +283,7 @@ module quaff
             parse_fracture_toughness, &
             parse_fracture_toughness_unit, &
             sum, &
+            abs, &
             DEFAULT_FRACTURE_TOUGHNESS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FRACTURE_TOUGHNESS_UNITS => PROVIDED_UNITS, &
             PASCAL_ROOT_METER, &
