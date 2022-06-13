@@ -376,6 +376,7 @@ module quaff
             parse_power, &
             parse_power_unit, &
             sum, &
+            abs, &
             DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR, &

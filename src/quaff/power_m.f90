@@ -44,6 +44,7 @@ module quaff_power_m
             parse_power, &
             parse_power_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             BTU_PER_HOUR, &
@@ -202,6 +203,10 @@ module quaff_power_m
         module procedure parse_power_unit_s
         module procedure parse_power_unit_with_units_c
         module procedure parse_power_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_power
     end interface
 
     interface sum
@@ -394,6 +399,13 @@ contains
         type(power_t) :: difference
 
         difference%watts = lhs%watts - rhs%watts
+    end function
+
+    pure function abs_power(power) result(abs_)
+        type(power_t), intent(in) :: power
+        type(power_t) :: abs_
+
+        abs_%watts = abs(power%watts)
     end function
 
     pure function sum_power(powers) result(sum_)
