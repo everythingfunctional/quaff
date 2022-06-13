@@ -1,6 +1,6 @@
-module thermal_expansion_coeffecient_asserts_m
+module thermal_expansion_coefficient_asserts_m
     use iso_varying_string, only: varying_string, operator(//), var_str
-    use quaff, only: thermal_expansion_coeffecient_t
+    use quaff, only: thermal_expansion_coefficient_t
     use strff, only: to_string
     use veggies, only: &
             result_t, &
@@ -50,8 +50,8 @@ module thermal_expansion_coeffecient_asserts_m
     end interface
 contains
     pure function assert_equals_basic(expected, actual) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         type(result_t) :: result_
 
         result_ = assert_equals(expected, actual, var_str(""), var_str(""))
@@ -59,8 +59,8 @@ contains
 
     pure function assert_equals_with_message_c( &
             expected, actual, message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         character(len=*), intent(in) :: message
         type(result_t) :: result_
 
@@ -70,8 +70,8 @@ contains
 
     pure function assert_equals_with_message_s( &
             expected, actual, message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         type(varying_string), intent(in) :: message
         type(result_t) :: result_
 
@@ -81,8 +81,8 @@ contains
 
     pure function assert_equals_with_messages_cc( &
             expected, actual, success_message, failure_message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(result_t) :: result_
@@ -96,8 +96,8 @@ contains
 
     pure function assert_equals_with_messages_cs( &
             expected, actual, success_message, failure_message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         character(len=*), intent(in) :: success_message
         type(varying_string), intent(in) :: failure_message
         type(result_t) :: result_
@@ -111,8 +111,8 @@ contains
 
     pure function assert_equals_with_messages_sc( &
             expected, actual, success_message, failure_message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         type(varying_string), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(result_t) :: result_
@@ -130,8 +130,8 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         type(varying_string), intent(in) :: success_message
         type(varying_string), intent(in) :: failure_message
         type(result_t) :: result_
@@ -152,9 +152,9 @@ contains
 
     pure function assert_equals_within_absolute_basic( &
             expected, actual, tolerance) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         type(result_t) :: result_
 
         result_ = assert_equals_within_absolute( &
@@ -163,9 +163,9 @@ contains
 
     pure function assert_equals_within_absolute_with_message_c( &
             expected, actual, tolerance, message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         character(len=*), intent(in) :: message
         type(result_t) :: result_
 
@@ -175,9 +175,9 @@ contains
 
     pure function assert_equals_within_absolute_with_message_s( &
             expected, actual, tolerance, message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         type(varying_string), intent(in) :: message
         type(result_t) :: result_
 
@@ -192,9 +192,9 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(result_t) :: result_
@@ -214,9 +214,9 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         type(varying_string), intent(in) :: failure_message
         type(result_t) :: result_
@@ -236,9 +236,9 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         type(varying_string), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
         type(result_t) :: result_
@@ -258,9 +258,9 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
-        type(thermal_expansion_coeffecient_t), intent(in) :: tolerance
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: tolerance
         type(varying_string), intent(in) :: success_message
         type(varying_string), intent(in) :: failure_message
         type(result_t) :: result_
@@ -284,8 +284,8 @@ contains
 
     pure function assert_equals_within_relative_basic( &
             expected, actual, tolerance) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(result_t) :: result_
 
@@ -295,8 +295,8 @@ contains
 
     pure function assert_equals_within_relative_with_message_c( &
             expected, actual, tolerance, message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: message
         type(result_t) :: result_
@@ -307,8 +307,8 @@ contains
 
     pure function assert_equals_within_relative_with_message_s( &
             expected, actual, tolerance, message) result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(varying_string), intent(in) :: message
         type(result_t) :: result_
@@ -324,8 +324,8 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
@@ -346,8 +346,8 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         character(len=*), intent(in) :: success_message
         type(varying_string), intent(in) :: failure_message
@@ -368,8 +368,8 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(varying_string), intent(in) :: success_message
         character(len=*), intent(in) :: failure_message
@@ -390,8 +390,8 @@ contains
             success_message, &
             failure_message) &
             result(result_)
-        type(thermal_expansion_coeffecient_t), intent(in) :: expected
-        type(thermal_expansion_coeffecient_t), intent(in) :: actual
+        type(thermal_expansion_coefficient_t), intent(in) :: expected
+        type(thermal_expansion_coefficient_t), intent(in) :: actual
         double precision, intent(in) :: tolerance
         type(varying_string), intent(in) :: success_message
         type(varying_string), intent(in) :: failure_message

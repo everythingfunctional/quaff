@@ -1,4 +1,4 @@
-module thermal_expansion_coeffecient_test
+module thermal_expansion_coefficient_test
     use double_precision_generator_m, only: DOUBLE_PRECISION_GENERATOR
     use double_precision_pair_generator_m, only: DOUBLE_PRECISION_PAIR_GENERATOR
     use double_precision_pair_input_m, only: double_precision_pair_input_t
@@ -9,17 +9,17 @@ module thermal_expansion_coeffecient_test
     use non_zero_double_precision_pair_generator_m, only: &
             NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR
     use quaff, only: &
-            thermal_expansion_coeffecient_t, &
-            fallible_thermal_expansion_coeffecient_t, &
-            thermal_expansion_coeffecient_unit_t, &
+            thermal_expansion_coefficient_t, &
+            fallible_thermal_expansion_coefficient_t, &
+            thermal_expansion_coefficient_unit_t, &
             operator(.unit.), &
-            parse_thermal_expansion_coeffecient, &
+            parse_thermal_expansion_coefficient, &
             sum, &
-            PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS, &
+            PROVIDED_THERMAL_EXPANSION_coefficient_UNITS, &
             PER_KELVIN
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
     use quaff_utilities_m, only: PARSE_ERROR
-    use thermal_expansion_coeffecient_utilities_m, only: &
+    use thermal_expansion_coefficient_utilities_m, only: &
             units_input_t, units_pair_input_t, make_units_examples
     use units_examples_m, only: units_examples_t
     use veggies, only: &
@@ -38,16 +38,16 @@ module thermal_expansion_coeffecient_test
 
     implicit none
     private
-    public :: test_thermal_expansion_coeffecient
+    public :: test_thermal_expansion_coefficient
 contains
-    function test_thermal_expansion_coeffecient() result(tests)
+    function test_thermal_expansion_coefficient() result(tests)
         type(test_item_t) :: tests
 
         type(units_examples_t) :: examples
 
-        examples = make_units_examples(PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS)
+        examples = make_units_examples(PROVIDED_THERMAL_EXPANSION_coefficient_UNITS)
         tests = describe( &
-                "thermal_expansion_coeffecient_t", &
+                "thermal_expansion_coefficient_t", &
                 [ it( &
                         "returns the same value given the same units", &
                         examples%units(), &
@@ -71,28 +71,28 @@ contains
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
                 , it( &
-                        "adding zero returns the original thermal_expansion_coeffecient", &
+                        "adding zero returns the original thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_add_zero) &
                 , it( &
-                        "subtracting zero returns the original thermal_expansion_coeffecient", &
+                        "subtracting zero returns the original thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_subtract_zero) &
                 , it( &
-                        "adding and subtracting the same thermal_expansion_coeffecient returns &
-                        &the original thermal_expansion_coeffecient", &
+                        "adding and subtracting the same thermal_expansion_coefficient returns &
+                        &the original thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_add_subtract) &
                 , it( &
-                        "multiplying by one returns the original thermal_expansion_coeffecient", &
+                        "multiplying by one returns the original thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_multiply_by_one) &
                 , it( &
-                        "multiplying by zero returns zero thermal_expansion_coeffecient", &
+                        "multiplying by zero returns zero thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_multiply_by_zero) &
                 , it( &
-                        "dividing by one returns the original thermal_expansion_coeffecient", &
+                        "dividing by one returns the original thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_GENERATOR, &
                         check_divide_by_one) &
                 , it( &
@@ -101,35 +101,35 @@ contains
                         check_divide_by_self) &
                 , it( &
                         "multiplying and dividing by the same number returns the original &
-                        &thermal_expansion_coeffecient", &
+                        &thermal_expansion_coefficient", &
                         NON_ZERO_DOUBLE_PRECISION_PAIR_GENERATOR, &
                         check_multiply_divide) &
                 , describe( &
                         "operator(==)", &
                         [ it( &
-                                "is true for the same thermal_expansion_coeffecient", &
+                                "is true for the same thermal_expansion_coefficient", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_with_same_number) &
                         , it( &
-                                "is false for different thermal_expansion_coeffecients", &
+                                "is false for different thermal_expansion_coefficients", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_with_different_numbers) &
                         ]) &
                 , describe( &
                         "operator(/=)", &
                         [ it( &
-                                "is false for the same thermal_expansion_coeffecient", &
+                                "is false for the same thermal_expansion_coefficient", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_not_equal_with_same_number) &
                         , it( &
-                                "is true for different thermal_expansion_coeffecients", &
+                                "is true for different thermal_expansion_coefficients", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_not_equal_with_different_numbers) &
                         ]) &
                 , describe( &
-                        "%equal(thermal_expansion_coeffecient, within)", &
+                        "%equal(thermal_expansion_coefficient, within)", &
                         [ it( &
-                                "is true for the same thermal_expansion_coeffecient even for tiny tolerance", &
+                                "is true for the same thermal_expansion_coefficient even for tiny tolerance", &
                                 DOUBLE_PRECISION_GENERATOR, &
                                 check_equal_within_with_same_number) &
                         , it( &
@@ -217,7 +217,7 @@ contains
     end function
 
     function check_round_trip_in(units) result(result_)
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: units
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
@@ -231,7 +231,7 @@ contains
             class(input_t), intent(in) :: input
             type(result_t) :: result__
 
-            type(thermal_expansion_coeffecient_t) :: intermediate
+            type(thermal_expansion_coefficient_t) :: intermediate
 
             select type (input)
             type is (double_precision_input_t)
@@ -260,8 +260,8 @@ contains
 
     pure function check_conversion_factors_are_inverse( &
             from, to) result(result_)
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: to
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: from
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: to
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: from
         type(result_t) :: result_
 
         double precision :: factor1
@@ -289,7 +289,7 @@ contains
     end function
 
     function check_string_trip(units) result(result_)
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: units
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: units
         type(result_t) :: result_
 
         type(test_item_t) :: the_test
@@ -304,21 +304,21 @@ contains
             type(result_t) :: result__
 
             type(error_list_t) :: errors
-            type(thermal_expansion_coeffecient_t) :: original_thermal_expansion_coeffecient
-            type(fallible_thermal_expansion_coeffecient_t) :: maybe_thermal_expansion_coeffecient
-            type(thermal_expansion_coeffecient_t) :: new_thermal_expansion_coeffecient
+            type(thermal_expansion_coefficient_t) :: original_thermal_expansion_coefficient
+            type(fallible_thermal_expansion_coefficient_t) :: maybe_thermal_expansion_coefficient
+            type(thermal_expansion_coefficient_t) :: new_thermal_expansion_coefficient
 
             select type (input)
             type is (double_precision_input_t)
-                original_thermal_expansion_coeffecient = input%input().unit.units
-                maybe_thermal_expansion_coeffecient = parse_thermal_expansion_coeffecient( &
-                        original_thermal_expansion_coeffecient%to_string_in(units))
-                new_thermal_expansion_coeffecient = maybe_thermal_expansion_coeffecient%thermal_expansion_coeffecient()
-                errors = maybe_thermal_expansion_coeffecient%errors()
+                original_thermal_expansion_coefficient = input%input().unit.units
+                maybe_thermal_expansion_coefficient = parse_thermal_expansion_coefficient( &
+                        original_thermal_expansion_coefficient%to_string_in(units))
+                new_thermal_expansion_coefficient = maybe_thermal_expansion_coefficient%thermal_expansion_coefficient()
+                errors = maybe_thermal_expansion_coefficient%errors()
                 result__ = &
                         assert_equals( &
-                                original_thermal_expansion_coeffecient, &
-                                new_thermal_expansion_coeffecient) &
+                                original_thermal_expansion_coefficient, &
+                                new_thermal_expansion_coefficient) &
                         .and.assert_not(errors%has_any(), errors%to_string())
             class default
                 result__ = fail("Expected to get a double_precision_input_t")
@@ -330,10 +330,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_thermal_expansion_coeffecient_t) :: maybe_thermal_expansion_coeffecient
+        type(fallible_thermal_expansion_coefficient_t) :: maybe_thermal_expansion_coefficient
 
-        maybe_thermal_expansion_coeffecient = parse_thermal_expansion_coeffecient("bad")
-        errors = maybe_thermal_expansion_coeffecient%errors()
+        maybe_thermal_expansion_coefficient = parse_thermal_expansion_coefficient("bad")
+        errors = maybe_thermal_expansion_coefficient%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -341,10 +341,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_thermal_expansion_coeffecient_t) :: maybe_thermal_expansion_coeffecient
+        type(fallible_thermal_expansion_coefficient_t) :: maybe_thermal_expansion_coefficient
 
-        maybe_thermal_expansion_coeffecient = parse_thermal_expansion_coeffecient("1.0 1/Kbad", [PER_KELVIN])
-        errors = maybe_thermal_expansion_coeffecient%errors()
+        maybe_thermal_expansion_coefficient = parse_thermal_expansion_coefficient("1.0 1/Kbad", [PER_KELVIN])
+        errors = maybe_thermal_expansion_coefficient%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -352,10 +352,10 @@ contains
         type(result_t) :: result_
 
         type(error_list_t) :: errors
-        type(fallible_thermal_expansion_coeffecient_t) :: maybe_thermal_expansion_coeffecient
+        type(fallible_thermal_expansion_coefficient_t) :: maybe_thermal_expansion_coefficient
 
-        maybe_thermal_expansion_coeffecient = parse_thermal_expansion_coeffecient("bad 1/K")
-        errors = maybe_thermal_expansion_coeffecient%errors()
+        maybe_thermal_expansion_coefficient = parse_thermal_expansion_coefficient("bad 1/K")
+        errors = maybe_thermal_expansion_coefficient%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
@@ -373,14 +373,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
-        type(thermal_expansion_coeffecient_t) :: zero
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
+        type(thermal_expansion_coefficient_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient = input%input().unit.PER_KELVIN
             zero = 0.0d0.unit.PER_KELVIN
-            result_ = assert_equals(thermal_expansion_coeffecient, thermal_expansion_coeffecient + zero)
+            result_ = assert_equals(thermal_expansion_coefficient, thermal_expansion_coefficient + zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -390,14 +390,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
-        type(thermal_expansion_coeffecient_t) :: zero
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
+        type(thermal_expansion_coefficient_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient = input%input().unit.PER_KELVIN
             zero = 0.0d0.unit.PER_KELVIN
-            result_ = assert_equals(thermal_expansion_coeffecient, thermal_expansion_coeffecient - zero)
+            result_ = assert_equals(thermal_expansion_coefficient, thermal_expansion_coefficient - zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -407,19 +407,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type(input)
         type is (double_precision_pair_input_t)
-            thermal_expansion_coeffecient1 = input%first().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = input%second_().unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%first().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = input%second_().unit.PER_KELVIN
             result_ = assert_equals_within_relative( &
-                    thermal_expansion_coeffecient1, &
-                    (thermal_expansion_coeffecient1 + thermal_expansion_coeffecient2) - thermal_expansion_coeffecient2, &
+                    thermal_expansion_coefficient1, &
+                    (thermal_expansion_coefficient1 + thermal_expansion_coefficient2) - thermal_expansion_coefficient2, &
                     1.0d-8, &
-                    "thermal_expansion_coeffecient1 = " // thermal_expansion_coeffecient1%to_string() &
-                    // ", thermal_expansion_coeffecient2 = " // thermal_expansion_coeffecient2%to_string())
+                    "thermal_expansion_coefficient1 = " // thermal_expansion_coefficient1%to_string() &
+                    // ", thermal_expansion_coefficient2 = " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
@@ -429,12 +429,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
 
         select type(input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
-            result_ = assert_equals(thermal_expansion_coeffecient, thermal_expansion_coeffecient * 1.0d0)
+            thermal_expansion_coefficient = input%input().unit.PER_KELVIN
+            result_ = assert_equals(thermal_expansion_coefficient, thermal_expansion_coefficient * 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -444,14 +444,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
-        type(thermal_expansion_coeffecient_t) :: zero
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
+        type(thermal_expansion_coefficient_t) :: zero
 
         select type(input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient = input%input().unit.PER_KELVIN
             zero = 0.0d0.unit.PER_KELVIN
-            result_ = assert_equals(zero, thermal_expansion_coeffecient * 0.0d0)
+            result_ = assert_equals(zero, thermal_expansion_coefficient * 0.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -461,12 +461,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
 
         select type(input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
-            result_ = assert_equals(thermal_expansion_coeffecient, thermal_expansion_coeffecient / 1.0d0)
+            thermal_expansion_coefficient = input%input().unit.PER_KELVIN
+            result_ = assert_equals(thermal_expansion_coefficient, thermal_expansion_coefficient / 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -476,12 +476,12 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
 
         select type(input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
-            result_ = assert_equals(1.0d0, thermal_expansion_coeffecient / thermal_expansion_coeffecient)
+            thermal_expansion_coefficient = input%input().unit.PER_KELVIN
+            result_ = assert_equals(1.0d0, thermal_expansion_coefficient / thermal_expansion_coefficient)
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -491,13 +491,13 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient
 
         select type (input)
         type is (double_precision_pair_input_t)
-            thermal_expansion_coeffecient = input%first().unit.PER_KELVIN
+            thermal_expansion_coefficient = input%first().unit.PER_KELVIN
             result_ = &
-              assert_equals(thermal_expansion_coeffecient, ((thermal_expansion_coeffecient * input%second_()) / input%second_()))
+              assert_equals(thermal_expansion_coefficient, ((thermal_expansion_coefficient * input%second_()) / input%second_()))
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
         end select
@@ -507,14 +507,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: the_thermal_expansion_coeffecient
+        type(thermal_expansion_coefficient_t) :: the_thermal_expansion_coefficient
 
         select type (input)
         type is (double_precision_input_t)
-            the_thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
+            the_thermal_expansion_coefficient = input%input().unit.PER_KELVIN
             result_ = assert_that( &
-                    the_thermal_expansion_coeffecient == the_thermal_expansion_coeffecient, &
-                    the_thermal_expansion_coeffecient%to_string() // " == " // the_thermal_expansion_coeffecient%to_string())
+                    the_thermal_expansion_coefficient == the_thermal_expansion_coefficient, &
+                    the_thermal_expansion_coefficient%to_string() // " == " // the_thermal_expansion_coefficient%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -524,16 +524,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 1.0d0).unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 == thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " == " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 == thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " == " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -543,14 +543,14 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: the_thermal_expansion_coeffecient
+        type(thermal_expansion_coefficient_t) :: the_thermal_expansion_coefficient
 
         select type (input)
         type is (double_precision_input_t)
-            the_thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
+            the_thermal_expansion_coefficient = input%input().unit.PER_KELVIN
             result_ = assert_not( &
-                    the_thermal_expansion_coeffecient /= the_thermal_expansion_coeffecient, &
-                    the_thermal_expansion_coeffecient%to_string() // " /= " // the_thermal_expansion_coeffecient%to_string())
+                    the_thermal_expansion_coefficient /= the_thermal_expansion_coefficient, &
+                    the_thermal_expansion_coefficient%to_string() // " /= " // the_thermal_expansion_coefficient%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -560,16 +560,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 1.0d0).unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 /= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " /= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 /= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " /= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -579,17 +579,17 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: the_thermal_expansion_coeffecient
-        type(thermal_expansion_coeffecient_t) :: tolerance
+        type(thermal_expansion_coefficient_t) :: the_thermal_expansion_coefficient
+        type(thermal_expansion_coefficient_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            the_thermal_expansion_coeffecient = input%input().unit.PER_KELVIN
+            the_thermal_expansion_coefficient = input%input().unit.PER_KELVIN
             tolerance = tiny(1.0d0).unit.PER_KELVIN
             result_ = assert_that( &
-                    the_thermal_expansion_coeffecient%equal(the_thermal_expansion_coeffecient, within = tolerance), &
-                    "(" // the_thermal_expansion_coeffecient%to_string() // ")%equal(" &
-                        // the_thermal_expansion_coeffecient%to_string() // ", within = " &
+                    the_thermal_expansion_coefficient%equal(the_thermal_expansion_coefficient, within = tolerance), &
+                    "(" // the_thermal_expansion_coefficient%to_string() // ")%equal(" &
+                        // the_thermal_expansion_coefficient%to_string() // ", within = " &
                         // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -600,19 +600,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
-        type(thermal_expansion_coeffecient_t) :: tolerance
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
+        type(thermal_expansion_coefficient_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 0.05d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 0.05d0).unit.PER_KELVIN
             tolerance = 0.1d0.unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1%equal(thermal_expansion_coeffecient2, within = tolerance), &
-                    "(" // thermal_expansion_coeffecient1%to_string() // ")%equal(" &
-                        // thermal_expansion_coeffecient2%to_string() // ", within = " &
+                    thermal_expansion_coefficient1%equal(thermal_expansion_coefficient2, within = tolerance), &
+                    "(" // thermal_expansion_coefficient1%to_string() // ")%equal(" &
+                        // thermal_expansion_coefficient2%to_string() // ", within = " &
                         // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -623,19 +623,19 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
-        type(thermal_expansion_coeffecient_t) :: tolerance
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
+        type(thermal_expansion_coefficient_t) :: tolerance
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 0.2d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 0.2d0).unit.PER_KELVIN
             tolerance = 0.1d0.unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1%equal(thermal_expansion_coeffecient2, within = tolerance), &
-                    "(" // thermal_expansion_coeffecient1%to_string() // ")%equal(" &
-                    // thermal_expansion_coeffecient2%to_string() // ", within = " &
+                    thermal_expansion_coefficient1%equal(thermal_expansion_coefficient2, within = tolerance), &
+                    "(" // thermal_expansion_coefficient1%to_string() // ")%equal(" &
+                    // thermal_expansion_coefficient2%to_string() // ", within = " &
                     // tolerance%to_string() // ")")
         class default
             result_ = fail("Expected to get a double_precision_input_t")
@@ -646,16 +646,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit. PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() - 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit. PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() - 1.0d0).unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 >= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " >= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 >= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " >= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -665,16 +665,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = input%input().unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 >= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " >= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 >= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " >= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -684,16 +684,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 1.0d0).unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 >= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " >= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 >= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " >= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -703,16 +703,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit. PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit. PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 1.0d0).unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 <= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " <= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 <= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " <= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -722,16 +722,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = input%input().unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 <= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " <= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 <= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " <= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -741,16 +741,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() - 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() - 1.0d0).unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 <= thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " <= " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 <= thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " <= " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -760,16 +760,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit. PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() - 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit. PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() - 1.0d0).unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 > thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " > " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 > thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " > " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -779,16 +779,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = input%input().unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 > thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " > " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 > thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " > " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -798,16 +798,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 1.0d0).unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 > thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " > " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 > thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " > " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -817,16 +817,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit. PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() + 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit. PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() + 1.0d0).unit.PER_KELVIN
             result_ = assert_that( &
-                    thermal_expansion_coeffecient1 < thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " < " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 < thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " < " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -836,16 +836,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = input%input().unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 < thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " <=" // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 < thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " <=" // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select
@@ -855,16 +855,16 @@ contains
         class(input_t), intent(in) :: input
         type(result_t) :: result_
 
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient1
-        type(thermal_expansion_coeffecient_t) :: thermal_expansion_coeffecient2
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient1
+        type(thermal_expansion_coefficient_t) :: thermal_expansion_coefficient2
 
         select type (input)
         type is (double_precision_input_t)
-            thermal_expansion_coeffecient1 = input%input().unit.PER_KELVIN
-            thermal_expansion_coeffecient2 = (input%input() - 1.0d0).unit.PER_KELVIN
+            thermal_expansion_coefficient1 = input%input().unit.PER_KELVIN
+            thermal_expansion_coefficient2 = (input%input() - 1.0d0).unit.PER_KELVIN
             result_ = assert_not( &
-                    thermal_expansion_coeffecient1 < thermal_expansion_coeffecient2, &
-                    thermal_expansion_coeffecient1%to_string() // " < " // thermal_expansion_coeffecient2%to_string())
+                    thermal_expansion_coefficient1 < thermal_expansion_coefficient2, &
+                    thermal_expansion_coefficient1%to_string() // " < " // thermal_expansion_coefficient2%to_string())
         class default
             result_ = fail("Expected to get a double_precision_input_t")
         end select

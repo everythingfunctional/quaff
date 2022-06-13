@@ -43,6 +43,7 @@ module quaff_volume_m
             parse_volume, &
             parse_volume_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
@@ -200,6 +201,10 @@ module quaff_volume_m
         module procedure parse_volume_unit_s
         module procedure parse_volume_unit_with_units_c
         module procedure parse_volume_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_volume
     end interface
 
     interface sum
@@ -383,6 +388,13 @@ contains
         type(volume_t) :: difference
 
         difference%cubic_meters = lhs%cubic_meters - rhs%cubic_meters
+    end function
+
+    pure function abs_volume(volume) result(abs_)
+        type(volume_t), intent(in) :: volume
+        type(volume_t) :: abs_
+
+        abs_%cubic_meters = abs(volume%cubic_meters)
     end function
 
     pure function sum_volume(volumes) result(sum_)

@@ -1,5 +1,5 @@
-module thermal_expansion_coeffecient_utilities_m
-    use quaff, only: thermal_expansion_coeffecient_unit_t
+module thermal_expansion_coefficient_utilities_m
+    use quaff, only: thermal_expansion_coefficient_unit_t
     use test_utilities_m, only: combinations
     use units_examples_m, only: units_examples_t
     use veggies, only: example_t, input_t
@@ -10,7 +10,7 @@ module thermal_expansion_coeffecient_utilities_m
 
     type, extends(input_t) :: units_input_t
         private
-        class(thermal_expansion_coeffecient_unit_t), allocatable :: unit_
+        class(thermal_expansion_coefficient_unit_t), allocatable :: unit_
     contains
         private
         procedure, public :: unit
@@ -18,8 +18,8 @@ module thermal_expansion_coeffecient_utilities_m
 
     type, extends(input_t) :: units_pair_input_t
         private
-        class(thermal_expansion_coeffecient_unit_t), allocatable :: first_
-        class(thermal_expansion_coeffecient_unit_t), allocatable :: second__
+        class(thermal_expansion_coefficient_unit_t), allocatable :: first_
+        class(thermal_expansion_coefficient_unit_t), allocatable :: second__
     contains
         private
         procedure, public :: first
@@ -35,7 +35,7 @@ module thermal_expansion_coeffecient_utilities_m
     end interface
 contains
     function units_input_constructor(unit) result(units_input)
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: unit
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: unit
         type(units_input_t) :: units_input
 
         allocate(units_input%unit_, source = unit)
@@ -43,14 +43,14 @@ contains
 
     function unit(self)
         class(units_input_t), intent(in) :: self
-        class(thermal_expansion_coeffecient_unit_t), allocatable :: unit
+        class(thermal_expansion_coefficient_unit_t), allocatable :: unit
 
         allocate(unit, source = self%unit_)
     end function
 
     function units_pair_input_constructor(first, second_) result(units_pair_input)
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: first
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: second_
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: first
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: second_
         type(units_pair_input_t) :: units_pair_input
 
         allocate(units_pair_input%first_, source = first)
@@ -59,20 +59,20 @@ contains
 
     function first(self)
         class(units_pair_input_t), intent(in) :: self
-        class(thermal_expansion_coeffecient_unit_t), allocatable :: first
+        class(thermal_expansion_coefficient_unit_t), allocatable :: first
 
         allocate(first, source = self%first_)
     end function
 
     function second_(self)
         class(units_pair_input_t), intent(in) :: self
-        class(thermal_expansion_coeffecient_unit_t), allocatable :: second_
+        class(thermal_expansion_coefficient_unit_t), allocatable :: second_
 
         allocate(second_, source = self%second__)
     end function
 
     function make_units_examples(units) result(units_examples)
-        class(thermal_expansion_coeffecient_unit_t), intent(in) :: units(:)
+        class(thermal_expansion_coefficient_unit_t), intent(in) :: units(:)
         type(units_examples_t) :: units_examples
 
         integer :: i

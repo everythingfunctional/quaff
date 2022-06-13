@@ -481,18 +481,18 @@ module quaff
             WATTS_PER_METER_KELVIN, &
             BTU_PER_HOUR_FEET_FAHRENHEIT, &
             BTU_PER_HOUR_FEET_RANKINE
-    use quaff_thermal_expansion_coeffecient_m, only: &
-            thermal_expansion_coeffecient_t, &
-            fallible_thermal_expansion_coeffecient_t, &
-            thermal_expansion_coeffecient_unit_t, &
-            fallible_thermal_expansion_coeffecient_unit_t, &
+    use quaff_thermal_expansion_coefficient_m, only: &
+            thermal_expansion_coefficient_t, &
+            fallible_thermal_expansion_coefficient_t, &
+            thermal_expansion_coefficient_unit_t, &
+            fallible_thermal_expansion_coefficient_unit_t, &
             operator(.unit.), &
-            parse_thermal_expansion_coeffecient, &
-            parse_thermal_expansion_coeffecient_unit, &
+            parse_thermal_expansion_coefficient, &
+            parse_thermal_expansion_coefficient_unit, &
             sum, &
             abs, &
-            DEFAULT_THERMAL_EXPANSION_COEFFECIENT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS => PROVIDED_UNITS, &
+            DEFAULT_THERMAL_EXPANSION_coefficient_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_THERMAL_EXPANSION_coefficient_UNITS => PROVIDED_UNITS, &
             PER_KELVIN, &
             PER_RANKINE, &
             PER_FAHRENHEIT
@@ -524,6 +524,7 @@ module quaff
             parse_volume, &
             parse_volume_unit, &
             sum, &
+            abs, &
             DEFAULT_VOLUME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &
