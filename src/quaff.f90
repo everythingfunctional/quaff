@@ -224,6 +224,7 @@ module quaff
             parse_energy_per_temperature_amount, &
             parse_energy_per_temperature_amount_unit, &
             sum, &
+            abs, &
             DEFAULT_ENERGY_PER_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KELVIN_MOL, &
