@@ -162,6 +162,7 @@ module quaff
             parse_density, &
             parse_density_unit, &
             sum, &
+            abs, &
             DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
