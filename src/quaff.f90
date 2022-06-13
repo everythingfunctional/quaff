@@ -117,6 +117,7 @@ module quaff
             parse_burnup, &
             parse_burnup_unit, &
             sum, &
+            abs, &
             DEFAULT_BURNUP_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &

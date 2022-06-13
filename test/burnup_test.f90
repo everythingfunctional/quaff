@@ -15,6 +15,7 @@ module burnup_test
             operator(.unit.), &
             parse_burnup, &
             sum, &
+            abs, &
             PROVIDED_BURNUP_UNITS, &
             WATT_SECONDS_PER_KILOGRAM
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original burnup", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -366,6 +368,19 @@ contains
                 sum(numbers).unit.WATT_SECONDS_PER_KILOGRAM, &
                 sum(numbers.unit.WATT_SECONDS_PER_KILOGRAM))
     end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.WATT_SECONDS_PER_KILOGRAM, &
+                        abs(1.0d0.unit.WATT_SECONDS_PER_KILOGRAM)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.WATT_SECONDS_PER_KILOGRAM, &
+                        abs((-1.0d0).unit.WATT_SECONDS_PER_KILOGRAM))
+    end function
+
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input

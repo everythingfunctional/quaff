@@ -41,6 +41,7 @@ module quaff_burnup_m
             parse_burnup, &
             parse_burnup_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
@@ -196,6 +197,10 @@ module quaff_burnup_m
         module procedure parse_burnup_unit_s
         module procedure parse_burnup_unit_with_units_c
         module procedure parse_burnup_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_burnup
     end interface
 
     interface sum
@@ -371,6 +376,13 @@ contains
         type(burnup_t) :: difference
 
         difference%watt_seconds_per_kilogram = lhs%watt_seconds_per_kilogram - rhs%watt_seconds_per_kilogram
+    end function
+
+    pure function abs_burnup(burnup) result(abs_)
+        class(burnup_t), intent(in) :: burnup
+        type(burnup_t) :: abs_
+
+        abs_%watt_seconds_per_kilogram = abs(burnup%watt_seconds_per_kilogram)
     end function
 
     pure function sum_burnup(burnups) result(sum_)
