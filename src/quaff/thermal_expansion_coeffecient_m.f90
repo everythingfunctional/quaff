@@ -41,6 +41,7 @@ module quaff_thermal_expansion_coeffecient_m
             parse_thermal_expansion_coeffecient, &
             parse_thermal_expansion_coeffecient_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             PER_KELVIN, &
@@ -199,6 +200,10 @@ module quaff_thermal_expansion_coeffecient_m
         module procedure parse_thermal_expansion_coeffecient_unit_with_units_s
     end interface
 
+    interface abs
+        module procedure abs_thermal_expansion_coeffecient
+    end interface
+    
     interface sum
         module procedure sum_thermal_expansion_coeffecient
     end interface
@@ -378,6 +383,13 @@ contains
         difference%per_kelvin = lhs%per_kelvin - rhs%per_kelvin
     end function
 
+    pure function abs_thermal_expansion_coeffecient(thermal_expansion_coeffecient) result(abs_)
+        type(thermal_expansion_coeffecient_t), intent(in) :: thermal_expansion_coeffecient
+        type(thermal_expansion_coeffecient_t) :: abs_
+
+        abs_%per_kelvin = abs(thermal_expansion_coeffecient%per_kelvin)
+    end function
+    
     pure function sum_thermal_expansion_coeffecient(thermal_expansion_coeffecients) result(sum_)
         type(thermal_expansion_coeffecient_t), intent(in) :: thermal_expansion_coeffecients(:)
         type(thermal_expansion_coeffecient_t) :: sum_

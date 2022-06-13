@@ -490,6 +490,7 @@ module quaff
             parse_thermal_expansion_coeffecient, &
             parse_thermal_expansion_coeffecient_unit, &
             sum, &
+            abs, &
             DEFAULT_THERMAL_EXPANSION_COEFFECIENT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS => PROVIDED_UNITS, &
             PER_KELVIN, &
