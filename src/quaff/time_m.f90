@@ -43,6 +43,7 @@ module quaff_time_m
             fallible_time_unit_t, &
             time_simple_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_time, &
             parse_time_unit, &
             sum, &
@@ -206,6 +207,10 @@ module quaff_time_m
         module procedure parse_time_unit_s
         module procedure parse_time_unit_with_units_c
         module procedure parse_time_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_time
     end interface
 
     interface sum
@@ -401,6 +406,13 @@ contains
         type(time_t) :: difference
 
         difference%seconds = lhs%seconds - rhs%seconds
+    end function
+
+    elemental function abs_time(time) result(abs_)
+        type(time_t), intent(in) :: time
+        type(time_t) :: abs_
+
+        abs_%seconds = abs(time%seconds)
     end function
 
     pure function sum_time(times) result(sum_)

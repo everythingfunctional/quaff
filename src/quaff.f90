@@ -473,6 +473,7 @@ module quaff
             time_unit_t, &
             fallible_time_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_time, &
             parse_time_unit, &
             sum, &
