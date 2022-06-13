@@ -5,6 +5,7 @@ module quaff
             acceleration_unit_t, &
             fallible_acceleration_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_acceleration, &
             parse_acceleration_unit, &
             sum, &
@@ -19,6 +20,7 @@ module quaff
             amount_unit_t, &
             fallible_amount_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_amount, &
             parse_amount_unit, &
             sum, &

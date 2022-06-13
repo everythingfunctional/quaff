@@ -39,6 +39,7 @@ module quaff_acceleration_m
             fallible_acceleration_unit_t, &
             acceleration_simple_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_acceleration, &
             parse_acceleration_unit, &
             sum, &
@@ -198,6 +199,10 @@ module quaff_acceleration_m
         module procedure parse_acceleration_unit_s
         module procedure parse_acceleration_unit_with_units_c
         module procedure parse_acceleration_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_acceleration
     end interface
 
     interface sum
@@ -380,6 +385,13 @@ contains
         type(acceleration_t) :: difference
 
         difference%meters_per_square_second = lhs%meters_per_square_second - rhs%meters_per_square_second
+    end function
+
+    elemental function abs_acceleration(acceleration) result(abs_)
+        type(acceleration_t), intent(in) :: acceleration
+        type(acceleration_t) :: abs_
+
+        abs_%meters_per_square_second = abs(acceleration%meters_per_square_second)
     end function
 
     pure function sum_acceleration(accelerations) result(sum_)

@@ -13,6 +13,7 @@ module amount_test
             fallible_amount_t, &
             amount_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_amount, &
             sum, &
             PROVIDED_AMOUNT_UNITS, &
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original amount", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -365,6 +367,18 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.MOLS, &
                 sum(numbers.unit.MOLS))
+    end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.MOLS, &
+                        abs(1.0d0.unit.MOLS)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.MOLS, &
+                        abs((-1.0d0).unit.MOLS))
     end function
 
     pure function check_add_zero(input) result(result_)

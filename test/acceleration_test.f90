@@ -13,6 +13,7 @@ module acceleration_test
             fallible_acceleration_t, &
             acceleration_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_acceleration, &
             sum, &
             PROVIDED_ACCELERATION_UNITS, &
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original acceleration", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -365,6 +367,18 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.METERS_PER_SQUARE_SECOND, &
                 sum(numbers.unit.METERS_PER_SQUARE_SECOND))
+    end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.METERS_PER_SQUARE_SECOND, &
+                        abs(1.0d0.unit.METERS_PER_SQUARE_SECOND)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.METERS_PER_SQUARE_SECOND, &
+                        abs((-1.0d0).unit.METERS_PER_SQUARE_SECOND))
     end function
 
     pure function check_add_zero(input) result(result_)

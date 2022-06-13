@@ -36,6 +36,7 @@ module quaff_quantity_m
             fallible_quantity_unit_t, &
             quantity_simple_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_quantity, &
             parse_quantity_unit, &
             sum, &
@@ -194,6 +195,10 @@ module quaff_quantity_m
         module procedure parse_quantity_unit_s
         module procedure parse_quantity_unit_with_units_c
         module procedure parse_quantity_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_quantity
     end interface
 
     interface sum
@@ -369,6 +374,13 @@ contains
         type(quantity_t) :: difference
 
         difference%meters = lhs%meters - rhs%meters
+    end function
+
+    elemental function abs_quantity(quantity) result(abs_)
+        type(quantity_t), intent(in) :: quantity
+        type(quantity_t) :: abs_
+
+        abs_%meters = abs(quantity%meters)
     end function
 
     pure function sum_quantity(quantitys) result(sum_)

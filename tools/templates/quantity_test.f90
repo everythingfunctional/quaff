@@ -13,6 +13,7 @@ module quantity_test
             fallible_quantity_t, &
             quantity_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_quantity, &
             sum, &
             PROVIDED_QUANTITY_UNITS, &
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original quantity", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -365,6 +367,18 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.METERS, &
                 sum(numbers.unit.METERS))
+    end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.METERS, &
+                        abs(1.0d0.unit.METERS)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.METERS, &
+                        abs((-1.0d0).unit.METERS))
     end function
 
     pure function check_add_zero(input) result(result_)
