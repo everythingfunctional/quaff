@@ -369,6 +369,7 @@ module quaff
             pressure_unit_t, &
             fallible_pressure_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_pressure, &
             parse_pressure_unit, &
             sum, &
