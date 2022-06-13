@@ -348,6 +348,7 @@ module quaff
             parse_mass_rate, &
             parse_mass_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_MASS_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_RATE_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_SECOND, &
