@@ -44,6 +44,7 @@ module quaff_force_m
             parse_force, &
             parse_force_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             DYNES, &
@@ -202,6 +203,10 @@ module quaff_force_m
         module procedure parse_force_unit_s
         module procedure parse_force_unit_with_units_c
         module procedure parse_force_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_force
     end interface
 
     interface sum
@@ -389,6 +394,13 @@ contains
         type(force_t) :: difference
 
         difference%newtons = lhs%newtons - rhs%newtons
+    end function
+
+    pure function abs_force(force) result(abs_)
+        type(force_t), intent(in) :: force
+        type(force_t) :: abs_
+
+        abs_%newtons = abs(force%newtons)
     end function
 
     pure function sum_force(forces) result(sum_)

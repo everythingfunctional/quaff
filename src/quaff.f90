@@ -266,6 +266,7 @@ module quaff
             parse_force, &
             parse_force_unit, &
             sum, &
+            abs, &
             DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
             DYNES, &
