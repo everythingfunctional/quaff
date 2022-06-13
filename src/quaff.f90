@@ -238,6 +238,7 @@ module quaff
             parse_enthalpy, &
             parse_enthalpy_unit, &
             sum, &
+            abs, &
             DEFAULT_ENTHALPY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM, &
