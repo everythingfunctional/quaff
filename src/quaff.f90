@@ -80,6 +80,7 @@ module quaff
             parse_angle, &
             parse_angle_unit, &
             sum, &
+            abs, &
             sin, &
             cos, &
             tan, &

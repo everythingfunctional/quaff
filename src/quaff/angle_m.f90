@@ -40,6 +40,7 @@ module quaff_angle_m
             parse_angle, &
             parse_angle_unit, &
             sum, &
+            abs, &
             sin, &
             cos, &
             tan, &
@@ -202,6 +203,10 @@ module quaff_angle_m
         module procedure parse_angle_unit_s
         module procedure parse_angle_unit_with_units_c
         module procedure parse_angle_unit_with_units_s
+    end interface
+
+    interface abs
+          module procedure abs_angle
     end interface
 
     interface sum
@@ -389,6 +394,13 @@ contains
         type(angle_t) :: difference
 
         difference%radians = lhs%radians - rhs%radians
+    end function
+
+    pure function abs_angle(angle) result(abs_)
+        class(angle_t), intent(in) :: angle
+        type(angle_t) :: abs_
+
+        abs_%radians = abs(angle%radians)
     end function
 
     pure function sum_angle(angles) result(sum_)
