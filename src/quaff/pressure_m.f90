@@ -47,6 +47,7 @@ module quaff_pressure_m
             operator(.unit.), &
             parse_pressure, &
             parse_pressure_unit, &
+            abs, &
             sum, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
@@ -210,6 +211,10 @@ module quaff_pressure_m
         module procedure parse_pressure_unit_s
         module procedure parse_pressure_unit_with_units_c
         module procedure parse_pressure_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_pressure
     end interface
 
     interface sum
@@ -422,6 +427,13 @@ contains
         type(pressure_t) :: difference
 
         difference%pascals = lhs%pascals - rhs%pascals
+    end function
+
+    elemental function abs_pressure(pressure) result(abs_)
+        type(pressure_t), intent(in) :: pressure
+        type(pressure_t) :: abs_
+
+        abs_%pascals = abs(pressure%pascals)
     end function
 
     pure function sum_pressure(pressures) result(sum_)
