@@ -101,6 +101,7 @@ module quaff
             parse_area, &
             parse_area_unit, &
             sum, &
+            abs, &
             DEFAULT_AREA_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AREA_UNITS => PROVIDED_UNITS, &
             SQUARE_CENTIMETERS, &
