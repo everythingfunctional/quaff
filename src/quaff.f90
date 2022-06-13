@@ -210,6 +210,7 @@ module quaff
             parse_energy_per_amount, &
             parse_energy_per_amount_unit, &
             sum, &
+            abs, &
             DEFAULT_ENERGY_PER_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_MOL, &
