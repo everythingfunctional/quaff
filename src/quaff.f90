@@ -146,6 +146,7 @@ module quaff
             parse_delta_temperature, &
             parse_delta_temperature_unit, &
             sum, &
+            abs, &
             DEFAULT_DELTA_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DELTA_TEMPERATURE_UNITS =>PROVIDED_UNITS, &
             DELTA_CELSIUS, &
