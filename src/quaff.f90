@@ -414,6 +414,7 @@ module quaff
             parse_specific_heat, &
             parse_specific_heat_unit, &
             sum, &
+            abs, &
             DEFAULT_SPECIFIC_HEAT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPECIFIC_HEAT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM_KELVIN, &

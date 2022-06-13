@@ -41,6 +41,7 @@ module quaff_specific_heat_m
             parse_specific_heat, &
             parse_specific_heat_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             BTU_PER_POUNDS_RANKINE, &
@@ -197,6 +198,10 @@ module quaff_specific_heat_m
         module procedure parse_specific_heat_unit_s
         module procedure parse_specific_heat_unit_with_units_c
         module procedure parse_specific_heat_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_specific_heat
     end interface
 
     interface sum
@@ -379,6 +384,13 @@ contains
         type(specific_heat_t) :: difference
 
         difference%joules_per_kilogram_kelvin = lhs%joules_per_kilogram_kelvin - rhs%joules_per_kilogram_kelvin
+    end function
+
+    pure function abs_specific_heat(specific_heat) result(abs_)
+        type(specific_heat_t), intent(in) :: specific_heat
+        type(specific_heat_t) :: abs_
+
+        abs_%joules_per_kilogram_kelvin = abs(specific_heat%joules_per_kilogram_kelvin)
     end function
 
     pure function sum_specific_heat(specific_heats) result(sum_)
