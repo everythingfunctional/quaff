@@ -15,6 +15,7 @@ module convective_heat_transfer_test
             operator(.unit.), &
             parse_convective_heat_transfer, &
             sum, &
+            abs, &
             PROVIDED_CONVECTIVE_HEAT_TRANSFER_UNITS, &
             WATTS_PER_SQUARE_METER_KELVIN
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original convective_heat_transfer", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -366,6 +368,20 @@ contains
                 sum(numbers).unit.WATTS_PER_SQUARE_METER_KELVIN, &
                 sum(numbers.unit.WATTS_PER_SQUARE_METER_KELVIN))
     end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.WATTS_PER_SQUARE_METER_KELVIN, &
+                        abs(1.0d0.unit.WATTS_PER_SQUARE_METER_KELVIN)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.WATTS_PER_SQUARE_METER_KELVIN, &
+                        abs((-1.0d0).unit.WATTS_PER_SQUARE_METER_KELVIN))
+    end function
+
+
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input

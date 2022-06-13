@@ -131,6 +131,7 @@ module quaff
             parse_convective_heat_transfer, &
             parse_convective_heat_transfer_unit, &
             sum, &
+            abs, &
             DEFAULT_CONVECTIVE_HEAT_TRANSFER_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_CONVECTIVE_HEAT_TRANSFER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
