@@ -42,6 +42,7 @@ module quaff_speed_m
             parse_speed, &
             parse_speed_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
@@ -198,6 +199,10 @@ module quaff_speed_m
         module procedure parse_speed_unit_s
         module procedure parse_speed_unit_with_units_c
         module procedure parse_speed_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_speed
     end interface
 
     interface sum
@@ -377,6 +382,13 @@ contains
         type(speed_t) :: difference
 
         difference%meters_per_second = lhs%meters_per_second - rhs%meters_per_second
+    end function
+
+    pure function abs_speed(speed) result(abs_)
+        type(speed_t), intent(in) :: speed
+        type(speed_t) :: abs_
+
+        abs_%meters_per_second = abs(speed%meters_per_second)
     end function
 
     pure function sum_speed(speeds) result(sum_)

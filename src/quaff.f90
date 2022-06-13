@@ -429,6 +429,7 @@ module quaff
             parse_speed, &
             parse_speed_unit, &
             sum, &
+            abs, &
             DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
