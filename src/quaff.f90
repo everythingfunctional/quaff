@@ -362,6 +362,7 @@ module quaff
             parse_molar_mass, &
             parse_molar_mass_unit, &
             sum, &
+            abs, &
             DEFAULT_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
