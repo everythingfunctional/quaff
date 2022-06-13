@@ -444,6 +444,7 @@ module quaff
             parse_stress_intensity_factor, &
             parse_stress_intensity_factor_unit, &
             sum, &
+            abs, &
             DEFAULT_STRESS_INTENSITY_FACTOR_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_STRESS_INTENSITY_FACTOR_UNITS => PROVIDED_UNITS, &
             STRESS_INTENSITY_FACTOR_PASCAL_ROOT_METER => PASCAL_ROOT_METER, &
