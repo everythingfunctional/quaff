@@ -52,6 +52,7 @@ module quaff
             parse_amount_temperature, &
             parse_amount_temperature_unit, &
             sum, &
+            abs, &
             DEFAULT_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_KELVIN, &

@@ -15,6 +15,7 @@ module amount_temperature_test
             operator(.unit.), &
             parse_amount_temperature, &
             sum, &
+            abs, &
             PROVIDED_AMOUNT_TEMPERATURE_UNITS, &
             MOLS_KELVIN
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original amount_temperature", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -357,6 +359,18 @@ contains
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
 
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.MOLS_KELVIN, &
+                        abs(1.0d0.unit.MOLS_KELVIN)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.MOLS_KELVIN, &
+                        abs((-1.0d0).unit.MOLS_KELVIN))
+    end function
+
     pure function check_sum() result(result_)
         type(result_t) :: result_
 
@@ -366,6 +380,8 @@ contains
                 sum(numbers).unit.MOLS_KELVIN, &
                 sum(numbers.unit.MOLS_KELVIN))
     end function
+
+
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input
