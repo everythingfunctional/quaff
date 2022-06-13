@@ -313,6 +313,7 @@ module quaff
             parse_length, &
             parse_length_unit, &
             sum, &
+            abs, &
             DEFAULT_LENGTH_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_LENGTH_UNITS => PROVIDED_UNITS, &
             CENTIMETERS, &
