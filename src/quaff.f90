@@ -177,6 +177,7 @@ module quaff
             parse_dynamic_viscosity, &
             parse_dynamic_viscosity_unit, &
             sum, &
+            abs, &
             DEFAULT_DYNAMIC_VISCOSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
