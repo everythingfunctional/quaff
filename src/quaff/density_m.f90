@@ -42,6 +42,7 @@ module quaff_density_m
             parse_density, &
             parse_density_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
@@ -198,6 +199,10 @@ module quaff_density_m
         module procedure parse_density_unit_s
         module procedure parse_density_unit_with_units_c
         module procedure parse_density_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_density
     end interface
 
     interface sum
@@ -380,6 +385,13 @@ contains
         type(density_t) :: difference
 
         difference%kilograms_per_cubic_meter = lhs%kilograms_per_cubic_meter - rhs%kilograms_per_cubic_meter
+    end function
+
+    pure function abs_density(density) result(abs_)
+        class(density_t), intent(in) :: density
+        type(density_t) :: abs_
+
+        abs_%kilograms_per_cubic_meter = abs(density%kilograms_per_cubic_meter)
     end function
 
     pure function sum_density(densitys) result(sum_)

@@ -5,6 +5,7 @@ module quaff
             acceleration_unit_t, &
             fallible_acceleration_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_acceleration, &
             parse_acceleration_unit, &
             sum, &
@@ -19,6 +20,7 @@ module quaff
             amount_unit_t, &
             fallible_amount_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_amount, &
             parse_amount_unit, &
             sum, &
@@ -36,6 +38,7 @@ module quaff
             parse_amount_rate, &
             parse_amount_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_AMOUNT_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_RATE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_PER_SECOND, &
@@ -49,6 +52,7 @@ module quaff
             parse_amount_temperature, &
             parse_amount_temperature_unit, &
             sum, &
+            abs, &
             DEFAULT_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_KELVIN, &
@@ -62,6 +66,7 @@ module quaff
             parse_amount_temperature_rate, &
             parse_amount_temperature_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_AMOUNT_TEMPERATURE_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AMOUNT_TEMPERATURE_RATE_UNITS => PROVIDED_UNITS, &
             KILOMOLS_KELVIN_PER_SECOND, &
@@ -75,6 +80,7 @@ module quaff
             parse_angle, &
             parse_angle_unit, &
             sum, &
+            abs, &
             sin, &
             cos, &
             tan, &
@@ -95,6 +101,7 @@ module quaff
             parse_area, &
             parse_area_unit, &
             sum, &
+            abs, &
             DEFAULT_AREA_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_AREA_UNITS => PROVIDED_UNITS, &
             SQUARE_CENTIMETERS, &
@@ -110,6 +117,7 @@ module quaff
             parse_burnup, &
             parse_burnup_unit, &
             sum, &
+            abs, &
             DEFAULT_BURNUP_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_BURNUP_UNITS => PROVIDED_UNITS, &
             MEGAWATT_DAYS_PER_TON, &
@@ -123,6 +131,7 @@ module quaff
             parse_convective_heat_transfer, &
             parse_convective_heat_transfer_unit, &
             sum, &
+            abs, &
             DEFAULT_CONVECTIVE_HEAT_TRANSFER_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_CONVECTIVE_HEAT_TRANSFER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
@@ -137,6 +146,7 @@ module quaff
             parse_delta_temperature, &
             parse_delta_temperature_unit, &
             sum, &
+            abs, &
             DEFAULT_DELTA_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DELTA_TEMPERATURE_UNITS =>PROVIDED_UNITS, &
             DELTA_CELSIUS, &
@@ -152,6 +162,7 @@ module quaff
             parse_density, &
             parse_density_unit, &
             sum, &
+            abs, &
             DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
@@ -166,6 +177,7 @@ module quaff
             parse_dynamic_viscosity, &
             parse_dynamic_viscosity_unit, &
             sum, &
+            abs, &
             DEFAULT_DYNAMIC_VISCOSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DYNAMIC_VISCOSITY_UNITS => PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
@@ -179,6 +191,7 @@ module quaff
             parse_energy, &
             parse_energy_unit, &
             sum, &
+            abs, &
             DEFAULT_ENERGY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_UNITS => PROVIDED_UNITS, &
             BTU, &
@@ -197,6 +210,7 @@ module quaff
             parse_energy_per_amount, &
             parse_energy_per_amount_unit, &
             sum, &
+            abs, &
             DEFAULT_ENERGY_PER_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_MOL, &
@@ -210,6 +224,7 @@ module quaff
             parse_energy_per_temperature_amount, &
             parse_energy_per_temperature_amount_unit, &
             sum, &
+            abs, &
             DEFAULT_ENERGY_PER_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KELVIN_MOL, &
@@ -223,6 +238,7 @@ module quaff
             parse_enthalpy, &
             parse_enthalpy_unit, &
             sum, &
+            abs, &
             DEFAULT_ENTHALPY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_ENTHALPY_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM, &
@@ -236,6 +252,7 @@ module quaff
             parse_fluence, &
             parse_fluence_unit, &
             sum, &
+            abs, &
             DEFAULT_FLUENCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FLUENCE_UNITS => PROVIDED_UNITS, &
             PARTICLES_PER_SQUARE_METER, &
@@ -249,6 +266,7 @@ module quaff
             parse_force, &
             parse_force_unit, &
             sum, &
+            abs, &
             DEFAULT_FORCE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FORCE_UNITS => PROVIDED_UNITS, &
             DYNES, &
@@ -265,6 +283,7 @@ module quaff
             parse_fracture_toughness, &
             parse_fracture_toughness_unit, &
             sum, &
+            abs, &
             DEFAULT_FRACTURE_TOUGHNESS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FRACTURE_TOUGHNESS_UNITS => PROVIDED_UNITS, &
             PASCAL_ROOT_METER, &
@@ -279,6 +298,7 @@ module quaff
             parse_frequency, &
             parse_frequency_unit, &
             sum, &
+            abs, &
             DEFAULT_FREQUENCY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_FREQUENCY_UNITS => PROVIDED_UNITS, &
             HERTZ, &
@@ -293,6 +313,7 @@ module quaff
             parse_length, &
             parse_length_unit, &
             sum, &
+            abs, &
             DEFAULT_LENGTH_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_LENGTH_UNITS => PROVIDED_UNITS, &
             CENTIMETERS, &
@@ -311,6 +332,7 @@ module quaff
             parse_mass, &
             parse_mass_unit, &
             sum, &
+            abs, &
             DEFAULT_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS, &
@@ -326,6 +348,7 @@ module quaff
             parse_mass_rate, &
             parse_mass_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_MASS_RATE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MASS_RATE_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_SECOND, &
@@ -339,6 +362,7 @@ module quaff
             parse_molar_mass, &
             parse_molar_mass_unit, &
             sum, &
+            abs, &
             DEFAULT_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
@@ -352,6 +376,7 @@ module quaff
             parse_power, &
             parse_power_unit, &
             sum, &
+            abs, &
             DEFAULT_POWER_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_POWER_UNITS => PROVIDED_UNITS, &
             BTU_PER_HOUR, &
@@ -365,6 +390,7 @@ module quaff
             pressure_unit_t, &
             fallible_pressure_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_pressure, &
             parse_pressure_unit, &
             sum, &
@@ -388,6 +414,7 @@ module quaff
             parse_specific_heat, &
             parse_specific_heat_unit, &
             sum, &
+            abs, &
             DEFAULT_SPECIFIC_HEAT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPECIFIC_HEAT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM_KELVIN, &
@@ -402,6 +429,7 @@ module quaff
             parse_speed, &
             parse_speed_unit, &
             sum, &
+            abs, &
             DEFAULT_SPEED_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
@@ -416,6 +444,7 @@ module quaff
             parse_stress_intensity_factor, &
             parse_stress_intensity_factor_unit, &
             sum, &
+            abs, &
             DEFAULT_STRESS_INTENSITY_FACTOR_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_STRESS_INTENSITY_FACTOR_UNITS => PROVIDED_UNITS, &
             STRESS_INTENSITY_FACTOR_PASCAL_ROOT_METER => PASCAL_ROOT_METER, &
@@ -444,6 +473,7 @@ module quaff
             parse_thermal_conductivity, &
             parse_thermal_conductivity_unit, &
             sum, &
+            abs, &
             DEFAULT_THERMAL_CONDUCTIVITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_THERMAL_CONDUCTIVITY_UNITS => PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
@@ -451,17 +481,18 @@ module quaff
             WATTS_PER_METER_KELVIN, &
             BTU_PER_HOUR_FEET_FAHRENHEIT, &
             BTU_PER_HOUR_FEET_RANKINE
-    use quaff_thermal_expansion_coeffecient_m, only: &
-            thermal_expansion_coeffecient_t, &
-            fallible_thermal_expansion_coeffecient_t, &
-            thermal_expansion_coeffecient_unit_t, &
-            fallible_thermal_expansion_coeffecient_unit_t, &
+    use quaff_thermal_expansion_coefficient_m, only: &
+            thermal_expansion_coefficient_t, &
+            fallible_thermal_expansion_coefficient_t, &
+            thermal_expansion_coefficient_unit_t, &
+            fallible_thermal_expansion_coefficient_unit_t, &
             operator(.unit.), &
-            parse_thermal_expansion_coeffecient, &
-            parse_thermal_expansion_coeffecient_unit, &
+            parse_thermal_expansion_coefficient, &
+            parse_thermal_expansion_coefficient_unit, &
             sum, &
-            DEFAULT_THERMAL_EXPANSION_COEFFECIENT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_THERMAL_EXPANSION_COEFFECIENT_UNITS => PROVIDED_UNITS, &
+            abs, &
+            DEFAULT_THERMAL_EXPANSION_coefficient_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_THERMAL_EXPANSION_coefficient_UNITS => PROVIDED_UNITS, &
             PER_KELVIN, &
             PER_RANKINE, &
             PER_FAHRENHEIT
@@ -471,6 +502,7 @@ module quaff
             time_unit_t, &
             fallible_time_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_time, &
             parse_time_unit, &
             sum, &
@@ -492,6 +524,7 @@ module quaff
             parse_volume, &
             parse_volume_unit, &
             sum, &
+            abs, &
             DEFAULT_VOLUME_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_VOLUME_UNITS => PROVIDED_UNITS, &
             CUBIC_CENTIMETERS, &

@@ -41,6 +41,7 @@ module quaff_delta_temperature_m
             parse_delta_temperature, &
             parse_delta_temperature_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             DELTA_CELSIUS, &
@@ -198,6 +199,10 @@ module quaff_delta_temperature_m
         module procedure parse_delta_temperature_unit_s
         module procedure parse_delta_temperature_unit_with_units_c
         module procedure parse_delta_temperature_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_delta_temperature
     end interface
 
     interface sum
@@ -381,6 +386,13 @@ contains
         type(delta_temperature_t) :: difference
 
         difference%delta_kelvin = lhs%delta_kelvin - rhs%delta_kelvin
+    end function
+
+    pure function abs_delta_temperature(delta_temperature) result(abs_)
+        class(delta_temperature_t), intent(in) :: delta_temperature
+        type(delta_temperature_t) :: abs_
+
+        abs_%delta_kelvin = abs(delta_temperature%delta_kelvin)
     end function
 
     pure function sum_delta_temperature(delta_temperatures) result(sum_)

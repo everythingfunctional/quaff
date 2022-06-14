@@ -15,6 +15,7 @@ module energy_per_temperature_amount_test
             operator(.unit.), &
             parse_energy_per_temperature_amount, &
             sum, &
+            abs, &
             PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS, &
             JOULES_PER_KELVIN_MOL
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original energy_per_temperature_amount", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -366,6 +368,19 @@ contains
                 sum(numbers).unit.JOULES_PER_KELVIN_MOL, &
                 sum(numbers.unit.JOULES_PER_KELVIN_MOL))
     end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.JOULES_PER_KELVIN_MOL, &
+                        abs(1.0d0.unit.JOULES_PER_KELVIN_MOL)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.JOULES_PER_KELVIN_MOL, &
+                        abs((-1.0d0).unit.JOULES_PER_KELVIN_MOL))
+    end function
+
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input

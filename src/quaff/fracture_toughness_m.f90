@@ -42,6 +42,7 @@ module quaff_fracture_toughness_m
             parse_fracture_toughness, &
             parse_fracture_toughness_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             PASCAL_ROOT_METER, &
@@ -198,6 +199,10 @@ module quaff_fracture_toughness_m
         module procedure parse_fracture_toughness_unit_s
         module procedure parse_fracture_toughness_unit_with_units_c
         module procedure parse_fracture_toughness_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_fracture_toughness
     end interface
 
     interface sum
@@ -377,6 +382,13 @@ contains
         type(fracture_toughness_t) :: difference
 
         difference%pascal_root_meter = lhs%pascal_root_meter - rhs%pascal_root_meter
+    end function
+
+    pure function abs_fracture_toughness(fracture_toughness) result(abs_)
+        type(fracture_toughness_t), intent(in) :: fracture_toughness
+        type(fracture_toughness_t) :: abs_
+
+        abs_%pascal_root_meter = abs(fracture_toughness%pascal_root_meter)
     end function
 
     pure function sum_fracture_toughness(fracture_toughnesss) result(sum_)

@@ -40,6 +40,7 @@ module quaff_mass_rate_m
             parse_mass_rate, &
             parse_mass_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             GRAMS_PER_SECOND, &
@@ -197,6 +198,10 @@ module quaff_mass_rate_m
         module procedure parse_mass_rate_unit_with_units_s
     end interface
 
+    interface abs
+        module procedure abs_mass_rate
+    end interface
+    
     interface sum
         module procedure sum_mass_rate
     end interface
@@ -372,6 +377,13 @@ contains
         difference%kilograms_per_second = lhs%kilograms_per_second - rhs%kilograms_per_second
     end function
 
+    pure function abs_mass_rate(mass_rate) result(abs_)
+        type(mass_rate_t), intent(in) :: mass_rate
+        type(mass_rate_t) :: abs_
+
+        abs_%kilograms_per_second = abs(mass_rate%kilograms_per_second)
+    end function
+    
     pure function sum_mass_rate(mass_rates) result(sum_)
         type(mass_rate_t), intent(in) :: mass_rates(:)
         type(mass_rate_t) :: sum_

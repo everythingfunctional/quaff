@@ -43,6 +43,7 @@ module quaff_mass_m
             parse_mass, &
             parse_mass_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             GRAMS, &
@@ -200,6 +201,10 @@ module quaff_mass_m
         module procedure parse_mass_unit_s
         module procedure parse_mass_unit_with_units_c
         module procedure parse_mass_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_mass
     end interface
 
     interface sum
@@ -385,6 +390,13 @@ contains
         difference%kilograms = lhs%kilograms - rhs%kilograms
     end function
 
+    pure function abs_mass(mass) result(abs_)
+        type(mass_t), intent(in) :: mass
+        type(mass_t) :: abs_
+
+        abs_%kilograms = abs(mass%kilograms)
+    end function
+    
     pure function sum_mass(masss) result(sum_)
         type(mass_t), intent(in) :: masss(:)
         type(mass_t) :: sum_

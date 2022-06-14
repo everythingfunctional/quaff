@@ -40,6 +40,7 @@ module quaff_molar_mass_m
             parse_molar_mass, &
             parse_molar_mass_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
@@ -195,6 +196,10 @@ module quaff_molar_mass_m
         module procedure parse_molar_mass_unit_s
         module procedure parse_molar_mass_unit_with_units_c
         module procedure parse_molar_mass_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_molar_mass
     end interface
 
     interface sum
@@ -370,6 +375,13 @@ contains
         type(molar_mass_t) :: difference
 
         difference%kilograms_per_mol = lhs%kilograms_per_mol - rhs%kilograms_per_mol
+    end function
+
+    pure function abs_molar_mass(molar_mass) result(abs_)
+        type(molar_mass_t), intent(in) :: molar_mass
+        type(molar_mass_t) :: abs_
+
+        abs_%kilograms_per_mol = abs(molar_mass%kilograms_per_mol)
     end function
 
     pure function sum_molar_mass(molar_masss) result(sum_)

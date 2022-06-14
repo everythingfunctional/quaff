@@ -46,6 +46,7 @@ module quaff_length_m
             parse_length, &
             parse_length_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             CENTIMETERS, &
@@ -208,9 +209,14 @@ module quaff_length_m
         module procedure parse_length_unit_with_units_s
     end interface
 
+    interface abs
+        module procedure abs_length
+    end interface
+
     interface sum
         module procedure sum_length
     end interface
+
 
     type(length_simple_unit_t), parameter :: CENTIMETERS = &
             length_simple_unit_t( &
@@ -401,6 +407,13 @@ contains
         type(length_t) :: difference
 
         difference%meters = lhs%meters - rhs%meters
+    end function
+
+    pure function abs_length(length) result(abs_)
+        type(length_t), intent(in) :: length
+        type(length_t) :: abs_
+
+        abs_%meters = abs(length%meters)
     end function
 
     pure function sum_length(lengths) result(sum_)

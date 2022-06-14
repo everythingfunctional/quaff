@@ -37,6 +37,7 @@ module quaff_amount_m
             fallible_amount_unit_t, &
             amount_simple_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_amount, &
             parse_amount_unit, &
             sum, &
@@ -196,6 +197,10 @@ module quaff_amount_m
         module procedure parse_amount_unit_s
         module procedure parse_amount_unit_with_units_c
         module procedure parse_amount_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_amount
     end interface
 
     interface sum
@@ -375,6 +380,13 @@ contains
         type(amount_t) :: difference
 
         difference%mols = lhs%mols - rhs%mols
+    end function
+
+    elemental function abs_amount(amount) result(abs_)
+        type(amount_t), intent(in) :: amount
+        type(amount_t) :: abs_
+
+        abs_%mols = abs(amount%mols)
     end function
 
     pure function sum_amount(amounts) result(sum_)

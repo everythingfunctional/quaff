@@ -13,6 +13,7 @@ module amount_rate_test
             fallible_amount_rate_t, &
             amount_rate_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_amount_rate, &
             sum, &
             PROVIDED_AMOUNT_RATE_UNITS, &
@@ -70,6 +71,7 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
                 , it( &
                         "adding zero returns the original amount_rate", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -366,6 +368,18 @@ contains
                 sum(numbers).unit.MOLS_PER_SECOND, &
                 sum(numbers.unit.MOLS_PER_SECOND))
     end function
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.MOLS_PER_SECOND, &
+                        abs(1.0d0.unit.MOLS_PER_SECOND)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.MOLS_PER_SECOND, &
+                        abs((-1.0d0).unit.MOLS_PER_SECOND))
+    end function
+
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input

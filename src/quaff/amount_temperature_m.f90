@@ -40,6 +40,7 @@ module quaff_amount_temperature_m
             parse_amount_temperature, &
             parse_amount_temperature_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             KILOMOLS_KELVIN, &
@@ -195,6 +196,10 @@ module quaff_amount_temperature_m
         module procedure parse_amount_temperature_unit_s
         module procedure parse_amount_temperature_unit_with_units_c
         module procedure parse_amount_temperature_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_amount_temperature
     end interface
 
     interface sum
@@ -370,6 +375,13 @@ contains
         type(amount_temperature_t) :: difference
 
         difference%mols_kelvin = lhs%mols_kelvin - rhs%mols_kelvin
+    end function
+
+    elemental function abs_amount_temperature(amount_temperature) result(abs_)
+    class(amount_temperature_t), intent(in) :: amount_temperature
+    type(amount_temperature_t) :: abs_
+
+      abs_%mols_kelvin = abs(amount_temperature%mols_kelvin)
     end function
 
     pure function sum_amount_temperature(amount_temperatures) result(sum_)

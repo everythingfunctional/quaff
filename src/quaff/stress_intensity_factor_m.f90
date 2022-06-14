@@ -42,6 +42,7 @@ module quaff_stress_intensity_factor_m
             parse_stress_intensity_factor, &
             parse_stress_intensity_factor_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             PASCAL_ROOT_METER, &
@@ -198,6 +199,10 @@ module quaff_stress_intensity_factor_m
         module procedure parse_stress_intensity_factor_unit_s
         module procedure parse_stress_intensity_factor_unit_with_units_c
         module procedure parse_stress_intensity_factor_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_stress_intensity_factor
     end interface
 
     interface sum
@@ -377,6 +382,13 @@ contains
         type(stress_intensity_factor_t) :: difference
 
         difference%megapascal_root_meter = lhs%megapascal_root_meter - rhs%megapascal_root_meter
+    end function
+
+    pure function abs_stress_intensity_factor(stress_intensity_factor) result(abs_)
+        type(stress_intensity_factor_t), intent(in) :: stress_intensity_factor
+        type(stress_intensity_factor_t) :: abs_
+
+        abs_%megapascal_root_meter = abs(stress_intensity_factor%megapascal_root_meter)
     end function
 
     pure function sum_stress_intensity_factor(stress_intensity_factors) result(sum_)

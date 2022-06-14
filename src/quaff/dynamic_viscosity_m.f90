@@ -40,6 +40,7 @@ module quaff_dynamic_viscosity_m
             parse_dynamic_viscosity, &
             parse_dynamic_viscosity_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             MEGAPASCAL_SECONDS, &
@@ -195,6 +196,10 @@ module quaff_dynamic_viscosity_m
         module procedure parse_dynamic_viscosity_unit_s
         module procedure parse_dynamic_viscosity_unit_with_units_c
         module procedure parse_dynamic_viscosity_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_dynamic_viscosity
     end interface
 
     interface sum
@@ -370,6 +375,13 @@ contains
         type(dynamic_viscosity_t) :: difference
 
         difference%pascal_seconds = lhs%pascal_seconds - rhs%pascal_seconds
+    end function
+
+    pure function abs_dynamic_viscosity(dynamic_viscosity) result(abs_)
+        class(dynamic_viscosity_t), intent(in) :: dynamic_viscosity
+        type(dynamic_viscosity_t) :: abs_
+
+        abs_%pascal_seconds = abs(dynamic_viscosity%pascal_seconds)
     end function
 
     pure function sum_dynamic_viscosity(dynamic_viscositys) result(sum_)

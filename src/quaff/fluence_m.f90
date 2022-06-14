@@ -41,6 +41,7 @@ module quaff_fluence_m
             parse_fluence, &
             parse_fluence_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             PARTICLES_PER_SQUARE_METER, &
@@ -198,6 +199,9 @@ module quaff_fluence_m
         module procedure parse_fluence_unit_with_units_s
     end interface
 
+    interface abs
+        module procedure abs_fluence
+    end interface
     interface sum
         module procedure sum_fluence
     end interface
@@ -371,6 +375,13 @@ contains
         type(fluence_t) :: difference
 
         difference%particles_per_square_meter = lhs%particles_per_square_meter - rhs%particles_per_square_meter
+    end function
+
+    pure function abs_fluence(fluence) result(abs_)
+        type(fluence_t), intent(in) :: fluence
+        type(fluence_t) :: abs_
+
+        abs_%particles_per_square_meter = abs(fluence%particles_per_square_meter)
     end function
 
     pure function sum_fluence(fluences) result(sum_)

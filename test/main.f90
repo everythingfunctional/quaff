@@ -98,9 +98,9 @@ contains
         use thermal_conductivity_test, only: &
                 thermal_conductivity_thermal_conductivity => &
                     test_thermal_conductivity
-        use thermal_expansion_coeffecient_test, only: &
-                thermal_expansion_coeffecient_thermal_expansion_coeffecient => &
-                    test_thermal_expansion_coeffecient
+        use thermal_expansion_coefficient_test, only: &
+                thermal_expansion_coefficient_thermal_expansion_coefficient => &
+                    test_thermal_expansion_coefficient
         use time_test, only: &
                 time_time => &
                     test_time
@@ -147,7 +147,7 @@ contains
         individual_tests(29) = stress_intensity_factor_stress_intensity_factor()
         individual_tests(30) = temperature_temperature()
         individual_tests(31) = thermal_conductivity_thermal_conductivity()
-        individual_tests(32) = thermal_expansion_coeffecient_thermal_expansion_coeffecient()
+        individual_tests(32) = thermal_expansion_coefficient_thermal_expansion_coefficient()
         individual_tests(33) = time_time()
         individual_tests(34) = volume_volume()
         tests = test_that(individual_tests)

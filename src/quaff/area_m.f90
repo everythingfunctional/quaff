@@ -43,6 +43,7 @@ module quaff_area_m
             parse_area, &
             parse_area_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             SQUARE_CENTIMETERS, &
@@ -200,6 +201,10 @@ module quaff_area_m
         module procedure parse_area_unit_s
         module procedure parse_area_unit_with_units_c
         module procedure parse_area_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_area
     end interface
 
     interface sum
@@ -387,6 +392,13 @@ contains
         type(area_t) :: difference
 
         difference%square_meters = lhs%square_meters - rhs%square_meters
+    end function
+
+    pure function abs_area(area) result(abs_)
+        class(area_t), intent(in) :: area
+        type(area_t) :: abs_
+
+        abs_%square_meters = abs(area%square_meters)
     end function
 
     pure function sum_area(areas) result(sum_)

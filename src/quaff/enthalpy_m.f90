@@ -41,6 +41,7 @@ module quaff_enthalpy_m
             parse_enthalpy, &
             parse_enthalpy_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             JOULES_PER_KILOGRAM, &
@@ -196,6 +197,10 @@ module quaff_enthalpy_m
         module procedure parse_enthalpy_unit_s
         module procedure parse_enthalpy_unit_with_units_c
         module procedure parse_enthalpy_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_enthalpy
     end interface
 
     interface sum
@@ -373,6 +378,13 @@ contains
         difference%joules_per_kilogram = lhs%joules_per_kilogram - rhs%joules_per_kilogram
     end function
 
+    pure function abs_enthalpy(enthalpy) result(abs_)
+        type(enthalpy_t), intent(in) :: enthalpy
+        type(enthalpy_t) :: abs_
+
+        abs_%joules_per_kilogram = abs(enthalpy%joules_per_kilogram)
+    end function
+    
     pure function sum_enthalpy(enthalpys) result(sum_)
         type(enthalpy_t), intent(in) :: enthalpys(:)
         type(enthalpy_t) :: sum_

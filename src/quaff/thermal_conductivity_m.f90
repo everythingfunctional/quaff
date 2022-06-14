@@ -43,6 +43,7 @@ module quaff_thermal_conductivity_m
             parse_thermal_conductivity, &
             parse_thermal_conductivity_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             CALORIES_PER_SECOND_CENTIMETER_KELVIN, &
@@ -201,6 +202,10 @@ module quaff_thermal_conductivity_m
         module procedure parse_thermal_conductivity_unit_s
         module procedure parse_thermal_conductivity_unit_with_units_c
         module procedure parse_thermal_conductivity_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_thermal_conductivity
     end interface
 
     interface sum
@@ -393,6 +398,13 @@ contains
         type(thermal_conductivity_t) :: difference
 
         difference%watts_per_meter_kelvin = lhs%watts_per_meter_kelvin - rhs%watts_per_meter_kelvin
+    end function
+
+    pure function abs_thermal_conductivity(thermal_conductivity) result(abs_)
+        type(thermal_conductivity_t), intent(in) :: thermal_conductivity
+        type(thermal_conductivity_t) :: abs_
+
+        abs_%watts_per_meter_kelvin = abs(thermal_conductivity%watts_per_meter_kelvin)
     end function
 
     pure function sum_thermal_conductivity(thermal_conductivitys) result(sum_)

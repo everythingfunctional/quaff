@@ -42,6 +42,7 @@ module quaff_frequency_m
             parse_frequency, &
             parse_frequency_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             HERTZ, &
@@ -199,6 +200,10 @@ module quaff_frequency_m
         module procedure parse_frequency_unit_s
         module procedure parse_frequency_unit_with_units_c
         module procedure parse_frequency_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_frequency
     end interface
 
     interface sum
@@ -382,6 +387,13 @@ contains
         type(frequency_t) :: difference
 
         difference%hertz = lhs%hertz - rhs%hertz
+    end function
+
+    pure function abs_frequency(frequency) result(abs_)
+        type(frequency_t), intent(in) :: frequency
+        type(frequency_t) :: abs_
+
+        abs_%hertz = abs(frequency%hertz)
     end function
 
     pure function sum_frequency(frequencys) result(sum_)

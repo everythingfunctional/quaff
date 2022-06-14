@@ -41,6 +41,7 @@ module quaff_convective_heat_transfer_m
             parse_convective_heat_transfer, &
             parse_convective_heat_transfer_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             BTU_PER_HOUR_SQUARE_FEET_RANKINE, &
@@ -197,6 +198,10 @@ module quaff_convective_heat_transfer_m
         module procedure parse_convective_heat_transfer_unit_s
         module procedure parse_convective_heat_transfer_unit_with_units_c
         module procedure parse_convective_heat_transfer_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_convective_heat_transfer
     end interface
 
     interface sum
@@ -379,6 +384,13 @@ contains
         type(convective_heat_transfer_t) :: difference
 
         difference%watts_per_square_meter_kelvin = lhs%watts_per_square_meter_kelvin - rhs%watts_per_square_meter_kelvin
+    end function
+
+    pure function abs_convective_heat_transfer(convective_heat_transfer) result(abs_)
+        class(convective_heat_transfer_t), intent(in) :: convective_heat_transfer
+        type(convective_heat_transfer_t) :: abs_
+
+        abs_%watts_per_square_meter_kelvin = abs(convective_heat_transfer%watts_per_square_meter_kelvin)
     end function
 
     pure function sum_convective_heat_transfer(convective_heat_transfers) result(sum_)

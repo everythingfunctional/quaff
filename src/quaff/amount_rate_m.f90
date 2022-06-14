@@ -40,6 +40,7 @@ module quaff_amount_rate_m
             parse_amount_rate, &
             parse_amount_rate_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             KILOMOLS_PER_SECOND, &
@@ -196,6 +197,11 @@ module quaff_amount_rate_m
         module procedure parse_amount_rate_unit_with_units_c
         module procedure parse_amount_rate_unit_with_units_s
     end interface
+
+    interface abs
+        module procedure abs_amount_rate
+    end interface
+
 
     interface sum
         module procedure sum_amount_rate
@@ -371,6 +377,14 @@ contains
 
         difference%mols_per_second = lhs%mols_per_second - rhs%mols_per_second
     end function
+
+    elemental function abs_amount_rate(amount_rate) result(abs_)
+        type(amount_rate_t), intent(in) :: amount_rate
+        type(amount_rate_t) :: abs_
+
+        abs_%mols_per_second = abs(amount_rate%mols_per_second)
+    end function
+
 
     pure function sum_amount_rate(amount_rates) result(sum_)
         type(amount_rate_t), intent(in) :: amount_rates(:)

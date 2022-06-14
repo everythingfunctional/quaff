@@ -40,6 +40,7 @@ module quaff_energy_per_amount_m
             parse_energy_per_amount, &
             parse_energy_per_amount_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             JOULES_PER_MOL, &
@@ -197,6 +198,9 @@ module quaff_energy_per_amount_m
         module procedure parse_energy_per_amount_unit_with_units_s
     end interface
 
+    interface abs
+        module procedure abs_energy_per_amount
+    end interface
     interface sum
         module procedure sum_energy_per_amount
     end interface
@@ -370,6 +374,13 @@ contains
         type(energy_per_amount_t) :: difference
 
         difference%joules_per_mol = lhs%joules_per_mol - rhs%joules_per_mol
+    end function
+
+    pure function abs_energy_per_amount(energy_per_amount) result(abs_)
+        class(energy_per_amount_t), intent(in) :: energy_per_amount
+        type(energy_per_amount_t) :: abs_
+
+        abs_%joules_per_mol = abs(energy_per_amount%joules_per_mol)
     end function
 
     pure function sum_energy_per_amount(energy_per_amounts) result(sum_)

@@ -46,6 +46,7 @@ module quaff_energy_m
             parse_energy, &
             parse_energy_unit, &
             sum, &
+            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
             BTU, &
@@ -206,6 +207,10 @@ module quaff_energy_m
         module procedure parse_energy_unit_s
         module procedure parse_energy_unit_with_units_c
         module procedure parse_energy_unit_with_units_s
+    end interface
+
+    interface abs
+        module procedure abs_energy
     end interface
 
     interface sum
@@ -401,6 +406,13 @@ contains
         type(energy_t) :: difference
 
         difference%joules = lhs%joules - rhs%joules
+    end function
+
+    pure function abs_energy(energy) result(abs_)
+        type(energy_t), intent(in) :: energy
+        type(energy_t) :: abs_
+
+        abs_%joules = abs(energy%joules)
     end function
 
     pure function sum_energy(energys) result(sum_)
