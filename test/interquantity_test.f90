@@ -156,6 +156,10 @@ contains
                         "1 K - 1 k = 0 K", check_temp_diff_gives_delta_temperature) &
                 , it( &
                         "1 K + 1 k = 2 K", check_temperature_plus_delta_temperature) &
+                , it( &
+                        "2 J/mol * 3 mol = 6 J", check_energy_per_amount_times_amount) &
+                , it( &
+                        "2 mol * 3 J/mol = 6 J", check_amount_times_energy_per_amount) &
                 ])
     end function test_interquantity_operators
 
@@ -622,5 +626,21 @@ contains
         result_ = assert_equals( &
                 2.d0.unit.KELVIN, &
                 (1.0d0.unit.KELVIN) + (1.0d0.unit.DELTA_KELVIN))
+    end function
+
+    pure function check_energy_per_amount_times_amount() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.JOULES, &
+                (2.d0.unit.JOULES_PER_MOL) * (3.d0.unit.MOLS))
+    end function
+
+    pure function check_amount_times_energy_per_amount() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.JOULES, &
+                (2.d0.unit.MOLS) * (3.d0.unit.JOULES_PER_MOL))
     end function
 end module

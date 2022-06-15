@@ -30,10 +30,12 @@ module quaff_interquantity_operators_m
         module procedure acceleration_times_mass
         module procedure acceleration_times_time
         module procedure amount_times_molar_mass
+        module procedure amount_times_energy_per_amount
         module procedure area_times_length
         module procedure area_times_pressure
         module procedure burnup_times_mass
         module procedure density_times_volume
+        module procedure energy_per_amount_times_amount
         module procedure energy_per_temperature_amount_times_temperature
         module procedure enthalpy_times_mass
         module procedure force_times_length
@@ -91,7 +93,7 @@ module quaff_interquantity_operators_m
     end interface
     interface operator (+)
       module procedure temperature_plus_delta_temperature
-    end interface 
+    end interface
 contains
     elemental function acceleration_times_mass(acceleration, mass) result(force)
         type(acceleration_t), intent(in) :: acceleration
@@ -115,6 +117,14 @@ contains
         type(mass_t) :: mass
 
         mass%kilograms = amount%mols * molar_mass%kilograms_per_mol
+    end function
+
+    elemental function amount_times_energy_per_amount(amount, energy_per_amount) result(energy)
+        type(amount_t), intent(in) :: amount
+        type(energy_per_amount_t), intent(in) :: energy_per_amount
+        type(energy_t) :: energy
+
+        energy%joules = amount%mols * energy_per_amount%joules_per_mol
     end function
 
     elemental function area_divided_by_length(numerator, denomenator) result(length)
@@ -242,6 +252,14 @@ contains
         type(power_t) :: power
 
         power%watts = energy%joules / time%seconds
+    end function
+
+    elemental function energy_per_amount_times_amount(energy_per_amount, amount) result(energy)
+        type(energy_per_amount_t), intent(in) :: energy_per_amount
+        type(amount_t), intent(in) :: amount
+        type(energy_t) :: energy
+
+        energy%joules = energy_per_amount%joules_per_mol * amount%mols
     end function
 
     elemental function energy_per_temperature_amount_times_temperature( &
