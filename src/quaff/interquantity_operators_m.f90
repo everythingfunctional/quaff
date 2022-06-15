@@ -73,6 +73,7 @@ module quaff_interquantity_operators_m
         module procedure energy_divided_by_mass
         module procedure energy_divided_by_power
         module procedure energy_divided_by_time
+        module procedure energy_divided_by_volume
         module procedure force_divided_by_acceleration
         module procedure force_divided_by_area
         module procedure force_divided_by_mass
@@ -252,6 +253,14 @@ contains
         type(power_t) :: power
 
         power%watts = energy%joules / time%seconds
+    end function
+
+    elemental function energy_divided_by_volume(energy, volume) result(pressure)
+        type(energy_t), intent(in) :: energy
+        type(volume_t), intent(in) :: volume
+        type(pressure_t) :: pressure
+
+        pressure%pascals = energy%joules / volume%cubic_meters
     end function
 
     elemental function energy_per_amount_times_amount(energy_per_amount, amount) result(energy)
