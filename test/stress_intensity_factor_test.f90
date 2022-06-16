@@ -13,11 +13,11 @@ module stress_intensity_factor_test
             fallible_stress_intensity_factor_t, &
             stress_intensity_factor_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_stress_intensity_factor, &
             sum, &
-            abs, &
             PROVIDED_STRESS_INTENSITY_FACTOR_UNITS, &
-            MEGAPASCAL_ROOT_METER => STRESS_INTENSITY_FACTOR_MEGAPASCAL_ROOT_METER
+            PASCAL_ROOT_METER => STRESS_INTENSITY_FACTOR_PASCAL_ROOT_METER
     use quaff_asserts_m, only: assert_equals, assert_equals_within_relative
     use quaff_utilities_m, only: PARSE_ERROR
     use stress_intensity_factor_utilities_m, only: &
@@ -344,7 +344,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_stress_intensity_factor_t) :: maybe_stress_intensity_factor
 
-        maybe_stress_intensity_factor = parse_stress_intensity_factor("1.0 MPa*sqrt(m)bad", [MEGAPASCAL_ROOT_METER])
+        maybe_stress_intensity_factor = parse_stress_intensity_factor("1.0 Pa m^0.5bad", [PASCAL_ROOT_METER])
         errors = maybe_stress_intensity_factor%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
@@ -355,7 +355,7 @@ contains
         type(error_list_t) :: errors
         type(fallible_stress_intensity_factor_t) :: maybe_stress_intensity_factor
 
-        maybe_stress_intensity_factor = parse_stress_intensity_factor("bad MPa*sqrt(m)")
+        maybe_stress_intensity_factor = parse_stress_intensity_factor("bad Pa m^0.5")
         errors = maybe_stress_intensity_factor%errors()
         result_ = assert_that(errors.hasType.PARSE_ERROR, errors%to_string())
     end function
@@ -366,8 +366,8 @@ contains
         double precision, parameter :: numbers(*) = [1.0d0, 2.0d0, 3.0d0]
 
         result_ = assert_equals( &
-                sum(numbers).unit.MEGAPASCAL_ROOT_METER, &
-                sum(numbers.unit.MEGAPASCAL_ROOT_METER))
+                sum(numbers).unit.PASCAL_ROOT_METER, &
+                sum(numbers.unit.PASCAL_ROOT_METER))
     end function
 
     pure function check_abs() result(result_)
@@ -375,11 +375,11 @@ contains
 
         result_ = &
                 assert_equals( &
-                        abs(1.0d0).unit.MEGAPASCAL_ROOT_METER, &
-                        abs(1.0d0.unit.MEGAPASCAL_ROOT_METER)) &
+                        abs(1.0d0).unit.PASCAL_ROOT_METER, &
+                        abs(1.0d0.unit.PASCAL_ROOT_METER)) &
                 .and.assert_equals( &
-                        abs(-1.0d0).unit.MEGAPASCAL_ROOT_METER, &
-                        abs((-1.0d0).unit.MEGAPASCAL_ROOT_METER))
+                        abs(-1.0d0).unit.PASCAL_ROOT_METER, &
+                        abs((-1.0d0).unit.PASCAL_ROOT_METER))
     end function
 
     pure function check_negation(input) result(result_)
@@ -389,8 +389,8 @@ contains
         select type(input)
         type is (double_precision_input_t)
             result_ = assert_equals( &
-                    (-input%input()).unit.MEGAPASCAL_ROOT_METER, &
-                    -(input%input().unit.MEGAPASCAL_ROOT_METER))
+                    (-input%input()).unit.PASCAL_ROOT_METER, &
+                    -(input%input().unit.PASCAL_ROOT_METER))
         class default
             result_ = fail("Expected a double_precision_input_t")
         end select
@@ -405,8 +405,8 @@ contains
 
         select type(input)
         type is (double_precision_input_t)
-            stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
-            zero = 0.0d0.unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
+            zero = 0.0d0.unit.PASCAL_ROOT_METER
             result_ = assert_equals(stress_intensity_factor, stress_intensity_factor + zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
@@ -422,8 +422,8 @@ contains
 
         select type(input)
         type is (double_precision_input_t)
-            stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
-            zero = 0.0d0.unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
+            zero = 0.0d0.unit.PASCAL_ROOT_METER
             result_ = assert_equals(stress_intensity_factor, stress_intensity_factor - zero)
         class default
             result_ = fail("Expected a double_precision_input_t")
@@ -439,8 +439,8 @@ contains
 
         select type(input)
         type is (double_precision_pair_input_t)
-            stress_intensity_factor1 = input%first().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = input%second_().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%first().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = input%second_().unit.PASCAL_ROOT_METER
             result_ = assert_equals_within_relative( &
                     stress_intensity_factor1, &
                     (stress_intensity_factor1 + stress_intensity_factor2) - stress_intensity_factor2, &
@@ -460,7 +460,7 @@ contains
 
         select type(input)
         type is (double_precision_input_t)
-            stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_equals(stress_intensity_factor, stress_intensity_factor * 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
@@ -476,8 +476,8 @@ contains
 
         select type(input)
         type is (double_precision_input_t)
-            stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
-            zero = 0.0d0.unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
+            zero = 0.0d0.unit.PASCAL_ROOT_METER
             result_ = assert_equals(zero, stress_intensity_factor * 0.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
@@ -492,7 +492,7 @@ contains
 
         select type(input)
         type is (double_precision_input_t)
-            stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_equals(stress_intensity_factor, stress_intensity_factor / 1.0d0)
         class default
             result_ = fail("Expected a double_precision_input_t")
@@ -507,7 +507,7 @@ contains
 
         select type(input)
         type is (double_precision_input_t)
-            stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_equals(1.0d0, stress_intensity_factor / stress_intensity_factor)
         class default
             result_ = fail("Expected a double_precision_input_t")
@@ -522,7 +522,7 @@ contains
 
         select type (input)
         type is (double_precision_pair_input_t)
-            stress_intensity_factor = input%first().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor = input%first().unit.PASCAL_ROOT_METER
             result_ = assert_equals(stress_intensity_factor, (stress_intensity_factor * input%second_()) / input%second_())
         class default
             result_ = fail("Expected a double_precision_pair_input_t")
@@ -537,7 +537,7 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            the_stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
+            the_stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     the_stress_intensity_factor == the_stress_intensity_factor, &
                     the_stress_intensity_factor%to_string() // " == " // the_stress_intensity_factor%to_string())
@@ -555,8 +555,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 == stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " == " // stress_intensity_factor2%to_string())
@@ -573,7 +573,7 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            the_stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
+            the_stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     the_stress_intensity_factor /= the_stress_intensity_factor, &
                     the_stress_intensity_factor%to_string() // " /= " // the_stress_intensity_factor%to_string())
@@ -591,8 +591,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 /= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " /= " // stress_intensity_factor2%to_string())
@@ -610,8 +610,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            the_stress_intensity_factor = input%input().unit.MEGAPASCAL_ROOT_METER
-            tolerance = tiny(1.0d0).unit.MEGAPASCAL_ROOT_METER
+            the_stress_intensity_factor = input%input().unit.PASCAL_ROOT_METER
+            tolerance = tiny(1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     the_stress_intensity_factor%equal(the_stress_intensity_factor, within = tolerance), &
                     "(" // the_stress_intensity_factor%to_string() // ")%equal(" &
@@ -632,9 +632,9 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 0.05d0).unit.MEGAPASCAL_ROOT_METER
-            tolerance = 0.1d0.unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 0.05d0).unit.PASCAL_ROOT_METER
+            tolerance = 0.1d0.unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1%equal(stress_intensity_factor2, within = tolerance), &
                     "(" // stress_intensity_factor1%to_string() // ")%equal(" &
@@ -655,9 +655,9 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 0.2d0).unit.MEGAPASCAL_ROOT_METER
-            tolerance = 0.1d0.unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 0.2d0).unit.PASCAL_ROOT_METER
+            tolerance = 0.1d0.unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1%equal(stress_intensity_factor2, within = tolerance), &
                     "(" // stress_intensity_factor1%to_string() // ")%equal(" &
@@ -677,8 +677,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit. MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() - 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit. PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() - 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 >= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " >= " // stress_intensity_factor2%to_string())
@@ -696,8 +696,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 >= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " >= " // stress_intensity_factor2%to_string())
@@ -715,8 +715,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 >= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " >= " // stress_intensity_factor2%to_string())
@@ -734,8 +734,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit. MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit. PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 <= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " <= " // stress_intensity_factor2%to_string())
@@ -753,8 +753,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 <= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " <= " // stress_intensity_factor2%to_string())
@@ -772,8 +772,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() - 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() - 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 <= stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " <= " // stress_intensity_factor2%to_string())
@@ -791,8 +791,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit. MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() - 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit. PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() - 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 > stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " > " // stress_intensity_factor2%to_string())
@@ -810,8 +810,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 > stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " > " // stress_intensity_factor2%to_string())
@@ -829,8 +829,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 > stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " > " // stress_intensity_factor2%to_string())
@@ -848,8 +848,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit. MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() + 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit. PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() + 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_that( &
                     stress_intensity_factor1 < stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " < " // stress_intensity_factor2%to_string())
@@ -867,8 +867,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = input%input().unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = input%input().unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 < stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " <=" // stress_intensity_factor2%to_string())
@@ -886,8 +886,8 @@ contains
 
         select type (input)
         type is (double_precision_input_t)
-            stress_intensity_factor1 = input%input().unit.MEGAPASCAL_ROOT_METER
-            stress_intensity_factor2 = (input%input() - 1.0d0).unit.MEGAPASCAL_ROOT_METER
+            stress_intensity_factor1 = input%input().unit.PASCAL_ROOT_METER
+            stress_intensity_factor2 = (input%input() - 1.0d0).unit.PASCAL_ROOT_METER
             result_ = assert_not( &
                     stress_intensity_factor1 < stress_intensity_factor2, &
                     stress_intensity_factor1%to_string() // " < " // stress_intensity_factor2%to_string())

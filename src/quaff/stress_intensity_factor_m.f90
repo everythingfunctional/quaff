@@ -39,18 +39,18 @@ module quaff_stress_intensity_factor_m
             fallible_stress_intensity_factor_unit_t, &
             stress_intensity_factor_simple_unit_t, &
             operator(.unit.), &
+            abs, &
             parse_stress_intensity_factor, &
             parse_stress_intensity_factor_unit, &
             sum, &
-            abs, &
             DEFAULT_OUTPUT_UNITS, &
             PROVIDED_UNITS, &
-            PASCAL_ROOT_METER, &
+            KSI_ROOT_INCH, &
             MEGAPASCAL_ROOT_METER, &
-            KSI_ROOT_INCH
+            PASCAL_ROOT_METER
 
     type :: stress_intensity_factor_t
-        double precision :: megapascal_root_meter
+        double precision :: pascal_root_meter
     contains
         private
         procedure :: to_units
@@ -289,7 +289,7 @@ contains
         class(stress_intensity_factor_unit_t), intent(in) :: units
         type(stress_intensity_factor_t) :: stress_intensity_factor
 
-        stress_intensity_factor%megapascal_root_meter = value_ / units%conversion_factor
+        stress_intensity_factor%pascal_root_meter = value_ / units%conversion_factor
     end function
 
     elemental function to_units(self, units) result(stress_intensity_factor)
@@ -297,7 +297,7 @@ contains
         class(stress_intensity_factor_unit_t), intent(in) :: units
         double precision :: stress_intensity_factor
 
-        stress_intensity_factor = self%megapascal_root_meter * units%conversion_factor
+        stress_intensity_factor = self%pascal_root_meter * units%conversion_factor
     end function
 
     elemental function double_times_stress_intensity_factor( &
@@ -306,8 +306,8 @@ contains
         class(stress_intensity_factor_t), intent(in) :: stress_intensity_factor
         type(stress_intensity_factor_t) :: new_stress_intensity_factor
 
-        new_stress_intensity_factor%megapascal_root_meter = &
-                multiplier * stress_intensity_factor%megapascal_root_meter
+        new_stress_intensity_factor%pascal_root_meter = &
+                multiplier * stress_intensity_factor%pascal_root_meter
     end function
 
     elemental function integer_times_stress_intensity_factor( &
@@ -316,8 +316,8 @@ contains
         class(stress_intensity_factor_t), intent(in) :: stress_intensity_factor
         type(stress_intensity_factor_t) :: new_stress_intensity_factor
 
-        new_stress_intensity_factor%megapascal_root_meter = &
-                dble(multiplier) * stress_intensity_factor%megapascal_root_meter
+        new_stress_intensity_factor%pascal_root_meter = &
+                dble(multiplier) * stress_intensity_factor%pascal_root_meter
     end function
 
     elemental function stress_intensity_factor_times_double( &
@@ -326,8 +326,8 @@ contains
         double precision, intent(in) :: multiplier
         type(stress_intensity_factor_t) :: new_stress_intensity_factor
 
-        new_stress_intensity_factor%megapascal_root_meter = &
-                stress_intensity_factor%megapascal_root_meter * multiplier
+        new_stress_intensity_factor%pascal_root_meter = &
+                stress_intensity_factor%pascal_root_meter * multiplier
     end function
 
     elemental function stress_intensity_factor_times_integer( &
@@ -336,8 +336,8 @@ contains
         integer, intent(in) :: multiplier
         type(stress_intensity_factor_t) :: new_stress_intensity_factor
 
-        new_stress_intensity_factor%megapascal_root_meter = &
-                stress_intensity_factor%megapascal_root_meter * dble(multiplier)
+        new_stress_intensity_factor%pascal_root_meter = &
+                stress_intensity_factor%pascal_root_meter * dble(multiplier)
     end function
 
     elemental function stress_intensity_factor_divided_by_double( &
@@ -346,8 +346,8 @@ contains
         double precision, intent(in) :: divisor
         type(stress_intensity_factor_t) :: new_stress_intensity_factor
 
-        new_stress_intensity_factor%megapascal_root_meter = &
-                stress_intensity_factor%megapascal_root_meter / divisor
+        new_stress_intensity_factor%pascal_root_meter = &
+                stress_intensity_factor%pascal_root_meter / divisor
     end function
 
     elemental function stress_intensity_factor_divided_by_integer( &
@@ -356,8 +356,8 @@ contains
         integer, intent(in) :: divisor
         type(stress_intensity_factor_t) :: new_stress_intensity_factor
 
-        new_stress_intensity_factor%megapascal_root_meter = &
-                stress_intensity_factor%megapascal_root_meter / dble(divisor)
+        new_stress_intensity_factor%pascal_root_meter = &
+                stress_intensity_factor%pascal_root_meter / dble(divisor)
     end function
 
     elemental function stress_intensity_factor_divided_by_stress_intensity_factor( &
@@ -366,7 +366,7 @@ contains
         type(stress_intensity_factor_t), intent(in) :: denomenator
         double precision :: ratio
 
-        ratio = numerator%megapascal_root_meter / denomenator%megapascal_root_meter
+        ratio = numerator%pascal_root_meter / denomenator%pascal_root_meter
     end function
 
     elemental function stress_intensity_factor_plus_stress_intensity_factor( &
@@ -375,14 +375,14 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         type(stress_intensity_factor_t) :: sum_
 
-        sum_%megapascal_root_meter = lhs%megapascal_root_meter + rhs%megapascal_root_meter
+        sum_%pascal_root_meter = lhs%pascal_root_meter + rhs%pascal_root_meter
     end function
 
     elemental function negate_stress_intensity_factor(self) result(negated)
         class(stress_intensity_factor_t), intent(in) :: self
         type(stress_intensity_factor_t) :: negated
 
-        negated%megapascal_root_meter = -self%megapascal_root_meter
+        negated%pascal_root_meter = -self%pascal_root_meter
     end function
 
     elemental function stress_intensity_factor_minus_stress_intensity_factor( &
@@ -391,21 +391,21 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         type(stress_intensity_factor_t) :: difference
 
-        difference%megapascal_root_meter = lhs%megapascal_root_meter - rhs%megapascal_root_meter
+        difference%pascal_root_meter = lhs%pascal_root_meter - rhs%pascal_root_meter
     end function
 
-    pure function abs_stress_intensity_factor(stress_intensity_factor) result(abs_)
+    elemental function abs_stress_intensity_factor(stress_intensity_factor) result(abs_)
         type(stress_intensity_factor_t), intent(in) :: stress_intensity_factor
         type(stress_intensity_factor_t) :: abs_
 
-        abs_%megapascal_root_meter = abs(stress_intensity_factor%megapascal_root_meter)
+        abs_%pascal_root_meter = abs(stress_intensity_factor%pascal_root_meter)
     end function
 
     pure function sum_stress_intensity_factor(stress_intensity_factors) result(sum_)
         type(stress_intensity_factor_t), intent(in) :: stress_intensity_factors(:)
         type(stress_intensity_factor_t) :: sum_
 
-        sum_%megapascal_root_meter = sum(stress_intensity_factors%megapascal_root_meter)
+        sum_%pascal_root_meter = sum(stress_intensity_factors%pascal_root_meter)
     end function
 
     elemental function greater_than(lhs, rhs)
@@ -413,7 +413,7 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         logical :: greater_than
 
-        greater_than = lhs%megapascal_root_meter > rhs%megapascal_root_meter
+        greater_than = lhs%pascal_root_meter > rhs%pascal_root_meter
     end function
 
     elemental function less_than(lhs, rhs)
@@ -421,7 +421,7 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         logical :: less_than
 
-        less_than = lhs%megapascal_root_meter < rhs%megapascal_root_meter
+        less_than = lhs%pascal_root_meter < rhs%pascal_root_meter
     end function
 
     elemental function greater_than_or_equal(lhs, rhs)
@@ -429,7 +429,7 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         logical :: greater_than_or_equal
 
-        greater_than_or_equal = lhs%megapascal_root_meter >= rhs%megapascal_root_meter
+        greater_than_or_equal = lhs%pascal_root_meter >= rhs%pascal_root_meter
     end function
 
     elemental function less_than_or_equal(lhs, rhs)
@@ -437,7 +437,7 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         logical :: less_than_or_equal
 
-        less_than_or_equal = lhs%megapascal_root_meter <= rhs%megapascal_root_meter
+        less_than_or_equal = lhs%pascal_root_meter <= rhs%pascal_root_meter
     end function
 
     elemental function equal_(lhs, rhs)
@@ -445,7 +445,7 @@ contains
         type(stress_intensity_factor_t), intent(in) :: rhs
         logical :: equal_
 
-        equal_ = lhs%megapascal_root_meter .safeEq. rhs%megapascal_root_meter
+        equal_ = lhs%pascal_root_meter .safeEq. rhs%pascal_root_meter
     end function
 
     elemental function equal_within_absolute_(lhs, rhs, within)
@@ -455,7 +455,7 @@ contains
         logical :: equal_within_absolute_
 
         equal_within_absolute_ = equal_within_absolute( &
-                lhs%megapascal_root_meter, rhs%megapascal_root_meter, within%megapascal_root_meter)
+                lhs%pascal_root_meter, rhs%pascal_root_meter, within%pascal_root_meter)
     end function
 
     elemental function equal_within_relative_(lhs, rhs, within)
@@ -465,7 +465,7 @@ contains
         logical :: equal_within_relative_
 
         equal_within_relative_ = equal_within_relative( &
-                lhs%megapascal_root_meter, rhs%megapascal_root_meter, within)
+                lhs%pascal_root_meter, rhs%pascal_root_meter, within)
     end function
 
     elemental function not_equal(lhs, rhs)
