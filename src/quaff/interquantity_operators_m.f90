@@ -8,6 +8,7 @@ module quaff_interquantity_operators_m
     use quaff_dynamic_viscosity_m, only: dynamic_viscosity_t
     use quaff_energy_m, only: energy_t
     use quaff_energy_per_amount_m, only: energy_per_amount_t
+    use quaff_energy_per_temperature_m, only: energy_per_temperature_t
     use quaff_energy_per_temperature_amount_m, only: energy_per_temperature_amount_t
     use quaff_enthalpy_m, only: enthalpy_t
     use quaff_force_m, only: force_t
@@ -31,11 +32,13 @@ module quaff_interquantity_operators_m
         module procedure acceleration_times_time
         module procedure amount_times_molar_mass
         module procedure amount_times_energy_per_amount
+        module procedure amount_times_energy_per_temperature_amount
         module procedure area_times_length
         module procedure area_times_pressure
         module procedure burnup_times_mass
         module procedure density_times_volume
         module procedure energy_per_amount_times_amount
+        module procedure energy_per_temperature_amount_times_amount
         module procedure energy_per_temperature_amount_times_temperature
         module procedure enthalpy_times_mass
         module procedure force_times_length
@@ -67,6 +70,7 @@ module quaff_interquantity_operators_m
         module procedure dynamic_viscosity_divided_by_time
         module procedure energy_divided_by_burnup
         module procedure energy_divided_by_energy_per_amount
+        module procedure energy_divided_by_energy_per_temperature
         module procedure energy_divided_by_enthalpy
         module procedure energy_divided_by_force
         module procedure energy_divided_by_length
@@ -126,6 +130,16 @@ contains
         type(energy_t) :: energy
 
         energy%joules = amount%mols * energy_per_amount%joules_per_mol
+    end function
+
+    elemental function amount_times_energy_per_temperature_amount( &
+            amount, energy_per_temperature_amount) result(energy_per_temperature)
+        type(amount_t), intent(in) :: amount
+        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
+        type(energy_per_temperature_t) :: energy_per_temperature
+
+        energy_per_temperature%joules_per_kelvin = &
+            amount%mols * energy_per_temperature_amount%joules_per_kelvin_mol
     end function
 
     elemental function area_divided_by_length(numerator, denomenator) result(length)
@@ -199,12 +213,23 @@ contains
         mass%kilograms = energy%joules / burnup%watt_seconds_per_kilogram
     end function
 
-    elemental function energy_divided_by_energy_per_amount(energy, energy_per_amount) result(amount)
+    elemental function energy_divided_by_energy_per_amount( &
+            energy, energy_per_amount) result(amount)
         type(energy_t), intent(in) :: energy
         type(energy_per_amount_t), intent(in) :: energy_per_amount
         type(amount_t) :: amount
 
         amount%mols = energy%joules / energy_per_amount%joules_per_mol
+    end function
+
+    elemental function energy_divided_by_energy_per_temperature( &
+            energy, energy_per_temperature) result(delta_temperature)
+        type(energy_t), intent(in) :: energy
+        type(energy_per_temperature_t), intent(in) :: energy_per_temperature
+        type(delta_temperature_t) :: delta_temperature
+
+        delta_temperature%delta_kelvin = &
+                energy%joules / energy_per_temperature%joules_per_kelvin
     end function
 
     elemental function energy_divided_by_enthalpy(energy, enthalpy) result(mass)
@@ -261,6 +286,16 @@ contains
         type(pressure_t) :: pressure
 
         pressure%pascals = energy%joules / volume%cubic_meters
+    end function
+
+    elemental function energy_per_temperature_amount_times_amount( &
+            energy_per_temperature_amount, amount) result(energy_per_temperature)
+        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
+        type(amount_t), intent(in) :: amount
+        type(energy_per_temperature_t) :: energy_per_temperature
+
+        energy_per_temperature%joules_per_kelvin = &
+            energy_per_temperature_amount%joules_per_kelvin_mol * amount%mols
     end function
 
     elemental function energy_per_amount_times_amount(energy_per_amount, amount) result(energy)
