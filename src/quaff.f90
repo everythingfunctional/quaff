@@ -215,6 +215,21 @@ module quaff
             PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
             JOULES_PER_MOL, &
             KILOJOULES_PER_MOL
+    use quaff_energy_per_temperature_m, only: &
+            energy_per_temperature_t, &
+            fallible_energy_per_temperature_t, &
+            energy_per_temperature_unit_t, &
+            fallible_energy_per_temperature_unit_t, &
+            energy_per_temperature_simple_unit_t, &
+            operator(.unit.), &
+            abs, &
+            parse_energy_per_temperature, &
+            parse_energy_per_temperature_unit, &
+            sum, &
+            DEFAULT_ENERGY_PER_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_TEMPERATURE_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_KELVIN, &
+            KILOJOULES_PER_KELVIN
     use quaff_energy_per_temperature_amount_m, only: &
             energy_per_temperature_amount_t, &
             fallible_energy_per_temperature_amount_t, &
