@@ -75,8 +75,11 @@ module quaff_mass_m
                 mass_divided_by_mass
         procedure :: mass_plus_mass
         generic, public :: operator(+) => mass_plus_mass
+        procedure :: negate_mass
         procedure :: mass_minus_mass
-        generic, public :: operator(-) => mass_minus_mass
+        generic, public :: operator(-) => &
+                negate_mass, &
+                mass_minus_mass
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -381,6 +384,13 @@ contains
         sum_%kilograms = lhs%kilograms + rhs%kilograms
     end function
 
+    elemental function negate_mass(self) result(negated)
+        class(mass_t), intent(in) :: self
+        type(mass_t) :: negated
+
+        negated%kilograms = -self%kilograms
+    end function
+
     elemental function mass_minus_mass( &
             lhs, rhs) result(difference)
         class(mass_t), intent(in) :: lhs
@@ -396,7 +406,7 @@ contains
 
         abs_%kilograms = abs(mass%kilograms)
     end function
-    
+
     pure function sum_mass(masss) result(sum_)
         type(mass_t), intent(in) :: masss(:)
         type(mass_t) :: sum_

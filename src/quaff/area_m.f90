@@ -75,8 +75,11 @@ module quaff_area_m
                 area_divided_by_area
         procedure :: area_plus_area
         generic, public :: operator(+) => area_plus_area
+        procedure :: negate_area
         procedure :: area_minus_area
-        generic, public :: operator(-) => area_minus_area
+        generic, public :: operator(-) => &
+                negate_area, &
+                area_minus_area
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -383,6 +386,13 @@ contains
         type(area_t) :: sum_
 
         sum_%square_meters = lhs%square_meters + rhs%square_meters
+    end function
+
+    elemental function negate_area(self) result(negated)
+        class(area_t), intent(in) :: self
+        type(area_t) :: negated
+
+        negated%square_meters = -self%square_meters
     end function
 
     elemental function area_minus_area( &

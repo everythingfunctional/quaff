@@ -81,8 +81,11 @@ module quaff_time_m
                 time_divided_by_time
         procedure :: time_plus_time
         generic, public :: operator(+) => time_plus_time
+        procedure :: negate_time
         procedure :: time_minus_time
-        generic, public :: operator(-) => time_minus_time
+        generic, public :: operator(-) => &
+                negate_time, &
+                time_minus_time
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -397,6 +400,13 @@ contains
         type(time_t) :: sum_
 
         sum_%seconds = lhs%seconds + rhs%seconds
+    end function
+
+    elemental function negate_time(self) result(negated)
+        class(time_t), intent(in) :: self
+        type(time_t) :: negated
+
+        negated%seconds = -self%seconds
     end function
 
     elemental function time_minus_time( &

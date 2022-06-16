@@ -72,6 +72,7 @@ contains
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
                 , it("can take the absolute value", check_abs) &
+                , it("can be negated", DOUBLE_PRECISION_GENERATOR, check_negation) &
                 , it( &
                         "adding zero returns the original amount_rate", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -380,6 +381,19 @@ contains
                         abs((-1.0d0).unit.MOLS_PER_SECOND))
     end function
 
+    pure function check_negation(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        select type(input)
+        type is (double_precision_input_t)
+            result_ = assert_equals( &
+                    (-input%input()).unit.MOLS_PER_SECOND, &
+                    -(input%input().unit.MOLS_PER_SECOND))
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
+    end function
 
     pure function check_add_zero(input) result(result_)
         class(input_t), intent(in) :: input

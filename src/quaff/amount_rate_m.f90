@@ -70,8 +70,11 @@ module quaff_amount_rate_m
                 amount_rate_divided_by_amount_rate
         procedure :: amount_rate_plus_amount_rate
         generic, public :: operator(+) => amount_rate_plus_amount_rate
+        procedure :: negate_amount_rate
         procedure :: amount_rate_minus_amount_rate
-        generic, public :: operator(-) => amount_rate_minus_amount_rate
+        generic, public :: operator(-) => &
+                negate_amount_rate, &
+                amount_rate_minus_amount_rate
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -367,6 +370,13 @@ contains
         type(amount_rate_t) :: sum_
 
         sum_%mols_per_second = lhs%mols_per_second + rhs%mols_per_second
+    end function
+
+    elemental function negate_amount_rate(self) result(negated)
+        class(amount_rate_t), intent(in) :: self
+        type(amount_rate_t) :: negated
+
+        negated%mols_per_second = -self%mols_per_second
     end function
 
     elemental function amount_rate_minus_amount_rate( &

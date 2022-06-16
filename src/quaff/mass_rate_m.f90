@@ -70,8 +70,11 @@ module quaff_mass_rate_m
                 mass_rate_divided_by_mass_rate
         procedure :: mass_rate_plus_mass_rate
         generic, public :: operator(+) => mass_rate_plus_mass_rate
+        procedure :: negate_mass_rate
         procedure :: mass_rate_minus_mass_rate
-        generic, public :: operator(-) => mass_rate_minus_mass_rate
+        generic, public :: operator(-) => &
+                negate_mass_rate, &
+                mass_rate_minus_mass_rate
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -201,7 +204,7 @@ module quaff_mass_rate_m
     interface abs
         module procedure abs_mass_rate
     end interface
-    
+
     interface sum
         module procedure sum_mass_rate
     end interface
@@ -368,6 +371,13 @@ contains
         sum_%kilograms_per_second = lhs%kilograms_per_second + rhs%kilograms_per_second
     end function
 
+    elemental function negate_mass_rate(self) result(negated)
+        class(mass_rate_t), intent(in) :: self
+        type(mass_rate_t) :: negated
+
+        negated%kilograms_per_second = -self%kilograms_per_second
+    end function
+
     elemental function mass_rate_minus_mass_rate( &
             lhs, rhs) result(difference)
         class(mass_rate_t), intent(in) :: lhs
@@ -383,7 +393,7 @@ contains
 
         abs_%kilograms_per_second = abs(mass_rate%kilograms_per_second)
     end function
-    
+
     pure function sum_mass_rate(mass_rates) result(sum_)
         type(mass_rate_t), intent(in) :: mass_rates(:)
         type(mass_rate_t) :: sum_

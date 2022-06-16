@@ -76,8 +76,11 @@ module quaff_thermal_conductivity_m
                 thermal_conductivity_divided_by_thermal_conductivity
         procedure :: thermal_conductivity_plus_thermal_conductivity
         generic, public :: operator(+) => thermal_conductivity_plus_thermal_conductivity
+        procedure :: negate_thermal_conductivity
         procedure :: thermal_conductivity_minus_thermal_conductivity
-        generic, public :: operator(-) => thermal_conductivity_minus_thermal_conductivity
+        generic, public :: operator(-) => &
+                negate_thermal_conductivity, &
+                thermal_conductivity_minus_thermal_conductivity
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -389,6 +392,13 @@ contains
         type(thermal_conductivity_t) :: sum_
 
         sum_%watts_per_meter_kelvin = lhs%watts_per_meter_kelvin + rhs%watts_per_meter_kelvin
+    end function
+
+    elemental function negate_thermal_conductivity(self) result(negated)
+        class(thermal_conductivity_t), intent(in) :: self
+        type(thermal_conductivity_t) :: negated
+
+        negated%watts_per_meter_kelvin = -self%watts_per_meter_kelvin
     end function
 
     elemental function thermal_conductivity_minus_thermal_conductivity( &

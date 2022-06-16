@@ -73,8 +73,11 @@ module quaff_delta_temperature_m
                 delta_temperature_divided_by_delta_temperature
         procedure :: delta_temperature_plus_delta_temperature
         generic, public :: operator(+) => delta_temperature_plus_delta_temperature
+        procedure :: negate_delta_temperature
         procedure :: delta_temperature_minus_delta_temperature
-        generic, public :: operator(-) => delta_temperature_minus_delta_temperature
+        generic, public :: operator(-) => &
+                negate_delta_temperature, &
+                delta_temperature_minus_delta_temperature
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -377,6 +380,13 @@ contains
         type(delta_temperature_t) :: sum_
 
         sum_%delta_kelvin = lhs%delta_kelvin + rhs%delta_kelvin
+    end function
+
+    elemental function negate_delta_temperature(self) result(negated)
+        class(delta_temperature_t), intent(in) :: self
+        type(delta_temperature_t) :: negated
+
+        negated%delta_kelvin = -self%delta_kelvin
     end function
 
     elemental function delta_temperature_minus_delta_temperature( &

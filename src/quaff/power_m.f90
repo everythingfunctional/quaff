@@ -77,8 +77,11 @@ module quaff_power_m
                 power_divided_by_power
         procedure :: power_plus_power
         generic, public :: operator(+) => power_plus_power
+        procedure :: negate_power
         procedure :: power_minus_power
-        generic, public :: operator(-) => power_minus_power
+        generic, public :: operator(-) => &
+                negate_power, &
+                power_minus_power
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -390,6 +393,13 @@ contains
         type(power_t) :: sum_
 
         sum_%watts = lhs%watts + rhs%watts
+    end function
+
+    elemental function negate_power(self) result(negated)
+        class(power_t), intent(in) :: self
+        type(power_t) :: negated
+
+        negated%watts = -self%watts
     end function
 
     elemental function power_minus_power( &

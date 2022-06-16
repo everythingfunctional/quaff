@@ -81,8 +81,11 @@ module quaff_energy_m
                 energy_divided_by_energy
         procedure :: energy_plus_energy
         generic, public :: operator(+) => energy_plus_energy
+        procedure :: negate_energy
         procedure :: energy_minus_energy
-        generic, public :: operator(-) => energy_minus_energy
+        generic, public :: operator(-) => &
+                negate_energy, &
+                energy_minus_energy
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -397,6 +400,13 @@ contains
         type(energy_t) :: sum_
 
         sum_%joules = lhs%joules + rhs%joules
+    end function
+
+    elemental function negate_energy(self) result(negated)
+        class(energy_t), intent(in) :: self
+        type(energy_t) :: negated
+
+        negated%joules = -self%joules
     end function
 
     elemental function energy_minus_energy( &

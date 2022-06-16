@@ -71,8 +71,11 @@ module quaff_burnup_m
                 burnup_divided_by_burnup
         procedure :: burnup_plus_burnup
         generic, public :: operator(+) => burnup_plus_burnup
+        procedure :: negate_burnup
         procedure :: burnup_minus_burnup
-        generic, public :: operator(-) => burnup_minus_burnup
+        generic, public :: operator(-) => &
+                negate_burnup, &
+                burnup_minus_burnup
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -367,6 +370,13 @@ contains
         type(burnup_t) :: sum_
 
         sum_%watt_seconds_per_kilogram = lhs%watt_seconds_per_kilogram + rhs%watt_seconds_per_kilogram
+    end function
+
+    elemental function negate_burnup(self) result(negated)
+        class(burnup_t), intent(in) :: self
+        type(burnup_t) :: negated
+
+        negated%watt_seconds_per_kilogram = -self%watt_seconds_per_kilogram
     end function
 
     elemental function burnup_minus_burnup( &

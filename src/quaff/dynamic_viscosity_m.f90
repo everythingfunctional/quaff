@@ -70,8 +70,11 @@ module quaff_dynamic_viscosity_m
                 dynamic_viscosity_divided_by_dynamic_viscosity
         procedure :: dynamic_viscosity_plus_dynamic_viscosity
         generic, public :: operator(+) => dynamic_viscosity_plus_dynamic_viscosity
+        procedure :: negate_dynamic_viscosity
         procedure :: dynamic_viscosity_minus_dynamic_viscosity
-        generic, public :: operator(-) => dynamic_viscosity_minus_dynamic_viscosity
+        generic, public :: operator(-) => &
+                negate_dynamic_viscosity, &
+                dynamic_viscosity_minus_dynamic_viscosity
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -366,6 +369,13 @@ contains
         type(dynamic_viscosity_t) :: sum_
 
         sum_%pascal_seconds = lhs%pascal_seconds + rhs%pascal_seconds
+    end function
+
+    elemental function negate_dynamic_viscosity(self) result(negated)
+        class(dynamic_viscosity_t), intent(in) :: self
+        type(dynamic_viscosity_t) :: negated
+
+        negated%pascal_seconds = -self%pascal_seconds
     end function
 
     elemental function dynamic_viscosity_minus_dynamic_viscosity( &

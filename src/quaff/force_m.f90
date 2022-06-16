@@ -77,8 +77,11 @@ module quaff_force_m
                 force_divided_by_force
         procedure :: force_plus_force
         generic, public :: operator(+) => force_plus_force
+        procedure :: negate_force
         procedure :: force_minus_force
-        generic, public :: operator(-) => force_minus_force
+        generic, public :: operator(-) => &
+                negate_force, &
+                force_minus_force
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -385,6 +388,13 @@ contains
         type(force_t) :: sum_
 
         sum_%newtons = lhs%newtons + rhs%newtons
+    end function
+
+    elemental function negate_force(self) result(negated)
+        class(force_t), intent(in) :: self
+        type(force_t) :: negated
+
+        negated%newtons = -self%newtons
     end function
 
     elemental function force_minus_force( &

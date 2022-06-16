@@ -14,6 +14,7 @@ module thermal_expansion_coefficient_test
             thermal_expansion_coefficient_unit_t, &
             operator(.unit.), &
             parse_thermal_expansion_coefficient, &
+            abs, &
             sum, &
             PROVIDED_THERMAL_EXPANSION_coefficient_UNITS, &
             PER_KELVIN
@@ -70,6 +71,8 @@ contains
                         "returns an error trying to parse a bad number", &
                         check_bad_number) &
                 , it("arrays can be summed", check_sum) &
+                , it("can take the absolute value", check_abs) &
+                , it("can be negated", DOUBLE_PRECISION_GENERATOR, check_negation) &
                 , it( &
                         "adding zero returns the original thermal_expansion_coefficient", &
                         DOUBLE_PRECISION_GENERATOR, &
@@ -367,6 +370,32 @@ contains
         result_ = assert_equals( &
                 sum(numbers).unit.PER_KELVIN, &
                 sum(numbers.unit.PER_KELVIN))
+    end function
+
+    pure function check_abs() result(result_)
+        type(result_t) :: result_
+
+        result_ = &
+                assert_equals( &
+                        abs(1.0d0).unit.PER_KELVIN, &
+                        abs(1.0d0.unit.PER_KELVIN)) &
+                .and.assert_equals( &
+                        abs(-1.0d0).unit.PER_KELVIN, &
+                        abs((-1.0d0).unit.PER_KELVIN))
+    end function
+
+    pure function check_negation(input) result(result_)
+        class(input_t), intent(in) :: input
+        type(result_t) :: result_
+
+        select type(input)
+        type is (double_precision_input_t)
+            result_ = assert_equals( &
+                    (-input%input()).unit.PER_KELVIN, &
+                    -(input%input().unit.PER_KELVIN))
+        class default
+            result_ = fail("Expected a double_precision_input_t")
+        end select
     end function
 
     pure function check_add_zero(input) result(result_)

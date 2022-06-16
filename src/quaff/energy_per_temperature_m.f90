@@ -70,8 +70,11 @@ module quaff_energy_per_temperature_m
                 energy_per_temperature_divided_by_energy_per_temperature
         procedure :: energy_per_temperature_plus_energy_per_temperature
         generic, public :: operator(+) => energy_per_temperature_plus_energy_per_temperature
+        procedure :: negate_energy_per_temperature
         procedure :: energy_per_temperature_minus_energy_per_temperature
-        generic, public :: operator(-) => energy_per_temperature_minus_energy_per_temperature
+        generic, public :: operator(-) => &
+                negate_energy_per_temperature, &
+                energy_per_temperature_minus_energy_per_temperature
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -366,6 +369,13 @@ contains
         type(energy_per_temperature_t) :: sum_
 
         sum_%joules_per_kelvin = lhs%joules_per_kelvin + rhs%joules_per_kelvin
+    end function
+
+    elemental function negate_energy_per_temperature(self) result(negated)
+        class(energy_per_temperature_t), intent(in) :: self
+        type(energy_per_temperature_t) :: negated
+
+        negated%joules_per_kelvin = -self%joules_per_kelvin
     end function
 
     elemental function energy_per_temperature_minus_energy_per_temperature( &

@@ -70,8 +70,11 @@ module quaff_amount_temperature_m
                 amount_temperature_divided_by_amount_temperature
         procedure :: amount_temperature_plus_amount_temperature
         generic, public :: operator(+) => amount_temperature_plus_amount_temperature
+        procedure :: negate_amount_temperature
         procedure :: amount_temperature_minus_amount_temperature
-        generic, public :: operator(-) => amount_temperature_minus_amount_temperature
+        generic, public :: operator(-) => &
+                negate_amount_temperature, &
+                amount_temperature_minus_amount_temperature
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -366,6 +369,13 @@ contains
         type(amount_temperature_t) :: sum_
 
         sum_%mols_kelvin = lhs%mols_kelvin + rhs%mols_kelvin
+    end function
+
+    elemental function negate_amount_temperature(self) result(negated)
+        class(amount_temperature_t), intent(in) :: self
+        type(amount_temperature_t) :: negated
+
+        negated%mols_kelvin = -self%mols_kelvin
     end function
 
     elemental function amount_temperature_minus_amount_temperature( &

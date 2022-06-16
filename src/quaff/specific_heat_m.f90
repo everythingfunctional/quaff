@@ -72,8 +72,11 @@ module quaff_specific_heat_m
                 specific_heat_divided_by_specific_heat
         procedure :: specific_heat_plus_specific_heat
         generic, public :: operator(+) => specific_heat_plus_specific_heat
+        procedure :: negate_specific_heat
         procedure :: specific_heat_minus_specific_heat
-        generic, public :: operator(-) => specific_heat_minus_specific_heat
+        generic, public :: operator(-) => &
+                negate_specific_heat, &
+                specific_heat_minus_specific_heat
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -375,6 +378,13 @@ contains
         type(specific_heat_t) :: sum_
 
         sum_%joules_per_kilogram_kelvin = lhs%joules_per_kilogram_kelvin + rhs%joules_per_kilogram_kelvin
+    end function
+
+    elemental function negate_specific_heat(self) result(negated)
+        class(specific_heat_t), intent(in) :: self
+        type(specific_heat_t) :: negated
+
+        negated%joules_per_kilogram_kelvin = -self%joules_per_kilogram_kelvin
     end function
 
     elemental function specific_heat_minus_specific_heat( &

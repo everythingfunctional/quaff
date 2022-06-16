@@ -71,8 +71,11 @@ module quaff_enthalpy_m
                 enthalpy_divided_by_enthalpy
         procedure :: enthalpy_plus_enthalpy
         generic, public :: operator(+) => enthalpy_plus_enthalpy
+        procedure :: negate_enthalpy
         procedure :: enthalpy_minus_enthalpy
-        generic, public :: operator(-) => enthalpy_minus_enthalpy
+        generic, public :: operator(-) => &
+                negate_enthalpy, &
+                enthalpy_minus_enthalpy
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -369,6 +372,13 @@ contains
         sum_%joules_per_kilogram = lhs%joules_per_kilogram + rhs%joules_per_kilogram
     end function
 
+    elemental function negate_enthalpy(self) result(negated)
+        class(enthalpy_t), intent(in) :: self
+        type(enthalpy_t) :: negated
+
+        negated%joules_per_kilogram = -self%joules_per_kilogram
+    end function
+
     elemental function enthalpy_minus_enthalpy( &
             lhs, rhs) result(difference)
         class(enthalpy_t), intent(in) :: lhs
@@ -384,7 +394,7 @@ contains
 
         abs_%joules_per_kilogram = abs(enthalpy%joules_per_kilogram)
     end function
-    
+
     pure function sum_enthalpy(enthalpys) result(sum_)
         type(enthalpy_t), intent(in) :: enthalpys(:)
         type(enthalpy_t) :: sum_

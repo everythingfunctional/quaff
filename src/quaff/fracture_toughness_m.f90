@@ -73,8 +73,11 @@ module quaff_fracture_toughness_m
                 fracture_toughness_divided_by_fracture_toughness
         procedure :: fracture_toughness_plus_fracture_toughness
         generic, public :: operator(+) => fracture_toughness_plus_fracture_toughness
+        procedure :: negate_fracture_toughness
         procedure :: fracture_toughness_minus_fracture_toughness
-        generic, public :: operator(-) => fracture_toughness_minus_fracture_toughness
+        generic, public :: operator(-) => &
+                negate_fracture_toughness, &
+                fracture_toughness_minus_fracture_toughness
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -373,6 +376,13 @@ contains
         type(fracture_toughness_t) :: sum_
 
         sum_%pascal_root_meter = lhs%pascal_root_meter + rhs%pascal_root_meter
+    end function
+
+    elemental function negate_fracture_toughness(self) result(negated)
+        class(fracture_toughness_t), intent(in) :: self
+        type(fracture_toughness_t) :: negated
+
+        negated%pascal_root_meter = -self%pascal_root_meter
     end function
 
     elemental function fracture_toughness_minus_fracture_toughness( &

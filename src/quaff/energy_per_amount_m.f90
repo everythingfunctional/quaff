@@ -70,8 +70,11 @@ module quaff_energy_per_amount_m
                 energy_per_amount_divided_by_energy_per_amount
         procedure :: energy_per_amount_plus_energy_per_amount
         generic, public :: operator(+) => energy_per_amount_plus_energy_per_amount
+        procedure :: negate_energy_per_amount
         procedure :: energy_per_amount_minus_energy_per_amount
-        generic, public :: operator(-) => energy_per_amount_minus_energy_per_amount
+        generic, public :: operator(-) => &
+                negate_energy_per_amount, &
+                energy_per_amount_minus_energy_per_amount
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -365,6 +368,13 @@ contains
         type(energy_per_amount_t) :: sum_
 
         sum_%joules_per_mol = lhs%joules_per_mol + rhs%joules_per_mol
+    end function
+
+    elemental function negate_energy_per_amount(self) result(negated)
+        class(energy_per_amount_t), intent(in) :: self
+        type(energy_per_amount_t) :: negated
+
+        negated%joules_per_mol = -self%joules_per_mol
     end function
 
     elemental function energy_per_amount_minus_energy_per_amount( &

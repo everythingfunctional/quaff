@@ -77,8 +77,11 @@ module quaff_angle_m
                 angle_divided_by_angle
         procedure :: angle_plus_angle
         generic, public :: operator(+) => angle_plus_angle
+        procedure :: negate_angle
         procedure :: angle_minus_angle
-        generic, public :: operator(-) => angle_minus_angle
+        generic, public :: operator(-) => &
+                negate_angle, &
+                angle_minus_angle
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -385,6 +388,13 @@ contains
         type(angle_t) :: sum_
 
         sum_%radians = lhs%radians + rhs%radians
+    end function
+
+    elemental function negate_angle(self) result(negated)
+        class(angle_t), intent(in) :: self
+        type(angle_t) :: negated
+
+        negated%radians = -self%radians
     end function
 
     elemental function angle_minus_angle( &

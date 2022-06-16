@@ -74,8 +74,11 @@ module quaff_frequency_m
                 frequency_divided_by_frequency
         procedure :: frequency_plus_frequency
         generic, public :: operator(+) => frequency_plus_frequency
+        procedure :: negate_frequency
         procedure :: frequency_minus_frequency
-        generic, public :: operator(-) => frequency_minus_frequency
+        generic, public :: operator(-) => &
+                negate_frequency, &
+                frequency_minus_frequency
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -378,6 +381,13 @@ contains
         type(frequency_t) :: sum_
 
         sum_%hertz = lhs%hertz + rhs%hertz
+    end function
+
+    elemental function negate_frequency(self) result(negated)
+        class(frequency_t), intent(in) :: self
+        type(frequency_t) :: negated
+
+        negated%hertz = -self%hertz
     end function
 
     elemental function frequency_minus_frequency( &

@@ -72,8 +72,11 @@ module quaff_thermal_expansion_coefficient_m
                 therm_exp_coeff_divided_by_therm_exp_coefft
         procedure :: therm_exp_coeff_plus_therm_exp_coeff
         generic, public :: operator(+) => therm_exp_coeff_plus_therm_exp_coeff
+        procedure :: negate_thermal_expansion_coefficient
         procedure :: therm_exp_coeff_minus_therm_exp_coeff
-        generic, public :: operator(-) => therm_exp_coeff_minus_therm_exp_coeff
+        generic, public :: operator(-) => &
+                negate_thermal_expansion_coefficient, &
+                therm_exp_coeff_minus_therm_exp_coeff
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -203,7 +206,7 @@ module quaff_thermal_expansion_coefficient_m
     interface abs
         module procedure abs_thermal_expansion_coefficient
     end interface
-    
+
     interface sum
         module procedure sum_thermal_expansion_coefficient
     end interface
@@ -374,6 +377,13 @@ contains
         sum_%per_kelvin = lhs%per_kelvin + rhs%per_kelvin
     end function
 
+    elemental function negate_thermal_expansion_coefficient(self) result(negated)
+        class(thermal_expansion_coefficient_t), intent(in) :: self
+        type(thermal_expansion_coefficient_t) :: negated
+
+        negated%per_kelvin = -self%per_kelvin
+    end function
+
     elemental function therm_exp_coeff_minus_therm_exp_coeff( &
             lhs, rhs) result(difference)
         class(thermal_expansion_coefficient_t), intent(in) :: lhs
@@ -389,7 +399,7 @@ contains
 
         abs_%per_kelvin = abs(thermal_expansion_coefficient%per_kelvin)
     end function
-    
+
     pure function sum_thermal_expansion_coefficient(thermal_expansion_coefficients) result(sum_)
         type(thermal_expansion_coefficient_t), intent(in) :: thermal_expansion_coefficients(:)
         type(thermal_expansion_coefficient_t) :: sum_

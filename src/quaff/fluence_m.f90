@@ -71,8 +71,11 @@ module quaff_fluence_m
                 fluence_divided_by_fluence
         procedure :: fluence_plus_fluence
         generic, public :: operator(+) => fluence_plus_fluence
+        procedure :: negate_fluence
         procedure :: fluence_minus_fluence
-        generic, public :: operator(-) => fluence_minus_fluence
+        generic, public :: operator(-) => &
+                negate_fluence, &
+                fluence_minus_fluence
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -366,6 +369,13 @@ contains
         type(fluence_t) :: sum_
 
         sum_%particles_per_square_meter = lhs%particles_per_square_meter + rhs%particles_per_square_meter
+    end function
+
+    elemental function negate_fluence(self) result(negated)
+        class(fluence_t), intent(in) :: self
+        type(fluence_t) :: negated
+
+        negated%particles_per_square_meter = -self%particles_per_square_meter
     end function
 
     elemental function fluence_minus_fluence( &

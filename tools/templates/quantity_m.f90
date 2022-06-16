@@ -69,8 +69,11 @@ module quaff_quantity_m
                 quantity_divided_by_quantity
         procedure :: quantity_plus_quantity
         generic, public :: operator(+) => quantity_plus_quantity
+        procedure :: negate_quantity
         procedure :: quantity_minus_quantity
-        generic, public :: operator(-) => quantity_minus_quantity
+        generic, public :: operator(-) => &
+                negate_quantity, &
+                quantity_minus_quantity
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -365,6 +368,13 @@ contains
         type(quantity_t) :: sum_
 
         sum_%meters = lhs%meters + rhs%meters
+    end function
+
+    elemental function negate_quantity(self) result(negated)
+        class(quantity_t), intent(in) :: self
+        type(quantity_t) :: negated
+
+        negated%meters = -self%meters
     end function
 
     elemental function quantity_minus_quantity( &

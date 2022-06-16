@@ -71,8 +71,11 @@ module quaff_amount_m
                 amount_divided_by_amount
         procedure :: amount_plus_amount
         generic, public :: operator(+) => amount_plus_amount
+        procedure :: negate_amount
         procedure :: amount_minus_amount
-        generic, public :: operator(-) => amount_minus_amount
+        generic, public :: operator(-) => &
+                negate_amount, &
+                amount_minus_amount
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -371,6 +374,13 @@ contains
         type(amount_t) :: sum_
 
         sum_%mols = lhs%mols + rhs%mols
+    end function
+
+    elemental function negate_amount(self) result(negated)
+        class(amount_t), intent(in) :: self
+        type(amount_t) :: negated
+
+        negated%mols = -self%mols
     end function
 
     elemental function amount_minus_amount( &

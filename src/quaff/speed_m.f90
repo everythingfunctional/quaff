@@ -73,8 +73,11 @@ module quaff_speed_m
                 speed_divided_by_speed
         procedure :: speed_plus_speed
         generic, public :: operator(+) => speed_plus_speed
+        procedure :: negate_speed
         procedure :: speed_minus_speed
-        generic, public :: operator(-) => speed_minus_speed
+        generic, public :: operator(-) => &
+                negate_speed, &
+                speed_minus_speed
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -373,6 +376,13 @@ contains
         type(speed_t) :: sum_
 
         sum_%meters_per_second = lhs%meters_per_second + rhs%meters_per_second
+    end function
+
+    elemental function negate_speed(self) result(negated)
+        class(speed_t), intent(in) :: self
+        type(speed_t) :: negated
+
+        negated%meters_per_second = -self%meters_per_second
     end function
 
     elemental function speed_minus_speed( &

@@ -73,8 +73,11 @@ module quaff_density_m
                 density_divided_by_density
         procedure :: density_plus_density
         generic, public :: operator(+) => density_plus_density
+        procedure :: negate_density
         procedure :: density_minus_density
-        generic, public :: operator(-) => density_minus_density
+        generic, public :: operator(-) => &
+                negate_density, &
+                density_minus_density
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -376,6 +379,13 @@ contains
         type(density_t) :: sum_
 
         sum_%kilograms_per_cubic_meter = lhs%kilograms_per_cubic_meter + rhs%kilograms_per_cubic_meter
+    end function
+
+    elemental function negate_density(self) result(negated)
+        class(density_t), intent(in) :: self
+        type(density_t) :: negated
+
+        negated%kilograms_per_cubic_meter = -self%kilograms_per_cubic_meter
     end function
 
     elemental function density_minus_density( &

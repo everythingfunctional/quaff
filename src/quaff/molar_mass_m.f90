@@ -70,8 +70,11 @@ module quaff_molar_mass_m
                 molar_mass_divided_by_molar_mass
         procedure :: molar_mass_plus_molar_mass
         generic, public :: operator(+) => molar_mass_plus_molar_mass
+        procedure :: negate_molar_mass
         procedure :: molar_mass_minus_molar_mass
-        generic, public :: operator(-) => molar_mass_minus_molar_mass
+        generic, public :: operator(-) => &
+                negate_molar_mass, &
+                molar_mass_minus_molar_mass
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -366,6 +369,13 @@ contains
         type(molar_mass_t) :: sum_
 
         sum_%kilograms_per_mol = lhs%kilograms_per_mol + rhs%kilograms_per_mol
+    end function
+
+    elemental function negate_molar_mass(self) result(negated)
+        class(molar_mass_t), intent(in) :: self
+        type(molar_mass_t) :: negated
+
+        negated%kilograms_per_mol = -self%kilograms_per_mol
     end function
 
     elemental function molar_mass_minus_molar_mass( &

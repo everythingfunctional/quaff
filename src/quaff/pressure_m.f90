@@ -85,8 +85,11 @@ module quaff_pressure_m
                 pressure_divided_by_pressure
         procedure :: pressure_plus_pressure
         generic, public :: operator(+) => pressure_plus_pressure
+        procedure :: negate_pressure
         procedure :: pressure_minus_pressure
-        generic, public :: operator(-) => pressure_minus_pressure
+        generic, public :: operator(-) => &
+                negate_pressure, &
+                pressure_minus_pressure
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -418,6 +421,13 @@ contains
         type(pressure_t) :: sum_
 
         sum_%pascals = lhs%pascals + rhs%pascals
+    end function
+
+    elemental function negate_pressure(self) result(negated)
+        class(pressure_t), intent(in) :: self
+        type(pressure_t) :: negated
+
+        negated%pascals = -self%pascals
     end function
 
     elemental function pressure_minus_pressure( &

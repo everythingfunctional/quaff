@@ -73,8 +73,11 @@ module quaff_acceleration_m
                 acceleration_divided_by_acceleration
         procedure :: acceleration_plus_acceleration
         generic, public :: operator(+) => acceleration_plus_acceleration
+        procedure :: negate_acceleration
         procedure :: acceleration_minus_acceleration
-        generic, public :: operator(-) => acceleration_minus_acceleration
+        generic, public :: operator(-) => &
+                negate_acceleration, &
+                acceleration_minus_acceleration
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -376,6 +379,13 @@ contains
         type(acceleration_t) :: sum_
 
         sum_%meters_per_square_second = lhs%meters_per_square_second + rhs%meters_per_square_second
+    end function
+
+    elemental function negate_acceleration(self) result(negated)
+        class(acceleration_t), intent(in) :: self
+        type(acceleration_t) :: negated
+
+        negated%meters_per_square_second = -self%meters_per_square_second
     end function
 
     elemental function acceleration_minus_acceleration( &

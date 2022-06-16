@@ -72,8 +72,11 @@ module quaff_convective_heat_transfer_m
                 convective_heat_transfer_divided_by_convective_heat_transfer
         procedure :: convective_heat_transfer_plus_convective_heat_transfer
         generic, public :: operator(+) => convective_heat_transfer_plus_convective_heat_transfer
+        procedure :: negate_convective_heat_transfer
         procedure :: convective_heat_transfer_minus_convective_heat_transfer
-        generic, public :: operator(-) => convective_heat_transfer_minus_convective_heat_transfer
+        generic, public :: operator(-) => &
+                negate_convective_heat_transfer, &
+                convective_heat_transfer_minus_convective_heat_transfer
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -375,6 +378,13 @@ contains
         type(convective_heat_transfer_t) :: sum_
 
         sum_%watts_per_square_meter_kelvin = lhs%watts_per_square_meter_kelvin + rhs%watts_per_square_meter_kelvin
+    end function
+
+    elemental function negate_convective_heat_transfer(self) result(negated)
+        class(convective_heat_transfer_t), intent(in) :: self
+        type(convective_heat_transfer_t) :: negated
+
+        negated%watts_per_square_meter_kelvin = -self%watts_per_square_meter_kelvin
     end function
 
     elemental function convective_heat_transfer_minus_convective_heat_transfer( &

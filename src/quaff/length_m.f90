@@ -81,8 +81,11 @@ module quaff_length_m
                 length_divided_by_length
         procedure :: length_plus_length
         generic, public :: operator(+) => length_plus_length
+        procedure :: negate_length
         procedure :: length_minus_length
-        generic, public :: operator(-) => length_minus_length
+        generic, public :: operator(-) => &
+                negate_length, &
+                length_minus_length
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -398,6 +401,13 @@ contains
         type(length_t) :: sum_
 
         sum_%meters = lhs%meters + rhs%meters
+    end function
+
+    elemental function negate_length(self) result(negated)
+        class(length_t), intent(in) :: self
+        type(length_t) :: negated
+
+        negated%meters = -self%meters
     end function
 
     elemental function length_minus_length( &

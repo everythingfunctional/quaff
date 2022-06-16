@@ -73,8 +73,11 @@ module quaff_stress_intensity_factor_m
                 stress_intensity_factor_divided_by_stress_intensity_factor
         procedure :: stress_intensity_factor_plus_stress_intensity_factor
         generic, public :: operator(+) => stress_intensity_factor_plus_stress_intensity_factor
+        procedure :: negate_stress_intensity_factor
         procedure :: stress_intensity_factor_minus_stress_intensity_factor
-        generic, public :: operator(-) => stress_intensity_factor_minus_stress_intensity_factor
+        generic, public :: operator(-) => &
+                negate_stress_intensity_factor, &
+                stress_intensity_factor_minus_stress_intensity_factor
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -373,6 +376,13 @@ contains
         type(stress_intensity_factor_t) :: sum_
 
         sum_%megapascal_root_meter = lhs%megapascal_root_meter + rhs%megapascal_root_meter
+    end function
+
+    elemental function negate_stress_intensity_factor(self) result(negated)
+        class(stress_intensity_factor_t), intent(in) :: self
+        type(stress_intensity_factor_t) :: negated
+
+        negated%megapascal_root_meter = -self%megapascal_root_meter
     end function
 
     elemental function stress_intensity_factor_minus_stress_intensity_factor( &

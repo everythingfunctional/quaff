@@ -75,8 +75,11 @@ module quaff_volume_m
                 volume_divided_by_volume
         procedure :: volume_plus_volume
         generic, public :: operator(+) => volume_plus_volume
+        procedure :: negate_volume
         procedure :: volume_minus_volume
-        generic, public :: operator(-) => volume_minus_volume
+        generic, public :: operator(-) => &
+                negate_volume, &
+                volume_minus_volume
         procedure :: greater_than
         generic, public :: operator(>) => greater_than
         procedure :: less_than
@@ -379,6 +382,13 @@ contains
         type(volume_t) :: sum_
 
         sum_%cubic_meters = lhs%cubic_meters + rhs%cubic_meters
+    end function
+
+    elemental function negate_volume(self) result(negated)
+        class(volume_t), intent(in) :: self
+        type(volume_t) :: negated
+
+        negated%cubic_meters = -self%cubic_meters
     end function
 
     elemental function volume_minus_volume( &
