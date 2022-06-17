@@ -11,6 +11,7 @@ module interquantity_test
             JOULES_PER_KELVIN, &
             JOULES_PER_KELVIN_MOL, &
             JOULES_PER_KILOGRAM, &
+            JOULES_PER_KILOGRAM_KELVIN, &
             JOULES_PER_MOL, &
             DELTA_KELVIN, &
             KELVIN, &
@@ -105,6 +106,8 @@ contains
                 , it("2 mol * 3 J/(K mol) = 6 J/K", check_amount_times_energy_per_temperature_amount) &
                 , it("2 mol * 3 J/(K mol) = 6 J/K", check_energy_per_temperature_amount_times_amount) &
                 , it("6 J / 3 J/K = 2 K", check_energy_divided_by_energy_per_temperature) &
+                , it("6 J/mol / 3 kg/mol = 2 J/kg", check_energy_per_amount_divided_by_molar_mass) &
+                , it("6 J/(K mol) / 3 kg/mol = 2 J/(kg K)", check_energy_per_temperature_amount_divided_by_molar_mass) &
                 ])
     end function test_interquantity_operators
 
@@ -619,5 +622,21 @@ contains
         result_ = assert_equals( &
                 2.d0.unit.DELTA_KELVIN, &
                 (6.d0.unit.JOULES) / (3.d0.unit.JOULES_PER_KELVIN))
+    end function
+
+    pure function check_energy_per_amount_divided_by_molar_mass() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.JOULES_PER_KILOGRAM, &
+                (6.d0.unit.JOULES_PER_MOL) / (3.d0.unit.KILOGRAMS_PER_MOL))
+    end function
+
+    pure function check_energy_per_temperature_amount_divided_by_molar_mass() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.JOULES_PER_KILOGRAM_KELVIN, &
+                (6.d0.unit.JOULES_PER_KELVIN_MOL) / (3.d0.unit.KILOGRAMS_PER_MOL))
     end function
 end module

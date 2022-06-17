@@ -17,6 +17,7 @@ module quaff_interquantity_operators_m
     use quaff_molar_mass_m, only: molar_mass_t
     use quaff_power_m, only: power_t
     use quaff_pressure_m, only: pressure_t
+    use quaff_specific_heat_m, only: specific_heat_t
     use quaff_speed_m, only: speed_t
     use quaff_temperature_m, only: temperature_t
     use quaff_thermal_expansion_coefficient_m, only: thermal_expansion_coefficient_t
@@ -68,6 +69,8 @@ module quaff_interquantity_operators_m
         module procedure area_divided_by_length
         module procedure dynamic_viscosity_divided_by_pressure
         module procedure dynamic_viscosity_divided_by_time
+        module procedure energy_per_amount_divided_by_molar_mass
+        module procedure energy_per_temperature_amount_divided_by_molar_mass
         module procedure energy_divided_by_burnup
         module procedure energy_divided_by_energy_per_amount
         module procedure energy_divided_by_energy_per_temperature
@@ -93,9 +96,11 @@ module quaff_interquantity_operators_m
         module procedure volume_divided_by_area
         module procedure volume_divided_by_length
     end interface
+
     interface operator (-)
           module procedure temperature_minus_temperature
     end interface
+
     interface operator (+)
       module procedure temperature_plus_delta_temperature
     end interface
@@ -286,6 +291,27 @@ contains
         type(pressure_t) :: pressure
 
         pressure%pascals = energy%joules / volume%cubic_meters
+    end function
+
+    elemental function energy_per_amount_divided_by_molar_mass( &
+            energy_per_amount, molar_mass) result(enthalpy)
+        type(energy_per_amount_t), intent(in) :: energy_per_amount
+        type(molar_mass_t), intent(in) :: molar_mass
+        type(enthalpy_t) :: enthalpy
+
+        enthalpy%joules_per_kilogram = &
+                energy_per_amount%joules_per_mol / molar_mass%kilograms_per_mol
+    end function
+
+    elemental function energy_per_temperature_amount_divided_by_molar_mass( &
+            energy_per_temperature_amount, molar_mass) result(specific_heat)
+        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
+        type(molar_mass_t), intent(in) :: molar_mass
+        type(specific_heat_t) :: specific_heat
+
+        specific_heat%joules_per_kilogram_kelvin = &
+                energy_per_temperature_amount%joules_per_kelvin_mol &
+                / molar_mass%kilograms_per_mol
     end function
 
     elemental function energy_per_temperature_amount_times_amount( &
