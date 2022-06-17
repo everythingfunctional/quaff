@@ -41,9 +41,6 @@ contains
         use dynamic_viscosity_test, only: &
                 dynamic_viscosity_dynamic_viscosity => &
                     test_dynamic_viscosity
-        use energy_per_amount_test, only: &
-                energy_per_amount_energy_per_amount => &
-                    test_energy_per_amount
         use energy_per_temperature_amount_test, only: &
                 energy_per_temperature_amount_energy_per_temperature_amount => &
                     test_energy_per_temperature_amount
@@ -80,6 +77,9 @@ contains
         use mass_test, only: &
                 mass_mass => &
                     test_mass
+        use molar_enthalpy_test, only: &
+                molar_enthalpy_molar_enthalpy => &
+                    test_molar_enthalpy
         use molar_mass_test, only: &
                 molar_mass_molar_mass => &
                     test_molar_mass
@@ -134,19 +134,19 @@ contains
         individual_tests(10) = delta_temperature_delta_temperature()
         individual_tests(11) = density_density()
         individual_tests(12) = dynamic_viscosity_dynamic_viscosity()
-        individual_tests(13) = energy_per_amount_energy_per_amount()
-        individual_tests(14) = energy_per_temperature_amount_energy_per_temperature_amount()
-        individual_tests(15) = energy_per_temperature_energy_per_temperature()
-        individual_tests(16) = energy_energy()
-        individual_tests(17) = enthalpy_enthalpy()
-        individual_tests(18) = fluence_fluence()
-        individual_tests(19) = force_force()
-        individual_tests(20) = fracture_toughness_fracture_toughness()
-        individual_tests(21) = frequency_frequency()
-        individual_tests(22) = interquantity_interquantity_operators()
-        individual_tests(23) = length_length()
-        individual_tests(24) = mass_rate_mass_rate()
-        individual_tests(25) = mass_mass()
+        individual_tests(13) = energy_per_temperature_amount_energy_per_temperature_amount()
+        individual_tests(14) = energy_per_temperature_energy_per_temperature()
+        individual_tests(15) = energy_energy()
+        individual_tests(16) = enthalpy_enthalpy()
+        individual_tests(17) = fluence_fluence()
+        individual_tests(18) = force_force()
+        individual_tests(19) = fracture_toughness_fracture_toughness()
+        individual_tests(20) = frequency_frequency()
+        individual_tests(21) = interquantity_interquantity_operators()
+        individual_tests(22) = length_length()
+        individual_tests(23) = mass_rate_mass_rate()
+        individual_tests(24) = mass_mass()
+        individual_tests(25) = molar_enthalpy_molar_enthalpy()
         individual_tests(26) = molar_mass_molar_mass()
         individual_tests(27) = power_power()
         individual_tests(28) = pressure_pressure()

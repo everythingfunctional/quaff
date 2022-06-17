@@ -96,17 +96,17 @@ contains
                 , it("2 m^3 * 3 Pa = 6 J", check_volume_times_pressure) &
                 , it("2 J/(K mol) * 3 K = 6 J/mol", check_energy_per_temperature_amount_times_temperature) &
                 , it("2 K * 3 J/(K mol) = 6 J/mol", check_temperature_times_energy_per_temperature_amount) &
-                , it("6 J / 3 J/mol = 2 mol", check_energy_divided_by_energy_per_amount) &
+                , it("6 J / 3 J/mol = 2 mol", check_energy_divided_by_molar_enthalpy) &
                 , it("3 /K * 2 K = 6.0", check_thermal_expansion_times_delta_temp) &
                 , it("1 K - 1 k = 0 K", check_temp_diff_gives_delta_temperature) &
                 , it("1 K + 1 k = 2 K", check_temperature_plus_delta_temperature) &
-                , it("2 J/mol * 3 mol = 6 J", check_energy_per_amount_times_amount) &
-                , it("2 mol * 3 J/mol = 6 J", check_amount_times_energy_per_amount) &
+                , it("2 J/mol * 3 mol = 6 J", check_molar_enthalpy_times_amount) &
+                , it("2 mol * 3 J/mol = 6 J", check_amount_times_molar_enthalpy) &
                 , it("6 J / 3 m^3 = 2 Pa", check_energy_divided_by_volume) &
                 , it("2 mol * 3 J/(K mol) = 6 J/K", check_amount_times_energy_per_temperature_amount) &
                 , it("2 mol * 3 J/(K mol) = 6 J/K", check_energy_per_temperature_amount_times_amount) &
                 , it("6 J / 3 J/K = 2 K", check_energy_divided_by_energy_per_temperature) &
-                , it("6 J/mol / 3 kg/mol = 2 J/kg", check_energy_per_amount_divided_by_molar_mass) &
+                , it("6 J/mol / 3 kg/mol = 2 J/kg", check_molar_enthalpy_divided_by_molar_mass) &
                 , it("6 J/(K mol) / 3 kg/mol = 2 J/(kg K)", check_energy_per_temperature_amount_divided_by_molar_mass) &
                 ])
     end function test_interquantity_operators
@@ -543,7 +543,7 @@ contains
                 (2.0d0.unit.KELVIN) * (3.0d0.unit.JOULES_PER_KELVIN_MOL))
     end function
 
-    pure function check_energy_divided_by_energy_per_amount() result(result_)
+    pure function check_energy_divided_by_molar_enthalpy() result(result_)
         type(result_t) :: result_
 
         result_ = assert_equals( &
@@ -576,7 +576,7 @@ contains
                 (1.0d0.unit.KELVIN) + (1.0d0.unit.DELTA_KELVIN))
     end function
 
-    pure function check_energy_per_amount_times_amount() result(result_)
+    pure function check_molar_enthalpy_times_amount() result(result_)
         type(result_t) :: result_
 
         result_ = assert_equals( &
@@ -584,7 +584,7 @@ contains
                 (2.d0.unit.JOULES_PER_MOL) * (3.d0.unit.MOLS))
     end function
 
-    pure function check_amount_times_energy_per_amount() result(result_)
+    pure function check_amount_times_molar_enthalpy() result(result_)
         type(result_t) :: result_
 
         result_ = assert_equals( &
@@ -624,7 +624,7 @@ contains
                 (6.d0.unit.JOULES) / (3.d0.unit.JOULES_PER_KELVIN))
     end function
 
-    pure function check_energy_per_amount_divided_by_molar_mass() result(result_)
+    pure function check_molar_enthalpy_divided_by_molar_mass() result(result_)
         type(result_t) :: result_
 
         result_ = assert_equals( &

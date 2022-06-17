@@ -201,20 +201,6 @@ module quaff
             MEGABTU, &
             MEGAWATT_DAYS, &
             POUNDS_FORCE_FEET
-    use quaff_energy_per_amount_m, only: &
-            energy_per_amount_t, &
-            fallible_energy_per_amount_t, &
-            energy_per_amount_unit_t, &
-            fallible_energy_per_amount_unit_t, &
-            operator(.unit.), &
-            parse_energy_per_amount, &
-            parse_energy_per_amount_unit, &
-            sum, &
-            abs, &
-            DEFAULT_ENERGY_PER_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
-            JOULES_PER_MOL, &
-            KILOJOULES_PER_MOL
     use quaff_energy_per_temperature_m, only: &
             energy_per_temperature_t, &
             fallible_energy_per_temperature_t, &
@@ -368,6 +354,20 @@ module quaff
             PROVIDED_MASS_RATE_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_SECOND, &
             KILOGRAMS_PER_SECOND
+    use quaff_molar_enthalpy_m, only: &
+            molar_enthalpy_t, &
+            fallible_molar_enthalpy_t, &
+            molar_enthalpy_unit_t, &
+            fallible_molar_enthalpy_unit_t, &
+            operator(.unit.), &
+            parse_molar_enthalpy, &
+            parse_molar_enthalpy_unit, &
+            sum, &
+            abs, &
+            DEFAULT_ENERGY_PER_AMOUNT_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_AMOUNT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_MOL, &
+            KILOJOULES_PER_MOL
     use quaff_molar_mass_m, only: &
             molar_mass_t, &
             fallible_molar_mass_t, &
