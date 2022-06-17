@@ -9,7 +9,7 @@ module quaff_interquantity_operators_m
     use quaff_energy_m, only: energy_t
     use quaff_molar_enthalpy_m, only: molar_enthalpy_t
     use quaff_energy_per_temperature_m, only: energy_per_temperature_t
-    use quaff_energy_per_temperature_amount_m, only: energy_per_temperature_amount_t
+    use quaff_molar_specific_heat_m, only: molar_specific_heat_t
     use quaff_enthalpy_m, only: enthalpy_t
     use quaff_force_m, only: force_t
     use quaff_length_m, only: length_t
@@ -33,13 +33,11 @@ module quaff_interquantity_operators_m
         module procedure acceleration_times_time
         module procedure amount_times_molar_enthalpy
         module procedure amount_times_molar_mass
-        module procedure amount_times_energy_per_temperature_amount
+        module procedure amount_times_molar_specific_heat
         module procedure area_times_length
         module procedure area_times_pressure
         module procedure burnup_times_mass
         module procedure density_times_volume
-        module procedure energy_per_temperature_amount_times_amount
-        module procedure energy_per_temperature_amount_times_temperature
         module procedure enthalpy_times_mass
         module procedure force_times_length
         module procedure length_times_area
@@ -50,12 +48,14 @@ module quaff_interquantity_operators_m
         module procedure mass_times_enthalpy
         module procedure molar_enthalpy_times_amount
         module procedure molar_mass_times_amount
+        module procedure molar_specific_heat_times_amount
+        module procedure molar_specific_heat_times_temperature
         module procedure power_times_time
         module procedure pressure_times_area
         module procedure pressure_times_time
         module procedure pressure_times_volume
         module procedure speed_times_time
-        module procedure temperature_times_energy_per_temperature_amount
+        module procedure temperature_times_molar_specific_heat
         module procedure thermal_expansion_coefficient_times_delta_temperature
         module procedure time_times_acceleration
         module procedure time_times_power
@@ -69,7 +69,6 @@ module quaff_interquantity_operators_m
         module procedure area_divided_by_length
         module procedure dynamic_viscosity_divided_by_pressure
         module procedure dynamic_viscosity_divided_by_time
-        module procedure energy_per_temperature_amount_divided_by_molar_mass
         module procedure energy_divided_by_burnup
         module procedure energy_divided_by_energy_per_temperature
         module procedure energy_divided_by_enthalpy
@@ -91,6 +90,7 @@ module quaff_interquantity_operators_m
         module procedure mass_divided_by_molar_mass
         module procedure mass_divided_by_volume
         module procedure molar_enthalpy_divided_by_molar_mass
+        module procedure molar_specific_heat_divided_by_molar_mass
         module procedure speed_divided_by_acceleration
         module procedure speed_divided_by_time
         module procedure volume_divided_by_area
@@ -137,14 +137,14 @@ contains
         mass%kilograms = amount%mols * molar_mass%kilograms_per_mol
     end function
 
-    elemental function amount_times_energy_per_temperature_amount( &
-            amount, energy_per_temperature_amount) result(energy_per_temperature)
+    elemental function amount_times_molar_specific_heat( &
+            amount, molar_specific_heat) result(energy_per_temperature)
         type(amount_t), intent(in) :: amount
-        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
+        type(molar_specific_heat_t), intent(in) :: molar_specific_heat
         type(energy_per_temperature_t) :: energy_per_temperature
 
         energy_per_temperature%joules_per_kelvin = &
-            amount%mols * energy_per_temperature_amount%joules_per_kelvin_mol
+            amount%mols * molar_specific_heat%joules_per_kelvin_mol
     end function
 
     elemental function area_divided_by_length(numerator, denomenator) result(length)
@@ -291,37 +291,6 @@ contains
         type(pressure_t) :: pressure
 
         pressure%pascals = energy%joules / volume%cubic_meters
-    end function
-
-    elemental function energy_per_temperature_amount_divided_by_molar_mass( &
-            energy_per_temperature_amount, molar_mass) result(specific_heat)
-        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
-        type(molar_mass_t), intent(in) :: molar_mass
-        type(specific_heat_t) :: specific_heat
-
-        specific_heat%joules_per_kilogram_kelvin = &
-                energy_per_temperature_amount%joules_per_kelvin_mol &
-                / molar_mass%kilograms_per_mol
-    end function
-
-    elemental function energy_per_temperature_amount_times_amount( &
-            energy_per_temperature_amount, amount) result(energy_per_temperature)
-        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
-        type(amount_t), intent(in) :: amount
-        type(energy_per_temperature_t) :: energy_per_temperature
-
-        energy_per_temperature%joules_per_kelvin = &
-            energy_per_temperature_amount%joules_per_kelvin_mol * amount%mols
-    end function
-
-    elemental function energy_per_temperature_amount_times_temperature( &
-            energy_per_temperature_amount, temperature) result(molar_enthalpy)
-        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
-        type(temperature_t), intent(in) :: temperature
-        type(molar_enthalpy_t) :: molar_enthalpy
-
-        molar_enthalpy%joules_per_mol = &
-                energy_per_temperature_amount%joules_per_kelvin_mol * temperature%kelvin
     end function
 
     elemental function enthalpy_times_mass(enthalpy, mass) result(energy)
@@ -494,6 +463,37 @@ contains
         mass%kilograms = molar_mass%kilograms_per_mol * amount%mols
     end function
 
+    elemental function molar_specific_heat_divided_by_molar_mass( &
+            molar_specific_heat, molar_mass) result(specific_heat)
+        type(molar_specific_heat_t), intent(in) :: molar_specific_heat
+        type(molar_mass_t), intent(in) :: molar_mass
+        type(specific_heat_t) :: specific_heat
+
+        specific_heat%joules_per_kilogram_kelvin = &
+                molar_specific_heat%joules_per_kelvin_mol &
+                / molar_mass%kilograms_per_mol
+    end function
+
+    elemental function molar_specific_heat_times_amount( &
+            molar_specific_heat, amount) result(energy_per_temperature)
+        type(molar_specific_heat_t), intent(in) :: molar_specific_heat
+        type(amount_t), intent(in) :: amount
+        type(energy_per_temperature_t) :: energy_per_temperature
+
+        energy_per_temperature%joules_per_kelvin = &
+            molar_specific_heat%joules_per_kelvin_mol * amount%mols
+    end function
+
+    elemental function molar_specific_heat_times_temperature( &
+            molar_specific_heat, temperature) result(molar_enthalpy)
+        type(molar_specific_heat_t), intent(in) :: molar_specific_heat
+        type(temperature_t), intent(in) :: temperature
+        type(molar_enthalpy_t) :: molar_enthalpy
+
+        molar_enthalpy%joules_per_mol = &
+                molar_specific_heat%joules_per_kelvin_mol * temperature%kelvin
+    end function
+
     elemental function power_times_time(power, time) result(energy)
         type(power_t), intent(in) :: power
         type(time_t), intent(in) :: time
@@ -550,14 +550,14 @@ contains
         length%meters = speed%meters_per_second * time%seconds
     end function
 
-    elemental function temperature_times_energy_per_temperature_amount( &
-            temperature, energy_per_temperature_amount) result(molar_enthalpy)
+    elemental function temperature_times_molar_specific_heat( &
+            temperature, molar_specific_heat) result(molar_enthalpy)
         type(temperature_t), intent(in) :: temperature
-        type(energy_per_temperature_amount_t), intent(in) :: energy_per_temperature_amount
+        type(molar_specific_heat_t), intent(in) :: molar_specific_heat
         type(molar_enthalpy_t) :: molar_enthalpy
 
         molar_enthalpy%joules_per_mol = &
-                temperature%kelvin * energy_per_temperature_amount%joules_per_kelvin_mol
+                temperature%kelvin * molar_specific_heat%joules_per_kelvin_mol
     end function
 
     elemental function thermal_expansion_coefficient_times_delta_temperature ( &
@@ -639,6 +639,7 @@ contains
 
         delta_temperature%delta_kelvin = lhs%kelvin - rhs%kelvin
     end function
+
     elemental function temperature_plus_delta_temperature(temperature, delta_temperature) result(new_temperature)
         type(temperature_t), intent(in) :: temperature
         type(delta_temperature_t), intent(in) :: delta_temperature

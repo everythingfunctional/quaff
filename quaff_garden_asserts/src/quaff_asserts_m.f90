@@ -55,10 +55,6 @@ module quaff_asserts_m
             assert_equals, &
             assert_equals_within_absolute, &
             assert_equals_within_relative
-    use energy_per_temperature_amount_asserts_m, only: &
-            assert_equals, &
-            assert_equals_within_absolute, &
-            assert_equals_within_relative
     use enthalpy_asserts_m, only: &
             assert_equals, &
             assert_equals_within_absolute, &
@@ -92,6 +88,10 @@ module quaff_asserts_m
             assert_equals_within_absolute, &
             assert_equals_within_relative
     use molar_mass_asserts_m, only: &
+            assert_equals, &
+            assert_equals_within_absolute, &
+            assert_equals_within_relative
+    use molar_specific_heat_asserts_m, only: &
             assert_equals, &
             assert_equals_within_absolute, &
             assert_equals_within_relative

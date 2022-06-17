@@ -216,20 +216,6 @@ module quaff
             PROVIDED_ENERGY_PER_TEMPERATURE_UNITS => PROVIDED_UNITS, &
             JOULES_PER_KELVIN, &
             KILOJOULES_PER_KELVIN
-    use quaff_energy_per_temperature_amount_m, only: &
-            energy_per_temperature_amount_t, &
-            fallible_energy_per_temperature_amount_t, &
-            energy_per_temperature_amount_unit_t, &
-            fallible_energy_per_temperature_amount_unit_t, &
-            operator(.unit.), &
-            parse_energy_per_temperature_amount, &
-            parse_energy_per_temperature_amount_unit, &
-            sum, &
-            abs, &
-            DEFAULT_ENERGY_PER_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
-            PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
-            JOULES_PER_KELVIN_MOL, &
-            KILOJOULES_PER_KELVIN_MOL
     use quaff_enthalpy_m, only: &
             enthalpy_t, &
             fallible_enthalpy_t, &
@@ -382,6 +368,20 @@ module quaff
             PROVIDED_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_MOL, &
             KILOGRAMS_PER_MOL
+    use quaff_molar_specific_heat_m, only: &
+            molar_specific_heat_t, &
+            fallible_molar_specific_heat_t, &
+            molar_specific_heat_unit_t, &
+            fallible_molar_specific_heat_unit_t, &
+            operator(.unit.), &
+            parse_molar_specific_heat, &
+            parse_molar_specific_heat_unit, &
+            sum, &
+            abs, &
+            DEFAULT_ENERGY_PER_AMOUNT_TEMPERATURE_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_ENERGY_PER_TEMPERATURE_AMOUNT_UNITS => PROVIDED_UNITS, &
+            JOULES_PER_KELVIN_MOL, &
+            KILOJOULES_PER_KELVIN_MOL
     use quaff_power_m, only: &
             power_t, &
             fallible_power_t, &
