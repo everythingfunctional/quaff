@@ -304,7 +304,8 @@ module quaff
             PROVIDED_FREQUENCY_UNITS => PROVIDED_UNITS, &
             HERTZ, &
             PER_SECOND, &
-            PER_MINUTE
+            PER_MINUTE, &
+            PER_YEAR
     use quaff_length_m, only: &
             length_t, &
             fallible_length_t, &
