@@ -116,6 +116,9 @@ contains
                 , it("2 K * 3 J/(kg K) = 6 J/kg", check_temperature_times_specific_heat) &
                 , it("sqrt(9 J/kg) = 3 m/s", check_square_root_of_enthalpy) &
                 , it("6 N / 3 m/s = 2 kg/s", check_force_divided_by_speed) &
+                , it("6 J/kg / 3 m/s = 2 m/s", check_enthalpy_divided_by_speed) &
+                , it("2 kg/s * 3 J/kg = 6 W", check_mass_rate_times_enthalpy) &
+                , it("2 J/kg * 3 kg/s = 6 W", check_enthalpy_times_mass_rate) &
                 ])
     end function test_interquantity_operators
 
@@ -694,5 +697,29 @@ contains
         result_ = assert_equals( &
                 2.d0.unit.KILOGRAMS_PER_SECOND, &
                 (6.d0.unit.NEWTONS) / (3.d0.unit.METERS_PER_SECOND))
+    end function
+
+    pure function check_enthalpy_divided_by_speed() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.METERS_PER_SECOND, &
+                (6.d0.unit.JOULES_PER_KILOGRAM) / (3.d0.unit.METERS_PER_SECOND))
+    end function
+
+    pure function check_mass_rate_times_enthalpy() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.WATTS, &
+                (2.d0.unit.KILOGRAMS_PER_SECOND) * (3.d0.unit.JOULES_PER_KILOGRAM))
+    end function
+
+    pure function check_enthalpy_times_mass_rate() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.WATTS, &
+                (2.d0.unit.JOULES_PER_KILOGRAM) * (3.d0.unit.KILOGRAMS_PER_SECOND))
     end function
 end module

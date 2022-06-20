@@ -40,10 +40,12 @@ module quaff_interquantity_operators_m
         module procedure burnup_times_mass
         module procedure density_times_volume
         module procedure enthalpy_times_mass
+        module procedure enthalpy_time_mass_rate
         module procedure force_times_length
         module procedure length_times_area
         module procedure length_times_force
         module procedure length_times_length
+        module procedure mass_rate_times_enthalpy
         module procedure mass_times_acceleration
         module procedure mass_times_burnup
         module procedure mass_times_enthalpy
@@ -82,6 +84,7 @@ module quaff_interquantity_operators_m
         module procedure energy_divided_by_power
         module procedure energy_divided_by_time
         module procedure energy_divided_by_volume
+        module procedure enthalpy_divided_by_speed
         module procedure force_divided_by_acceleration
         module procedure force_divided_by_area
         module procedure force_divided_by_mass
@@ -312,12 +315,29 @@ contains
         pressure%pascals = energy%joules / volume%cubic_meters
     end function
 
+    elemental function enthalpy_divided_by_speed(enthalpy, speed) result(new_speed)
+        type(enthalpy_t), intent(in) :: enthalpy
+        type(speed_t), intent(in) :: speed
+        type(speed_t) :: new_speed
+
+        new_speed%meters_per_second = &
+                enthalpy%joules_per_kilogram / speed%meters_per_second
+    end function
+
     elemental function enthalpy_times_mass(enthalpy, mass) result(energy)
         type(enthalpy_t), intent(in) :: enthalpy
         type(mass_t), intent(in) :: mass
         type(energy_t) :: energy
 
         energy%joules = enthalpy%joules_per_kilogram * mass%kilograms
+    end function
+
+    elemental function enthalpy_time_mass_rate(enthalpy, mass_rate) result(power)
+        type(enthalpy_t), intent(in) :: enthalpy
+        type(mass_rate_t), intent(in) :: mass_rate
+        type(power_t) :: power
+
+        power%watts = enthalpy%joules_per_kilogram * mass_rate%kilograms_per_second
     end function
 
     elemental function force_divided_by_acceleration(force, acceleration) result(mass)
@@ -438,6 +458,14 @@ contains
         type(density_t) :: density
 
         density%kilograms_per_cubic_meter = mass%kilograms / volume%cubic_meters
+    end function
+
+    elemental function mass_rate_times_enthalpy(mass_rate, enthalpy) result(power)
+        type(mass_rate_t), intent(in) :: mass_rate
+        type(enthalpy_t), intent(in) :: enthalpy
+        type(power_t) :: power
+
+        power%watts = mass_rate%kilograms_per_second * enthalpy%joules_per_kilogram
     end function
 
     elemental function mass_times_acceleration(mass, acceleration) result(force)
