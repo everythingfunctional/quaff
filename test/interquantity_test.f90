@@ -6,6 +6,7 @@ module interquantity_test
             operator(+), &
             operator(.unit.), &
             as_burnup, &
+            sqrt, &
             CUBIC_METERS, &
             JOULES, &
             JOULES_PER_KELVIN, &
@@ -18,6 +19,7 @@ module interquantity_test
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
             KILOGRAMS_PER_MOL, &
+            KILOGRAMS_PER_SECOND, &
             METERS, &
             METERS_PER_SECOND, &
             METERS_PER_SQUARE_SECOND, &
@@ -44,6 +46,7 @@ contains
                 "multiplying or dividing different quantities and subtracting temperatures", &
                 [ it("2 m * 3 m = 6 m^2", check_length_times_length) &
                 , it("6 m^2 / 3 m = 2 m", check_area_divided_by_length) &
+                , it("sqrt(9 m^2) = 3 m", check_square_root_of_area) &
                 , it("2 m^2 * 3 m = 6 m^3", check_area_times_length) &
                 , it("2 m * 3 m^2 = 6 m^3", check_length_times_area) &
                 , it("6 m^3 / 3 m^2 = 2 m", check_volume_divided_by_area) &
@@ -98,8 +101,9 @@ contains
                 , it("2 K * 3 J/(K mol) = 6 J/mol", check_temperature_times_molar_specific_heat) &
                 , it("6 J / 3 J/mol = 2 mol", check_energy_divided_by_molar_enthalpy) &
                 , it("3 /K * 2 K = 6.0", check_thermal_expansion_times_delta_temp) &
-                , it("1 K - 1 k = 0 K", check_temp_diff_gives_delta_temperature) &
-                , it("1 K + 1 k = 2 K", check_temperature_plus_delta_temperature) &
+                , it("1 K - 1 K = 0 K", check_temp_diff_gives_delta_temperature) &
+                , it("1 K + 1 K = 2 K", check_temperature_plus_delta_temperature) &
+                , it("1 K + 1 K = 2 K", check_delta_temperature_plus_temperature) &
                 , it("2 J/mol * 3 mol = 6 J", check_molar_enthalpy_times_amount) &
                 , it("2 mol * 3 J/mol = 6 J", check_amount_times_molar_enthalpy) &
                 , it("6 J / 3 m^3 = 2 Pa", check_energy_divided_by_volume) &
@@ -108,6 +112,10 @@ contains
                 , it("6 J / 3 J/K = 2 K", check_energy_divided_by_energy_per_temperature) &
                 , it("6 J/mol / 3 kg/mol = 2 J/kg", check_molar_enthalpy_divided_by_molar_mass) &
                 , it("6 J/(K mol) / 3 kg/mol = 2 J/(kg K)", check_molar_specific_heat_divided_by_molar_mass) &
+                , it("2 J/(kg K) * 3 K = 6 J/kg", check_specific_heat_times_temperature) &
+                , it("2 K * 3 J/(kg K) = 6 J/kg", check_temperature_times_specific_heat) &
+                , it("sqrt(9 J/kg) = 3 m/s", check_square_root_of_enthalpy) &
+                , it("6 N / 3 m/s = 2 kg/s", check_force_divided_by_speed) &
                 ])
     end function test_interquantity_operators
 
@@ -125,6 +133,14 @@ contains
         result_ = assert_equals( &
                 2.0d0.unit.METERS, &
                 (6.0d0.unit.SQUARE_METERS) / (3.0d0.unit.METERS))
+    end function
+
+    pure function check_square_root_of_area() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                3.d0.unit.METERS, &
+                sqrt(9.d0.unit.SQUARE_METERS))
     end function
 
     pure function check_area_times_length() result(result_)
@@ -576,6 +592,14 @@ contains
                 (1.0d0.unit.KELVIN) + (1.0d0.unit.DELTA_KELVIN))
     end function
 
+    pure function check_delta_temperature_plus_temperature() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.KELVIN, &
+                (1.0d0.unit.DELTA_KELVIN) + (1.0d0.unit.KELVIN))
+    end function
+
     pure function check_molar_enthalpy_times_amount() result(result_)
         type(result_t) :: result_
 
@@ -638,5 +662,37 @@ contains
         result_ = assert_equals( &
                 2.d0.unit.JOULES_PER_KILOGRAM_KELVIN, &
                 (6.d0.unit.JOULES_PER_KELVIN_MOL) / (3.d0.unit.KILOGRAMS_PER_MOL))
+    end function
+
+    pure function check_specific_heat_times_temperature() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.JOULES_PER_KILOGRAM, &
+                (2.d0.unit.JOULES_PER_KILOGRAM_KELVIN) * (3.d0.unit.KELVIN))
+    end function
+
+    pure function check_temperature_times_specific_heat() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.JOULES_PER_KILOGRAM, &
+                (2.d0.unit.KELVIN) * (3.d0.unit.JOULES_PER_KILOGRAM_KELVIN))
+    end function
+
+    pure function check_square_root_of_enthalpy() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                3.d0.unit.METERS_PER_SECOND, &
+                sqrt(9.d0.unit.JOULES_PER_KILOGRAM))
+    end function
+
+    pure function check_force_divided_by_speed() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.KILOGRAMS_PER_SECOND, &
+                (6.d0.unit.NEWTONS) / (3.d0.unit.METERS_PER_SECOND))
     end function
 end module

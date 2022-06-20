@@ -551,5 +551,6 @@ module quaff
             ATMOSPHERIC_PRESSURE, &
             GRAVITY, &
             UNIVERSAL_GAS_CONSTANT
-    use quaff_interquantity_operators_m, only: operator(*), operator(/), operator(-), operator(+), as_burnup
+    use quaff_interquantity_operators_m, only: &
+            operator(*), operator(/), operator(-), operator(+), as_burnup, sqrt
 end module

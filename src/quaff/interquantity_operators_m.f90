@@ -14,6 +14,7 @@ module quaff_interquantity_operators_m
     use quaff_force_m, only: force_t
     use quaff_length_m, only: length_t
     use quaff_mass_m, only: mass_t
+    use quaff_mass_rate_m, only: mass_rate_t
     use quaff_molar_mass_m, only: molar_mass_t
     use quaff_power_m, only: power_t
     use quaff_pressure_m, only: pressure_t
@@ -26,7 +27,7 @@ module quaff_interquantity_operators_m
 
     implicit none
     private
-    public :: operator(*), operator(/), operator(-), operator(+), as_burnup
+    public :: operator(*), operator(/), operator(-), operator(+), as_burnup, sqrt
 
     interface operator(*)
         module procedure acceleration_times_mass
@@ -54,8 +55,10 @@ module quaff_interquantity_operators_m
         module procedure pressure_times_area
         module procedure pressure_times_time
         module procedure pressure_times_volume
+        module procedure specific_heat_times_temperature
         module procedure speed_times_time
         module procedure temperature_times_molar_specific_heat
+        module procedure temperature_times_specific_heat
         module procedure thermal_expansion_coefficient_times_delta_temperature
         module procedure time_times_acceleration
         module procedure time_times_power
@@ -83,6 +86,7 @@ module quaff_interquantity_operators_m
         module procedure force_divided_by_area
         module procedure force_divided_by_mass
         module procedure force_divided_by_pressure
+        module procedure force_divided_by_speed
         module procedure length_divided_by_speed
         module procedure length_divided_by_time
         module procedure mass_divided_by_amount
@@ -97,12 +101,18 @@ module quaff_interquantity_operators_m
         module procedure volume_divided_by_length
     end interface
 
-    interface operator (-)
-          module procedure temperature_minus_temperature
+    interface operator(-)
+        module procedure temperature_minus_temperature
     end interface
 
-    interface operator (+)
-      module procedure temperature_plus_delta_temperature
+    interface operator(+)
+        module procedure delta_temperature_plus_temperature
+        module procedure temperature_plus_delta_temperature
+    end interface
+
+    interface sqrt
+        module procedure square_root_of_area
+        module procedure square_root_of_enthalpy
     end interface
 contains
     elemental function acceleration_times_mass(acceleration, mass) result(force)
@@ -184,6 +194,15 @@ contains
         type(energy_t) :: energy
 
         energy%joules = burnup%watt_seconds_per_kilogram * mass%kilograms
+    end function
+
+    elemental function delta_temperature_plus_temperature( &
+            delta_temperature, temperature) result(new_temperature)
+        type(delta_temperature_t), intent(in) :: delta_temperature
+        type(temperature_t), intent(in) :: temperature
+        type(temperature_t) :: new_temperature
+
+        new_temperature%kelvin = delta_temperature%delta_kelvin + temperature%kelvin
     end function
 
     elemental function density_times_volume(density, volume) result(mass)
@@ -331,6 +350,14 @@ contains
         type(area_t) :: area
 
         area%square_meters = force%newtons / pressure%pascals
+    end function
+
+    elemental function force_divided_by_speed(force, speed) result(mass_rate)
+        type(force_t), intent(in) :: force
+        type(speed_t), intent(in) :: speed
+        type(mass_rate_t) :: mass_rate
+
+        mass_rate%kilograms_per_second = force%newtons / speed%meters_per_second
     end function
 
     elemental function force_times_length(force, length) result(energy)
@@ -526,6 +553,16 @@ contains
         energy%joules = pressure%pascals * volume%cubic_meters
     end function
 
+    elemental function specific_heat_times_temperature( &
+            specific_heat, temperature) result(enthalpy)
+        type(specific_heat_t), intent(in) :: specific_heat
+        type(temperature_t), intent(in) :: temperature
+        type(enthalpy_t) :: enthalpy
+
+        enthalpy%joules_per_kilogram = &
+                specific_heat%joules_per_kilogram_kelvin * temperature%kelvin
+    end function
+
     elemental function speed_divided_by_acceleration(speed, acceleration) result(time)
         type(speed_t), intent(in) :: speed
         type(acceleration_t), intent(in) :: acceleration
@@ -550,6 +587,36 @@ contains
         length%meters = speed%meters_per_second * time%seconds
     end function
 
+    elemental function square_root_of_area(area) result(length)
+        type(area_t), intent(in) :: area
+        type(length_t) :: length
+
+        length%meters = sqrt(area%square_meters)
+    end function
+
+    elemental function square_root_of_enthalpy(enthalpy) result(speed)
+        type(enthalpy_t), intent(in) :: enthalpy
+        type(speed_t) :: speed
+
+        speed%meters_per_second = sqrt(enthalpy%joules_per_kilogram)
+    end function
+
+    elemental function temperature_minus_temperature(lhs, rhs) result(delta_temperature)
+        type(temperature_t), intent(in) :: lhs, rhs
+        type(delta_temperature_t) :: delta_temperature
+
+        delta_temperature%delta_kelvin = lhs%kelvin - rhs%kelvin
+    end function
+
+    elemental function temperature_plus_delta_temperature( &
+            temperature, delta_temperature) result(new_temperature)
+        type(temperature_t), intent(in) :: temperature
+        type(delta_temperature_t), intent(in) :: delta_temperature
+        type(temperature_t) :: new_temperature
+
+        new_temperature%kelvin = temperature%kelvin + delta_temperature%delta_kelvin
+    end function
+
     elemental function temperature_times_molar_specific_heat( &
             temperature, molar_specific_heat) result(molar_enthalpy)
         type(temperature_t), intent(in) :: temperature
@@ -558,6 +625,16 @@ contains
 
         molar_enthalpy%joules_per_mol = &
                 temperature%kelvin * molar_specific_heat%joules_per_kelvin_mol
+    end function
+
+    elemental function temperature_times_specific_heat( &
+            temperature, specific_heat) result(enthalpy)
+        type(temperature_t), intent(in) :: temperature
+        type(specific_heat_t), intent(in) :: specific_heat
+        type(enthalpy_t) :: enthalpy
+
+        enthalpy%joules_per_kilogram = &
+                temperature%kelvin * specific_heat%joules_per_kilogram_kelvin
     end function
 
     elemental function thermal_expansion_coefficient_times_delta_temperature ( &
@@ -631,20 +708,5 @@ contains
         type(energy_t) :: energy
 
         energy%joules = volume%cubic_meters * pressure%pascals
-    end function
-
-    elemental function temperature_minus_temperature(lhs, rhs) result(delta_temperature)
-        type(temperature_t), intent(in) :: lhs, rhs
-        type(delta_temperature_t) :: delta_temperature
-
-        delta_temperature%delta_kelvin = lhs%kelvin - rhs%kelvin
-    end function
-
-    elemental function temperature_plus_delta_temperature(temperature, delta_temperature) result(new_temperature)
-        type(temperature_t), intent(in) :: temperature
-        type(delta_temperature_t), intent(in) :: delta_temperature
-        type(temperature_t) :: new_temperature
-
-        new_temperature%kelvin = temperature%kelvin + delta_temperature%delta_kelvin
     end function
 end module
