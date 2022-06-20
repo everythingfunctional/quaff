@@ -46,6 +46,7 @@ module quaff_interquantity_operators_m
         module procedure length_times_force
         module procedure length_times_length
         module procedure mass_rate_times_enthalpy
+        module procedure mass_rate_times_time
         module procedure mass_times_acceleration
         module procedure mass_times_burnup
         module procedure mass_times_enthalpy
@@ -63,6 +64,7 @@ module quaff_interquantity_operators_m
         module procedure temperature_times_specific_heat
         module procedure thermal_expansion_coefficient_times_delta_temperature
         module procedure time_times_acceleration
+        module procedure time_times_mass_rate
         module procedure time_times_power
         module procedure time_times_pressure
         module procedure time_times_speed
@@ -468,6 +470,14 @@ contains
         power%watts = mass_rate%kilograms_per_second * enthalpy%joules_per_kilogram
     end function
 
+    elemental function mass_rate_times_time(mass_rate, time) result(mass)
+        type(mass_rate_t), intent(in) :: mass_rate
+        type(time_t), intent(in) :: time
+        type(mass_t) :: mass
+
+        mass%kilograms = mass_rate%kilograms_per_second * time%seconds
+    end function
+
     elemental function mass_times_acceleration(mass, acceleration) result(force)
         type(mass_t), intent(in) :: mass
         type(acceleration_t), intent(in) :: acceleration
@@ -680,6 +690,14 @@ contains
         type(speed_t) :: speed
 
         speed%meters_per_second = time%seconds * acceleration%meters_per_square_second
+    end function
+
+    elemental function time_times_mass_rate(time, mass_rate) result(mass)
+        type(time_t), intent(in) :: time
+        type(mass_rate_t), intent(in) :: mass_rate
+        type(mass_t) :: mass
+
+        mass%kilograms = time%seconds * mass_rate%kilograms_per_second
     end function
 
     elemental function time_times_power(time, power) result(energy)
