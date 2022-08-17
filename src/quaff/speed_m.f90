@@ -48,7 +48,8 @@ module quaff_speed_m
             PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
             FEET_PER_SECOND, &
-            METERS_PER_SECOND
+            METERS_PER_SECOND, &
+            MILLIMETERS_PER_SECOND
 
     type :: speed_t
         double precision :: meters_per_second
