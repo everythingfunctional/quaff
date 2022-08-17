@@ -233,7 +233,7 @@ module quaff_speed_m
     type(speed_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = METERS_PER_SECOND
 
     type(speed_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND]
+            [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND, MILLIMETERS_PER_SECOND]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_speed_m"
 contains

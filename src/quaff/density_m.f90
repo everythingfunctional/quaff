@@ -237,6 +237,7 @@ module quaff_density_m
             [GRAMS_PER_CUBIC_METER &
             , KILOGRAMS_PER_CUBIC_METER &
             , POUNDS_PER_CUBIC_FOOT &
+            , GRAMS_PER_CUBIC_CENTIMETER &
             ]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_density_m"
