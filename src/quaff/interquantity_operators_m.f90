@@ -7,16 +7,17 @@ module quaff_interquantity_operators_m
     use quaff_density_m, only: density_t
     use quaff_dynamic_viscosity_m, only: dynamic_viscosity_t
     use quaff_energy_m, only: energy_t
-    use quaff_molar_enthalpy_m, only: molar_enthalpy_t
     use quaff_energy_per_temperature_m, only: energy_per_temperature_t
-    use quaff_molar_specific_heat_m, only: molar_specific_heat_t
     use quaff_enthalpy_m, only: enthalpy_t
     use quaff_force_m, only: force_t
     use quaff_frequency_m, only: frequency_t
+    use quaff_inverse_molar_mass_m, only: inverse_molar_mass_t
     use quaff_length_m, only: length_t
     use quaff_mass_m, only: mass_t
     use quaff_mass_rate_m, only: mass_rate_t
+    use quaff_molar_enthalpy_m, only: molar_enthalpy_t
     use quaff_molar_mass_m, only: molar_mass_t
+    use quaff_molar_specific_heat_m, only: molar_specific_heat_t
     use quaff_power_m, only: power_t
     use quaff_pressure_m, only: pressure_t
     use quaff_specific_heat_m, only: specific_heat_t
@@ -102,6 +103,8 @@ module quaff_interquantity_operators_m
         module procedure molar_enthalpy_divided_by_molar_mass
         module procedure molar_specific_heat_divided_by_molar_mass
         module procedure number_divided_by_frequency
+        module procedure number_divided_by_inverse_molar_mass
+        module procedure number_divided_by_molar_mass
         module procedure number_divided_by_time
         module procedure speed_divided_by_acceleration
         module procedure speed_divided_by_time
@@ -568,6 +571,23 @@ contains
         type(time_t) :: time
 
         time%seconds = number / frequency%hertz
+    end function
+
+    elemental function number_divided_by_inverse_molar_mass( &
+            number, inverse_molar_mass) result(molar_mass)
+        double precision, intent(in) :: number
+        type(inverse_molar_mass_t), intent(in) :: inverse_molar_mass
+        type(molar_mass_t) :: molar_mass
+
+        molar_mass%kilograms_per_mol = number / inverse_molar_mass%mols_per_kilogram
+    end function
+
+    elemental function number_divided_by_molar_mass(number, molar_mass) result(inverse_molar_mass)
+        double precision, intent(in) :: number
+        type(molar_mass_t), intent(in) :: molar_mass
+        type(inverse_molar_mass_t) :: inverse_molar_mass
+
+        inverse_molar_mass%mols_per_kilogram = number / molar_mass%kilograms_per_mol
     end function
 
     elemental function number_divided_by_time(number, time) result(frequency)

@@ -25,6 +25,7 @@ module interquantity_test
             METERS_PER_SECOND, &
             METERS_PER_SQUARE_SECOND, &
             MOLS, &
+            MOLS_PER_KILOGRAM, &
             NEWTONS, &
             PASCAL_SECONDS, &
             PASCALS, &
@@ -122,8 +123,10 @@ contains
                 , it("2 J/kg * 3 kg/s = 6 W", check_enthalpy_times_mass_rate) &
                 , it("2 kg/s * 3 s = 6 kg", check_mass_rate_times_time) &
                 , it("2 s * 3 kg/s = 6 kg", check_time_times_mass_rate) &
-                , it("1 / 1 s = 1 Hz", check_number_divided_by_time) &
-                , it("1 / 1 Hz = 1 s", check_number_divided_by_frequency) &
+                , it("6 / 3 s = 2 Hz", check_number_divided_by_time) &
+                , it("6 / 3 Hz = 2 s", check_number_divided_by_frequency) &
+                , it("6 / 3 kg/mol = 2 mol/kg", check_number_divided_by_molar_mass) &
+                , it("6 / 3 mol/kg = 2 kg/mol", check_number_divided_by_inverse_molar_mass) &
                 ])
     end function test_interquantity_operators
 
@@ -748,15 +751,31 @@ contains
         type(result_t) :: result_
 
         result_ = assert_equals( &
-                1.d0 / (1d0.unit.SECONDS), &
-                1.d0.unit.HERTZ)
+                2.d0.unit.HERTZ, &
+                6.d0 / (3d0.unit.SECONDS))
     end function
 
     pure function check_number_divided_by_frequency() result(result_)
         type(result_t) :: result_
 
         result_ = assert_equals( &
-                1.d0 / (1.d0.unit.HERTZ), &
-                1.d0.unit.SECONDS)
+                2.d0.unit.SECONDS, &
+                6.d0 / (3.d0.unit.HERTZ))
+    end function
+
+    pure function check_number_divided_by_molar_mass() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.MOLS_PER_KILOGRAM, &
+                6.d0 / (3.d0.unit.KILOGRAMS_PER_MOL))
+    end function
+
+    pure function check_number_divided_by_inverse_molar_mass() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.KILOGRAMS_PER_MOL, &
+                6.d0 / (3.d0.unit.MOLS_PER_KILOGRAM))
     end function
 end module
