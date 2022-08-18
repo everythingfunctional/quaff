@@ -78,6 +78,7 @@ module quaff_conversion_factors_m
 
     ! Molar Mass
     double precision, parameter :: GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL = BASE_PER_KILO
+    double precision, parameter :: MOLS_PER_GRAM_PER_MOLS_PER_KILOGRAM = 1.d0 / GRAMS_PER_MOL_PER_KILOGRAMS_PER_MOL
 
     ! Speed
     double precision, parameter :: CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND = CENTIMETERS_PER_METER

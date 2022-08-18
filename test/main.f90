@@ -65,6 +65,9 @@ contains
         use interquantity_test, only: &
                 interquantity_interquantity_operators => &
                     test_interquantity_operators
+        use inverse_molar_mass_test, only: &
+                inverse_molar_mass_inverse_molar_mass => &
+                    test_inverse_molar_mass
         use length_test, only: &
                 length_length => &
                     test_length
@@ -120,7 +123,7 @@ contains
         logical :: passed
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(36)
+        type(test_item_t) :: individual_tests(37)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_rate_amount_rate()
@@ -142,22 +145,23 @@ contains
         individual_tests(18) = fracture_toughness_fracture_toughness()
         individual_tests(19) = frequency_frequency()
         individual_tests(20) = interquantity_interquantity_operators()
-        individual_tests(21) = length_length()
-        individual_tests(22) = mass_rate_mass_rate()
-        individual_tests(23) = mass_mass()
-        individual_tests(24) = molar_enthalpy_molar_enthalpy()
-        individual_tests(25) = molar_mass_molar_mass()
-        individual_tests(26) = molar_specific_heat_molar_specific_heat()
-        individual_tests(27) = power_power()
-        individual_tests(28) = pressure_pressure()
-        individual_tests(29) = specific_heat_specific_heat()
-        individual_tests(30) = speed_speed()
-        individual_tests(31) = stress_intensity_factor_stress_intensity_factor()
-        individual_tests(32) = temperature_temperature()
-        individual_tests(33) = thermal_conductivity_thermal_conductivity()
-        individual_tests(34) = thermal_expansion_coefficient_thermal_expansion_coefficient()
-        individual_tests(35) = time_time()
-        individual_tests(36) = volume_volume()
+        individual_tests(21) = inverse_molar_mass_inverse_molar_mass()
+        individual_tests(22) = length_length()
+        individual_tests(23) = mass_rate_mass_rate()
+        individual_tests(24) = mass_mass()
+        individual_tests(25) = molar_enthalpy_molar_enthalpy()
+        individual_tests(26) = molar_mass_molar_mass()
+        individual_tests(27) = molar_specific_heat_molar_specific_heat()
+        individual_tests(28) = power_power()
+        individual_tests(29) = pressure_pressure()
+        individual_tests(30) = specific_heat_specific_heat()
+        individual_tests(31) = speed_speed()
+        individual_tests(32) = stress_intensity_factor_stress_intensity_factor()
+        individual_tests(33) = temperature_temperature()
+        individual_tests(34) = thermal_conductivity_thermal_conductivity()
+        individual_tests(35) = thermal_expansion_coefficient_thermal_expansion_coefficient()
+        individual_tests(36) = time_time()
+        individual_tests(37) = volume_volume()
         tests = test_that(individual_tests)
 
 

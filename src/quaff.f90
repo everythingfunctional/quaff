@@ -293,6 +293,21 @@ module quaff
             PER_SECOND, &
             PER_MINUTE, &
             PER_YEAR
+    use quaff_inverse_molar_mass_m, only: &
+            inverse_molar_mass_t, &
+            fallible_inverse_molar_mass_t, &
+            inverse_molar_mass_unit_t, &
+            fallible_inverse_molar_mass_unit_t, &
+            inverse_molar_mass_simple_unit_t, &
+            operator(.unit.), &
+            abs, &
+            parse_inverse_molar_mass, &
+            parse_inverse_molar_mass_unit, &
+            sum, &
+            DEFAULT_INVERSE_MOLAR_MASS_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_INVERSE_MOLAR_MASS_UNITS => PROVIDED_UNITS, &
+            MOLS_PER_GRAM, &
+            MOLS_PER_KILOGRAM
     use quaff_length_m, only: &
             length_t, &
             fallible_length_t, &
