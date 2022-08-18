@@ -20,7 +20,8 @@ module quaff_speed_m
             then_drop
     use quaff_conversion_factors_m, only: &
             CENTIMETERS_PER_SECOND_PER_METERS_PER_SECOND, &
-            FEET_PER_SECOND_PER_METERS_PER_SECOND
+            FEET_PER_SECOND_PER_METERS_PER_SECOND, &
+            MILLIMETERS_PER_SECOND_PER_METERS_PER_SECOND
     use quaff_utilities_m, only: &
             operator(.safeEq.), &
             equal_within_absolute, &
@@ -47,7 +48,8 @@ module quaff_speed_m
             PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
             FEET_PER_SECOND, &
-            METERS_PER_SECOND
+            METERS_PER_SECOND, &
+            MILLIMETERS_PER_SECOND
 
     type :: speed_t
         double precision :: meters_per_second
@@ -224,11 +226,15 @@ module quaff_speed_m
             speed_simple_unit_t( &
                     conversion_factor = 1.0d0, &
                     symbol = "m/s")
+    type(speed_simple_unit_t), parameter :: MILLIMETERS_PER_SECOND = &
+            speed_simple_unit_t( &
+                    conversion_factor = MILLIMETERS_PER_SECOND_PER_METERS_PER_SECOND, &
+                    symbol = "mm/s")
 
     type(speed_simple_unit_t) :: DEFAULT_OUTPUT_UNITS = METERS_PER_SECOND
 
     type(speed_simple_unit_t), parameter :: PROVIDED_UNITS(*) = &
-            [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND]
+            [CENTIMETERS_PER_SECOND, FEET_PER_SECOND, METERS_PER_SECOND, MILLIMETERS_PER_SECOND]
 
     character(len=*), parameter :: MODULE_NAME = "quaff_speed_m"
 contains

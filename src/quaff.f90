@@ -166,6 +166,7 @@ module quaff
             DEFAULT_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
             PROVIDED_DENSITY_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_CUBIC_METER, &
+            GRAMS_PER_CUBIC_CENTIMETER, &
             KILOGRAMS_PER_CUBIC_METER, &
             POUNDS_PER_CUBIC_FOOT
     use quaff_dynamic_viscosity_m, only: &
@@ -450,7 +451,8 @@ module quaff
             PROVIDED_SPEED_UNITS => PROVIDED_UNITS, &
             CENTIMETERS_PER_SECOND, &
             FEET_PER_SECOND, &
-            METERS_PER_SECOND
+            METERS_PER_SECOND, &
+            MILLIMETERS_PER_SECOND
     use quaff_stress_intensity_factor_m, only: &
             stress_intensity_factor_t, &
             fallible_stress_intensity_factor_t, &
