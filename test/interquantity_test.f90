@@ -8,13 +8,14 @@ module interquantity_test
             as_burnup, &
             sqrt, &
             CUBIC_METERS, &
+            DELTA_KELVIN, &
+            HERTZ, &
             JOULES, &
             JOULES_PER_KELVIN, &
             JOULES_PER_KELVIN_MOL, &
             JOULES_PER_KILOGRAM, &
             JOULES_PER_KILOGRAM_KELVIN, &
             JOULES_PER_MOL, &
-            DELTA_KELVIN, &
             KELVIN, &
             KILOGRAMS, &
             KILOGRAMS_PER_CUBIC_METER, &
@@ -121,6 +122,8 @@ contains
                 , it("2 J/kg * 3 kg/s = 6 W", check_enthalpy_times_mass_rate) &
                 , it("2 kg/s * 3 s = 6 kg", check_mass_rate_times_time) &
                 , it("2 s * 3 kg/s = 6 kg", check_time_times_mass_rate) &
+                , it("1 / 1 s = 1 Hz", check_number_divided_by_time) &
+                , it("1 / 1 Hz = 1 s", check_number_divided_by_frequency) &
                 ])
     end function test_interquantity_operators
 
@@ -739,5 +742,21 @@ contains
         result_ = assert_equals( &
                 6.d0.unit.KILOGRAMS, &
                 (2.d0.unit.SECONDS) * (3.d0.unit.KILOGRAMS_PER_SECOND))
+    end function
+
+    pure function check_number_divided_by_time() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                1.d0 / (1d0.unit.SECONDS), &
+                1.d0.unit.HERTZ)
+    end function
+
+    pure function check_number_divided_by_frequency() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                1.d0 / (1.d0.unit.HERTZ), &
+                1.d0.unit.SECONDS)
     end function
 end module

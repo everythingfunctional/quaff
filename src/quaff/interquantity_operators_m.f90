@@ -12,6 +12,7 @@ module quaff_interquantity_operators_m
     use quaff_molar_specific_heat_m, only: molar_specific_heat_t
     use quaff_enthalpy_m, only: enthalpy_t
     use quaff_force_m, only: force_t
+    use quaff_frequency_m, only: frequency_t
     use quaff_length_m, only: length_t
     use quaff_mass_m, only: mass_t
     use quaff_mass_rate_m, only: mass_rate_t
@@ -100,6 +101,8 @@ module quaff_interquantity_operators_m
         module procedure mass_divided_by_volume
         module procedure molar_enthalpy_divided_by_molar_mass
         module procedure molar_specific_heat_divided_by_molar_mass
+        module procedure number_divided_by_frequency
+        module procedure number_divided_by_time
         module procedure speed_divided_by_acceleration
         module procedure speed_divided_by_time
         module procedure volume_divided_by_area
@@ -557,6 +560,22 @@ contains
 
         molar_enthalpy%joules_per_mol = &
                 molar_specific_heat%joules_per_kelvin_mol * temperature%kelvin
+    end function
+
+    elemental function number_divided_by_frequency(number, frequency) result(time)
+        double precision, intent(in) :: number
+        type(frequency_t), intent(in) :: frequency
+        type(time_t) :: time
+
+        time%seconds = number / frequency%hertz
+    end function
+
+    elemental function number_divided_by_time(number, time) result(frequency)
+        double precision, intent(in) :: number
+        type(time_t), intent(in) :: time
+        type(frequency_t) :: frequency
+
+        frequency%hertz = number / time%seconds
     end function
 
     elemental function power_times_time(power, time) result(energy)
