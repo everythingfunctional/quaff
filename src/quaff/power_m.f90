@@ -744,7 +744,7 @@ contains
         type(fallible_power_unit_t) :: fallible_power_unit
 
         integer :: i
-        type(varying_string) :: unit_strings(size(units))
+        type(varying_string), allocatable :: unit_strings(:)
 
         do i = 1, size(units)
             if (string == units(i)%to_string()) then
@@ -752,6 +752,7 @@ contains
                 return
             end if
         end do
+        allocate(unit_strings(size(units)))
         do i = 1, size(units)
             unit_strings(i) = units(i)%to_string()
         end do
