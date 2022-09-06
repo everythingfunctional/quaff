@@ -1,5 +1,5 @@
 name = "quaff"
-version = "0.7.4"
+version = "0.7.5"
 license = "MIT"
 author = "Brad Richardson"
 maintainer = "everythingfunctional@protonmail.com"
@@ -7,13 +7,13 @@ copyright = "2020 Brad Richardson"
 
 [dependencies]
 erloff = { git = "https://gitlab.com/everythingfunctional/erloff.git", tag = "v2.1.3" }
-iso_varying_string = { git = "https://gitlab.com/everythingfunctional/iso_varying_string.git", tag = "v3.0.2" }
+iso_varying_string = { git = "https://gitlab.com/everythingfunctional/iso_varying_string.git", tag = "v4.0.0" }
 parff = { git = "https://gitlab.com/everythingfunctional/parff.git", tag = "v4.0.1" }
-strff = { git = "https://gitlab.com/everythingfunctional/strff.git", tag = "v3.0.4" }
+strff = { git = "https://gitlab.com/everythingfunctional/strff.git", tag = "v3.1.0" }
 
 [dev-dependencies]
 quaff_asserts = { path = "quaff_asserts" }
-veggies = { git = "https://gitlab.com/everythingfunctional/veggies.git", tag = "v1.0.3" }
+veggies = { git = "https://gitlab.com/everythingfunctional/veggies.git", tag = "v1.0.4" }
 
 [[example]]
 name="speed_calculator"
