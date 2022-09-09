@@ -101,8 +101,9 @@ module quaff_conversion_factors_m
     ! Energy
     ! Note: 1 J = 1 (N m)
     double precision, parameter :: JOULES_PER_CALORIE = 4.1868d0 ! Taken from NIST for "IT" (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f09)
-    double precision, parameter :: BTU_PER_JOULE = 1.05505585262d3 ! Taken from NIST for "IT" (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f09)
+    double precision, parameter :: JOULE_PER_BTU = 1.05505585262d3 ! Taken from NIST for "IT" (https://www.nist.gov/physical-measurement-laboratory/nist-guide-si-footnotes#f09)
     double precision, parameter :: CALORIES_PER_JOULE = 1.0d0 / JOULES_PER_CALORIE
+    double precision, parameter :: BTU_PER_JOULE = 1.0d0 / JOULE_PER_BTU
     double precision, parameter :: KILOJOULES_PER_JOULE = KILO_PER_BASE
     double precision, parameter :: MEGABTU_PER_JOULE = MEGA_PER_BASE * BTU_PER_JOULE
     double precision, parameter :: MEGAWATT_DAYS_PER_JOULE = MEGA_PER_BASE * DAYS_PER_SECOND
