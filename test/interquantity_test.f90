@@ -25,6 +25,7 @@ module interquantity_test
             METERS_PER_SECOND, &
             METERS_PER_SQUARE_SECOND, &
             MOLS, &
+            MOLS_PER_CUBIC_METER, &
             MOLS_PER_KILOGRAM, &
             NEWTONS, &
             PASCAL_SECONDS, &
@@ -127,6 +128,10 @@ contains
                 , it("6 / 3 Hz = 2 s", check_number_divided_by_frequency) &
                 , it("6 / 3 kg/mol = 2 mol/kg", check_number_divided_by_molar_mass) &
                 , it("6 / 3 mol/kg = 2 kg/mol", check_number_divided_by_inverse_molar_mass) &
+                , it("6 mol / 3 m^3 = 2 mol/m^3", check_amount_divided_by_volume) &
+                , it("2 mol/m^3 * 3 m^3 = 6 mol", check_molar_density_times_volume) &
+                , it("2 m^3 * 3 mol/m^3 = 6 mol", check_volume_times_molar_density) &
+                , it("6 kg/m^3 / 3 kg/mol = 2 mol/m^3", check_density_divided_by_molar_mass) &
                 ])
     end function test_interquantity_operators
 
@@ -777,5 +782,37 @@ contains
         result_ = assert_equals( &
                 2.d0.unit.KILOGRAMS_PER_MOL, &
                 6.d0 / (3.d0.unit.MOLS_PER_KILOGRAM))
+    end function
+
+    pure function check_amount_divided_by_volume() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.MOLS_PER_CUBIC_METER, &
+                (6.d0.unit.MOLS) / (3.d0.unit.CUBIC_METERS))
+    end function
+
+    pure function check_molar_density_times_volume() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.MOLS, &
+                (2.d0.unit.MOLS_PER_CUBIC_METER) * (3.d0.unit.CUBIC_METERS))
+    end function
+
+    pure function check_volume_times_molar_density() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                6.d0.unit.MOLS, &
+                (2.d0.unit.CUBIC_METERS) * (3.d0.unit.MOLS_PER_CUBIC_METER))
+    end function
+
+    pure function check_density_divided_by_molar_mass() result(result_)
+        type(result_t) :: result_
+
+        result_ = assert_equals( &
+                2.d0.unit.MOLS_PER_CUBIC_METER, &
+                (6.d0.unit.KILOGRAMS_PER_CUBIC_METER) / (3.d0.unit.KILOGRAMS_PER_MOL))
     end function
 end module

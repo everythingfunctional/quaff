@@ -15,6 +15,7 @@ module quaff_interquantity_operators_m
     use quaff_length_m, only: length_t
     use quaff_mass_m, only: mass_t
     use quaff_mass_rate_m, only: mass_rate_t
+    use quaff_molar_density_m, only: molar_density_t
     use quaff_molar_enthalpy_m, only: molar_enthalpy_t
     use quaff_molar_mass_m, only: molar_mass_t
     use quaff_molar_specific_heat_m, only: molar_specific_heat_t
@@ -52,6 +53,7 @@ module quaff_interquantity_operators_m
         module procedure mass_times_acceleration
         module procedure mass_times_burnup
         module procedure mass_times_enthalpy
+        module procedure molar_density_times_volume
         module procedure molar_enthalpy_times_amount
         module procedure molar_mass_times_amount
         module procedure molar_specific_heat_times_amount
@@ -71,11 +73,14 @@ module quaff_interquantity_operators_m
         module procedure time_times_pressure
         module procedure time_times_speed
         module procedure volume_times_density
+        module procedure volume_times_molar_density
         module procedure volume_times_pressure
     end interface
 
     interface operator(/)
+        module procedure amount_divided_by_volume
         module procedure area_divided_by_length
+        module procedure density_divided_by_molar_mass
         module procedure dynamic_viscosity_divided_by_pressure
         module procedure dynamic_viscosity_divided_by_time
         module procedure energy_divided_by_burnup
@@ -140,6 +145,14 @@ contains
         type(speed_t) :: speed
 
         speed%meters_per_second = acceleration%meters_per_square_second * time%seconds
+    end function
+
+    elemental function amount_divided_by_volume(amount, volume) result(molar_density)
+        type(amount_t), intent(in) :: amount
+        type(volume_t), intent(in) :: volume
+        type(molar_density_t) :: molar_density
+
+        molar_density%mols_per_cubic_meter = amount%mols / volume%cubic_meters
     end function
 
     elemental function amount_times_molar_enthalpy(amount, molar_enthalpy) result(energy)
@@ -214,6 +227,15 @@ contains
         type(temperature_t) :: new_temperature
 
         new_temperature%kelvin = delta_temperature%delta_kelvin + temperature%kelvin
+    end function
+
+    elemental function density_divided_by_molar_mass(density, molar_mass) result(molar_density)
+        type(density_t), intent(in) :: density
+        type(molar_mass_t), intent(in) :: molar_mass
+        type(molar_density_t) :: molar_density
+
+        molar_density%mols_per_cubic_meter = &
+                density%kilograms_per_cubic_meter / molar_mass%kilograms_per_mol
     end function
 
     elemental function density_times_volume(density, volume) result(mass)
@@ -508,6 +530,14 @@ contains
         energy%joules = mass%kilograms * enthalpy%joules_per_kilogram
     end function
 
+    elemental function molar_density_times_volume(molar_density, volume) result(amount)
+        type(molar_density_t), intent(in) :: molar_density
+        type(volume_t), intent(in) :: volume
+        type(amount_t) :: amount
+
+        amount%mols = molar_density%mols_per_cubic_meter * volume%cubic_meters
+    end function
+
     elemental function molar_enthalpy_divided_by_molar_mass( &
             molar_enthalpy, molar_mass) result(enthalpy)
         type(molar_enthalpy_t), intent(in) :: molar_enthalpy
@@ -785,6 +815,14 @@ contains
         type(mass_t) :: mass
 
         mass%kilograms = volume%cubic_meters * density%kilograms_per_cubic_meter
+    end function
+
+    elemental function volume_times_molar_density(volume, molar_density) result(amount)
+        type(volume_t), intent(in) :: volume
+        type(molar_density_t), intent(in) :: molar_density
+        type(amount_t) :: amount
+
+        amount%mols = volume%cubic_meters * molar_density%mols_per_cubic_meter
     end function
 
     elemental function volume_times_pressure(volume, pressure) result(energy)
