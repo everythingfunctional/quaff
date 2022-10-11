@@ -132,7 +132,7 @@ contains
                 , it("2 mol/m^3 * 3 m^3 = 6 mol", check_molar_density_times_volume) &
                 , it("2 m^3 * 3 mol/m^3 = 6 mol", check_volume_times_molar_density) &
                 , it("6 kg/m^3 / 3 kg/mol = 2 mol/m^3", check_density_divided_by_molar_mass) &
-                , it("2 mol/m^3 * 3 J/mol = 6 Pa", check_molar_density_divided_by_molar_enthalpy) &
+                , it("2 mol/m^3 * 3 J/mol = 6 Pa", check_molar_density_times_molar_enthalpy) &
                 ])
     end function test_interquantity_operators
 
@@ -817,11 +817,11 @@ contains
                 (6.d0.unit.KILOGRAMS_PER_CUBIC_METER) / (3.d0.unit.KILOGRAMS_PER_MOL))
     end function
 
-    pure function check_molar_density_divided_by_molar_enthalpy() result(result_)
+    pure function check_molar_density_times_molar_enthalpy() result(result_)
         type(result_t) :: result_
 
         result_ = assert_equals( &
-                2.d0.unit.PASCALS, &
-                (6.d0.unit.MOLS_PER_CUBIC_METER) / (3.d0.unit.JOULES_PER_MOL))
+                6.d0.unit.PASCALS, &
+                (2.d0.unit.MOLS_PER_CUBIC_METER) * (3.d0.unit.JOULES_PER_MOL))
     end function
 end module
