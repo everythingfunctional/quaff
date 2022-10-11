@@ -77,6 +77,9 @@ contains
         use mass_test, only: &
                 mass_mass => &
                     test_mass
+        use molar_density_test, only: &
+                molar_density_molar_density => &
+                    test_molar_density
         use molar_enthalpy_test, only: &
                 molar_enthalpy_molar_enthalpy => &
                     test_molar_enthalpy
@@ -123,7 +126,7 @@ contains
         logical :: passed
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(37)
+        type(test_item_t) :: individual_tests(38)
 
         individual_tests(1) = acceleration_acceleration()
         individual_tests(2) = amount_rate_amount_rate()
@@ -149,19 +152,20 @@ contains
         individual_tests(22) = length_length()
         individual_tests(23) = mass_rate_mass_rate()
         individual_tests(24) = mass_mass()
-        individual_tests(25) = molar_enthalpy_molar_enthalpy()
-        individual_tests(26) = molar_mass_molar_mass()
-        individual_tests(27) = molar_specific_heat_molar_specific_heat()
-        individual_tests(28) = power_power()
-        individual_tests(29) = pressure_pressure()
-        individual_tests(30) = specific_heat_specific_heat()
-        individual_tests(31) = speed_speed()
-        individual_tests(32) = stress_intensity_factor_stress_intensity_factor()
-        individual_tests(33) = temperature_temperature()
-        individual_tests(34) = thermal_conductivity_thermal_conductivity()
-        individual_tests(35) = thermal_expansion_coefficient_thermal_expansion_coefficient()
-        individual_tests(36) = time_time()
-        individual_tests(37) = volume_volume()
+        individual_tests(25) = molar_density_molar_density()
+        individual_tests(26) = molar_enthalpy_molar_enthalpy()
+        individual_tests(27) = molar_mass_molar_mass()
+        individual_tests(28) = molar_specific_heat_molar_specific_heat()
+        individual_tests(29) = power_power()
+        individual_tests(30) = pressure_pressure()
+        individual_tests(31) = specific_heat_specific_heat()
+        individual_tests(32) = speed_speed()
+        individual_tests(33) = stress_intensity_factor_stress_intensity_factor()
+        individual_tests(34) = temperature_temperature()
+        individual_tests(35) = thermal_conductivity_thermal_conductivity()
+        individual_tests(36) = thermal_expansion_coefficient_thermal_expansion_coefficient()
+        individual_tests(37) = time_time()
+        individual_tests(38) = volume_volume()
         tests = test_that(individual_tests)
 
 

@@ -357,6 +357,21 @@ module quaff
             PROVIDED_MASS_RATE_UNITS => PROVIDED_UNITS, &
             GRAMS_PER_SECOND, &
             KILOGRAMS_PER_SECOND
+    use quaff_molar_density_m, only: &
+            molar_density_t, &
+            fallible_molar_density_t, &
+            molar_density_unit_t, &
+            fallible_molar_density_unit_t, &
+            molar_density_simple_unit_t, &
+            operator(.unit.), &
+            abs, &
+            parse_molar_density, &
+            parse_molar_density_unit, &
+            sum, &
+            DEFAULT_MOLAR_DENSITY_OUTPUT_UNITS => DEFAULT_OUTPUT_UNITS, &
+            PROVIDED_MOLAR_DENSITY_UNITS => PROVIDED_UNITS, &
+            MOLS_PER_CUBIC_CENTIMETER, &
+            MOLS_PER_CUBIC_METER
     use quaff_molar_enthalpy_m, only: &
             molar_enthalpy_t, &
             fallible_molar_enthalpy_t, &
