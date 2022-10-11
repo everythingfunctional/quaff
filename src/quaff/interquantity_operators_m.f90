@@ -105,6 +105,7 @@ module quaff_interquantity_operators_m
         module procedure mass_divided_by_density
         module procedure mass_divided_by_molar_mass
         module procedure mass_divided_by_volume
+        module procedure molar_density_divided_by_molar_enthalpy
         module procedure molar_enthalpy_divided_by_molar_mass
         module procedure molar_specific_heat_divided_by_molar_mass
         module procedure number_divided_by_frequency
@@ -528,6 +529,16 @@ contains
         type(energy_t) :: energy
 
         energy%joules = mass%kilograms * enthalpy%joules_per_kilogram
+    end function
+
+    elemental function molar_density_divided_by_molar_enthalpy( &
+            molar_density, molar_enthalpy) result(pressure)
+        type(molar_density_t), intent(in) :: molar_density
+        type(molar_enthalpy_t), intent(in) :: molar_enthalpy
+        type(pressure_t) :: pressure
+
+        pressure%pascals = &
+                molar_density%mols_per_cubic_meter / molar_enthalpy%joules_per_mol
     end function
 
     elemental function molar_density_times_volume(molar_density, volume) result(amount)
